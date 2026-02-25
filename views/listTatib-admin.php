@@ -4,6 +4,7 @@ require_once __DIR__ . '/../config.php';
 
 require_once "../Controllers/TatibController.php";
 require_once '../Controllers/UserController.php';
+require_once __DIR__ . '/partials/app-shell.php';
 
 if (isset($_SESSION['username'])) {
     // Redirect based on role
@@ -51,20 +52,22 @@ $tatibData = $tatibController->ReadTatib();
 </head>
 
 <body>
-    <div class="sidebar">
-        <img class="logo" src="../img/logo aja.png" alt="logo">
-        <div class="logo-separator"></div>
-        <ul>
-            <li><a href="home-admin.php"><i class="fa-solid fa-house"></i></a></li>
-            <li class="active"><a href="listTatib-admin.php"><i class="fa-solid fa-book"></i></a></li>
-            <li><a href="news-admin.php"><i class="fa-solid fa-newspaper"></i></a></li>
-            <?php if (isset($_SESSION['username'])): ?>
-                <li class="logout"><a href="../?logout=true"><i class="fa-solid fa-right-from-bracket"></i></a></li>
-            <?php endif; ?>
-        </ul>
-    </div>
+    <?php
+    render_app_sidebar([
+        'variant' => 'admin',
+        'context' => 'views',
+        'active' => 'tatib',
+    ]);
+    ?>
     <div class="content">
-        <div class="header"></div>
+        <?php
+        render_app_header([
+            'title' => 'Tata Tertib Admin',
+            'showLogin' => false,
+            'loginHref' => 'login.php',
+            'roleLabel' => 'Admin',
+        ]);
+        ?>
         <div class="judul">
             <h1>DISCIPLINE</h1>
         </div>

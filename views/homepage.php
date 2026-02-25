@@ -1,24 +1,30 @@
-<div class="sidebar">
-    <img class="logo" src="img/logo aja.png" alt="logo">
-    <div class="logo-separator"></div>
-    <ul>
-        <li class="active"><a href=""><i class="fa-solid fa-house"></i></a></li>
-        <li><a href="views/listTatib.php"><i class="fa-solid fa-book"></i></a></li>
-        <li><a href="views/pelanggaranpage.php"><i class="fa-solid fa-hand"></i></i></a></li>
-        <?php if (isset($_SESSION['username'])): ?>
-            <li><a href="views/notifikasi.php"><i class="fa-solid fa-bell"></i></a></li>
-            <li class="logout"><a href="?logout=true"><i class="fa-solid fa-right-from-bracket"></i></a></li>
-        <?php endif; ?>
-    </ul>
-</div>
+<?php
+require_once __DIR__ . '/partials/app-shell.php';
+
+$homeVariant = isset($_SESSION['username']) ? 'student' : 'guest';
+$homeRoleLabel = null;
+if (isset($_SESSION['user_type'])) {
+    $homeRoleLabel = $_SESSION['user_type'] === 'dosen'
+        ? 'Dosen'
+        : ($_SESSION['user_type'] === 'admin' ? 'Admin' : 'Mahasiswa');
+}
+
+render_app_sidebar([
+    'variant' => $homeVariant,
+    'context' => 'root',
+    'active' => 'home',
+]);
+?>
 
 <div class="content">
-    <div class="header">
-        <h1>Home</h1>
-        <?php if (!isset($_SESSION['username'])): ?>
-            <button class="login-btn" onclick="window.location.href='views/login.php'">Login</button>
-        <?php endif; ?>
-    </div>
+    <?php
+    render_app_header([
+        'title' => 'Home',
+        'showLogin' => !isset($_SESSION['username']),
+        'loginHref' => 'views/login.php',
+        'roleLabel' => $homeRoleLabel,
+    ]);
+    ?>
 
     <section class="judul">
         <div class="hero-inner reveal-up">

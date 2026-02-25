@@ -3,6 +3,7 @@ session_start();
 
 require_once '../Controllers/UserController.php';
 require_once '../Controllers/NewsController.php';
+require_once __DIR__ . '/partials/app-shell.php';
 
 if (isset($_SESSION['username'])) {
     // Redirect based on role
@@ -43,23 +44,22 @@ $newsData = $newsController->ReadNews();
 </head>
 
 <body>
-    <div class="sidebar">
-    <img class="logo" src="../img/logo aja.png" alt="logo">
-        <div class="logo-separator"></div>
-        <ul>
-            <li class="active"><a href="home-admin.php"><i class="fa-solid fa-house"></i></a></li>
-            <li><a href="listTatib-admin.php"><i class="fa-solid fa-book"></i></a></li>
-            <li><a href="news-admin.php"><i class="fa-solid fa-newspaper"></i></a></li>
-            <li class="logout"><a href="../?logout=true"><i class="fa-solid fa-right-from-bracket"></i></a></li>
-        </ul>
-    </div>
+    <?php
+    render_app_sidebar([
+        'variant' => 'admin',
+        'context' => 'views',
+        'active' => 'home',
+    ]);
+    ?>
     <div class="content">
-    <div class="header">
-    <h1>Home</h1>
-    <?php if (!isset($_SESSION['username'])) : ?>
-        <button class="login-btn" onclick="window.location.href='views/login.php'">Login</button>
-    <?php endif; ?>
-</div>
+    <?php
+    render_app_header([
+        'title' => 'Home Admin',
+        'showLogin' => false,
+        'loginHref' => 'login.php',
+        'roleLabel' => 'Admin',
+    ]);
+    ?>
 
             <div class="judul">
                 <h2>TATA TERTIB <br>MAHASISWA </h2>

@@ -1,77 +1,67 @@
-/* Memastikan html dan body mengisi seluruh tinggi layar */
-html, body {
-    height: 100%;
-    margin: 0;
-}
-
-/* Memastikan bagian konten mengambil seluruh tinggi layar */
-.content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;  /* Mengisi penuh tinggi konten */
-}
-
-/* Kontainer utama yang menampung sidebar dan notifikasi */
-.container {
-    display: flex;
-    flex: 1;  /* Ini memastikan kontainer mengisi sisa ruang yang ada */
-    padding: 24px; /* Memberi jarak di sekeliling notifikasi */
-    max-width: 800px;
-    margin: 0 auto;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-/* Bagian Notifikasi */
 .notifications {
-    width: 100%;  /* Agar lebar menyesuaikan sisa ruang yang ada */
-    height: 600px; /* Batasi tinggi agar hanya menampilkan 5 notifikasi, sesuaikan jika perlu */
-    overflow-y: auto; /* Menampilkan scroll jika jumlah notifikasi lebih dari batas */
-    padding: 24px;
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    border: 1px solid #e2e8f0;
+  width: min(900px, calc(100% - 40px));
+  margin: 26px auto 44px;
+  max-height: calc(100vh - 240px);
+  overflow-y: auto;
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+  border: 1px solid #d9e2ec;
 }
 
-/* Styling untuk setiap item notifikasi */
 .notification-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 16px;
-    padding: 16px;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    background-color: #f8fafc;
-    transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  margin-bottom: 14px;
+  padding: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background-color: #f8fafc;
+  transition: all 0.2s ease;
+}
+
+.notification-item:last-child {
+  margin-bottom: 0;
 }
 
 .notification-item:hover {
-    background-color: #f1f5f9;
-    border-color: #cbd5e1;
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
 }
 
-/* Ikon untuk setiap item notifikasi */
 .icon {
-    margin-right: 16px;
-    font-size: 24px;
-    padding: 12px;
-    background-color: #eff6ff;
-    color: #2563eb;
-    border-radius: 8px;
+  margin-right: 14px;
+  font-size: 1.15rem;
+  padding: 10px;
+  background-color: #eff6ff;
+  color: #0f6cbd;
+  border-radius: 9px;
 }
 
-/* Styling untuk konten notifikasi */
 .notification-content p {
-    margin: 0;
-    font-size: 14px;
-    font-weight: 500;
-    color: #334155;
+  margin: 0;
+  font-size: 0.93rem;
+  font-weight: 500;
+  color: #334155;
 }
 
 .notification-content small {
-    color: #64748b;
-    font-size: 12px;
-    margin-top: 4px;
-    display: block;
+  color: #64748b;
+  font-size: 0.74rem;
+  margin-top: 4px;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .notifications {
+    width: calc(100% - 20px);
+    margin: 16px auto 24px;
+    padding: 14px;
+    max-height: none;
+  }
+
+  .notification-item {
+    padding: 12px;
+  }
 }

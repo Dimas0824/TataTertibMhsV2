@@ -2,6 +2,7 @@
 session_start();
 require_once '../Controllers/UserController.php';
 require_once '../Controllers/PelanggaranController.php'; // Include PelanggaranController
+require_once __DIR__ . '/partials/app-shell.php';
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
@@ -27,6 +28,8 @@ if ($_SESSION['user_type'] === 'mahasiswa') {
 } else {
     $notifications = []; // Default to empty if user type is unknown
 }
+
+$notificationRole = $_SESSION['user_type'] === 'dosen' ? 'Dosen' : 'Mahasiswa';
 ?>
 
 <!DOCTYPE html>
@@ -44,21 +47,22 @@ if ($_SESSION['user_type'] === 'mahasiswa') {
     <link rel="stylesheet" href="../css/notifikasi.css">
 </head>
 <body>
-<div class="sidebar">
-<img class="logo" src="../img/logo aja.png" alt="logo">
-    <div class="logo-separator"></div>
-    <ul>
-        <li><a href="../index.php"><i class="fa-solid fa-house"></i></a></li>
-        <li><a href="listTatib.php"><i class="fa-solid fa-book"></i></a></li>
-        <li><a href="pelanggaranpage.php"><i class="fa-solid fa-hand"></i></i></a></li>
-        <li class="active"><a href=""><i class="fa-solid fa-bell"></i></a></li>
-        <li class="logout"><a href="../?logout=true"><i class="fa-solid fa-right-from-bracket"></i></a></li>
-    </ul>
-</div>
+<?php
+render_app_sidebar([
+    'variant' => 'student',
+    'context' => 'views',
+    'active' => 'notifikasi',
+]);
+?>
     <div class="content">
-        <div class="header">
-            <h1>Notifikasi</h1>
-        </div>
+        <?php
+        render_app_header([
+            'title' => 'Notifikasi',
+            'showLogin' => false,
+            'loginHref' => 'login.php',
+            'roleLabel' => $notificationRole,
+        ]);
+        ?>
             <!-- Notifications Section -->
             <div class="notifications">
                 <?php foreach ($notifications as $notification): ?>

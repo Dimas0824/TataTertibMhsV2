@@ -1,5 +1,6 @@
 <?php
 require_once '../Controllers/UserController.php';
+require_once __DIR__ . '/partials/app-shell.php';
 
 session_start();
 if (isset($_SESSION['username'])) {
@@ -29,15 +30,13 @@ if (isset($_SESSION['username'])) {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="sidebar">
-  <img class="logo" src="../img/logo aja.png" alt="logo">
-    <div class="logo-separator"></div>
-    <ul>
-    <li><a href="../index.php"><i class="fa-solid fa-house"></i></a></li>
-            <li><a href="listTatib.php"><i class="fa-solid fa-book"></i></a></li>
-            <li class="active"><a href="pelanggaranpage.php"><i class="fa-solid fa-hand"></i></i></a></li>
-    </ul>
-</div>
+<?php
+render_app_sidebar([
+    'variant' => 'guest',
+    'context' => 'views',
+    'active' => null,
+]);
+?>
 <div class="content">
   <?php if (isset($_SESSION['login_error'])): ?> 
     <script type="text/javascript"> 
@@ -45,9 +44,14 @@ if (isset($_SESSION['username'])) {
     </script> 
     <?php unset($_SESSION['login_error']); ?> 
   <?php endif; ?>
-  <div class="header">
-    <h1>login</h1>
-  </div>
+  <?php
+  render_app_header([
+      'title' => 'Login',
+      'showLogin' => false,
+      'loginHref' => 'login.php',
+      'roleLabel' => null,
+  ]);
+  ?>
   <form method="POST" action="../Request/Handler_Login.php">
     <h3>Masuk</h3>
     <input type="hidden" id="user-type" name="user_type" value="nim">

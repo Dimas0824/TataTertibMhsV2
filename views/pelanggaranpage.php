@@ -2,6 +2,7 @@
 session_start();
 require_once '../Controllers/UserController.php';
 require_once '../Controllers/PelanggaranController.php';
+require_once __DIR__ . '/partials/app-shell.php';
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
@@ -51,24 +52,24 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
 </head>
 
 <body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-    <img class="logo" src="../img/logo aja.png" alt="logo">
-        <div class="logo-separator"></div>
-        <ul>
-            <li><a href="../index.php"><i class="fa-solid fa-house"></i></a></li>
-            <li><a href="listTatib.php"><i class="fa-solid fa-book"></i></a></li>
-            <li class="active"><a href="pelanggaranpage.php"><i class="fa-solid fa-hand"></i></a></li>
-            <li><a href="notifikasi.php"><i class="fa-solid fa-bell"></i></a></li>
-            <li class="logout"><a href="../?logout=true"><i class="fa-solid fa-right-from-bracket"></i></a></li>
-        </ul>
-    </div>
+    <?php
+    render_app_sidebar([
+        'variant' => 'student',
+        'context' => 'views',
+        'active' => 'pelanggaran',
+    ]);
+    ?>
 
     <!-- Main Content -->
     <div class="content">
-        <div class="header">
-            <h1>Pelanggaran</h1>
-        </div>
+        <?php
+        render_app_header([
+            'title' => 'Pelanggaran',
+            'showLogin' => false,
+            'loginHref' => 'login.php',
+            'roleLabel' => 'Mahasiswa',
+        ]);
+        ?>
         <div class="profile">
             <p><strong>Nama: <?= $userData['nama_lengkap'] ?></strong></p>
             <p><strong>NIM: <?= $userData['nim'] ?></strong></p>
