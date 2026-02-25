@@ -1,28 +1,32 @@
 /* Gaya Umum untuk Formulir */
 body{
-    font-family: 'Inter';
-background-color: #9EC6EC;
+    font-family: 'Inter', sans-serif;
+    background-color: #f8fafc;
+    color: #334155;
 }
 h1{
     margin: 20px;
+    color: #0f172a;
+    font-weight: 600;
 }
 form {
     max-width: 600px;
     margin: 0 auto;
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e2e8f0;
     font-family: 'Inter', sans-serif;
 }
 
 /* Label */
 form label {
     display: block;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 500;
     margin-bottom: 8px;
-    color: #333;
+    color: #334155;
 }
 
 /* Input Text */
@@ -30,62 +34,76 @@ form input[type="text"],
 form textarea,
 form input[type="file"] {
     width: 100%;
-    padding: 10px;
+    padding: 10px 12px;
     font-size: 14px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    margin-bottom: 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
     box-sizing: border-box;
-    transition: border-color 0.3s ease;
+    background-color: #f8fafc;
+    color: #0f172a;
+    transition: all 0.2s ease;
 }
 
 /* Input Hover and Focus */
 form input[type="text"]:hover,
 form textarea:hover,
-form input[type="file"]:hover,
+form input[type="file"]:hover {
+    border-color: #94a3b8;
+}
+
 form input[type="text"]:focus,
 form textarea:focus,
 form input[type="file"]:focus {
-    border-color: #007bff;
+    border-color: #2563eb;
     outline: none;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    background-color: #ffffff;
 }
 
 /* Textarea */
 form textarea {
     resize: vertical;
-    min-height: 100px;
+    min-height: 120px;
 }
 
 /* Tombol Simpan */
 form .save-button {
     display: inline-block;
-    background-color: #007bff;
+    background-color: #2563eb;
     color: #fff;
     padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 14px;
+    font-weight: 500;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.2s ease;
 }
-/* Tombol Simpan */
+/* Tombol Batal */
 form .cancel-button {
-    display: inline;
-    background-color: #ff0000;
-    color: #fff;
-    padding: 7px 17px;
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
+    display: inline-block;
+    background-color: #f1f5f9;
+    color: #475569;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    margin-right: 8px;
 }
 
 form .save-button:hover {
-    background-color: #0056b3;
+    background-color: #1d4ed8;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+}
+
+form .cancel-button:hover {
+    background-color: #e2e8f0;
+    color: #0f172a;
 }
 
 /* Responsif */

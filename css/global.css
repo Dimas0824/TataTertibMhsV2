@@ -7,8 +7,8 @@ html, body {
 
 /* Sidebar styling */
 .sidebar {
-  background: linear-gradient(to bottom, #5BA4E5 30%, #1A237E 45%);
-  color: white;
+  background-color: #1e293b;
+  color: #f8fafc;
   width: 70px;
   height: 100vh;
   position: fixed;
@@ -17,6 +17,7 @@ html, body {
   z-index: 100000;
   display: flex;
   flex-direction: column;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar ul {
@@ -30,7 +31,7 @@ html, body {
 
 .sidebar li {
   padding: 10px;
-  border-bottom: 1px solid #3d3d3d;
+  border-bottom: 1px solid #334155;
   text-align: center;
   display: flex;
   justify-content: center;
@@ -38,22 +39,25 @@ html, body {
 }
 
 .sidebar li a {
-  color: white;
+  color: #cbd5e1;
   text-decoration: none;
   display: inline-block;
   width: 100%;
   height: 100%;
   padding: 10px;
   box-sizing: border-box;
+  transition: all 0.2s ease;
 }
 
 .sidebar li.active a {
-  border-radius: 5px;
-  background-color: #1C2263;
+  border-radius: 8px;
+  background-color: #334155;
+  color: #ffffff;
 }
 
 .sidebar li a:hover {
   transform: translateY(-2px);
+  color: #ffffff;
 }
 
 .sidebar .logo {
@@ -69,7 +73,7 @@ html, body {
 .sidebar .logo-separator {
   width: 100%;
   height: 1px;
-  background-color: #ccc;
+  background-color: #334155;
   margin-bottom: 10px;
   margin-top: 0px;
 }
@@ -87,52 +91,66 @@ html, body {
 
 /* Header styling */
 .header {
-  font-family: 'Inter';
+  font-family: 'Inter', sans-serif;
   position: fixed;
   width: calc(100% - 70px);
   top: 0;
-  background: linear-gradient(to Right, #5BA4E5 30%, #1A237E 45%);
-  height: 50px;
-  padding: 10px;
-  color: #5B5C5F;
+  left: 70px;
+  background-color: #ffffff;
+  height: 60px;
+  padding: 0 24px;
+  color: #334155;
   display: flex;
-  font-size: 10px;
+  font-size: 14px;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   z-index: 1000;
+  box-sizing: border-box;
+}
+
+.header h1 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0;
 }
 
 /* Login button styling */
 .login-btn {
-  font-family: 'Inter';
-  background-color: #007bff;
+  font-family: 'Inter', sans-serif;
+  background-color: #2563eb;
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 8px 20px;
   font-size: 14px;
-  margin-right: 20px;
-  border-radius: 5px;
+  font-weight: 500;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .login-btn:hover {
-  background-color: #0056b3;
+  background-color: #1d4ed8;
+  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
 }
 
 /* Content area */
 .content {
-  height: 100%;
-  padding-top: 50px;
-  padding-left: 70px;
+  margin-left: 70px;
+  padding-top: 60px; /* Match header height */
+  background-color: #f8fafc;
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Footer Container */
 .footer {
-  margin-top: 250px;
-  background: linear-gradient(to bottom, #5BA4E5 , #1A237E );
-  color: white;
+  margin-top: 100px;
+  background-color: #1e293b;
+  color: #f8fafc;
   display: flex;
   flex-direction: column;
   padding: 20px 40px;
@@ -194,9 +212,9 @@ html, body {
 /* Footer Bottom Section */
 .footer-bottom {
   text-align: center;
-  font-size: 0.7rem;
-  margin-top: 5px;
-  color: #ccc;
+  font-size: 0.8rem;
+  margin-top: 10px;
+  color: #94a3b8;
 }
 
 /* Responsive Design for Mobile */

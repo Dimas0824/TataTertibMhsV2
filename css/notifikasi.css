@@ -15,47 +15,63 @@ html, body {
 .container {
     display: flex;
     flex: 1;  /* Ini memastikan kontainer mengisi sisa ruang yang ada */
-    margin-left: 25%; /* Memberikan ruang di sebelah kiri untuk sidebar */
-    padding-bottom: 20px; /* Opsional, memberi jarak di bagian bawah */
+    padding: 24px; /* Memberi jarak di sekeliling notifikasi */
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Bagian Notifikasi */
 .notifications {
     width: 100%;  /* Agar lebar menyesuaikan sisa ruang yang ada */
     height: 600px; /* Batasi tinggi agar hanya menampilkan 5 notifikasi, sesuaikan jika perlu */
-    overflow-y: scroll; /* Menampilkan scroll jika jumlah notifikasi lebih dari batas */
-    padding: 20px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    overflow-y: auto; /* Menampilkan scroll jika jumlah notifikasi lebih dari batas */
+    padding: 24px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e2e8f0;
 }
 
 /* Styling untuk setiap item notifikasi */
 .notification-item {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #e5e7eb;
+    margin-bottom: 16px;
+    padding: 16px;
+    border: 1px solid #e2e8f0;
     border-radius: 8px;
-    background-color: #f9fafb;
+    background-color: #f8fafc;
+    transition: all 0.2s ease;
+}
+
+.notification-item:hover {
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
 }
 
 /* Ikon untuk setiap item notifikasi */
 .icon {
-    margin-right: 15px;
-    font-size: 25px;
-    padding: 15px;
+    margin-right: 16px;
+    font-size: 24px;
+    padding: 12px;
+    background-color: #eff6ff;
+    color: #2563eb;
+    border-radius: 8px;
 }
 
 /* Styling untuk konten notifikasi */
 .notification-content p {
     margin: 0;
     font-size: 14px;
-    color: #374151;
+    font-weight: 500;
+    color: #334155;
 }
 
 .notification-content small {
-    color: #9ca3af;
+    color: #64748b;
     font-size: 12px;
+    margin-top: 4px;
+    display: block;
 }

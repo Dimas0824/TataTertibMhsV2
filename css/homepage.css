@@ -1,146 +1,381 @@
-/* Kontainer Utama */
-.dashboard-container {
-  font-family: "Inter", sans-serif;
-  font-size: larger;
-  display: flex;
-  padding-top: 65px;
-  padding-bottom: 65px;
-  padding-right: 30px;
-  padding-left: 30px;
-  align-items: center;       /* Menyelaraskan konten secara vertikal di tengah */
-  justify-content: space-between; /* Menyusun konten di kedua sisi (kiri dan kanan) */
-  background-color: #5BA4E5;    /* Warna latar belakang biru */
-  width: 100%;               /* Memastikan lebar elemen 100% dari viewport */
-  box-sizing: border-box;    /* Memastikan padding tidak menambah lebar total */
-  color: black;             /* Warna teks putih untuk kontras */
-}
-
-/* Styling untuk Logo */
-.dashboard-container .logo-disciplink {
-  margin-right: 30px;
-  width: 250px;             /* Menyesuaikan lebar gambar secara otomatis */
-  height: auto;            /* Menjaga rasio aspek gambar */
-  padding-right: 30px;
-  border-right: 2px solid white;
+:root {
+  --surface: #ffffff;
+  --surface-soft: #f8fafc;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --border-soft: #e2e8f0;
+  --accent: #2563eb;
+  --accent-dark: #1d4ed8;
 }
 
 .judul {
+  min-height: calc(100vh - 60px);
+  padding: 96px 56px 72px;
+  position: relative;
+  overflow: hidden;
+  background-color: #0f172a;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-  height: 60vh;
-  padding: 20px;
-  position: relative; /* Menjadikan kontainer sebagai acuan elemen pseudo */
-  overflow: hidden;  /* Memastikan elemen pseudo tidak meluas keluar kontainer */
+  align-items: center;
 }
 
 .judul::before {
-  content: '';
-  position: absolute;  /* Menempatkan elemen pseudo di dalam kontainer */
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%; /* Sesuaikan tinggi agar menutupi kontainer secara penuh */
-  background-image: url(../img/GRAHA-POLINEMA1-slider-01.webp);
-  background-size: cover;       /* Memastikan gambar menutupi seluruh elemen */
-  background-position: center;  /* Menyusun gambar agar berada di tengah */
-  opacity: 0.4;                 /* Menurunkan opasitas gambar */
-  z-index: -1;                 /* Menempatkan overlay di belakang konten */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url(../img/GRAHA-POLINEMA1-slider-01.webp) center/cover no-repeat;
+  opacity: 0.45;
+  transform: scale(1.06);
+  animation: heroZoom 14s ease-in-out infinite alternate;
+}
+
+.judul::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(37, 99, 235, 0.25), rgba(15, 23, 42, 0.9) 58%);
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 780px;
+  color: #f8fafc;
+}
+
+.hero-kicker {
+  font-family: "Inter", sans-serif;
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #bfdbfe;
+  margin-bottom: 14px;
 }
 
 .judul h2 {
-  font-family: "Libre Baskerville", serif;
-  font-size: 78px;
-  margin: 0;                          /* Menghapus margin default pada h2 */
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  font-size: clamp(2.2rem, 5vw, 4.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  font-weight: 800;
 }
 
 .judul p {
+  margin: 22px 0 0;
   font-family: "Inter", sans-serif;
-  font-size: 18px;
-  margin-top: 20px;                   /* Memberikan jarak antara h2 dan p */
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  max-width: 640px;
+  line-height: 1.75;
+  color: #dbeafe;
+}
+
+.hero-actions {
+  margin-top: 34px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hero-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Inter", sans-serif;
+  text-decoration: none;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.93rem;
+  padding: 11px 20px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.hero-btn-primary {
+  background-color: var(--accent);
+  color: #ffffff;
+}
+
+.hero-btn-primary:hover {
+  background-color: var(--accent-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.28);
+}
+
+.hero-btn-secondary {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+  border: 1px solid rgba(191, 219, 254, 0.4);
+}
+
+.hero-btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.dashboard-container {
+  margin: 0 auto;
+  max-width: 1180px;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 44px;
+  padding: 72px 56px;
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.about-logo-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.dashboard-container .logo-disciplink {
+  width: 220px;
+  height: auto;
+  padding-right: 34px;
+  border-right: 1px solid var(--border-soft);
+}
+
+.about-copy h3 {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.dashboard-container p {
+  margin: 16px 0 0;
+  font-family: "Inter", sans-serif;
+  font-size: 1.02rem;
+  line-height: 1.9;
+  max-width: 760px;
+  color: var(--text-secondary);
+}
+
+.news {
+  margin: 0 auto;
+  max-width: 1180px;
+  padding: 64px 56px 32px;
+}
+
+.news-header {
+  margin-bottom: 30px;
 }
 
 .news h2 {
-  font-size: 30px;
-  margin-top: 40px;
-  display: flex;
-  justify-content: center;
-  font-family: "Libre Baskerville";
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  font-size: clamp(1.9rem, 3vw, 2.4rem);
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
 }
 
-/* Mengatur layout horizontal untuk card berita */
-.row {
-  display: flex;
-  gap: 20px; /* Jarak antar card */
-  justify-content: center; /* Agar card rata tengah */
-  flex-wrap: wrap; /* Agar card bisa turun ke baris berikutnya jika layar terlalu kecil */
-  margin-top: 20px;
+.news-header p {
+  margin: 10px 0 0;
+  color: var(--text-secondary);
+  font-family: "Inter", sans-serif;
+  max-width: 620px;
+}
+
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 18px;
+  row-gap: 24px;
   margin-bottom: 100px;
+  align-items: start;
 }
 
 .news-content {
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 300px; /* Ukuran lebar tiap card */
-  height: auto; /* Tinggi akan menyesuaikan dengan isi konten */
-  padding: 15px;
-  overflow: hidden; /* Tambahkan atau hapus tergantung kebutuhan */
-  text-align: left;
-  display: flex; /* Gunakan flexbox untuk mengatur isi */
-  flex-direction: column; /* Mengatur agar konten vertikal */
+  background: var(--surface);
+  border-radius: 18px;
+  border: 1px solid var(--border-soft);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  grid-column: span 4;
+  overflow: hidden;
+  min-height: 100%;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.news-content:hover {
+  transform: translateY(-5px);
+  border-color: #bfdbfe;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.1);
 }
 
 .news-content img {
   width: 100%;
-  height: 180px; /* Sesuaikan tinggi gambar */
+  height: 200px;
   object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 15px;
+  border-radius: 13px;
+  margin-bottom: 14px;
+}
+
+.news-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.news-content h3 {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  line-height: 1.4;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.news-content h5 {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  font-size: 0.74rem;
+  color: #64748b;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
 }
 
 .news-content p {
+  margin: 0;
   font-family: "Inter", sans-serif;
   font-size: 0.9rem;
-  color: #555;
-  line-height: 1.5;
-  word-wrap: break-word; /* Memastikan kata panjang akan dipisah ke baris berikutnya */
-  text-overflow: ellipsis; /* Jika overflow, tambahkan ellipsis (...) */
-  overflow: visible; /* Biarkan teks melanjutkan ke bawah */
+  color: var(--text-secondary);
+  line-height: 1.7;
+  display: -webkit-box;
+  line-clamp: 3;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-/* Responsif Design */
-@media screen and (max-width: 768px) {
+.news-content:first-child {
+  grid-column: span 8;
+  display: grid;
+  grid-template-columns: minmax(300px, 1.2fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+
+.news-content:first-child img {
+  height: 260px;
+  margin-bottom: 0;
+}
+
+.news-content:first-child .news-text {
+  gap: 10px;
+}
+
+.news-content:first-child h3 {
+  font-size: 1.35rem;
+  line-clamp: 3;
+  -webkit-line-clamp: 3;
+}
+
+.news-content:first-child p {
+  line-clamp: 5;
+  -webkit-line-clamp: 5;
+}
+
+.reveal-up {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal-up.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes heroZoom {
+  from {
+    transform: scale(1.04);
+  }
+  to {
+    transform: scale(1.1);
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .judul,
+  .dashboard-container,
+  .news {
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+
   .dashboard-container {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 10px;
-    font-size: 16px;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .about-logo-wrap {
+    justify-content: flex-start;
   }
 
   .dashboard-container .logo-disciplink {
-    margin-right: 0;
-    margin-bottom: 20px;
     width: 200px;
-  }
-  .judul{
-    margin-top: -40px;
-  }
-  .judul h2 {
-    font-size: 40px;
+    border-right: none;
+    border-bottom: 1px solid var(--border-soft);
+    padding: 0 0 16px;
   }
 
-  .judul p {
-    font-size: 16px;
+  .news-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 18px;
   }
 
-  .news-content {
-    width: 90%; /* Mengambil hampir seluruh lebar layar */
-    margin: 0 auto; /* Agar card berada di tengah */
+  .news-content,
+  .news-content:first-child {
+    grid-column: span 1;
+    display: flex;
   }
 
-  .row {
-    gap: 10px;
+  .news-content:first-child img {
+    min-height: unset;
+    margin-bottom: 14px;
+  }
+
+  .news-content:first-child h3,
+  .news-content:first-child h5,
+  .news-content:first-child p {
+    grid-column: auto;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .judul {
+    min-height: 74vh;
+    padding-top: 74px;
+  }
+
+  .hero-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .hero-btn {
+    width: 100%;
+  }
+
+  .dashboard-container,
+  .news {
+    padding-top: 50px;
+  }
+
+  .news-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-bottom: 70px;
   }
 }
