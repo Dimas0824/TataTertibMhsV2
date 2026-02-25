@@ -30,8 +30,12 @@ class ConsoleKernel
                     return 0;
 
                 case 'migrate':
-                    $this->ensureAllowedOptions($options, ['path', 'fresh', 'force']);
+                    $this->ensureAllowedOptions($options, ['path', 'fresh', 'seed', 'force']);
                     return $this->runMigrate($options);
+
+                case 'migrate:fresh':
+                    $this->ensureAllowedOptions($options, ['path', 'seed', 'force']);
+                    return $this->runMigrateFresh($options);
 
                 case 'db:seed':
                     $this->ensureAllowedOptions($options, ['path', 'file', 'force']);
@@ -52,10 +56,26 @@ class ConsoleKernel
 
         $path = $this->resolvePath($options['path'] ?? 'Database/migrations');
         $fresh = !empty($options['fresh']);
+        $seed = !empty($options['seed']);
         $force = !empty($options['force']);
 
         $service = new MigrationService($resolved['pdo'], new SqlRunner(), $resolved['app_env']);
-        return $service->migrate($path, $fresh, $force);
+        $status = $service->migrate($path, $fresh, $force);
+        if ($status !== 0 || !$seed) {
+            return $status;
+        }
+
+        echo "[migrate] Menjalankan seed (--seed)..." . PHP_EOL;
+        $seedService = new SeederService($resolved['pdo'], new SqlRunner(), $resolved['app_env']);
+        $seedPath = $this->resolvePath('Database/seeders');
+
+        return $seedService->seed($seedPath, null, $force);
+    }
+
+    private function runMigrateFresh(array $options)
+    {
+        $options['fresh'] = true;
+        return $this->runMigrate($options);
     }
 
     private function runSeed(array $options)
@@ -121,11 +141,11 @@ class ConsoleKernel
                 $i++;
             }
 
-            if (!in_array($option, ['path', 'file', 'fresh', 'force'], true)) {
+            if (!in_array($option, ['path', 'file', 'fresh', 'seed', 'force'], true)) {
                 throw new RuntimeException('Opsi tidak dikenali: --' . $option);
             }
 
-            if (in_array($option, ['fresh', 'force'], true) && $value !== true) {
+            if (in_array($option, ['fresh', 'seed', 'force'], true) && $value !== true) {
                 throw new RuntimeException('Opsi --' . $option . ' tidak menerima nilai.');
             }
 
@@ -179,7 +199,8 @@ class ConsoleKernel
             'Usage:',
             '  php artisan list',
             '  php artisan help',
-            '  php artisan migrate [--fresh] [--force] [--path=Database/migrations]',
+            '  php artisan migrate [--fresh] [--seed] [--force] [--path=Database/migrations]',
+            '  php artisan migrate:fresh [--seed] [--force] [--path=Database/migrations]',
             '  php artisan db:seed [--force] [--path=Database/seeders] [--file=<filename.sql>]',
             '',
             'Notes:',

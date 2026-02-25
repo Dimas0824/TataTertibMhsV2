@@ -6,12 +6,15 @@ Project ini menyediakan command mirip artisan untuk migrasi dan seed database.
 Pilih salah satu:
 1. Buat `.env` dari `.env.example` lalu isi `DB_DSN`, `DB_USER`, `DB_PASS`.
 2. Atau tetap gunakan `config.php` existing yang berisi global `$connect` (PDO).
+3. `migrate:fresh` saat ini didukung untuk driver `mysql` dan `sqlsrv`.
 
 ## Command
 - `php artisan list`
 - `php artisan help`
 - `php artisan migrate`
-- `php artisan migrate --fresh --force`
+- `php artisan migrate --seed`
+- `php artisan migrate:fresh`
+- `php artisan migrate:fresh --seed --force`
 - `php artisan migrate --path=Database/migrations`
 - `php artisan db:seed`
 - `php artisan db:seed --file=20260225_000001_data_dummy.sql`

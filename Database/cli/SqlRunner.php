@@ -19,9 +19,11 @@ class SqlRunner
         }
 
         $startedTransaction = false;
+        $driver = strtolower((string) $pdo->getAttribute(PDO::ATTR_DRIVER_NAME));
+        $transactionalExecution = $transactional && $driver !== 'mysql';
 
         try {
-            if ($transactional && !$pdo->inTransaction()) {
+            if ($transactionalExecution && !$pdo->inTransaction()) {
                 $pdo->beginTransaction();
                 $startedTransaction = true;
             }
@@ -30,7 +32,7 @@ class SqlRunner
                 $pdo->exec($statement);
             }
 
-            if ($startedTransaction) {
+            if ($startedTransaction && $pdo->inTransaction()) {
                 $pdo->commit();
             }
         } catch (Throwable $exception) {

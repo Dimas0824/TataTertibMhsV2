@@ -191,11 +191,24 @@ END";
 
     private function freshDatabase()
     {
-        if ($this->driver() !== 'sqlsrv') {
-            throw new RuntimeException('--fresh saat ini hanya didukung untuk driver sqlsrv.');
+        $driver = $this->driver();
+
+        if ($driver === 'sqlsrv') {
+            $this->freshSqlsrvDatabase();
+            return;
         }
 
-        echo "[migrate] Menjalankan fresh database..." . PHP_EOL;
+        if ($driver === 'mysql') {
+            $this->freshMysqlDatabase();
+            return;
+        }
+
+        throw new RuntimeException('--fresh saat ini hanya didukung untuk driver sqlsrv dan mysql. Driver aktif: ' . $driver);
+    }
+
+    private function freshSqlsrvDatabase()
+    {
+        echo "[migrate] Menjalankan fresh database (sqlsrv)..." . PHP_EOL;
 
         $sql = <<<'SQL'
 DECLARE @sql NVARCHAR(MAX) = N'';
@@ -224,6 +237,57 @@ IF LEN(@sql) > 0 EXEC sp_executesql @sql;
 SQL;
 
         $this->pdo->exec($sql);
+    }
+
+    private function freshMysqlDatabase()
+    {
+        echo "[migrate] Menjalankan fresh database (mysql)..." . PHP_EOL;
+
+        $this->pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
+
+        try {
+            foreach ($this->fetchNames("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = DATABASE()") as $view) {
+                $this->pdo->exec('DROP VIEW IF EXISTS ' . $this->quoteMysqlIdentifier($view));
+            }
+
+            foreach ($this->fetchNames("SELECT TRIGGER_NAME FROM INFORMATION_SCHEMA.TRIGGERS WHERE TRIGGER_SCHEMA = DATABASE()") as $trigger) {
+                $this->pdo->exec('DROP TRIGGER IF EXISTS ' . $this->quoteMysqlIdentifier($trigger));
+            }
+
+            foreach ($this->fetchNames("SELECT ROUTINE_NAME FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = 'PROCEDURE'") as $procedure) {
+                $this->pdo->exec('DROP PROCEDURE IF EXISTS ' . $this->quoteMysqlIdentifier($procedure));
+            }
+
+            foreach ($this->fetchNames("SELECT ROUTINE_NAME FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = 'FUNCTION'") as $function) {
+                $this->pdo->exec('DROP FUNCTION IF EXISTS ' . $this->quoteMysqlIdentifier($function));
+            }
+
+            foreach ($this->fetchNames("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_TYPE = 'BASE TABLE'") as $table) {
+                $this->pdo->exec('DROP TABLE IF EXISTS ' . $this->quoteMysqlIdentifier($table));
+            }
+        } finally {
+            $this->pdo->exec('SET FOREIGN_KEY_CHECKS = 1');
+        }
+    }
+
+    private function fetchNames($query)
+    {
+        $stmt = $this->pdo->query($query);
+        $rows = $stmt ? $stmt->fetchAll(PDO::FETCH_NUM) : [];
+        $names = [];
+
+        foreach ($rows as $row) {
+            if (isset($row[0])) {
+                $names[] = (string) $row[0];
+            }
+        }
+
+        return $names;
+    }
+
+    private function quoteMysqlIdentifier($identifier)
+    {
+        return '`' . str_replace('`', '``', (string) $identifier) . '`';
     }
 
     private function driver()

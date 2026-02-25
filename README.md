@@ -49,6 +49,7 @@ php artisan db:seed
 
 Opsi penting:
 - `php artisan migrate --fresh --force`
+- `php artisan migrate:fresh --seed`
 - `php artisan db:seed --file=20260225_000001_data_dummy.sql`
 
 Dokumentasi lengkap ada di `Database/README.md`.
