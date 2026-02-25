@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../config.php';
+require_once __DIR__ . '/../config.php';
 require_once '../Controllers/PelanggaranController.php';
 require_once '../Controllers/TatibController.php';
 
@@ -10,23 +10,23 @@ $tatibController = new TatibController();
 if (isset($_POST['store'])) {
    try {
       $result = $pelanggaranController->simpanDetailPelanggaran(
-          $_SESSION['user_data']['nidn'],
-          $_POST['jenisPelanggaran'],
-          $_POST['nim'],
-          $_POST['sanksi'],
-          $_POST['deskripsiPelanggaran'],
-          $_POST['deskripsiTugas'] ?? null,
-          null,
-          'pending',
-          'Belum Dikumpulkan'
-       );
-   
+         $_SESSION['user_data']['nidn'],
+         $_POST['jenisPelanggaran'],
+         $_POST['nim'],
+         $_POST['sanksi'],
+         $_POST['deskripsiPelanggaran'],
+         $_POST['deskripsiTugas'] ?? null,
+         null,
+         'pending',
+         'Belum Dikumpulkan'
+      );
+
    } catch (Exception $e) {
       error_log('Pelanggaran Save Error: ' . $e->getMessage());
       $_SESSION['error_messages'] = [$e->getMessage()];
    }
 } else if (isset($_POST['update'])) {
-   try {   
+   try {
       $tatibDetail = $tatibController->getTatibDetail($_POST['jenisPelanggaran']);
       $tingkat = $tatibDetail['tingkat'] ?? '';
 
@@ -45,7 +45,7 @@ if (isset($_POST['store'])) {
       }
       // Get the ID from the form
       $id_detail = $_POST['id_detail'];
-      
+
       $result = $pelanggaranController->updateDetailPelanggaran(
          $id_detail,
          $_POST['jenisPelanggaran'],
@@ -62,10 +62,10 @@ if (isset($_POST['store'])) {
       } else {
          $_SESSION['error_messages'] = ["Gagal mengupdate data pelanggaran"];
       }
-   
+
    } catch (Exception $e) {
-         error_log('Pelanggaran Update Error: ' . $e->getMessage());
-         $_SESSION['error_messages'] = [$e->getMessage()];
+      error_log('Pelanggaran Update Error: ' . $e->getMessage());
+      $_SESSION['error_messages'] = [$e->getMessage()];
    }
 }
 

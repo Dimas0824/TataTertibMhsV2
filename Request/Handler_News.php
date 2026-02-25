@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../config.php';
+require_once __DIR__ . '/../config.php';
 require_once '../Controllers/NewsController.php';
 
 // Instansiasi controller
@@ -29,8 +29,8 @@ try {
         $result = $newsController->store($gambar, $judul, $konten, $penulis);
         $_SESSION['message'] = $result['message'] ?? 'Berita berhasil disimpan.';
         $_SESSION['status'] = $result['status'] ?? 'success';
-    } 
-    
+    }
+
     // Validasi jika tombol "update" diklik
     elseif (isset($_POST['update'])) {
         $newsId = $_POST['news_id'] ?? '';
@@ -89,8 +89,8 @@ try {
         $result = $newsController->update($newsId, $judul, $konten, $gambarPath);
         $_SESSION['message'] = $result['message'] ?? 'Berita berhasil diperbarui.';
         $_SESSION['status'] = $result['status'] ?? 'success';
-    } 
-    
+    }
+
     // Validasi jika tombol "delete" diklik
     elseif (isset($_POST['delete'])) {
         $newsId = $_POST['news_id'] ?? '';
@@ -103,8 +103,7 @@ try {
         $result = $newsController->delete($newsId);
         $_SESSION['message'] = $result['message'] ?? 'Berita berhasil dihapus.';
         $_SESSION['status'] = $result['status'] ?? 'success';
-    } 
-    else {
+    } else {
         throw new Exception("Aksi tidak valid.");
     }
 } catch (Exception $e) {

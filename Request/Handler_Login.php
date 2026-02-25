@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../config.php';
+require_once __DIR__ . '/../config.php';
 require_once '../Controllers/UserController.php';
 
 $user = new UserController();
@@ -9,7 +9,7 @@ try {
         $username = $_POST['username'];
         $password = $_POST['password'];
         $userType = $_POST['user_type'];
-        
+
         if (!$user->login($username, $password)) {
             $_SESSION['login_error'] = 'Invalid username or password.';
             header("Location: ../views/login.php");

@@ -41,6 +41,10 @@ class ConsoleKernel
                     $this->ensureAllowedOptions($options, ['path', 'file', 'force']);
                     return $this->runSeed($options);
 
+                case 'serve':
+                    $this->ensureAllowedOptions($options, ['host', 'port', 'hot']);
+                    return $this->runServe($options);
+
                 default:
                     throw new RuntimeException("Perintah tidak dikenali: {$command}");
             }
@@ -90,6 +94,55 @@ class ConsoleKernel
         return $service->seed($path, $file, $force);
     }
 
+    private function runServe(array $options)
+    {
+        $host = isset($options['host']) ? trim((string) $options['host']) : '127.0.0.1';
+        $port = isset($options['port']) ? (int) $options['port'] : 8000;
+        $hot = !empty($options['hot']);
+
+        if ($host === '') {
+            throw new RuntimeException('Nilai --host tidak valid.');
+        }
+
+        if ($port < 1 || $port > 65535) {
+            throw new RuntimeException('Nilai --port harus di rentang 1-65535.');
+        }
+
+        $phpCommand = escapeshellarg(PHP_BINARY)
+            . ' -S '
+            . escapeshellarg($host . ':' . $port)
+            . ' -t '
+            . escapeshellarg($this->rootPath);
+
+        if (!$hot) {
+            echo "[serve] Menjalankan server di http://{$host}:{$port}" . PHP_EOL;
+            passthru($phpCommand, $status);
+            return (int) $status;
+        }
+
+        if (!$this->isCommandAvailable('npx')) {
+            throw new RuntimeException('Mode --hot membutuhkan npx (Node.js). Install Node.js lalu coba lagi.');
+        }
+
+        $this->startPhpServerInBackground($phpCommand);
+
+        $proxyUrl = 'http://' . $host . ':' . $port;
+        $browserSyncPort = $port + 1;
+        $watchFiles = '*.php,views/**/*.php,Controllers/**/*.php,Models/**/*.php,Request/**/*.php,css/**/*.css,js/**/*.js';
+        $browserSyncCommand = 'npx --yes browser-sync start'
+            . ' --proxy ' . escapeshellarg($proxyUrl)
+            . ' --port ' . (int) $browserSyncPort
+            . ' --files ' . escapeshellarg($watchFiles)
+            . ' --no-open';
+
+        echo "[serve] PHP server berjalan di {$proxyUrl}" . PHP_EOL;
+        echo "[serve] Hot reload aktif di http://{$host}:{$browserSyncPort}" . PHP_EOL;
+        echo '[serve] Tekan Ctrl+C untuk menghentikan BrowserSync.' . PHP_EOL;
+
+        passthru($browserSyncCommand, $status);
+        return (int) $status;
+    }
+
     private function resolveConnection()
     {
         $resolver = new ConnectionResolver($this->rootPath);
@@ -127,7 +180,7 @@ class ConsoleKernel
                 if ($value === '') {
                     throw new RuntimeException('Nilai opsi tidak boleh kosong: --' . $option);
                 }
-            } elseif (in_array($option, ['path', 'file'], true)) {
+            } elseif (in_array($option, ['path', 'file', 'host', 'port'], true)) {
                 if (!isset($args[$i + 1])) {
                     throw new RuntimeException('Opsi --' . $option . ' membutuhkan nilai.');
                 }
@@ -141,11 +194,11 @@ class ConsoleKernel
                 $i++;
             }
 
-            if (!in_array($option, ['path', 'file', 'fresh', 'seed', 'force'], true)) {
+            if (!in_array($option, ['path', 'file', 'host', 'port', 'fresh', 'seed', 'force', 'hot'], true)) {
                 throw new RuntimeException('Opsi tidak dikenali: --' . $option);
             }
 
-            if (in_array($option, ['fresh', 'seed', 'force'], true) && $value !== true) {
+            if (in_array($option, ['fresh', 'seed', 'force', 'hot'], true) && $value !== true) {
                 throw new RuntimeException('Opsi --' . $option . ' tidak menerima nilai.');
             }
 
@@ -202,12 +255,37 @@ class ConsoleKernel
             '  php artisan migrate [--fresh] [--seed] [--force] [--path=Database/migrations]',
             '  php artisan migrate:fresh [--seed] [--force] [--path=Database/migrations]',
             '  php artisan db:seed [--force] [--path=Database/seeders] [--file=<filename.sql>]',
+            '  php artisan serve [--host=127.0.0.1] [--port=8000] [--hot]',
             '',
             'Notes:',
             '  - APP_ENV=production memerlukan --force.',
             '  - Nama file harus format: YYYYMMDD_HHMMSS_name.sql',
+            '  - Opsi --hot membutuhkan Node.js (npx) + browser-sync.',
         ];
 
         echo implode(PHP_EOL, $lines) . PHP_EOL;
+    }
+
+    private function startPhpServerInBackground($phpCommand)
+    {
+        if (PHP_OS_FAMILY === 'Windows') {
+            pclose(popen('start "" /B ' . $phpCommand, 'r'));
+            return;
+        }
+
+        exec($phpCommand . ' > /dev/null 2>&1 &');
+    }
+
+    private function isCommandAvailable($command)
+    {
+        $safe = escapeshellarg((string) $command);
+
+        if (PHP_OS_FAMILY === 'Windows') {
+            exec('where ' . $safe . ' 2>NUL', $output, $status);
+            return $status === 0;
+        }
+
+        exec('command -v ' . $safe . ' >/dev/null 2>&1', $output, $status);
+        return $status === 0;
     }
 }

@@ -1,20 +1,21 @@
 <?php
 session_start();
-require_once '../config.php';
+require_once __DIR__ . '/../config.php';
 
 require_once "../Controllers/NewsController.php";
 require_once '../Controllers/UserController.php';
 
 if (isset($_SESSION['username'])) {
-  // Redirect based on role
-  if ($_SESSION['user_type'] === 'mahasiswa') {
-      header("Location: pelanggaranpage.php");
-      exit();
-  } else if ($_SESSION['user_type'] === 'dosen') {
-    header("Location: pelanggaran_dosen.php");
-    exit();
-  }
-}if (!isset($_SESSION['username'])) {
+    // Redirect based on role
+    if ($_SESSION['user_type'] === 'mahasiswa') {
+        header("Location: pelanggaranpage.php");
+        exit();
+    } else if ($_SESSION['user_type'] === 'dosen') {
+        header("Location: pelanggaran_dosen.php");
+        exit();
+    }
+}
+if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
 }
@@ -42,7 +43,9 @@ $newsData = $newsController->AdminNews($id_admin);
     <title>Home Page</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/news-form.css">
@@ -50,11 +53,11 @@ $newsData = $newsController->AdminNews($id_admin);
 </head>
 
 <body>
-<div class="sidebar">
-    <img class="logo" src="../img/logo aja.png" alt="logo">
+    <div class="sidebar">
+        <img class="logo" src="../img/logo aja.png" alt="logo">
         <div class="logo-separator"></div>
         <ul>
-        <li><a href="home-admin.php"><i class="fa-solid fa-house"></i></a></li>
+            <li><a href="home-admin.php"><i class="fa-solid fa-house"></i></a></li>
             <li><a href="listTatib-admin.php"><i class="fa-solid fa-book"></i></a></li>
             <li class="active"><a href="news-admin.php"><i class="fa-solid fa-newspaper"></i></a></li>
             <li class="logout"><a href="../?logout=true"><i class="fa-solid fa-right-from-bracket"></i></a></li>
@@ -67,12 +70,14 @@ $newsData = $newsController->AdminNews($id_admin);
         </div>
         <form id="insertBeritaForm" method="POST" action="../Request/Handler_News.php" enctype="multipart/form-data">
             <label for="insertPenulisNama">Penulis:</label>
-            <input type="text" id="insertPenulisNama" name="penulis_nama" value="<?= htmlspecialchars($userData['nama_admin']) ?>" required readonly>
-            <input type="hidden" id="insertPenulis" name="penulis" value="<?= htmlspecialchars($userData['id_admin']) ?>" required>
-            
+            <input type="text" id="insertPenulisNama" name="penulis_nama"
+                value="<?= htmlspecialchars($userData['nama_admin']) ?>" required readonly>
+            <input type="hidden" id="insertPenulis" name="penulis"
+                value="<?= htmlspecialchars($userData['id_admin']) ?>" required>
+
             <label for="insertJudul">Judul:</label>
             <input type="text" id="insertJudul" name="judul" required>
-            
+
             <label for="insertKonten">Konten:</label>
             <textarea id="insertKonten" name="konten" rows="4" required></textarea>
 
@@ -83,4 +88,5 @@ $newsData = $newsController->AdminNews($id_admin);
         </form>
     </div>
 </body>
+
 </html>

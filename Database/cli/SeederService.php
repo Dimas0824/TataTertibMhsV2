@@ -5,6 +5,8 @@ class SeederService
     private $pdo;
     private $sqlRunner;
     private $appEnv;
+    private const BCRYPT_COST = 12;
+    private $bcryptPattern = '/^\$2[aby]\$\d{2}\$[\.\/A-Za-z0-9]{53}$/';
     private $filenamePattern = '/^\d{8}_\d{6}_[a-z0-9_]+\.sql$/';
 
     public function __construct(PDO $pdo, SqlRunner $sqlRunner, $appEnv = 'local')
@@ -55,7 +57,13 @@ class SeederService
 
         foreach ($pending as $name => $meta) {
             echo "[db:seed] Menjalankan {$name} ..." . PHP_EOL;
-            $this->sqlRunner->executeFile($this->pdo, $meta['path'], true);
+            $seedSql = file_get_contents($meta['path']);
+            if ($seedSql === false) {
+                throw new RuntimeException("Gagal membaca file seed: {$meta['path']}");
+            }
+
+            $seedSql = $this->autoHashPasswordValues($seedSql);
+            $this->sqlRunner->executeSql($this->pdo, $seedSql, true);
             $this->recordSeed($name, $meta['checksum']);
             echo "[db:seed] Sukses {$name}" . PHP_EOL;
         }
@@ -195,5 +203,189 @@ END";
     private function driver()
     {
         return strtolower((string) $this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME));
+    }
+
+    private function autoHashPasswordValues($sql)
+    {
+        $pattern = '/INSERT\s+INTO\s+([`"\[]?[a-zA-Z0-9_]+[`"\]]?)\s*\(([^)]*)\)\s*VALUES\s*(.*?);/is';
+
+        return preg_replace_callback($pattern, function ($matches) {
+            $table = (string) $matches[1];
+            $columnsRaw = (string) $matches[2];
+            $valuesRaw = (string) $matches[3];
+
+            $columns = $this->splitSqlValues($columnsRaw);
+            $passwordIndex = $this->findPasswordColumnIndex($columns);
+            if ($passwordIndex === -1) {
+                return $matches[0];
+            }
+
+            $tuples = $this->splitValueTuples($valuesRaw);
+            if (empty($tuples)) {
+                return $matches[0];
+            }
+
+            $rebuiltTuples = [];
+            foreach ($tuples as $tupleContent) {
+                $values = $this->splitSqlValues($tupleContent);
+                if (!array_key_exists($passwordIndex, $values)) {
+                    $rebuiltTuples[] = '(' . $tupleContent . ')';
+                    continue;
+                }
+
+                $passwordLiteral = trim((string) $values[$passwordIndex]);
+                $plainPassword = $this->extractSingleQuotedLiteral($passwordLiteral);
+
+                if ($plainPassword !== null && !preg_match($this->bcryptPattern, $plainPassword)) {
+                    $hashed = password_hash($plainPassword, PASSWORD_BCRYPT, ['cost' => self::BCRYPT_COST]);
+                    $values[$passwordIndex] = "'" . $hashed . "'";
+                }
+
+                $rebuiltTuples[] = '(' . implode(', ', $values) . ')';
+            }
+
+            return 'INSERT INTO ' . $table . ' (' . $columnsRaw . ') VALUES' . PHP_EOL
+                . '    ' . implode(',' . PHP_EOL . '    ', $rebuiltTuples) . ';';
+        }, $sql);
+    }
+
+    private function findPasswordColumnIndex(array $columns)
+    {
+        foreach ($columns as $index => $column) {
+            $normalized = trim((string) $column);
+            $normalized = trim($normalized, "`\"[] ");
+            if (strcasecmp($normalized, 'password') === 0) {
+                return (int) $index;
+            }
+        }
+
+        return -1;
+    }
+
+    private function splitValueTuples($valuesSection)
+    {
+        $source = (string) $valuesSection;
+        $length = strlen($source);
+        $tuples = [];
+        $depth = 0;
+        $inQuote = false;
+        $current = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $char = $source[$i];
+            $next = ($i + 1 < $length) ? $source[$i + 1] : null;
+
+            if ($char === "'" && !$inQuote) {
+                $inQuote = true;
+                if ($depth > 0) {
+                    $current .= $char;
+                }
+                continue;
+            }
+
+            if ($char === "'" && $inQuote) {
+                if ($next === "'") {
+                    if ($depth > 0) {
+                        $current .= "''";
+                    }
+                    $i++;
+                    continue;
+                }
+
+                $inQuote = false;
+                if ($depth > 0) {
+                    $current .= $char;
+                }
+                continue;
+            }
+
+            if (!$inQuote && $char === '(') {
+                if ($depth === 0) {
+                    $current = '';
+                } else {
+                    $current .= $char;
+                }
+                $depth++;
+                continue;
+            }
+
+            if (!$inQuote && $char === ')') {
+                $depth--;
+                if ($depth === 0) {
+                    $tuples[] = trim($current);
+                    $current = '';
+                } else {
+                    $current .= $char;
+                }
+                continue;
+            }
+
+            if ($depth > 0) {
+                $current .= $char;
+            }
+        }
+
+        return $tuples;
+    }
+
+    private function splitSqlValues($input)
+    {
+        $source = (string) $input;
+        $length = strlen($source);
+        $parts = [];
+        $buffer = '';
+        $inQuote = false;
+
+        for ($i = 0; $i < $length; $i++) {
+            $char = $source[$i];
+            $next = ($i + 1 < $length) ? $source[$i + 1] : null;
+
+            if ($char === "'" && !$inQuote) {
+                $inQuote = true;
+                $buffer .= $char;
+                continue;
+            }
+
+            if ($char === "'" && $inQuote) {
+                if ($next === "'") {
+                    $buffer .= "''";
+                    $i++;
+                    continue;
+                }
+
+                $inQuote = false;
+                $buffer .= $char;
+                continue;
+            }
+
+            if (!$inQuote && $char === ',') {
+                $parts[] = trim($buffer);
+                $buffer = '';
+                continue;
+            }
+
+            $buffer .= $char;
+        }
+
+        if (trim($buffer) !== '') {
+            $parts[] = trim($buffer);
+        }
+
+        return $parts;
+    }
+
+    private function extractSingleQuotedLiteral($value)
+    {
+        $trimmed = trim((string) $value);
+        if (strlen($trimmed) < 2) {
+            return null;
+        }
+
+        if ($trimmed[0] !== "'" || substr($trimmed, -1) !== "'") {
+            return null;
+        }
+
+        $inner = substr($trimmed, 1, -1);
+        return str_replace("''", "'", $inner);
     }
 }

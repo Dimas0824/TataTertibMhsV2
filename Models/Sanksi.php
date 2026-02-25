@@ -1,20 +1,23 @@
 <?php
-require_once '../config.php';
+require_once __DIR__ . '/../config.php';
 
-class Sanksi {
+class Sanksi
+{
     private $connect;
 
-    public function __construct() {
+    public function __construct()
+    {
         global $connect;
         $this->connect = $connect;
     }
 
-    public function getAllSanksi() {
+    public function getAllSanksi()
+    {
         try {
             $stmt = $this->connect->prepare("SELECT * FROM SANKSI ORDER BY id_sanksi DESC");
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
             return false;
         }

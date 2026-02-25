@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../config.php'; // Sertakan file konfigurasi untuk mengakses koneksi database
+require_once __DIR__ . '/../config.php'; // Sertakan file konfigurasi untuk mengakses koneksi database
 
 // Check if the uploads directory exists, if not create it
 $uploadDir = '../document/';

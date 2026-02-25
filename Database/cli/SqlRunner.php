@@ -13,6 +13,15 @@ class SqlRunner
             throw new RuntimeException('Gagal membaca file SQL: ' . $filePath);
         }
 
+        return $this->executeSql($pdo, $sql, $transactional);
+    }
+
+    public function executeSql(PDO $pdo, $sql, $transactional = true)
+    {
+        if (!is_string($sql)) {
+            throw new RuntimeException('Konten SQL harus berupa string.');
+        }
+
         $statements = $this->splitSqlBatches($sql);
         if (empty($statements)) {
             return 0;

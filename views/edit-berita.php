@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../config.php';
+require_once __DIR__ . '/../config.php';
 require_once '../Controllers/NewsController.php';
 require_once '../Controllers/UserController.php';
 
@@ -9,7 +9,7 @@ if (isset($_GET['id'])) {
     $id = $_GET['id'];
     $newsController = new NewsController($connect);
     $news = $newsController->getNewsById($id);
-    
+
     if (!$news) {
         die("Berita tidak ditemukan!");
     }
@@ -91,7 +91,9 @@ if (isset($_GET['id'])) {
     <title>Edit Berita</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/news-form.css">
@@ -99,11 +101,11 @@ if (isset($_GET['id'])) {
 </head>
 
 <body>
-<div class="sidebar">
-    <img class="logo" src="../img/logo aja.png" alt="logo">
+    <div class="sidebar">
+        <img class="logo" src="../img/logo aja.png" alt="logo">
         <div class="logo-separator"></div>
         <ul>
-        <li><a href="home-admin.php"><i class="fa-solid fa-house"></i></a></li>
+            <li><a href="home-admin.php"><i class="fa-solid fa-house"></i></a></li>
             <li><a href="listTatib-admin.php"><i class="fa-solid fa-book"></i></a></li>
             <li class="active"><a href="news-admin.php"><i class="fa-solid fa-newspaper"></i></a></li>
             <li class="logout"><a href="../?logout=true"><i class="fa-solid fa-right-from-bracket"></i></a></li>
@@ -116,19 +118,21 @@ if (isset($_GET['id'])) {
         </div>
         <form id="editBeritaForm" method="POST" enctype="multipart/form-data">
             <input type="hidden" id="editNewsId" name="news_id" value="<?= htmlspecialchars($id) ?>" required>
-            
+
             <label for="editPenulis">Penulis:</label>
-            <input type="text" id="editPenulis" name="penulis" value="<?= htmlspecialchars($penulis_nama) ?>" required readonly>
-            
+            <input type="text" id="editPenulis" name="penulis" value="<?= htmlspecialchars($penulis_nama) ?>" required
+                readonly>
+
             <label for="editJudul">Judul:</label>
             <input type="text" id="editJudul" name="judul" value="<?= htmlspecialchars($news['judul']) ?>" required>
-            
+
             <label for="editKonten">Konten:</label>
-            <textarea id="editKonten" name="konten" rows="4" required><?= htmlspecialchars($news['konten']) ?></textarea>
-            
+            <textarea id="editKonten" name="konten" rows="4"
+                required><?= htmlspecialchars($news['konten']) ?></textarea>
+
             <label for="editGambar">Unggah Gambar:</label>
             <input type="file" id="editGambar" name="gambar" accept="image/*">
-    
+
             <button type="submit" class="save-button">Simpan</button>
             <button class="cancel-button" name="cancel" onclick="window.location.href='news-admin.php'">Cancel</button>
         </form>
