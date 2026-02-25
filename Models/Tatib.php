@@ -34,8 +34,8 @@ class Tatib {
         }
     }
 
-    public function updateTatib($id, $admin, $pelanggaran, $tingkat, $poin){
-        $query = "UPDATE TATA_TERTIB set id_adminTatib = ?, deskripsi = ?, tingkat = ?, poin = ? WHERE id_tata_tertib = ?)";
+    public function updateTatib($id, $admin, $deskripsi, $tingkat, $poin){
+        $query = "UPDATE TATA_TERTIB SET id_adminTatib = ?, deskripsi = ?, tingkat = ?, poin = ? WHERE id_tata_tertib = ?";
               
         try {
             $stmt = $this->connect->prepare($query);

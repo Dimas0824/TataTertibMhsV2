@@ -1,7 +1,3 @@
--- Legacy schema reference for DiscipLink.
--- Statement destruktif (DROP/CREATE DATABASE) dihapus agar file lebih aman digunakan.
-USE DiscipLink;
-
 -- Tabel untuk prodi
 CREATE TABLE PRODI(
 	id_prodi VARCHAR(20) PRIMARY KEY, 
@@ -421,5 +417,3 @@ BEGIN
         RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
     END CATCH
 END;
-
--- Statement destruktif di bagian akhir sengaja dihapus.

@@ -2,16 +2,36 @@
 session_start();
 require_once '../config.php'; // Sertakan file konfigurasi untuk mengakses koneksi database
 
-
 // Check if the uploads directory exists, if not create it
 $uploadDir = '../document/';
+// Hard limit 2 MB
+$maxSize = 2 * 1024 * 1024;
+$allowedMimes = [
+    'application/pdf',
+    'image/jpeg',
+    'image/png',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+];
+$allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'];
 
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0777, true); // Buat direktori dengan izin akses
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $idDetail = $_POST['id_detail'];
+    if (!isset($connect) || !($connect instanceof PDO)) {
+        echo "Koneksi database tidak tersedia.";
+        exit();
+    }
+
+    $idDetail = $_POST['id_detail'] ?? null;
+    if (!is_numeric($idDetail)) {
+        echo "ID detail tidak valid.";
+        exit();
+    }
+
+    $idDetail = (int) $idDetail;
     $fileType = '';
     $filePath = ''; // Untuk menyimpan jalur file
 
@@ -26,8 +46,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($fileType) {
         $file = $_FILES[$fileType];
+        if (($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+            echo "Upload file gagal.";
+            exit();
+        }
+
+        if (($file['size'] ?? 0) > $maxSize) {
+            echo "Ukuran file melebihi 2 MB.";
+            exit();
+        }
+
+        $detectedMime = '';
+        if (function_exists('finfo_open')) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            if ($finfo) {
+                $detectedMime = (string) finfo_file($finfo, $file['tmp_name']);
+                finfo_close($finfo);
+            }
+        }
+
+        if ($detectedMime === '' && isset($file['type'])) {
+            $detectedMime = (string) $file['type'];
+        }
+
+        if (!in_array($detectedMime, $allowedMimes, true)) {
+            echo "Tipe file tidak diizinkan.";
+            exit();
+        }
+
         $originalFileName = basename($file['name']);
-        $customFileName = $idDetail . '_' . $fileType . '_' . uniqid() . '.' . pathinfo($originalFileName, PATHINFO_EXTENSION);
+        $extension = strtolower(pathinfo($originalFileName, PATHINFO_EXTENSION));
+        if (!in_array($extension, $allowedExtensions, true)) {
+            echo "Ekstensi file tidak diizinkan.";
+            exit();
+        }
+
+        $customFileName = $idDetail . '_' . $fileType . '_' . uniqid() . '.' . $extension;
         $targetFilePath = $uploadDir . $customFileName;
 
         // Pindahkan file yang diunggah ke direktori uploads
@@ -46,8 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bindValue(':idDetail', $idDetail, PDO::PARAM_INT);
 
             if ($stmt->execute()) {
-                // Perbarui status menjadi 'dikumpulkan'
-                $statusUpdateStmt = $connect->prepare("UPDATE DETAIL_PELANGGARAN SET status = 'dikumpulkan' WHERE id_detail = :idDetail");
+                // Perbarui status ke state yang konsisten dengan rule procedure.
+                $statusUpdateStmt = $connect->prepare("UPDATE DETAIL_PELANGGARAN SET status = 'proses' WHERE id_detail = :idDetail");
                 $statusUpdateStmt->bindValue(':idDetail', $idDetail, PDO::PARAM_INT);
                 $statusUpdateStmt->execute();
 

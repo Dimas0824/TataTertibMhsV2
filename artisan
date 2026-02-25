@@ -1,0 +1,7 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__ . '/Database/cli/ConsoleKernel.php';
+
+$kernel = new ConsoleKernel(__DIR__);
+exit($kernel->handle($argv));

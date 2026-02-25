@@ -1,64 +1,62 @@
-document.getElementById('tingkat').addEventListener('change', function () {
-    var tingkat = this.value;
+(function () {
+    const tingkatSelect = document.getElementById('tingkat');
+    const jenisPelanggaranSelect = document.getElementById('jenisPelanggaran');
+    const sanksiSelect = document.getElementById('sanksi');
+    const deskripsiTugasContainer = document.getElementById('deskripsiTugas-container');
+    const skipTugasContainer = document.getElementById('skipTugasKhusus-container');
+    const skipTugasButton = document.getElementById('skipTugasKhusus');
 
-    // Filter jenis pelanggaran berdasarkan tingkat
-    var jenisPelanggaranSelect = document.getElementById('jenisPelanggaran');
-    var jenisOptions = jenisPelanggaranSelect.options;
-
-    for (var i = 0; i < jenisOptions.length; i++) {
-        var option = jenisOptions[i];
-        if (option.getAttribute('data-tingkat') === tingkat || option.value === "") {
-            option.style.display = 'block';
-        } else {
-            option.style.display = 'none';
-        }
+    if (!tingkatSelect || !jenisPelanggaranSelect || !sanksiSelect) {
+        return;
     }
 
-    // Reset pilihan jenis pelanggaran
-    jenisPelanggaranSelect.value = "";
-
-    // Filter sanksi berdasarkan tingkat
-    var sanksiSelect = document.getElementById('sanksi');
-    var sanksiOptions = sanksiSelect.options;
-
-    for (var j = 0; j < sanksiOptions.length; j++) {
-        var sanksiOption = sanksiOptions[j];
-        if (sanksiOption.getAttribute('data-tingkat') === tingkat || sanksiOption.value === "") {
-            sanksiOption.style.display = 'block';
-        } else {
-            sanksiOption.style.display = 'none';
+    const filterOptionsByTingkat = (selectElement, tingkat) => {
+        const options = selectElement.options;
+        for (let i = 0; i < options.length; i++) {
+            const option = options[i];
+            const optionTingkat = option.getAttribute('data-tingkat');
+            if (option.value === '' || optionTingkat === tingkat) {
+                option.style.display = 'block';
+            } else {
+                option.style.display = 'none';
+            }
         }
+        selectElement.value = '';
+    };
+
+    const toggleTugasKhusus = (tingkat) => {
+        if (!deskripsiTugasContainer || !skipTugasContainer) {
+            return;
+        }
+
+        if (tingkat === 'I' || tingkat === 'II' || tingkat === 'III') {
+            deskripsiTugasContainer.style.display = 'block';
+            skipTugasContainer.style.display = 'block';
+        } else {
+            deskripsiTugasContainer.style.display = 'none';
+            skipTugasContainer.style.display = 'none';
+        }
+    };
+
+    tingkatSelect.addEventListener('change', function () {
+        const tingkat = this.value;
+        filterOptionsByTingkat(jenisPelanggaranSelect, tingkat);
+        filterOptionsByTingkat(sanksiSelect, tingkat);
+        toggleTugasKhusus(tingkat);
+    });
+
+    if (skipTugasButton && deskripsiTugasContainer) {
+        skipTugasButton.addEventListener('click', function () {
+            if (confirm('Apakah Anda yakin ingin melaporkan ke DPA dan tidak mengisi tugas khusus?')) {
+                deskripsiTugasContainer.style.display = 'none';
+            }
+        });
     }
-
-    // Reset pilihan sanksi
-    sanksiSelect.value = "";
-
-     // Tampilkan atau sembunyikan form "Deskripsi Tugas Khusus"
-     var deskripsiTugasContainer = document.getElementById('deskripsiTugas-container');
-     var skipTugasContainer = document.getElementById('skipTugasKhusus-container');
- 
-     if (tingkat === 'I' || tingkat === 'II' || tingkat === 'III') {
-         deskripsiTugasContainer.style.display = 'block'; // Tampilkan deskripsi tugas
-         skipTugasContainer.style.display = 'block'; // Tampilkan tombol lapor DPA
-     } else {
-         deskripsiTugasContainer.style.display = 'none'; // Sembunyikan deskripsi tugas
-         skipTugasContainer.style.display = 'none'; // Sembunyikan tombol lapor DPA
-     }
- });
- 
- // Fungsi tombol Lapor ke DPA
- document.getElementById('skipTugasKhusus').addEventListener('click', function () {
-     if (confirm('Apakah Anda yakin ingin melaporkan ke DPA dan tidak mengisi tugas khusus?')) {
-         deskripsiTugasContainer.style.display = 'none'; // Sembunyikan deskripsi tugas
-     }
-});
+})();
 
 function showConfirmation() {
-
-    var confirmAction = confirm("Apakah Anda yakin ingin melaporkan?");
-
+    const confirmAction = confirm('Apakah Anda yakin ingin melaporkan?');
     if (confirmAction) {
-        window.location.href = "pelanggaran_dosen.php"; 
+        window.location.href = 'pelanggaran_dosen.php';
     }
-
 }

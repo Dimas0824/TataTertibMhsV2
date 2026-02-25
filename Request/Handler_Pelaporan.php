@@ -17,7 +17,7 @@ if (isset($_POST['store'])) {
           $_POST['deskripsiPelanggaran'],
           $_POST['deskripsiTugas'] ?? null,
           null,
-          'Pending',
+          'pending',
           'Belum Dikumpulkan'
        );
    
@@ -53,7 +53,7 @@ if (isset($_POST['store'])) {
          $_POST['sanksi'],
          $_POST['deskripsiPelanggaran'],
          $tugas_khusus,
-         'Pending',
+         'pending',
          $status_tugas   // Use the conditional status_tugas
       );
 

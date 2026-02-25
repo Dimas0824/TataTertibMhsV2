@@ -38,15 +38,15 @@
                     <?php foreach($newsData as $news): ?>
                     <div class="news-content">
                         <?php if (!empty($news['gambar'])): ?>
-                            <img src="<?= htmlspecialchars($news['gambar']) ?>" alt="Gambar News"">
+                            <img src="<?= htmlspecialchars($news['gambar']) ?>" alt="Gambar News">
                         <?php else : ?>
                             <img src="img/news.jpg" alt="gambar">
                         <?php endif; ?>
-                        <h3><?= $news['judul'] ?></h3>
+                        <h3><?= htmlspecialchars($news['judul']) ?></h3>
                         <!-- ini nanti di ganti nama -->
-                        <h5><?=$news['penulis_nama']?></h5>
+                        <h5><?= htmlspecialchars($news['penulis_nama']) ?></h5>
                         <!-- ini -->
-                        <p><?= $news['konten'] ?></p>
+                        <p><?= nl2br(htmlspecialchars($news['konten'])) ?></p>
                     </div>
                     <?php endforeach; ?>
                     <!-- sampai sini while nya nanti yang bawah di hapus -->

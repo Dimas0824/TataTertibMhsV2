@@ -1,5 +1,3 @@
-NEWS ADMIN
-
 <?php
 session_start();
 require_once '../config.php';
@@ -89,7 +87,7 @@ $newsData = $newsController->AdminNews(id: $id_admin);
         <?php if ($newsData) :?>
                 <?php foreach ($newsData as $news) :?>
                 <tr>
-                    <td><?= $news['judul']?></td>
+                    <td><?= htmlspecialchars($news['judul']) ?></td>
                     <td>
                         <?php if (!empty($news['gambar'])): ?>
                             <img src="..//<?= htmlspecialchars($news['gambar']) ?>" alt="Gambar News" style="max-width: 100px;">
@@ -97,7 +95,7 @@ $newsData = $newsController->AdminNews(id: $id_admin);
                             <p>Tidak ada gambar</p>
                         <?php endif; ?>
                     </td>
-                    <td><?= $news['konten']?></td>
+                    <td><?= nl2br(htmlspecialchars($news['konten'])) ?></td>
                     <td><?= htmlspecialchars($penulis_nama) ?></td>
                     <td class="button-cell">
                     <a href="edit-berita.php?id=<?= $news['id_news'] ?>" class="edit-button">

@@ -37,3 +37,18 @@ Untuk memulai dengan proyek ini, silakan ikuti langkah-langkah berikut:
    git clone https://github.com/VarizkyNaldiba/TataTertibMhs.git
 2. Figma Link
    https://www.figma.com/design/yRxgSGu5uvuoKQznRxPCNg/UI%2FUX-Sistem-Tatib?node-id=10-572&node-type=frame&t=FUBlBYXBfDiK1yST-0
+
+## Database CLI (Artisan-like)
+Project ini menyediakan command CLI sederhana untuk migration dan seed:
+
+```bash
+php artisan list
+php artisan migrate
+php artisan db:seed
+```
+
+Opsi penting:
+- `php artisan migrate --fresh --force`
+- `php artisan db:seed --file=20260225_000001_data_dummy.sql`
+
+Dokumentasi lengkap ada di `Database/README.md`.

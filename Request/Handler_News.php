@@ -27,7 +27,6 @@ try {
 
         // Panggil method store()
         $result = $newsController->store($gambar, $judul, $konten, $penulis);
-        var_dump($result);
         $_SESSION['message'] = $result['message'] ?? 'Berita berhasil disimpan.';
         $_SESSION['status'] = $result['status'] ?? 'success';
     } 
@@ -51,7 +50,11 @@ try {
         }
 
         // Cek ID admin di database (opsional untuk validasi tambahan)
-        $stmt = $this->connect->prepare("SELECT id_admin FROM ADMIN WHERE id_admin = ?");
+        if (!isset($connect) || !($connect instanceof PDO)) {
+            throw new Exception("Koneksi database tidak tersedia.");
+        }
+
+        $stmt = $connect->prepare("SELECT id_admin FROM ADMIN WHERE id_admin = ?");
         $stmt->execute([$penulis]);
         $penulis_id = $stmt->fetchColumn();
 
@@ -59,8 +62,31 @@ try {
             throw new Exception("Admin tidak ditemukan. Pastikan ID Admin benar.");
         }
 
+        $gambarPath = null;
+        if (!empty($gambar['name']) && ($gambar['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK) {
+            $uploadDir = '../document/news/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '_', basename($gambar['name']));
+            $fileName = time() . '_' . $sanitizedName;
+            $uploadFile = $uploadDir . $fileName;
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+
+            if (!in_array($gambar['type'], $allowedTypes, true)) {
+                throw new Exception("Format gambar tidak didukung.");
+            }
+
+            if (!move_uploaded_file($gambar['tmp_name'], $uploadFile)) {
+                throw new Exception("Gagal mengunggah gambar.");
+            }
+
+            $gambarPath = 'document/news/' . $fileName;
+        }
+
         // Panggil method update()
-        $result = $newsController->update($newsId, $judul, $konten, $penulis, $gambar);
+        $result = $newsController->update($newsId, $judul, $konten, $gambarPath);
         $_SESSION['message'] = $result['message'] ?? 'Berita berhasil diperbarui.';
         $_SESSION['status'] = $result['status'] ?? 'success';
     } 
