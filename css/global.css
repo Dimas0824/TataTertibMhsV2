@@ -372,6 +372,71 @@ textarea:focus-visible {
   outline-offset: 2px;
 }
 
+.table-container {
+  width: calc(100% - 40px);
+  margin: 0 auto 20px;
+  background-color: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 8px;
+  box-shadow: var(--app-shadow-soft);
+  overflow: auto;
+  max-height: 60vh;
+}
+
+.table-container table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.table-container thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--app-surface-soft);
+  color: var(--app-muted);
+  border-bottom: 2px solid var(--app-border);
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table-container th,
+.table-container td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--app-border);
+  vertical-align: top;
+}
+
+.table-container tbody tr:nth-child(even) {
+  background-color: var(--app-surface-soft);
+}
+
+.table-container tbody tr:hover {
+  background-color: var(--app-accent-soft);
+}
+
+.table-container tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table-container td a,
+.table-container th a {
+  color: var(--app-accent);
+}
+
+.table-container .button-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.table-container .button-cell form {
+  margin: 0;
+}
+
 @media screen and (max-width: 900px) {
   .sidebar {
     top: auto;
@@ -493,5 +558,17 @@ textarea:focus-visible {
 
   .footer-center {
     font-size: 0.86rem;
+  }
+
+  .table-container {
+    width: calc(100% - 20px);
+    margin: 0 10px 16px;
+    max-height: none;
+  }
+
+  .table-container th,
+  .table-container td {
+    padding: 10px 12px;
+    font-size: 0.82rem;
   }
 }

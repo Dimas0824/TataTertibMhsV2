@@ -34,49 +34,9 @@ body{
     transform: translateY(-1px);
   }
 
-  .table-container{
-    width: calc(100% - 40px); /* Match container width */
-  max-height: 60vh; /* Sesuaikan tinggi maksimal tabel */
-  overflow-y: auto; /* Tambahkan scroll vertikal jika konten melebihi batas */
-  margin: 0 auto 20px auto;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  background-color: #ffffff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  table thead{
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-  
-  table th,
-  table td {
-    border-bottom: 1px solid #e2e8f0;
-    padding: 12px 16px;
-    text-align: left;
-  }
-  
-  table th {
-    background-color: #f8fafc;
-    font-weight: 600;
-    color: #475569;
-    border-bottom: 2px solid #e2e8f0;
-  }
-  
-  table tr:nth-child(even) {
-    background-color: #ffffff;
-  }
-  
-  table tr:hover {
-    background-color: #f1f5f9;
-  }
-
+.table-container {
+  width: calc(100% - 40px);
+}
 
 td.button-cell {
   display: flex;

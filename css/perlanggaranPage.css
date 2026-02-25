@@ -1,79 +1,77 @@
 /* Gaya untuk layar desktop dan perangkat lebih besar */
 .profile {
   font-family: 'Inter', sans-serif;
-  margin: 38px;
+  margin: 20px;
   background-color: #ffffff;
-  padding: 20px;
+  padding: 16px 20px;
   border-radius: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   border: 1px solid #e2e8f0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   color: #334155;
 }
 
 .profile p {
-  margin-bottom: 5px;
+  margin: 0 0 8px;
+}
+
+.profile p:last-child {
+  margin-bottom: 0;
 }
 
 .table-container {
-  margin: 38px;
-  margin-top: 0;
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e2e8f0;
-  margin-bottom: 25%;
+  width: auto;
+  margin: 0 20px 24px;
+  padding: 0;
 }
 
 .table-container table {
-  border-collapse: collapse;
-  font-family: 'Inter', sans-serif;
-  width: 100%;
+  min-width: 1100px;
 }
 
 .table-container th,
 .table-container td {
-  padding: 12px 16px;
+  text-align: left;
+}
+
+.table-container td:nth-child(7),
+.table-container td:nth-child(8),
+.table-container td:nth-child(9),
+.table-container td:nth-child(10),
+.table-container th:nth-child(7),
+.table-container th:nth-child(8),
+.table-container th:nth-child(9),
+.table-container th:nth-child(10) {
   text-align: center;
-  border-bottom: 1px solid #e2e8f0;
 }
 
-.table-container th {
-  background-color: #f8fafc;
-  color: #475569;
-  font-weight: 600;
-  position: sticky;
-  top: 0; /* Header tetap terlihat saat scroll */
-  z-index: 10;
-  border-bottom: 2px solid #e2e8f0;
+.table-container td:nth-child(1),
+.table-container td:nth-child(2),
+.table-container td:nth-child(3),
+.table-container td:nth-child(4),
+.table-container td:nth-child(5),
+.table-container td:nth-child(6) {
+  min-width: 140px;
+  word-break: break-word;
 }
 
-.table-container tbody {
-  display: block;
-  overflow-x: hidden;
-  max-height: 60vh; /* Batasi tinggi maksimal tabel */
-  overflow-y: auto; /* Tambahkan scroll vertikal */
+.table-container .uploadForm {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
 }
 
-.table-container thead {
-  display: table; /* Tetap gunakan display table untuk menjaga kolom sejajar */
-  width: 100%;
-  table-layout: fixed;
-  position: sticky;
-}
-
-.table-container tbody tr {
-  display: table; /* Atur ulang baris tbody menjadi display table */
-  width: 100%;
-  table-layout: fixed;
+.table-container .uploadForm:last-child {
+  margin-bottom: 0;
 }
 
 h3 {
-  margin-top: 53px;
-  margin-left: 38px;
+  margin: 0 20px 14px;
   font-family: 'Inter';
 }
+
 .edit-laporan{
   background-color: #F2CC8F;
   border: none;
@@ -83,8 +81,17 @@ h3 {
   transition: all 0.2s ease;
 }
 
+.edit-laporan a {
+  color: #334155;
+  text-decoration: none;
+}
+
 .edit-laporan:hover{
   background-color: #d97706;
+}
+
+.edit-laporan:hover a {
+  color: #fff;
 }
 
 .submit-btn {
@@ -104,7 +111,7 @@ h3 {
 }
 
 .statement-button {
-  margin-top: 20px;
+  margin: 14px 16px 16px;
   text-align: right;
 }
 
@@ -126,21 +133,26 @@ h3 {
 
 /* Responsif untuk tampilan ponsel */
 @media (max-width: 768px) {
+  .profile {
+    margin: 10px;
+    padding: 14px;
+  }
+
+  h3 {
+    margin: 0 10px 10px;
+  }
+
   .table-container {
     margin: 10px;
-    padding: 10px;
-    margin-bottom: 20px;
-    overflow-x: auto; /* Tambahkan scroll horizontal */
+    padding: 0;
+    margin-bottom: 16px;
   }
 
   .table-container table {
-    min-width: 800px; /* Tentukan lebar minimum untuk tabel agar tetap digulir secara horizontal */
-    width: auto; /* Membiarkan tabel mengikuti lebar konten */
+    min-width: 900px;
   }
 
-  /* Menjaga agar teks di dalam tabel tetap rapi */
-  .table-container th, .table-container td {
-    font-size: 12px; /* Sesuaikan ukuran font jika perlu */
-    padding: 8px;
+  .table-container .uploadForm {
+    align-items: stretch;
   }
 }

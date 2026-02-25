@@ -78,7 +78,7 @@ $tatibData = $tatibController->ReadTatib();
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>admin</th>
+                        <th>Admin</th>
                         <th>Pelanggaran</th>
                         <th>Tingkat</th>
                         <th>Poin</th>
@@ -87,9 +87,8 @@ $tatibData = $tatibController->ReadTatib();
                 </thead>
                 <tbody>
                     <?php $i = 1 ?>
-                    <tr>
-                        <?php if ($tatibData): ?>
-                            <?php foreach ($tatibData as $tatib): ?>
+                    <?php if ($tatibData): ?>
+                        <?php foreach ($tatibData as $tatib): ?>
                             <tr>
                                 <td><?= $i ?></td>
                                 <td><?= $tatib['id_adminTatib'] ?></td>
@@ -97,18 +96,20 @@ $tatibData = $tatibController->ReadTatib();
                                 <td><?= $tatib['tingkat'] ?></td>
                                 <td><?= $tatib['poin'] ?></td>
                                 <td class="button-cell">
-                                    <!-- <button class="edit-button" id="editbutton"><i class="fa-solid fa-pen-to-square"></i></button>  -->
-                                    <!--tombol delete -->
                                     <form action="../Request/Handler_Tatib.php" method="post">
                                         <input type="hidden" name="id_tatib" value="<?= $tatib['id_tata_tertib'] ?>">
                                         <button class="delete" id="delete" name="delete"
                                             onclick="return confirm('Apakah anda yakin ingin menghapus?');"><i
                                                 class="fa-solid fa-trash"></i></button>
+                                    </form>
                                 </td>
-                                </form>
                             </tr>
                             <?php $i++ ?>
                         <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="6">Data tata tertib tidak ditemukan.</td>
+                        </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
