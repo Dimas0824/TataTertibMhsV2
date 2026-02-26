@@ -136,29 +136,48 @@ if (isset($_GET['id'])) {
             'roleLabel' => 'Admin',
         ]);
         ?>
-        <div class="judul">
-            <h1>Edit Berita</h1>
-        </div>
-        <form id="editBeritaForm" method="POST" enctype="multipart/form-data">
-            <input type="hidden" id="editNewsId" name="news_id" value="<?= htmlspecialchars($id) ?>" required>
+        <section class="admin-news-form-page">
+            <div class="admin-news-form-header">
+                <h1>Edit Berita</h1>
+                <p>Perbarui konten berita agar informasi kedisiplinan selalu relevan dan terbaru.</p>
+            </div>
 
-            <label for="editPenulis">Penulis:</label>
-            <input type="text" id="editPenulis" name="penulis" value="<?= htmlspecialchars($penulis_nama) ?>" required
-                readonly>
+            <div class="admin-news-form-layout">
+                <aside class="admin-news-form-info">
+                    <h3>Petunjuk Edit</h3>
+                    <ol>
+                        <li>Periksa kembali judul agar tetap ringkas.</li>
+                        <li>Perbarui isi konten jika ada perubahan kebijakan.</li>
+                        <li>Unggah gambar baru bila diperlukan.</li>
+                    </ol>
+                </aside>
 
-            <label for="editJudul">Judul:</label>
-            <input type="text" id="editJudul" name="judul" value="<?= htmlspecialchars($news['judul']) ?>" required>
+                <form id="editBeritaForm" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" id="editNewsId" name="news_id" value="<?= htmlspecialchars($id) ?>" required>
 
-            <label for="editKonten">Konten:</label>
-            <textarea id="editKonten" name="konten" rows="4"
-                required><?= htmlspecialchars($news['konten']) ?></textarea>
+                    <label for="editPenulis">Penulis:</label>
+                    <input type="text" id="editPenulis" name="penulis" value="<?= htmlspecialchars($penulis_nama) ?>"
+                        required readonly>
 
-            <label for="editGambar">Unggah Gambar:</label>
-            <input type="file" id="editGambar" name="gambar" accept="image/*">
+                    <label for="editJudul">Judul:</label>
+                    <input type="text" id="editJudul" name="judul" value="<?= htmlspecialchars($news['judul']) ?>"
+                        required>
 
-            <button type="submit" class="save-button">Simpan</button>
-            <button class="cancel-button" name="cancel" onclick="window.location.href='news-admin.php'">Cancel</button>
-        </form>
+                    <label for="editKonten">Konten:</label>
+                    <textarea id="editKonten" name="konten" rows="4"
+                        required><?= htmlspecialchars($news['konten']) ?></textarea>
+
+                    <label for="editGambar">Unggah Gambar:</label>
+                    <input type="file" id="editGambar" name="gambar" accept="image/*">
+
+                    <div class="form-actions">
+                        <button type="button" class="cancel-button" name="cancel"
+                            onclick="window.location.href='news-admin.php'">Batal</button>
+                        <button type="submit" class="save-button">Simpan Perubahan</button>
+                    </div>
+                </form>
+            </div>
+        </section>
         <?php
         render_app_footer([
             'context' => 'nested',

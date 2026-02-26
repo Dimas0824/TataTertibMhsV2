@@ -78,52 +78,70 @@ $tatibData = $tatibController->ReadTatib();
             'roleLabel' => 'Admin',
         ]);
         ?>
-        <div class="judul">
-            <h1>DISCIPLINE</h1>
-        </div>
+        <section class="tatib-admin-page">
+            <div class="tatib-admin-hero">
+                <div>
+                    <span class="tatib-admin-kicker">DiscipLink Admin</span>
+                    <h1>Manajemen Tata Tertib</h1>
+                    <p>Kelola daftar pelanggaran, tingkat, dan poin aturan kampus secara terstruktur dari satu
+                        dashboard.</p>
+                </div>
+                <div class="tatib-admin-stat">
+                    <span>Total Aturan</span>
+                    <strong><?= count($tatibData) ?></strong>
+                </div>
+            </div>
 
-        <button class="add-button" id="addButton">Tambah</button>
-        <div class="table-container">
-            <table id="tatib-table">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Admin</th>
-                        <th>Pelanggaran</th>
-                        <th>Tingkat</th>
-                        <th>Poin</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php $i = 1 ?>
-                    <?php if ($tatibData): ?>
-                        <?php foreach ($tatibData as $tatib): ?>
+            <div class="tatib-admin-toolbar">
+                <button class="add-button" id="addButton">+ Tambah Aturan</button>
+            </div>
+
+            <section class="tatib-table-card">
+                <div class="table-container">
+                    <table id="tatib-table">
+                        <thead>
                             <tr>
-                                <td><?= $i ?></td>
-                                <td><?= $tatib['id_adminTatib'] ?></td>
-                                <td><?= $tatib['deskripsi'] ?></td>
-                                <td><?= $tatib['tingkat'] ?></td>
-                                <td><?= $tatib['poin'] ?></td>
-                                <td class="button-cell">
-                                    <form action="../../Request/Handler_Tatib.php" method="post">
-                                        <input type="hidden" name="id_tatib" value="<?= $tatib['id_tata_tertib'] ?>">
-                                        <button class="delete" id="delete" name="delete"
-                                            onclick="return confirm('Apakah anda yakin ingin menghapus?');"><i
-                                                class="fa-solid fa-trash"></i></button>
-                                    </form>
-                                </td>
+                                <th>No</th>
+                                <th>Admin</th>
+                                <th>Pelanggaran</th>
+                                <th>Tingkat</th>
+                                <th>Poin</th>
+                                <th>Aksi</th>
                             </tr>
-                            <?php $i++ ?>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="6">Data tata tertib tidak ditemukan.</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
+                        </thead>
+                        <tbody>
+                            <?php $i = 1 ?>
+                            <?php if ($tatibData): ?>
+                                <?php foreach ($tatibData as $tatib): ?>
+                                    <tr>
+                                        <td><?= $i ?></td>
+                                        <td><?= htmlspecialchars($tatib['id_adminTatib']) ?></td>
+                                        <td class="tatib-desc-cell"><?= htmlspecialchars($tatib['deskripsi']) ?></td>
+                                        <td><span class="tier-pill"><?= htmlspecialchars($tatib['tingkat']) ?></span></td>
+                                        <td><span class="point-badge"><?= htmlspecialchars($tatib['poin']) ?></span></td>
+                                        <td class="button-cell">
+                                            <form action="../../Request/Handler_Tatib.php" method="post">
+                                                <input type="hidden" name="id_tatib"
+                                                    value="<?= htmlspecialchars($tatib['id_tata_tertib']) ?>">
+                                                <button class="delete" id="delete" name="delete"
+                                                    onclick="return confirm('Apakah anda yakin ingin menghapus?');"
+                                                    aria-label="Hapus tata tertib <?= htmlspecialchars($tatib['deskripsi']) ?>"><i
+                                                        class="fa-solid fa-trash"></i></button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <?php $i++ ?>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="6" class="empty-cell">Data tata tertib tidak ditemukan.</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
         <!-- Modal edit -->
         <div id="editModal" class="modal">
             <div class="modal-content">

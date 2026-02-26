@@ -82,57 +82,75 @@ $newsData = $newsController->AdminNews(id: $id_admin);
             'roleLabel' => 'Admin',
         ]);
         ?>
-        <div class="judul">
-            <h1>DISCIPLINK NEWS</h1>
-        </div>
+        <section class="admin-news-page">
+            <div class="admin-news-hero">
+                <div>
+                    <span class="admin-news-kicker">DiscipLink Admin</span>
+                    <h1>Manajemen News</h1>
+                    <p>Kelola publikasi berita kedisiplinan kampus secara ringkas, terstruktur, dan mudah dipantau.</p>
+                </div>
+                <div class="admin-news-stat">
+                    <span>Total Berita</span>
+                    <strong><?= count($newsData) ?></strong>
+                </div>
+            </div>
 
-        <a href="tambah-berita.php">
-            <button class="add-button" id="addButton">Tambah</button>
-        </a>
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Judul</th>
-                        <th>gambar</th>
-                        <th>Konten</th>
-                        <th>Penulis</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if ($newsData): ?>
-                        <?php foreach ($newsData as $news): ?>
+            <div class="admin-news-toolbar">
+                <a href="tambah-berita.php" class="add-button" id="addButton">+ Tambah Berita</a>
+            </div>
+
+            <section class="admin-table-card">
+                <div class="table-container">
+                    <table>
+                        <thead>
                             <tr>
-                                <td><?= htmlspecialchars($news['judul']) ?></td>
-                                <td>
-                                    <?php if (!empty($news['gambar'])): ?>
-                                        <img src="../../<?= htmlspecialchars($news['gambar']) ?>" alt="Gambar News" width="160"
-                                            height="90" loading="lazy" decoding="async" style="max-width: 100px;">
-                                    <?php else: ?>
-                                        <p>Tidak ada gambar</p>
-                                    <?php endif; ?>
-                                </td>
-                                <td><?= nl2br(htmlspecialchars($news['konten'])) ?></td>
-                                <td><?= htmlspecialchars($penulis_nama) ?></td>
-                                <td class="button-cell">
-                                    <a href="edit-berita.php?id=<?= $news['id_news'] ?>" class="edit-button">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </a>
-                                    <!--tombol delete -->
-                                    <form action="../../Request/Handler_News.php" method="post">
-                                        <input type="hidden" name="news_id" value="<?= $news['id_news'] ?>">
-                                        <button class="delete" id="delete" name="delete"
-                                            onclick="return confirm('Apakah anda yakin ingin menghapus?');"><i
-                                                class="fa-solid fa-trash"></i></button>
-                                    </form>
-                                </td>
+                                <th>Judul</th>
+                                <th>Gambar</th>
+                                <th>Konten</th>
+                                <th>Penulis</th>
+                                <th>Aksi</th>
                             </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
+                        </thead>
+                        <tbody>
+                            <?php if ($newsData): ?>
+                                <?php foreach ($newsData as $news): ?>
+                                    <tr>
+                                        <td class="news-title-cell"><?= htmlspecialchars($news['judul']) ?></td>
+                                        <td>
+                                            <?php if (!empty($news['gambar'])): ?>
+                                                <img class="news-thumb" src="../../<?= htmlspecialchars($news['gambar']) ?>"
+                                                    alt="Gambar News" width="160" height="90" loading="lazy" decoding="async">
+                                            <?php else: ?>
+                                                <span class="muted-text">Tidak ada gambar</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td class="news-content-cell"><?= nl2br(htmlspecialchars($news['konten'])) ?></td>
+                                        <td><?= htmlspecialchars($penulis_nama) ?></td>
+                                        <td class="button-cell">
+                                            <a href="edit-berita.php?id=<?= $news['id_news'] ?>" class="edit-button"
+                                                aria-label="Edit berita <?= htmlspecialchars($news['judul']) ?>">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </a>
+                                            <form action="../../Request/Handler_News.php" method="post">
+                                                <input type="hidden" name="news_id" value="<?= $news['id_news'] ?>">
+                                                <button class="delete" id="delete" name="delete"
+                                                    onclick="return confirm('Apakah anda yakin ingin menghapus?');"
+                                                    aria-label="Hapus berita <?= htmlspecialchars($news['judul']) ?>"><i
+                                                        class="fa-solid fa-trash"></i></button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="5" class="empty-cell">Belum ada berita untuk ditampilkan.</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
 
         <!-- Modal Edit Berita -->
         <!-- <div id="editBeritaModal" class="modal">

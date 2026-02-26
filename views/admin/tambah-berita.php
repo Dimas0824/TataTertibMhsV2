@@ -80,27 +80,45 @@ $newsData = $newsController->AdminNews($id_admin);
             'roleLabel' => 'Admin',
         ]);
         ?>
-        <div class="judul">
-            <h1>Tambah Berita</h1>
-        </div>
-        <form id="insertBeritaForm" method="POST" action="../../Request/Handler_News.php" enctype="multipart/form-data">
-            <label for="insertPenulisNama">Penulis:</label>
-            <input type="text" id="insertPenulisNama" name="penulis_nama"
-                value="<?= htmlspecialchars($userData['nama_admin']) ?>" required readonly>
-            <input type="hidden" id="insertPenulis" name="penulis"
-                value="<?= htmlspecialchars($userData['id_admin']) ?>" required>
+        <section class="admin-news-form-page">
+            <div class="admin-news-form-header">
+                <h1>Tambah Berita</h1>
+                <p>Publikasikan informasi terbaru kedisiplinan kampus dengan format yang jelas dan konsisten.</p>
+            </div>
 
-            <label for="insertJudul">Judul:</label>
-            <input type="text" id="insertJudul" name="judul" required>
+            <div class="admin-news-form-layout">
+                <aside class="admin-news-form-info">
+                    <h3>Petunjuk Singkat</h3>
+                    <ol>
+                        <li>Tulis judul yang singkat dan spesifik.</li>
+                        <li>Isi konten dengan informasi utama yang mudah dipahami.</li>
+                        <li>Tambahkan gambar pendukung agar berita lebih informatif.</li>
+                    </ol>
+                </aside>
 
-            <label for="insertKonten">Konten:</label>
-            <textarea id="insertKonten" name="konten" rows="4" required></textarea>
+                <form id="insertBeritaForm" method="POST" action="../../Request/Handler_News.php"
+                    enctype="multipart/form-data">
+                    <label for="insertPenulisNama">Penulis:</label>
+                    <input type="text" id="insertPenulisNama" name="penulis_nama"
+                        value="<?= htmlspecialchars($userData['nama_admin']) ?>" required readonly>
+                    <input type="hidden" id="insertPenulis" name="penulis"
+                        value="<?= htmlspecialchars($userData['id_admin']) ?>" required>
 
-            <label for="insertGambar">Unggah Gambar:</label>
-            <input type="file" id="insertGambar" name="gambar" accept="image/*">
+                    <label for="insertJudul">Judul:</label>
+                    <input type="text" id="insertJudul" name="judul" required>
 
-            <button type="submit" class="save-button" name="store">Simpan</button>
-        </form>
+                    <label for="insertKonten">Konten:</label>
+                    <textarea id="insertKonten" name="konten" rows="4" required></textarea>
+
+                    <label for="insertGambar">Unggah Gambar:</label>
+                    <input type="file" id="insertGambar" name="gambar" accept="image/*">
+
+                    <div class="form-actions">
+                        <button type="submit" class="save-button" name="store">Simpan Berita</button>
+                    </div>
+                </form>
+            </div>
+        </section>
         <?php
         render_app_footer([
             'context' => 'nested',

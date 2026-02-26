@@ -74,39 +74,86 @@ $newsData = $newsController->ReadNews();
         ]);
         ?>
 
-        <div class="judul">
-            <h2>TATA TERTIB <br>MAHASISWA </h2>
-            <p>Sebuah sistem yang dirancang untuk mengelola aturan, <br>pelanggaran, dan sanksi di Universitas</p>
-        </div>
-        <div class="dashboard-container">
-            <img class="logo-disciplink" src="../../img/ga logo aja.png" width="250" height="250" loading="lazy"
-                decoding="async" alt="Logo DiscipLink">
-            <p>Disciplink adalah platform digital inovatif yang dirancang untuk menghubungkan mahasiswa dengan
-                sistem kedisiplinan kampus. Sebagai gabungan dari kata "Discipline" dan "Link", Disciplink berfokus
-                pada penyederhanaan proses pengelolaan tata tertib di lingkungan akademik, memudahkan mahasiswa dan
-                pihak kampus untuk memahami, memantau, dan menegakkan aturan secara efisien.</p>
-        </div>
-        <div class="news">
-            <h2>News</h2>
-            <div class="row">
-                <?php foreach ($newsData as $news): ?>
-                    <div class="news-content">
-                        <?php if (!empty($news['gambar'])): ?>
-                            <img src="../../<?= htmlspecialchars($news['gambar']) ?>" alt="Gambar News" width="1200"
-                                height="675" loading="lazy" decoding="async">
-                        <?php else: ?>
-                            <img src="../../img/news.jpg" alt="Gambar News" width="1200" height="675" loading="lazy"
-                                decoding="async">
-                        <?php endif; ?>
-                        <h3><?= htmlspecialchars($news['judul']) ?></h3>
-                        <!-- ini nanti di ganti nama -->
-                        <h5><?= htmlspecialchars($news['penulis_nama']) ?></h5>
-                        <!-- ini -->
-                        <p><?= nl2br(htmlspecialchars($news['konten'])) ?></p>
-                    </div>
-                <?php endforeach; ?>
+        <section class="judul">
+            <div class="hero-inner">
+                <span class="hero-kicker">DiscipLink Admin Panel</span>
+                <h2>Dashboard Tata Tertib Mahasiswa</h2>
+                <p>Pusat kontrol admin untuk memantau informasi kedisiplinan, mengelola konten berita, dan menjaga alur
+                    informasi tetap konsisten.</p>
+                <div class="hero-actions">
+                    <a href="news-admin.php" class="hero-btn hero-btn-primary">Kelola News</a>
+                    <a href="tambah-berita.php" class="hero-btn hero-btn-secondary">Tambah Berita</a>
+                </div>
             </div>
-        </div>
+
+            <div class="hero-panel">
+                <h3>Ringkas Hari Ini</h3>
+                <p>Gunakan akses cepat untuk memperbarui informasi dan menjaga komunikasi dengan pengguna.</p>
+                <div class="hero-stats">
+                    <article class="hero-stat">
+                        <span class="hero-stat-label">Total News</span>
+                        <strong><?= count($newsData) ?></strong>
+                    </article>
+                    <article class="hero-stat">
+                        <span class="hero-stat-label">Peran</span>
+                        <strong>Admin</strong>
+                    </article>
+                    <article class="hero-stat">
+                        <span class="hero-stat-label">Status</span>
+                        <strong>Aktif</strong>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="dashboard-container">
+            <div class="about-logo-wrap">
+                <div class="about-brand-card">
+                    <img class="logo-disciplink" src="../../img/ga logo aja.png" width="250" height="250" loading="lazy"
+                        decoding="async" alt="Logo DiscipLink">
+                    <p>Panel admin DiscipLink dirancang untuk mempercepat pengelolaan konten dan menjaga akurasi
+                        informasi kedisiplinan.</p>
+                </div>
+            </div>
+            <div class="about-copy">
+                <h3>Kontrol Informasi Kedisiplinan Secara Terpusat</h3>
+                <p>Melalui dashboard ini, admin dapat mengelola berita kedisiplinan, memastikan informasi terbaru
+                    tersampaikan, dan mendukung transparansi proses pembinaan mahasiswa. Struktur antarmuka dibuat
+                    sederhana agar proses operasional harian lebih efisien.</p>
+            </div>
+        </section>
+
+        <section class="news">
+            <div class="news-header">
+                <h2>News Terbaru</h2>
+                <p>Pratinjau berita yang sudah dipublikasikan untuk memudahkan monitoring konten.</p>
+            </div>
+            <?php if (empty($newsData)): ?>
+                <div class="news-empty">
+                    <i class="fa-regular fa-newspaper" aria-hidden="true"></i>
+                    <p>Belum ada news yang tersedia.</p>
+                </div>
+            <?php else: ?>
+                <div class="news-grid">
+                    <?php foreach ($newsData as $news): ?>
+                        <article class="news-content">
+                            <?php if (!empty($news['gambar'])): ?>
+                                <img src="../../<?= htmlspecialchars($news['gambar']) ?>" alt="Gambar News" width="1200"
+                                    height="675" loading="lazy" decoding="async">
+                            <?php else: ?>
+                                <img src="../../img/news.jpg" alt="Gambar News" width="1200" height="675" loading="lazy"
+                                    decoding="async">
+                            <?php endif; ?>
+                            <div class="news-text">
+                                <h3><?= htmlspecialchars($news['judul']) ?></h3>
+                                <h5><?= htmlspecialchars($news['penulis_nama']) ?></h5>
+                                <p><?= nl2br(htmlspecialchars($news['konten'])) ?></p>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </section>
         <?php
         render_app_footer([
             'context' => 'nested',
