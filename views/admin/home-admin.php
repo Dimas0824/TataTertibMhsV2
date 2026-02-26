@@ -33,7 +33,17 @@ $newsData = $newsController->ReadNews();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
+    <title>Dashboard Admin DiscipLink</title>
+    <?php
+    app_seo_meta_tags([
+        'title' => 'Dashboard Admin DiscipLink',
+        'description' => 'Dashboard admin DiscipLink untuk mengelola informasi tata tertib mahasiswa, berita, dan kedisiplinan kampus.',
+        'canonical_path' => '/views/admin/home-admin.php',
+        'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
+        'robots' => 'noindex, nofollow',
+    ]);
+    ?>
+    <link rel="icon" type="image/png" href="../../img/logo aja.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
@@ -66,7 +76,7 @@ $newsData = $newsController->ReadNews();
                 <p>Sebuah sistem yang dirancang untuk mengelola aturan, <br>pelanggaran, dan sanksi di Universitas</p>
             </div>
             <div class="dashboard-container">
-                <img class="logo-disciplink" src="../../img/ga logo aja.png">
+                <img class="logo-disciplink" src="../../img/ga logo aja.png" width="250" height="250" loading="lazy" decoding="async" alt="Logo DiscipLink">
                 <p>Disciplink adalah platform digital inovatif yang dirancang untuk menghubungkan mahasiswa dengan
                     sistem kedisiplinan kampus. Sebagai gabungan dari kata "Discipline" dan "Link", Disciplink berfokus
                     pada penyederhanaan proses pengelolaan tata tertib di lingkungan akademik, memudahkan mahasiswa dan
@@ -78,9 +88,9 @@ $newsData = $newsController->ReadNews();
                 <?php foreach($newsData as $news): ?>
                     <div class="news-content">
                         <?php if (!empty($news['gambar'])): ?>
-                            <img src="../../<?= htmlspecialchars($news['gambar']) ?>" alt="Gambar News">
+                            <img src="../../<?= htmlspecialchars($news['gambar']) ?>" alt="Gambar News" width="1200" height="675" loading="lazy" decoding="async">
                         <?php else : ?>
-                            <img src="../../img/news.jpg" alt="gambar">
+                            <img src="../../img/news.jpg" alt="Gambar News" width="1200" height="675" loading="lazy" decoding="async">
                         <?php endif; ?>
                         <h3><?= htmlspecialchars($news['judul']) ?></h3>
                         <!-- ini nanti di ganti nama -->

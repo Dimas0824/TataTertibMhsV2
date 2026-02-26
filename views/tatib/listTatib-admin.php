@@ -39,7 +39,17 @@ $tatibData = $tatibController->ReadTatib();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
+    <title>Admin Tata Tertib Mahasiswa | DiscipLink</title>
+    <?php
+    app_seo_meta_tags([
+        'title' => 'Admin Tata Tertib Mahasiswa | DiscipLink',
+        'description' => 'Panel admin DiscipLink untuk mengelola data tata tertib mahasiswa, tingkat pelanggaran, dan poin aturan kampus.',
+        'canonical_path' => '/views/tatib/listTatib-admin.php',
+        'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
+        'robots' => 'noindex, nofollow',
+    ]);
+    ?>
+    <link rel="icon" type="image/png" href="../../img/logo aja.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -180,7 +190,7 @@ $tatibData = $tatibController->ReadTatib();
         </div>
 
         <!-- javascript -->
-        <script src="../../js/admin-tatib.js"></script>
+        <script defer src="../../js/admin-tatib.js"></script>
         <?php
         render_app_footer([
             'context' => 'nested',

@@ -43,7 +43,17 @@ $newsData = $newsController->AdminNews(id: $id_admin);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
+    <title>Manajemen News Admin | DiscipLink</title>
+    <?php
+    app_seo_meta_tags([
+        'title' => 'Manajemen News Admin | DiscipLink',
+        'description' => 'Panel admin untuk mengelola berita kedisiplinan kampus pada sistem DiscipLink.',
+        'canonical_path' => '/views/admin/news-admin.php',
+        'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
+        'robots' => 'noindex, nofollow',
+    ]);
+    ?>
+    <link rel="icon" type="image/png" href="../../img/logo aja.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -98,7 +108,7 @@ $newsData = $newsController->AdminNews(id: $id_admin);
                                 <td>
                                     <?php if (!empty($news['gambar'])): ?>
                                         <img src="../../<?= htmlspecialchars($news['gambar']) ?>" alt="Gambar News"
-                                            style="max-width: 100px;">
+                                            width="160" height="90" loading="lazy" decoding="async" style="max-width: 100px;">
                                     <?php else: ?>
                                         <p>Tidak ada gambar</p>
                                     <?php endif; ?>
@@ -172,7 +182,7 @@ $newsData = $newsController->AdminNews(id: $id_admin);
 </div> -->
 
         <!-- javascript -->
-        <script src="../../js/script-news.js"></script>
+        <script defer src="../../js/script-news.js"></script>
         <?php
         render_app_footer([
             'context' => 'nested',

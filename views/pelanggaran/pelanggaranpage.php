@@ -36,12 +36,22 @@ $nim = $userData['nim'];
 $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim);
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pelanggaran</title>
+    <title>Status Pelanggaran Mahasiswa | DiscipLink</title>
+    <?php
+    app_seo_meta_tags([
+        'title' => 'Status Pelanggaran Mahasiswa | DiscipLink',
+        'description' => 'Pantau status pelanggaran mahasiswa, poin, sanksi, dan pengumpulan dokumen melalui dashboard DiscipLink.',
+        'canonical_path' => '/views/pelanggaran/pelanggaranpage.php',
+        'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
+        'robots' => 'noindex, nofollow',
+    ]);
+    ?>
+    <link rel="icon" type="image/png" href="../../img/logo aja.png">
     <link rel="stylesheet" href="../../css/global.css">
     <link rel="stylesheet" href="../../css/perlanggaranPage.css">
     <link rel="stylesheet" href="../../css/modal.css">
@@ -104,7 +114,7 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
                                 <td><?= htmlspecialchars($detail['nama_lengkap']) ?></td>
                                 <td><?= htmlspecialchars($detail['tugas_khusus'] ?? 'Tidak Ada Tugas') ?></td>
                                 <td><a href="<?= htmlspecialchars('../../document/SURAT PERNYATAAN TI.pdf') ?>"
-                                        target="_blank">Unduh File</a></td>
+                                        target="_blank" rel="noopener noreferrer">Unduh File</a></td>
                                 <td><?= htmlspecialchars($detail['poin']) ?></td>
                                 <td><?= htmlspecialchars($detail['status']) ?></td>
                                 <td>
@@ -176,7 +186,7 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
     ?>
 
     <!-- JavaScript -->
-    <script src="../../js/script-pelanggaran.js"></script>
+    <script defer src="../../js/script-pelanggaran.js"></script>
     <script>
         const showUploadFeedback = (payload) => {
             if (window.AppModal && typeof window.AppModal.show === 'function') {

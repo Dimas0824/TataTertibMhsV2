@@ -2,6 +2,12 @@
 
 declare(strict_types=1);
 require_once dirname(__DIR__, 2) . '/helpers/flash_modal.php';
+require_once dirname(__DIR__, 2) . '/helpers/seo_helper.php';
+
+if (!defined('APP_CANONICAL_ENFORCED')) {
+    app_seo_enforce_canonical_host();
+    define('APP_CANONICAL_ENFORCED', true);
+}
 
 if (!function_exists('get_app_nav_items')) {
     function get_app_nav_items(string $variant, string $context): array
@@ -85,7 +91,7 @@ if (!function_exists('render_app_sidebar')) {
         ?>
         <aside class="sidebar" aria-label="Navigasi utama">
             <a class="sidebar-brand" href="<?= htmlspecialchars($homeHref, ENT_QUOTES, 'UTF-8') ?>" aria-label="DiscipLink Home">
-                <img class="logo" src="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/logo aja.png" alt="DiscipLink logo">
+                <img class="logo" src="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/logo aja.png" alt="DiscipLink logo" width="42" height="42" decoding="async">
                 <span class="brand-text">DiscipLink</span>
             </a>
             <button type="button" class="nav-toggle sidebar-rail-toggle" data-nav-toggle aria-label="Pin sidebar" aria-pressed="false">
@@ -166,8 +172,8 @@ if (!function_exists('render_app_footer')) {
             <div class="footer-main">
                 <div class="footer-brand">
                     <div class="footer-brand-logos">
-                        <img class="footer-logo" src="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/logo aja.png" alt="Logo DiscipLink">
-                        <img class="footer-logo" src="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/logo.png" alt="Logo Polinema">
+                        <img class="footer-logo" src="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/logo aja.png" alt="Logo DiscipLink" width="76" height="76" loading="lazy" decoding="async">
+                        <img class="footer-logo" src="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/favicon-96x96.png" alt="Favicon DiscipLink" width="76" height="76" loading="lazy" decoding="async">
                     </div>
                     <p class="footer-brand-copy">DiscipLink · Platform informasi tata tertib mahasiswa.</p>
                 </div>

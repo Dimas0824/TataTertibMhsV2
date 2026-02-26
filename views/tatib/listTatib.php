@@ -29,13 +29,22 @@ if (isset($_SESSION['user_type'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>List Tatib</title>
+    <title>Daftar Tata Tertib Mahasiswa Polinema | DiscipLink</title>
+    <?php
+    app_seo_meta_tags([
+        'title' => 'Daftar Tata Tertib Mahasiswa Polinema | DiscipLink',
+        'description' => 'Baca daftar tata tertib mahasiswa Polinema lengkap dengan tingkat pelanggaran dan sanksi. Gunakan DiscipLink untuk memahami aturan kampus secara ringkas.',
+        'canonical_path' => '/views/tatib/listTatib.php',
+        'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
+    ]);
+    ?>
+    <link rel="icon" type="image/png" href="../../img/logo aja.png">
     <link rel="stylesheet" href="../../css/global.css">
     <link rel="stylesheet" href="../../css/listTatib.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <script src="../../js/script.js"></script>
+    <script defer src="../../js/script.js"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">

@@ -26,12 +26,22 @@ $nidn = $userData['nidn'];
 $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pelanggaran</title>
+    <title>Pelanggaran Mahasiswa Dosen | DiscipLink</title>
+    <?php
+    app_seo_meta_tags([
+        'title' => 'Pelanggaran Mahasiswa Dosen | DiscipLink',
+        'description' => 'Dashboard dosen DiscipLink untuk meninjau laporan pelanggaran mahasiswa, status, dan dokumen pendukung.',
+        'canonical_path' => '/views/pelanggaran/pelanggaran_dosen.php',
+        'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
+        'robots' => 'noindex, nofollow',
+    ]);
+    ?>
+    <link rel="icon" type="image/png" href="../../img/logo aja.png">
     <link rel="stylesheet" href="../../css/global.css">
     <link rel="stylesheet" href="../../css/perlanggaranPage.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
@@ -96,13 +106,13 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
                                 <td>
                                     <?php if (!empty($detail['surat'])): ?>
                                         <a href="<?= htmlspecialchars('../../document/' . $detail['surat'], ENT_QUOTES, 'UTF-8') ?>"
-                                            target="_blank">Unduh Surat Pernyataan</a>
+                                            target="_blank" rel="noopener noreferrer">Unduh Surat Pernyataan</a>
                                     <?php else: ?>
                                         <span>Tidak ada file surat yang diunggah.</span>
                                     <?php endif; ?>
                                     <?php if (!empty($detail['pengumpulan_tgsKhusus'])): ?>
                                         <a href="<?= htmlspecialchars('../../document/' . $detail['pengumpulan_tgsKhusus'], ENT_QUOTES, 'UTF-8') ?>"
-                                            target="_blank">Unduh Tugas Khusus</a>
+                                            target="_blank" rel="noopener noreferrer">Unduh Tugas Khusus</a>
                                     <?php else: ?>
                                         <span>Tidak ada file tugas yang diunggah.</span>
                                     <?php endif; ?>

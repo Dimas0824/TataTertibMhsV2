@@ -41,7 +41,17 @@ $newsData = $newsController->AdminNews($id_admin);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
+    <title>Tambah Berita | Admin DiscipLink</title>
+    <?php
+    app_seo_meta_tags([
+        'title' => 'Tambah Berita | Admin DiscipLink',
+        'description' => 'Halaman admin DiscipLink untuk menambahkan berita kedisiplinan kampus.',
+        'canonical_path' => '/views/admin/tambah-berita.php',
+        'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
+        'robots' => 'noindex, nofollow',
+    ]);
+    ?>
+    <link rel="icon" type="image/png" href="../../img/logo aja.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link

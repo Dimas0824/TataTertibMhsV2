@@ -98,6 +98,16 @@ if (isset($_GET['id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Berita</title>
+    <?php
+    app_seo_meta_tags([
+        'title' => 'Edit Berita | Admin DiscipLink',
+        'description' => 'Halaman admin DiscipLink untuk memperbarui berita kedisiplinan kampus.',
+        'canonical_path' => '/views/admin/edit-berita.php',
+        'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
+        'robots' => 'noindex, nofollow',
+    ]);
+    ?>
+    <link rel="icon" type="image/png" href="../../img/logo aja.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link

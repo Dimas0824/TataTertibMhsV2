@@ -19,7 +19,7 @@ render_app_sidebar([
 <div class="content">
     <?php
     render_app_header([
-        'title' => 'Home',
+        'title' => 'Tata Tertib Mahasiswa Polinema',
         'showLogin' => !isset($_SESSION['username']),
         'loginHref' => 'views/auth/login.php',
         'roleLabel' => $homeRoleLabel,
@@ -33,7 +33,8 @@ render_app_sidebar([
             <p>Satu pusat informasi untuk aturan, pelanggaran, dan sanksi di lingkungan Politeknik Negeri Malang.</p>
             <div class="hero-actions">
                 <a href="views/tatib/listTatib.php" class="hero-btn hero-btn-primary">Lihat Tata Tertib</a>
-                <a href="views/pelanggaran/pelanggaranpage.php" class="hero-btn hero-btn-secondary">Lihat Pelanggaran</a>
+                <a href="views/pelanggaran/pelanggaranpage.php" class="hero-btn hero-btn-secondary">Lihat
+                    Pelanggaran</a>
             </div>
         </div>
 
@@ -60,7 +61,8 @@ render_app_sidebar([
     <section class="dashboard-container reveal-up" data-delay="120">
         <div class="about-logo-wrap">
             <div class="about-brand-card">
-                <img class="logo-disciplink" src="img/ga logo aja.png" alt="Logo DiscipLink">
+                <img class="logo-disciplink" src="img/ga logo aja.png" alt="Logo DiscipLink" width="250" height="250"
+                    loading="lazy" decoding="async">
             </div>
         </div>
         <div class="about-copy">
@@ -69,6 +71,61 @@ render_app_sidebar([
                 sistem kedisiplinan kampus. Sebagai gabungan dari kata "Discipline" dan "Link", DiscipLink berfokus
                 pada penyederhanaan proses pengelolaan tata tertib di lingkungan akademik, memudahkan mahasiswa dan
                 pihak kampus untuk memahami, memantau, dan menegakkan aturan secara efisien.</p>
+        </div>
+    </section>
+
+    <section class="news info-overview reveal-up" data-delay="140">
+        <div class="news-header info-overview-header">
+            <h2>Aturan Kampus, Pelanggaran, dan Sanksi Mahasiswa</h2>
+            <p>DiscipLink membantu mahasiswa memahami tata tertib kampus Polinema secara bertahap, mulai dari membaca
+                aturan,
+                memahami tingkat pelanggaran, hingga melihat konsekuensi sanksi yang berlaku.</p>
+        </div>
+
+        <div class="info-overview-grid">
+            <article class="info-card info-card-flow">
+                <h3>Alur Pahami Tata Tertib</h3>
+                <p>Ikuti langkah singkat berikut agar aktivitas akademik tetap aman dan terarah.</p>
+                <ul class="info-steps" aria-label="Langkah memahami tata tertib kampus">
+                    <li>
+                        <span>1</span>
+                        <div>
+                            <strong>Baca Aturan</strong>
+                            <p>Pelajari ketentuan resmi agar memahami batasan perilaku akademik dan administratif.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span>2</span>
+                        <div>
+                            <strong>Pahami Pelanggaran</strong>
+                            <p>Kenali kategori pelanggaran dan dampak poin untuk mencegah kesalahan berulang.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span>3</span>
+                        <div>
+                            <strong>Cek Sanksi & Pelaporan</strong>
+                            <p>Lihat konsekuensi serta alur pelaporan agar koordinasi mahasiswa dan dosen lebih jelas.
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="info-card info-card-links">
+                <h3>Akses Cepat</h3>
+                <p>Masuk ke halaman penting DiscipLink dalam satu klik.</p>
+                <div class="info-links" aria-label="Tautan cepat DiscipLink">
+                    <a href="views/tatib/listTatib.php" title="Daftar tata tertib mahasiswa Polinema">Lihat daftar tata
+                        tertib</a>
+                    <a href="views/pelanggaran/pelanggaranpage.php"
+                        title="Halaman pelanggaran mahasiswa di DiscipLink">Cek data pelanggaran</a>
+                    <a href="views/auth/login.php" title="Login DiscipLink untuk mahasiswa dan dosen">Masuk ke akun
+                        DiscipLink</a>
+                    <a href="https://www.polinema.ac.id" target="_blank" rel="noopener noreferrer"
+                        title="Website resmi Politeknik Negeri Malang">Website resmi Polinema</a>
+                </div>
+            </article>
         </div>
     </section>
 
@@ -84,12 +141,15 @@ render_app_sidebar([
             </div>
         <?php else: ?>
             <div class="news-grid">
-                <?php foreach ($newsData as $news): ?>
+                <?php foreach ($newsData as $index => $news): ?>
                     <article class="news-content reveal-up" data-delay="220">
                         <?php if (!empty($news['gambar'])): ?>
-                            <img src="<?= htmlspecialchars($news['gambar']) ?>" alt="Gambar News">
+                            <img src="<?= htmlspecialchars($news['gambar']) ?>"
+                                alt="Gambar berita: <?= htmlspecialchars($news['judul']) ?>" width="1200" height="675"
+                                loading="<?= $index === 0 ? 'eager' : 'lazy' ?>" decoding="async">
                         <?php else: ?>
-                            <img src="img/news.jpg" alt="Gambar News">
+                            <img src="img/news.jpg" alt="Gambar berita DiscipLink" width="1200" height="675"
+                                loading="<?= $index === 0 ? 'eager' : 'lazy' ?>" decoding="async">
                         <?php endif; ?>
                         <div class="news-text">
                             <h3><?= htmlspecialchars($news['judul']) ?></h3>

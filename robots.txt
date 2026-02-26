@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /Controllers/
+Disallow: /Models/
+Disallow: /Database/
+Disallow: /Request/
+Disallow: /helpers/
+Disallow: /document/
+Disallow: /views/admin/
+Disallow: /views/pelanggaran/
+Disallow: /views/auth/
+
+Sitemap: https://dimspersonal.my.id/sitemap.xml

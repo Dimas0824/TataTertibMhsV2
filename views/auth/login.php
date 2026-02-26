@@ -21,7 +21,19 @@ if (isset($_SESSION['username'])) {
 <html lang="en">
 
 <head>
-    <title>Login Mahasiswa</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login DiscipLink</title>
+    <?php
+    app_seo_meta_tags([
+        'title' => 'Login DiscipLink',
+        'description' => 'Login DiscipLink untuk mahasiswa, dosen, dan admin dalam mengakses sistem tata tertib kampus.',
+        'canonical_path' => '/views/auth/login.php',
+        'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
+        'robots' => 'noindex, nofollow',
+    ]);
+    ?>
+    <link rel="icon" type="image/png" href="../../img/logo aja.png">
     <link rel="stylesheet" href="../../css/login.css">
     <link rel="stylesheet" href="../../css/global.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -93,8 +105,7 @@ if (isset($_SESSION['username'])) {
         ]);
         ?>
     </div>
-    <script src="../../js/login.js">
-    </script>
+    <script defer src="../../js/login.js"></script>
 
 </body>
 

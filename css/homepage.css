@@ -26,8 +26,7 @@
   inset: 0;
   background: url(../img/GRAHA-POLINEMA1-slider-01.webp) center/cover no-repeat;
   opacity: 0.4;
-  transform: scale(1.06);
-  animation: heroZoom 14s ease-in-out infinite alternate;
+  transform: scale(1.04);
 }
 
 .judul::after {
@@ -259,6 +258,113 @@
   font-size: 0.95rem;
 }
 
+.info-overview {
+  padding-bottom: 38px;
+}
+
+.info-overview-header {
+  max-width: 760px;
+}
+
+.info-overview-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 18px;
+}
+
+.info-card {
+  border: 1px solid var(--border-soft);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  padding: clamp(18px, 2.5vw, 24px);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.06);
+}
+
+.info-card h3 {
+  margin: 0;
+  font-size: clamp(1.05rem, 2.1vw, 1.26rem);
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.info-card > p {
+  margin: 10px 0 0;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.72;
+}
+
+.info-steps {
+  list-style: none;
+  padding: 0;
+  margin: 18px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info-steps li {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #dbeafe;
+  background: #ffffff;
+}
+
+.info-steps span {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #eff6ff;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.info-steps strong {
+  display: block;
+  color: var(--text-primary);
+  font-size: 0.94rem;
+}
+
+.info-steps li p {
+  margin: 4px 0 0;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #5b6777;
+}
+
+.info-links {
+  margin-top: 18px;
+  display: grid;
+  gap: 10px;
+}
+
+.info-links a {
+  text-decoration: none;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  padding: 11px 12px;
+  color: #1e3a8a;
+  background: #ffffff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.info-links a:hover {
+  transform: translateY(-2px);
+  border-color: #93c5fd;
+  box-shadow: 0 10px 18px rgba(59, 130, 246, 0.18);
+}
+
 .news-empty {
   border: 1px dashed #bfdbfe;
   border-radius: 16px;
@@ -394,6 +500,12 @@
   transform: translateY(0);
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .judul::before {
+    animation: heroZoom 14s ease-in-out infinite alternate;
+  }
+}
+
 @keyframes heroZoom {
   from {
     transform: scale(1.04);
@@ -433,6 +545,10 @@
     row-gap: 16px;
   }
 
+  .info-overview-grid {
+    grid-template-columns: 1fr;
+  }
+
   .news-content,
   .news-content:first-child {
     grid-column: span 1;
@@ -467,5 +583,16 @@
     grid-template-columns: 1fr;
     gap: 14px;
     margin-bottom: 56px;
+  }
+
+  .info-steps li {
+    grid-template-columns: 30px 1fr;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .info-steps span {
+    width: 30px;
+    height: 30px;
   }
 }

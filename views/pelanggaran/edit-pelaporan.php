@@ -47,12 +47,22 @@ if($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>edit-Pelaporan</title>
+    <title>Edit Pelaporan Pelanggaran | DiscipLink</title>
+    <?php
+    app_seo_meta_tags([
+        'title' => 'Edit Pelaporan Pelanggaran | DiscipLink',
+        'description' => 'Halaman edit pelaporan pelanggaran mahasiswa pada panel dosen DiscipLink.',
+        'canonical_path' => '/views/pelanggaran/edit-pelaporan.php',
+        'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
+        'robots' => 'noindex, nofollow',
+    ]);
+    ?>
+    <link rel="icon" type="image/png" href="../../img/logo aja.png">
     <link rel="stylesheet" href="../../css/global.css">
     <link rel="stylesheet" href="../../css/pelaporan.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
@@ -64,8 +74,8 @@ if($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <!-- Select2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 
 <body>
@@ -176,7 +186,7 @@ if($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
                 </div>
             </form>
         </div>
-        <script src="../../js/script_pelaporan.js"></script>
+        <script defer src="../../js/script_pelaporan.js"></script>
         <script>
             function showConfirmation() {
 

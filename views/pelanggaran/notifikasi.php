@@ -18,12 +18,22 @@ $notificationRole = $_SESSION['user_type'] === 'dosen' ? 'Dosen' : 'Mahasiswa';
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notifikasi</title>
+    <title>Notifikasi Pelanggaran | DiscipLink</title>
+    <?php
+    app_seo_meta_tags([
+        'title' => 'Notifikasi Pelanggaran | DiscipLink',
+        'description' => 'Inbox notifikasi DiscipLink untuk memantau pembaruan laporan pelanggaran mahasiswa secara real-time.',
+        'canonical_path' => '/views/pelanggaran/notifikasi.php',
+        'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
+        'robots' => 'noindex, nofollow',
+    ]);
+    ?>
+    <link rel="icon" type="image/png" href="../../img/logo aja.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
