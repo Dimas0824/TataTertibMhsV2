@@ -26,27 +26,13 @@ class NewsController
     // Metode untuk mendapatkan berita berdasarkan ID admin
     public function AdminNews($id)
     {
-        $query = "SELECT * FROM news WHERE penulis_id = :id_admin";
-        $stmt = $this->connect->prepare($query);
-        $stmt->bindParam(':id_admin', $id, PDO::PARAM_INT);
-        $stmt->execute();
-
-        // Mengembalikan hasil sebagai array
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->newsModel->getNewsAdmin($id);
     }
 
 
     public function getNewsById($id)
     {
-        try {
-            $stmt = $this->connect->prepare("SELECT * FROM NEWS WHERE id_news = ?");
-            $stmt->execute([$id]);
-            return $stmt->fetch(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            // Log or display the error
-            echo "Error: " . $e->getMessage();
-            return null;
-        }
+        return $this->newsModel->getNewsById($id);
     }
 
     /**
@@ -91,12 +77,13 @@ class NewsController
 
         // Query untuk menyimpan berita
         try {
-            $query = "INSERT INTO news (judul, penulis_id, konten, gambar) VALUES (?, ?, ?, ?)";
-            $stmt = $this->connect->prepare($query);
-            $stmt->execute([$judul, $penulis_id, $konten, $gambarPath]);
+            $saved = $this->newsModel->insertNews($gambarPath, $judul, $konten, $penulis_id);
+            if (!$saved) {
+                return ['status' => 'error', 'message' => 'Gagal menyimpan berita.'];
+            }
 
             return ['status' => 'success', 'message' => 'Berita berhasil disimpan.'];
-        } catch (PDOException $e) {
+        } catch (Throwable $e) {
             return ['status' => 'error', 'message' => $e->getMessage()];
         }
     }
@@ -113,9 +100,7 @@ class NewsController
             }
 
             // Ambil data lama
-            $stmt = $this->connect->prepare("SELECT gambar FROM news WHERE id_news = ?");
-            $stmt->execute([$id]);
-            $oldNews = $stmt->fetch(PDO::FETCH_ASSOC);
+            $oldNews = $this->newsModel->getNewsById($id);
 
             if (!$oldNews) {
                 throw new Exception("Data berita tidak ditemukan.");
@@ -125,12 +110,13 @@ class NewsController
             $gambar = $gambarPath ?: $oldNews['gambar'];
 
             // Update data berita
-            $query = "UPDATE news SET judul = ?, konten = ?, gambar = ? WHERE id_news = ?";
-            $stmt = $this->connect->prepare($query);
-            $stmt->execute([$judul, $konten, $gambar, $id]);
+            $updated = $this->newsModel->updateNews($id, $judul, $konten, null, $gambar);
+            if (!$updated) {
+                return ['status' => 'error', 'message' => 'Gagal memperbarui data berita.'];
+            }
 
             return ['status' => 'success', 'message' => 'Berita berhasil diperbarui.'];
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return ['status' => 'error', 'message' => $e->getMessage()];
         }
     }
@@ -142,9 +128,7 @@ class NewsController
     {
         try {
             // Ambil path gambar untuk dihapus
-            $stmt = $this->connect->prepare("SELECT gambar FROM news WHERE id_news = ?");
-            $stmt->execute([$id]);
-            $news = $stmt->fetch(PDO::FETCH_ASSOC);
+            $news = $this->newsModel->getNewsById($id);
 
             if ($news && !empty($news['gambar'])) {
                 $filePath = __DIR__ . '/../' . $news['gambar'];
@@ -154,12 +138,13 @@ class NewsController
             }
 
             // Hapus berita dari database
-            $query = "DELETE FROM news WHERE id_news = ?";
-            $stmt = $this->connect->prepare($query);
-            $stmt->execute([$id]);
+            $deleted = $this->newsModel->deleteNews($id);
+            if (!$deleted) {
+                return ['status' => 'error', 'message' => 'Gagal menghapus data berita.'];
+            }
 
             return ['status' => 'success', 'message' => 'Berita berhasil dihapus.'];
-        } catch (PDOException $e) {
+        } catch (Throwable $e) {
             return ['status' => 'error', 'message' => $e->getMessage()];
         }
     }

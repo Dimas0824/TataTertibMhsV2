@@ -80,7 +80,7 @@ class UserController
     public function getAllMahasiswa()
     {
         try {
-            return $this->userModel->getAllUsers(); // Assuming getAllUsers() returns both mahasiswa and dosen
+            return $this->userModel->getAllMahasiswa();
         } catch (Exception $e) {
             echo "Error: " . $e->getMessage();
             return false;
@@ -89,19 +89,9 @@ class UserController
 
     public function getAdminName($id_admin)
     {
-        global $connect; // Gunakan koneksi global untuk PDO
         try {
-            $stmt = $connect->prepare("SELECT nama_admin FROM ADMIN WHERE id_admin = :id_admin");
-            $stmt->bindValue(':id_admin', $id_admin, PDO::PARAM_INT);
-            $stmt->execute();
-
-            $data = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($data) {
-                return $data['nama_admin'];
-            }
-            return null; // Jika admin tidak ditemukan
-
-        } catch (PDOException $e) {
+            return $this->userModel->getAdminName($id_admin);
+        } catch (Exception $e) {
             echo "Error: " . $e->getMessage();
             return null;
         }

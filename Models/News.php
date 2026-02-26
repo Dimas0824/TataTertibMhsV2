@@ -77,17 +77,26 @@ class News
         }
     }
 
-    public function updateNews($id, $judul, $konten, $penulis_id, $gambarPath = null)
+    public function updateNews($id, $judul, $konten, $penulis_id = null, $gambarPath = null)
     {
-        $query = "UPDATE NEWS SET judul = ?, konten = ?, penulis_id = ?" .
-            ($gambarPath ? ", gambar = ?" : "") . " WHERE id_news = ?";
+        $query = "UPDATE NEWS SET judul = ?, konten = ?";
+        $params = [$judul, $konten];
+
+        if ($penulis_id !== null) {
+            $query .= ", penulis_id = ?";
+            $params[] = $penulis_id;
+        }
+
+        if ($gambarPath) {
+            $query .= ", gambar = ?";
+            $params[] = $gambarPath;
+        }
+
+        $query .= " WHERE id_news = ?";
+        $params[] = $id;
 
         try {
             $stmt = $this->connect->prepare($query);
-            $params = [$judul, $konten, $penulis_id];
-            if ($gambarPath)
-                $params[] = $gambarPath;
-            $params[] = $id;
             $stmt->execute($params);
             return true;
         } catch (PDOException $e) {
@@ -98,7 +107,7 @@ class News
 
     public function deleteNews($news_id)
     {
-        $query = "DELETE FROM news WHERE id_news = ?";
+        $query = "DELETE FROM NEWS WHERE id_news = ?";
         try {
             $stmt = $this->connect->prepare($query);
             return $stmt->execute([$news_id]);

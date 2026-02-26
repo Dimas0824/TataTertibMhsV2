@@ -31,6 +31,20 @@ class Pelanggaran
         return $normalized;
     }
 
+    private function normalizeStatusTugas($value): string
+    {
+        $normalized = $this->normalizeNullableString($value, 50);
+        if ($normalized === null) {
+            return 'Belum Diberikan';
+        }
+
+        if (strcasecmp($normalized, 'Belum Dikumpulkan') === 0) {
+            return 'Belum Diberikan';
+        }
+
+        return $normalized;
+    }
+
     private function kirimNotifikasi(int $idDosen, int $idMahasiswa, int $idDetail, string $pesan, string $rolePenerima): void
     {
         try {
@@ -118,7 +132,7 @@ class Pelanggaran
         $tugasKhusus = $this->normalizeNullableString($tugas_khusus, 255);
         $suratMahasiswa = $this->normalizeNullableString($surat, 255);
         $statusPelanggaran = $this->normalizeNullableString($status, 50) ?? 'pending';
-        $statusTugas = $this->normalizeNullableString($status_tugas, 50) ?? 'Belum Dikumpulkan';
+        $statusTugas = $this->normalizeStatusTugas($status_tugas);
 
         try {
             $this->connect->beginTransaction();
@@ -219,7 +233,7 @@ class Pelanggaran
         $detailPelanggaran = $this->normalizeNullableString($detail_pelanggaran);
         $tugasKhusus = $this->normalizeNullableString($tugas_khusus, 255);
         $statusPelanggaran = $this->normalizeNullableString($status, 50) ?? 'pending';
-        $statusTugas = $this->normalizeNullableString($status_tugas, 50) ?? 'Belum Dikumpulkan';
+        $statusTugas = $this->normalizeStatusTugas($status_tugas);
 
         try {
             $stmtMhs = $this->connect->prepare("SELECT id_mhs FROM MAHASISWA WHERE nim = ? LIMIT 1");
