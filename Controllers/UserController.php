@@ -13,40 +13,53 @@ class UserController
         $this->userModel = new Users();
     }
 
-    public function login($username, $password)
+    public function login($username, $password, $userType = null)
     {
         try {
-            // Check mahasiswa login
-            $user = $this->userModel->getMahasiswaLogin($username, $password);
-            if ($user) {
-                session_start();
-                $_SESSION['username'] = $username;
-                $_SESSION['user_type'] = 'mahasiswa';
-                $_SESSION['user_data'] = $user;
-                set_app_flash_modal('success', 'Login berhasil.');
-                app_redirect('views/pelanggaran/pelanggaranpage.php');
+            $normalizedType = strtolower(trim((string) $userType));
+
+            $authFlows = [
+                'mahasiswa' => [
+                    'auth' => fn() => $this->userModel->getMahasiswaLogin($username, $password),
+                    'redirect' => 'views/pelanggaran/pelanggaranpage.php',
+                ],
+                'dosen' => [
+                    'auth' => fn() => $this->userModel->getDosenLogin($username, $password),
+                    'redirect' => 'views/pelanggaran/pelanggaran_dosen.php',
+                ],
+                'admin' => [
+                    'auth' => fn() => $this->userModel->getAdminLogin($username, $password),
+                    'redirect' => 'views/admin/home-admin.php',
+                ],
+            ];
+
+            $typeAlias = [
+                'nim' => 'mahasiswa',
+                'nidn' => 'dosen',
+                'nip' => 'admin',
+            ];
+
+            if (isset($typeAlias[$normalizedType])) {
+                $normalizedType = $typeAlias[$normalizedType];
             }
 
-            // Check dosen login
-            $user = $this->userModel->getDosenLogin($username, $password);
-            if ($user) {
-                session_start();
-                $_SESSION['username'] = $username;
-                $_SESSION['user_type'] = 'dosen';
-                $_SESSION['user_data'] = $user;
-                set_app_flash_modal('success', 'Login berhasil.');
-                app_redirect('views/pelanggaran/pelanggaran_dosen.php');
+            $defaultSequence = ['mahasiswa', 'dosen', 'admin'];
+            if (isset($authFlows[$normalizedType])) {
+                $sequence = array_merge([$normalizedType], array_values(array_diff($defaultSequence, [$normalizedType])));
+            } else {
+                $sequence = $defaultSequence;
             }
 
-            // Check admin login
-            $user = $this->userModel->getAdminLogin($username, $password);
-            if ($user) {
-                session_start();
-                $_SESSION['username'] = $username;
-                $_SESSION['user_type'] = 'admin';
-                $_SESSION['user_data'] = $user;
-                set_app_flash_modal('success', 'Login berhasil.');
-                app_redirect('views/admin/home-admin.php');
+            foreach ($sequence as $role) {
+                $user = ($authFlows[$role]['auth'])();
+                if ($user) {
+                    session_start();
+                    $_SESSION['username'] = $username;
+                    $_SESSION['user_type'] = $role;
+                    $_SESSION['user_data'] = $user;
+                    set_app_flash_modal('success', 'Login berhasil.');
+                    app_redirect($authFlows[$role]['redirect']);
+                }
             }
 
             return false;
@@ -78,7 +91,7 @@ class UserController
     {
         global $connect; // Gunakan koneksi global untuk PDO
         try {
-            $stmt = $connect->prepare("SELECT nama_admin FROM admin WHERE id_admin = :id_admin");
+            $stmt = $connect->prepare("SELECT nama_admin FROM ADMIN WHERE id_admin = :id_admin");
             $stmt->bindValue(':id_admin', $id_admin, PDO::PARAM_INT);
             $stmt->execute();
 

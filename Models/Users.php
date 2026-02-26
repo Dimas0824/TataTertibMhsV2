@@ -14,17 +14,17 @@ class Users
 
     public function getMahasiswaLogin($username, $password)
     {
-        return $this->authenticateUser('mahasiswa', 'nim', $username, $password);
+        return $this->authenticateUser('MAHASISWA', 'nim', $username, $password);
     }
 
     public function getDosenLogin($username, $password)
     {
-        return $this->authenticateUser('dosen', 'nidn', $username, $password);
+        return $this->authenticateUser('DOSEN', 'nidn', $username, $password);
     }
 
     public function getAdminLogin($username, $password)
     {
-        return $this->authenticateUser('admin', 'NIP', $username, $password);
+        return $this->authenticateUser('ADMIN', 'NIP', $username, $password);
     }
 
     private function authenticateUser($table, $identifierColumn, $username, $plainPassword)
@@ -61,7 +61,7 @@ class Users
 
             return $user;
         } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
+            error_log('Login DB Error [' . $table . '.' . $identifierColumn . ']: ' . $e->getMessage());
             return false;
         }
     }
@@ -69,11 +69,11 @@ class Users
     public function getAllUsers()
     {
         try {
-            $stmt = $this->connect->prepare("SELECT * FROM mahasiswa UNION ALL SELECT * FROM dosen");
+            $stmt = $this->connect->prepare("SELECT * FROM MAHASISWA UNION ALL SELECT * FROM DOSEN");
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
+            error_log('Get users DB Error: ' . $e->getMessage());
             return false;
         }
     }

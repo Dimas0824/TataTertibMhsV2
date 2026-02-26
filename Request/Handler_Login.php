@@ -8,10 +8,16 @@ app_require('helpers/flash_modal.php');
 $user = new UserController();
 try {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $username = $_POST['username'];
-        $password = $_POST['password'];
+        $userType = $_POST['user_type'] ?? null;
+        $username = trim((string) ($_POST['username'] ?? ''));
+        $password = (string) ($_POST['password'] ?? '');
 
-        if (!$user->login($username, $password)) {
+        if ($username === '' || $password === '') {
+            set_app_flash_modal('error', 'Username dan password wajib diisi.');
+            app_redirect('views/auth/login.php');
+        }
+
+        if (!$user->login($username, $password, $userType)) {
             set_app_flash_modal('error', 'Invalid username or password.');
             app_redirect('views/auth/login.php');
         }
