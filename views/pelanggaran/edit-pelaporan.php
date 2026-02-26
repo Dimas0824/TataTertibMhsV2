@@ -2,13 +2,13 @@
 <?php
 session_start();
 
-require_once "../Controllers/TatibController.php";
-require_once '../Controllers/UserController.php';
-require_once '../Controllers/PelanggaranController.php'; // Include PelanggaranController
-require_once __DIR__ . '/partials/app-shell.php';
+require_once dirname(__DIR__, 2) . '/Controllers/TatibController.php';
+require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
+require_once dirname(__DIR__, 2) . '/Controllers/PelanggaranController.php'; // Include PelanggaranController
+require_once dirname(__DIR__) . '/partials/app-shell.php';
 
 if (!isset($_SESSION['username'])) {
-    header("Location: login.php");
+    header("Location: ../auth/login.php");
     exit();
 }
 if (isset($_GET['logout'])) {
@@ -17,7 +17,7 @@ if (isset($_GET['logout'])) {
     exit();
 }
 if ($_SESSION['user_type'] === 'mahasiswa') {
-    header("Location: pelanggaranpage.php");
+    header("Location: ../pelanggaran/pelanggaranpage.php");
     exit();
 }
 if (isset($_GET['id'])) {
@@ -53,8 +53,8 @@ if($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>edit-Pelaporan</title>
-    <link rel="stylesheet" href="../css/global.css">
-    <link rel="stylesheet" href="../css/pelaporan.css">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/pelaporan.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -72,7 +72,7 @@ if($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
     <?php
     render_app_sidebar([
         'variant' => 'student',
-        'context' => 'views',
+        'context' => 'nested',
         'active' => 'pelanggaran',
     ]);
     ?>
@@ -82,7 +82,7 @@ if($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
         render_app_header([
             'title' => 'Edit Pelaporan',
             'showLogin' => false,
-            'loginHref' => 'login.php',
+            'loginHref' => '../auth/login.php',
             'roleLabel' => 'Dosen',
         ]);
         ?>
@@ -96,7 +96,7 @@ if($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
         </div>
 
         <div class="form-container">
-            <form id="pelanggaranForm" method="POST" action="../Request/Handler_Pelaporan.php">
+            <form id="pelanggaranForm" method="POST" action="../../Request/Handler_Pelaporan.php">
                 <!-- Added method POST -->
                 <input type="hidden" name="id_detail" value="<?= $id ?>">
                 <!-- NIM -->
@@ -176,7 +176,7 @@ if($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
                 </div>
             </form>
         </div>
-        <script src="../js/script_pelaporan.js"></script>
+        <script src="../../js/script_pelaporan.js"></script>
         <script>
             function showConfirmation() {
 

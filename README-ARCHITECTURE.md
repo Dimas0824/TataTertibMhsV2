@@ -36,7 +36,7 @@ DiscipLink V2 menggunakan pola sederhana berbasis **MVC + Request Handler**:
 - Model: `Models/Users.php`
 - Output:
   - sukses: set session role + redirect role page
-  - gagal: flash modal error ke `views/login.php`
+  - gagal: flash modal error ke `views/auth/login.php`
 
 ### 2) Pelaporan Pelanggaran
 - Endpoint: `Request/Handler_Pelaporan.php`

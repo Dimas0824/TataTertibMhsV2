@@ -1,8 +1,9 @@
 <?php
 session_start();
-require_once __DIR__ . '/../config.php';
-require_once '../Controllers/NewsController.php';
-require_once __DIR__ . '/../helpers/flash_modal.php';
+require_once __DIR__ . '/../helpers/path_helper.php';
+app_require('config.php');
+app_require('Controllers/NewsController.php');
+app_require('helpers/flash_modal.php');
 
 // Instansiasi controller
 $newsController = new NewsController();
@@ -118,5 +119,4 @@ try {
     set_app_flash_modal('error', 'Error: ' . $e->getMessage());
 }
 
-header("Location: ../views/news-admin.php");
-exit();
+app_redirect('views/admin/news-admin.php');

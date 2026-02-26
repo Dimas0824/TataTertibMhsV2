@@ -1,29 +1,35 @@
 <?php
-require_once '../Models/Tatib.php';
-require_once '../Models/Sanksi.php';
+require_once __DIR__ . '/../helpers/path_helper.php';
+app_require('Models/Tatib.php');
+app_require('Models/Sanksi.php');
 
-class TatibController {
+class TatibController
+{
     private $tatibModel;
     private $sanksiModel;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->tatibModel = new Tatib();
         $this->sanksiModel = new Sanksi();
     }
 
-    public function ReadTatib() {
+    public function ReadTatib()
+    {
         return $this->tatibModel->getAllTatib();
     }
 
-    public function ReadSanksi() {
+    public function ReadSanksi()
+    {
         return $this->sanksiModel->getAllSanksi();
     }
 
-    public function store($admin, $deskripsi, $tingkat, $poin): array {
+    public function store($admin, $deskripsi, $tingkat, $poin): array
+    {
         $result = $this->tatibModel->insertTatib(
-            $admin, 
-            $deskripsi, 
-            $tingkat, 
+            $admin,
+            $deskripsi,
+            $tingkat,
             $poin
         );
 
@@ -33,12 +39,13 @@ class TatibController {
         ];
     }
 
-    public function update($id, $admin, $deskripsi, $tingkat, $poin): array {
+    public function update($id, $admin, $deskripsi, $tingkat, $poin): array
+    {
         $result = $this->tatibModel->updateTatib(
             $id,
-            $admin, 
-            $deskripsi, 
-            $tingkat, 
+            $admin,
+            $deskripsi,
+            $tingkat,
             $poin
         );
 
@@ -48,7 +55,8 @@ class TatibController {
         ];
     }
 
-    public function delete($id): array {
+    public function delete($id): array
+    {
         $result = $this->tatibModel->deleteTatib($id);
 
         return [
@@ -57,7 +65,8 @@ class TatibController {
         ];
     }
 
-    public function getTatibDetail($id_tata_tertib) {
+    public function getTatibDetail($id_tata_tertib)
+    {
         return $this->tatibModel->getTatibById($id_tata_tertib);
     }
 }

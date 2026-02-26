@@ -1,15 +1,15 @@
 <?php
-require_once '../Controllers/UserController.php';
-require_once __DIR__ . '/partials/app-shell.php';
+require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
+require_once dirname(__DIR__) . '/partials/app-shell.php';
 
 session_start();
 if (isset($_SESSION['username'])) {
     // Redirect based on role
     if ($_SESSION['user_type'] === 'mahasiswa') {
-        header("Location: pelanggaranpage.php");
+        header("Location: ../pelanggaran/pelanggaranpage.php");
         exit();
     } else if ($_SESSION['user_type'] === 'dosen') {
-        header("Location: pelanggaran_dosen.php");
+        header("Location: ../pelanggaran/pelanggaran_dosen.php");
         exit();
     }
 }
@@ -22,8 +22,8 @@ if (isset($_SESSION['username'])) {
 
 <head>
     <title>Login Mahasiswa</title>
-    <link rel="stylesheet" href="../css/login.css">
-    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../../css/login.css">
+    <link rel="stylesheet" href="../../css/global.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,7 +39,7 @@ if (isset($_SESSION['username'])) {
     <?php
     render_app_sidebar([
         'variant' => 'guest',
-        'context' => 'views',
+        'context' => 'nested',
         'active' => null,
     ]);
     ?>
@@ -48,7 +48,7 @@ if (isset($_SESSION['username'])) {
         render_app_header([
             'title' => 'Login',
             'showLogin' => false,
-            'loginHref' => 'login.php',
+            'loginHref' => '../auth/login.php',
             'roleLabel' => null,
         ]);
         ?>
@@ -64,7 +64,7 @@ if (isset($_SESSION['username'])) {
             </section>
 
             <section class="login-panel">
-                <form class="login-form" method="POST" action="../Request/Handler_Login.php">
+                <form class="login-form" method="POST" action="../../Request/Handler_Login.php">
                     <h3>Selamat Datang</h3>
                     <p class="login-subtitle">Masuk ke akun DiscipLink kamu</p>
                     <input type="hidden" id="user-type" name="user_type" value="nim">
@@ -89,11 +89,11 @@ if (isset($_SESSION['username'])) {
         </main>
         <?php
         render_app_flash_modal([
-            'context' => 'views',
+            'context' => 'nested',
         ]);
         ?>
     </div>
-    <script src="../js/login.js">
+    <script src="../../js/login.js">
     </script>
 
 </body>

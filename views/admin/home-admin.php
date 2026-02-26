@@ -1,21 +1,21 @@
 <?php
 session_start();
 
-require_once '../Controllers/UserController.php';
-require_once '../Controllers/NewsController.php';
-require_once __DIR__ . '/partials/app-shell.php';
+require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
+require_once dirname(__DIR__, 2) . '/Controllers/NewsController.php';
+require_once dirname(__DIR__) . '/partials/app-shell.php';
 
 if (isset($_SESSION['username'])) {
     // Redirect based on role
     if ($_SESSION['user_type'] === 'mahasiswa') {
-        header("Location: pelanggaranpage.php");
+        header("Location: ../pelanggaran/pelanggaranpage.php");
         exit();
     } else if ($_SESSION['user_type'] === 'dosen') {
-      header("Location: pelanggaran_dosen.php");
+      header("Location: ../pelanggaran/pelanggaran_dosen.php");
       exit();
     }
   }if (!isset($_SESSION['username'])) {
-      header("Location: login.php");
+      header("Location: ../auth/login.php");
       exit();
   }
 
@@ -38,8 +38,8 @@ $newsData = $newsController->ReadNews();
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/global.css">
-    <link rel="stylesheet" href="../css/homepage.css">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/homepage.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
 </head>
 
@@ -47,7 +47,7 @@ $newsData = $newsController->ReadNews();
     <?php
     render_app_sidebar([
         'variant' => 'admin',
-        'context' => 'views',
+        'context' => 'nested',
         'active' => 'home',
     ]);
     ?>
@@ -56,7 +56,7 @@ $newsData = $newsController->ReadNews();
     render_app_header([
         'title' => 'Home Admin',
         'showLogin' => false,
-        'loginHref' => 'login.php',
+        'loginHref' => '../auth/login.php',
         'roleLabel' => 'Admin',
     ]);
     ?>
@@ -66,7 +66,7 @@ $newsData = $newsController->ReadNews();
                 <p>Sebuah sistem yang dirancang untuk mengelola aturan, <br>pelanggaran, dan sanksi di Universitas</p>
             </div>
             <div class="dashboard-container">
-                <img class="logo-disciplink" src="../img/ga logo aja.png">
+                <img class="logo-disciplink" src="../../img/ga logo aja.png">
                 <p>Disciplink adalah platform digital inovatif yang dirancang untuk menghubungkan mahasiswa dengan
                     sistem kedisiplinan kampus. Sebagai gabungan dari kata "Discipline" dan "Link", Disciplink berfokus
                     pada penyederhanaan proses pengelolaan tata tertib di lingkungan akademik, memudahkan mahasiswa dan
@@ -78,9 +78,9 @@ $newsData = $newsController->ReadNews();
                 <?php foreach($newsData as $news): ?>
                     <div class="news-content">
                         <?php if (!empty($news['gambar'])): ?>
-                            <img src="..//<?= htmlspecialchars($news['gambar']) ?>" alt="Gambar News">
+                            <img src="../../<?= htmlspecialchars($news['gambar']) ?>" alt="Gambar News">
                         <?php else : ?>
-                            <img src="../img/news.jpg" alt="gambar">
+                            <img src="../../img/news.jpg" alt="gambar">
                         <?php endif; ?>
                         <h3><?= htmlspecialchars($news['judul']) ?></h3>
                         <!-- ini nanti di ganti nama -->
@@ -93,8 +93,8 @@ $newsData = $newsController->ReadNews();
             </div>
             <div class="footer">
     <div class="footer-left">
-        <img class="footer-logo" src="../img/logo aja.png" alt="Logo">
-        <img class ="footer-logo" src="../img/logo.png" alt="logo polinema">
+        <img class="footer-logo" src="../../img/logo aja.png" alt="Logo">
+        <img class ="footer-logo" src="../../img/logo.png" alt="logo polinema">
     </div>
     <div class="footer-center">
         <p>Jl. Soekarno Hatta No.9, Jatimulyo, Kec. Lowokwaru, <br>Kota Malang, Jawa Timur 65141</p>
@@ -112,7 +112,7 @@ $newsData = $newsController->ReadNews();
 </div>
 <?php
 render_app_flash_modal([
-    'context' => 'views',
+    'context' => 'nested',
 ]);
 ?>
 </body>

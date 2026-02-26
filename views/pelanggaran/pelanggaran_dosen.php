@@ -1,11 +1,11 @@
 <?php
 session_start();
-require_once '../Controllers/UserController.php';
-require_once '../Controllers/PelanggaranController.php';
-require_once __DIR__ . '/partials/app-shell.php';
+require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
+require_once dirname(__DIR__, 2) . '/Controllers/PelanggaranController.php';
+require_once dirname(__DIR__) . '/partials/app-shell.php';
 
 if (!isset($_SESSION['username'])) {
-    header("Location: login.php");
+    header("Location: ../auth/login.php");
     exit();
 }
 
@@ -16,7 +16,7 @@ if (isset($_GET['logout'])) {
 }
 
 if ($_SESSION['user_type'] === 'mahasiswa') {
-    header("Location: pelanggaranpage.php");
+    header("Location: ../pelanggaran/pelanggaranpage.php");
     exit();
 }
 
@@ -32,8 +32,8 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pelanggaran</title>
-    <link rel="stylesheet" href="../css/global.css">
-    <link rel="stylesheet" href="../css/perlanggaranPage.css">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/perlanggaranPage.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,7 +46,7 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
     <?php
     render_app_sidebar([
         'variant' => 'student',
-        'context' => 'views',
+        'context' => 'nested',
         'active' => 'pelanggaran',
     ]);
     ?>
@@ -56,7 +56,7 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
         render_app_header([
             'title' => 'Pelanggaran',
             'showLogin' => false,
-            'loginHref' => 'login.php',
+            'loginHref' => '../auth/login.php',
             'roleLabel' => 'Dosen',
         ]);
         ?>
@@ -95,13 +95,13 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
                                 </td>
                                 <td>
                                     <?php if (!empty($detail['surat'])): ?>
-                                        <a href="<?= htmlspecialchars('../document/' . $detail['surat'], ENT_QUOTES, 'UTF-8') ?>"
+                                        <a href="<?= htmlspecialchars('../../document/' . $detail['surat'], ENT_QUOTES, 'UTF-8') ?>"
                                             target="_blank">Unduh Surat Pernyataan</a>
                                     <?php else: ?>
                                         <span>Tidak ada file surat yang diunggah.</span>
                                     <?php endif; ?>
                                     <?php if (!empty($detail['pengumpulan_tgsKhusus'])): ?>
-                                        <a href="<?= htmlspecialchars('../document/' . $detail['pengumpulan_tgsKhusus'], ENT_QUOTES, 'UTF-8') ?>"
+                                        <a href="<?= htmlspecialchars('../../document/' . $detail['pengumpulan_tgsKhusus'], ENT_QUOTES, 'UTF-8') ?>"
                                             target="_blank">Unduh Tugas Khusus</a>
                                     <?php else: ?>
                                         <span>Tidak ada file tugas yang diunggah.</span>
@@ -136,14 +136,14 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
 
         <?php
         render_app_footer([
-            'context' => 'views',
+            'context' => 'nested',
         ]);
         ?>
     </div>
 
     <?php
     render_app_flash_modal([
-        'context' => 'views',
+        'context' => 'nested',
     ]);
     ?>
 </body>

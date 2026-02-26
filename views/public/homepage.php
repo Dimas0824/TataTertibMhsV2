@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/partials/app-shell.php';
+require_once dirname(__DIR__) . '/partials/app-shell.php';
 
 $homeVariant = isset($_SESSION['username']) ? 'student' : 'guest';
 $homeRoleLabel = null;
@@ -21,7 +21,7 @@ render_app_sidebar([
     render_app_header([
         'title' => 'Home',
         'showLogin' => !isset($_SESSION['username']),
-        'loginHref' => 'views/login.php',
+        'loginHref' => 'views/auth/login.php',
         'roleLabel' => $homeRoleLabel,
     ]);
     ?>
@@ -32,8 +32,8 @@ render_app_sidebar([
             <h2>Tata Tertib Mahasiswa</h2>
             <p>Satu pusat informasi untuk aturan, pelanggaran, dan sanksi di lingkungan Politeknik Negeri Malang.</p>
             <div class="hero-actions">
-                <a href="views/listTatib.php" class="hero-btn hero-btn-primary">Lihat Tata Tertib</a>
-                <a href="views/pelanggaranpage.php" class="hero-btn hero-btn-secondary">Lihat Pelanggaran</a>
+                <a href="views/tatib/listTatib.php" class="hero-btn hero-btn-primary">Lihat Tata Tertib</a>
+                <a href="views/pelanggaran/pelanggaranpage.php" class="hero-btn hero-btn-secondary">Lihat Pelanggaran</a>
             </div>
         </div>
 

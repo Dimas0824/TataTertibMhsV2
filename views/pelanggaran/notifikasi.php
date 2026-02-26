@@ -1,10 +1,10 @@
 <?php
 session_start();
-require_once '../Controllers/UserController.php';
-require_once '../Controllers/PelanggaranController.php'; // Include PelanggaranController
-require_once __DIR__ . '/partials/app-shell.php';
+require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
+require_once dirname(__DIR__, 2) . '/Controllers/PelanggaranController.php'; // Include PelanggaranController
+require_once dirname(__DIR__) . '/partials/app-shell.php';
 if (!isset($_SESSION['username'])) {
-    header("Location: login.php");
+    header("Location: ../auth/login.php");
     exit();
 }
 
@@ -45,16 +45,16 @@ $notificationRole = $_SESSION['user_type'] === 'dosen' ? 'Dosen' : 'Mahasiswa';
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../../css/global.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
-    <link rel="stylesheet" href="../css/notifikasi.css">
+    <link rel="stylesheet" href="../../css/notifikasi.css">
 </head>
 
 <body>
     <?php
     render_app_sidebar([
         'variant' => 'student',
-        'context' => 'views',
+        'context' => 'nested',
         'active' => 'notifikasi',
     ]);
     ?>
@@ -63,7 +63,7 @@ $notificationRole = $_SESSION['user_type'] === 'dosen' ? 'Dosen' : 'Mahasiswa';
         render_app_header([
             'title' => 'Notifikasi',
             'showLogin' => false,
-            'loginHref' => 'login.php',
+            'loginHref' => '../auth/login.php',
             'roleLabel' => $notificationRole,
         ]);
         ?>
@@ -83,7 +83,7 @@ $notificationRole = $_SESSION['user_type'] === 'dosen' ? 'Dosen' : 'Mahasiswa';
 
         <?php
         render_app_footer([
-            'context' => 'views',
+            'context' => 'nested',
         ]);
         ?>
     </div>

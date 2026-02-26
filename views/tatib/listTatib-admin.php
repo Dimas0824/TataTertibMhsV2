@@ -1,22 +1,22 @@
 <?php
 session_start();
-require_once __DIR__ . '/../config.php';
+require_once dirname(__DIR__, 2) . '/config.php';
 
-require_once "../Controllers/TatibController.php";
-require_once '../Controllers/UserController.php';
-require_once __DIR__ . '/partials/app-shell.php';
+require_once dirname(__DIR__, 2) . '/Controllers/TatibController.php';
+require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
+require_once dirname(__DIR__) . '/partials/app-shell.php';
 
 if (isset($_SESSION['username'])) {
     // Redirect based on role
     if ($_SESSION['user_type'] === 'mahasiswa') {
-        header("Location: pelanggaranpage.php");
+        header("Location: ../pelanggaran/pelanggaranpage.php");
         exit();
     } else if ($_SESSION['user_type'] === 'dosen') {
-        header("Location: pelanggaran_dosen.php");
+        header("Location: ../pelanggaran/pelanggaran_dosen.php");
         exit();
     }
 } else {
-    header("Location: login.php");
+    header("Location: ../auth/login.php");
     exit();
 }
 
@@ -46,8 +46,8 @@ $tatibData = $tatibController->ReadTatib();
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/global.css">
-    <link rel="stylesheet" href="../css/tatib-admin.css">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/tatib-admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
 </head>
 
@@ -55,7 +55,7 @@ $tatibData = $tatibController->ReadTatib();
     <?php
     render_app_sidebar([
         'variant' => 'admin',
-        'context' => 'views',
+        'context' => 'nested',
         'active' => 'tatib',
     ]);
     ?>
@@ -64,7 +64,7 @@ $tatibData = $tatibController->ReadTatib();
         render_app_header([
             'title' => 'Tata Tertib Admin',
             'showLogin' => false,
-            'loginHref' => 'login.php',
+            'loginHref' => '../auth/login.php',
             'roleLabel' => 'Admin',
         ]);
         ?>
@@ -96,7 +96,7 @@ $tatibData = $tatibController->ReadTatib();
                                 <td><?= $tatib['tingkat'] ?></td>
                                 <td><?= $tatib['poin'] ?></td>
                                 <td class="button-cell">
-                                    <form action="../Request/Handler_Tatib.php" method="post">
+                                    <form action="../../Request/Handler_Tatib.php" method="post">
                                         <input type="hidden" name="id_tatib" value="<?= $tatib['id_tata_tertib'] ?>">
                                         <button class="delete" id="delete" name="delete"
                                             onclick="return confirm('Apakah anda yakin ingin menghapus?');"><i
@@ -153,7 +153,7 @@ $tatibData = $tatibController->ReadTatib();
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2>Tambah Pelanggaran</h2>
-                <form id="insertForm" method="POST" action="../Request/Handler_Tatib.php">
+                <form id="insertForm" method="POST" action="../../Request/Handler_Tatib.php">
                     <label for="insertAdmin">Id Admin:</label>
                     <input type="text" id="admin" name="admin" value="<?= $userData['id_admin'] ?>" required readonly>
 
@@ -180,22 +180,22 @@ $tatibData = $tatibController->ReadTatib();
         </div>
 
         <!-- javascript -->
-        <script src="../js/admin-tatib.js"></script>
+        <script src="../../js/admin-tatib.js"></script>
 
         <!-- footer -->
 
     </div>
     <?php
     render_app_flash_modal([
-        'context' => 'views',
+        'context' => 'nested',
     ]);
     ?>
 
 </body>
 <footer class="footer">
     <div class="footer-left">
-        <img class="footer-logo" src="../img/logo aja.png" alt="Logo">
-        <img class="footer-logo" src="../img/logo.png" alt="logo polinema">
+        <img class="footer-logo" src="../../img/logo aja.png" alt="Logo">
+        <img class="footer-logo" src="../../img/logo.png" alt="logo polinema">
     </div>
     <div class="footer-center">
         <p>Jl. Soekarno Hatta No.9, Jatimulyo, Kec. Lowokwaru, <br>Kota Malang, Jawa Timur 65141</p>

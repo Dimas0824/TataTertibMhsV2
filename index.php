@@ -35,7 +35,7 @@ $newsData = $newsController->ReadNews();
 <body>
 
     <?php
-    include 'views/homepage.php';
+    include 'views/public/homepage.php';
     ?>
 
     <script src="js/script.js"></script>

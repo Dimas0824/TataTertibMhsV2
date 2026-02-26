@@ -1,10 +1,10 @@
 <?php
 session_start();
-require_once __DIR__ . '/../config.php';
+require_once dirname(__DIR__, 2) . '/config.php';
 
-require_once "../Controllers/TatibController.php";
-require_once '../Controllers/UserController.php';
-require_once __DIR__ . '/partials/app-shell.php';
+require_once dirname(__DIR__, 2) . '/Controllers/TatibController.php';
+require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
+require_once dirname(__DIR__) . '/partials/app-shell.php';
 
 if (isset($_GET['logout'])) {
     $userController = new UserController();
@@ -30,12 +30,12 @@ if (isset($_SESSION['user_type'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>List Tatib</title>
-    <link rel="stylesheet" href="../css/global.css">
-    <link rel="stylesheet" href="../css/listTatib.css">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/listTatib.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <script src="../js/script.js"></script>
+    <script src="../../js/script.js"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">
@@ -46,7 +46,7 @@ if (isset($_SESSION['user_type'])) {
     <?php
     render_app_sidebar([
         'variant' => $listTatibVariant,
-        'context' => 'views',
+        'context' => 'nested',
         'active' => 'tatib',
     ]);
     ?>
@@ -57,7 +57,7 @@ if (isset($_SESSION['user_type'])) {
         render_app_header([
             'title' => 'List Tata Tertib',
             'showLogin' => !isset($_SESSION['username']),
-            'loginHref' => 'login.php',
+            'loginHref' => '../auth/login.php',
             'roleLabel' => $listTatibRole,
         ]);
         ?>
@@ -164,7 +164,7 @@ if (isset($_SESSION['user_type'])) {
 
         <?php
         render_app_footer([
-            'context' => 'views',
+            'context' => 'nested',
         ]);
         ?>
     </div>

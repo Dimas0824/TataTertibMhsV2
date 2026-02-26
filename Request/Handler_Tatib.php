@@ -1,8 +1,9 @@
 <?php
 session_start();
-require_once __DIR__ . '/../config.php';
-require_once '../Controllers/TatibController.php';
-require_once __DIR__ . '/../helpers/flash_modal.php';
+require_once __DIR__ . '/../helpers/path_helper.php';
+app_require('config.php');
+app_require('Controllers/TatibController.php');
+app_require('helpers/flash_modal.php');
 
 
 $tatibController = new TatibController();
@@ -33,7 +34,6 @@ if (isset($_POST['store']) && isset($_POST['admin']) && isset($_POST['deskripsi'
     set_app_flash_modal('error', 'Aksi tata tertib tidak valid.');
 }
 
-header("Location: ../views/listTatib-admin.php");
-exit();
+app_redirect('views/tatib/listTatib-admin.php');
 
 ?>

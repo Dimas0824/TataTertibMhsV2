@@ -7,31 +7,44 @@ if (!function_exists('get_app_nav_items')) {
     function get_app_nav_items(string $variant, string $context): array
     {
         $variant = in_array($variant, ['guest', 'student', 'admin'], true) ? $variant : 'guest';
-        $context = $context === 'root' ? 'root' : 'views';
+        $context = in_array($context, ['root', 'views', 'nested'], true) ? $context : 'views';
 
         $rootMap = [
             'home' => 'index.php',
-            'tatib' => 'views/listTatib.php',
-            'pelanggaran' => 'views/pelanggaranpage.php',
-            'notifikasi' => 'views/notifikasi.php',
+            'tatib' => 'views/tatib/listTatib.php',
+            'pelanggaran' => 'views/pelanggaran/pelanggaranpage.php',
+            'notifikasi' => 'views/pelanggaran/notifikasi.php',
             'logout' => '?logout=true',
-            'news' => 'views/news-admin.php',
-            'admin_home' => 'views/home-admin.php',
-            'admin_tatib' => 'views/listTatib-admin.php',
+            'news' => 'views/admin/news-admin.php',
+            'admin_home' => 'views/admin/home-admin.php',
+            'admin_tatib' => 'views/tatib/listTatib-admin.php',
         ];
 
         $viewsMap = [
             'home' => '../index.php',
-            'tatib' => 'listTatib.php',
-            'pelanggaran' => 'pelanggaranpage.php',
-            'notifikasi' => 'notifikasi.php',
+            'tatib' => 'tatib/listTatib.php',
+            'pelanggaran' => 'pelanggaran/pelanggaranpage.php',
+            'notifikasi' => 'pelanggaran/notifikasi.php',
             'logout' => '../?logout=true',
-            'news' => 'news-admin.php',
-            'admin_home' => 'home-admin.php',
-            'admin_tatib' => 'listTatib-admin.php',
+            'news' => 'admin/news-admin.php',
+            'admin_home' => 'admin/home-admin.php',
+            'admin_tatib' => 'tatib/listTatib-admin.php',
         ];
 
-        $hrefMap = $context === 'root' ? $rootMap : $viewsMap;
+        $nestedMap = [
+            'home' => '../../index.php',
+            'tatib' => '../tatib/listTatib.php',
+            'pelanggaran' => '../pelanggaran/pelanggaranpage.php',
+            'notifikasi' => '../pelanggaran/notifikasi.php',
+            'logout' => '../../?logout=true',
+            'news' => '../admin/news-admin.php',
+            'admin_home' => '../admin/home-admin.php',
+            'admin_tatib' => '../tatib/listTatib-admin.php',
+        ];
+
+        $hrefMap = $context === 'root'
+            ? $rootMap
+            : ($context === 'nested' ? $nestedMap : $viewsMap);
 
         $baseItems = [
             'guest' => [
@@ -63,9 +76,10 @@ if (!function_exists('render_app_sidebar')) {
     {
         $variant = (string) ($config['variant'] ?? 'guest');
         $context = (string) ($config['context'] ?? 'views');
+        $context = in_array($context, ['root', 'views', 'nested'], true) ? $context : 'views';
         $active = isset($config['active']) ? (string) $config['active'] : null;
-        $assetPrefix = $context === 'root' ? '' : '../';
-        $homeHref = $context === 'root' ? 'index.php' : '../index.php';
+        $assetPrefix = $context === 'root' ? '' : ($context === 'nested' ? '../../' : '../');
+        $homeHref = $context === 'root' ? 'index.php' : ($context === 'nested' ? '../../index.php' : '../index.php');
 
         $navItems = get_app_nav_items($variant, $context);
         ?>
@@ -111,7 +125,7 @@ if (!function_exists('render_app_header')) {
     {
         $title = (string) ($config['title'] ?? 'DiscipLink');
         $showLogin = (bool) ($config['showLogin'] ?? false);
-        $loginHref = (string) ($config['loginHref'] ?? 'views/login.php');
+        $loginHref = (string) ($config['loginHref'] ?? 'views/auth/login.php');
         $roleLabel = isset($config['roleLabel']) && $config['roleLabel'] !== ''
             ? (string) $config['roleLabel']
             : null;
@@ -137,8 +151,8 @@ if (!function_exists('render_app_footer')) {
     function render_app_footer(array $config = []): void
     {
         $context = (string) ($config['context'] ?? 'views');
-        $context = $context === 'root' ? 'root' : 'views';
-        $assetPrefix = $context === 'root' ? '' : '../';
+        $context = in_array($context, ['root', 'views', 'nested'], true) ? $context : 'views';
+        $assetPrefix = $context === 'root' ? '' : ($context === 'nested' ? '../../' : '../');
 
         $address = (string) ($config['address'] ?? 'Jl. Soekarno Hatta No.9, Jatimulyo, Kec. Lowokwaru, Kota Malang, Jawa Timur 65141');
         $phoneLabel = (string) ($config['phoneLabel'] ?? '(0341) 404424');
@@ -187,8 +201,8 @@ if (!function_exists('render_app_flash_modal')) {
     function render_app_flash_modal(array $config = []): void
     {
         $context = (string) ($config['context'] ?? 'views');
-        $context = $context === 'root' ? 'root' : 'views';
-        $assetPrefix = $context === 'root' ? '' : '../';
+        $context = in_array($context, ['root', 'views', 'nested'], true) ? $context : 'views';
+        $assetPrefix = $context === 'root' ? '' : ($context === 'nested' ? '../../' : '../');
         $flashModal = consume_app_flash_modal();
         ?>
         <link rel="stylesheet" href="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>css/app-modal.css">

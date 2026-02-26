@@ -1,9 +1,10 @@
 <?php
 session_start();
-require_once __DIR__ . '/../config.php';
-require_once '../Controllers/PelanggaranController.php';
-require_once '../Controllers/TatibController.php';
-require_once __DIR__ . '/../helpers/flash_modal.php';
+require_once __DIR__ . '/../helpers/path_helper.php';
+app_require('config.php');
+app_require('Controllers/PelanggaranController.php');
+app_require('Controllers/TatibController.php');
+app_require('helpers/flash_modal.php');
 
 $pelanggaranController = new PelanggaranController();
 $tatibController = new TatibController();
@@ -98,6 +99,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    }
 }
 
-header("Location: ../views/pelanggaran_dosen.php");
-exit();
+app_redirect('views/pelanggaran/pelanggaran_dosen.php');
 ?>

@@ -119,7 +119,7 @@
     };
 
     let lookupRequestId = 0;
-    const lookupEndpoint = '../Request/Handler_Pelaporan.php?action=lookup_mahasiswa';
+    const lookupEndpoint = '../../Request/Handler_Pelaporan.php?action=lookup_mahasiswa';
 
     const lookupMahasiswa = async () => {
         if (!nimInput) {

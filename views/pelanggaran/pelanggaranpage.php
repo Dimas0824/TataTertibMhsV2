@@ -1,10 +1,10 @@
 <?php
 session_start();
-require_once '../Controllers/UserController.php';
-require_once '../Controllers/PelanggaranController.php';
-require_once __DIR__ . '/partials/app-shell.php';
+require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
+require_once dirname(__DIR__, 2) . '/Controllers/PelanggaranController.php';
+require_once dirname(__DIR__) . '/partials/app-shell.php';
 if (!isset($_SESSION['username'])) {
-    header("Location: login.php");
+    header("Location: ../auth/login.php");
     exit();
 }
 
@@ -15,7 +15,7 @@ if (isset($_GET['logout'])) {
 }
 
 if ($_SESSION['user_type'] === 'dosen') {
-    header("Location: pelanggaran_dosen.php");
+    header("Location: ../pelanggaran/pelanggaran_dosen.php");
     exit();
 }
 
@@ -42,9 +42,9 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pelanggaran</title>
-    <link rel="stylesheet" href="../css/global.css">
-    <link rel="stylesheet" href="../css/perlanggaranPage.css">
-    <link rel="stylesheet" href="../css/modal.css">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/perlanggaranPage.css">
+    <link rel="stylesheet" href="../../css/modal.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -57,7 +57,7 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
     <?php
     render_app_sidebar([
         'variant' => 'student',
-        'context' => 'views',
+        'context' => 'nested',
         'active' => 'pelanggaran',
     ]);
     ?>
@@ -68,7 +68,7 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
         render_app_header([
             'title' => 'Pelanggaran',
             'showLogin' => false,
-            'loginHref' => 'login.php',
+            'loginHref' => '../auth/login.php',
             'roleLabel' => 'Mahasiswa',
         ]);
         ?>
@@ -103,7 +103,7 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
                                 <td><?= htmlspecialchars($detail['sanksi']) ?></td>
                                 <td><?= htmlspecialchars($detail['nama_lengkap']) ?></td>
                                 <td><?= htmlspecialchars($detail['tugas_khusus'] ?? 'Tidak Ada Tugas') ?></td>
-                                <td><a href="<?= htmlspecialchars('../document/SURAT PERNYATAAN TI.pdf') ?>"
+                                <td><a href="<?= htmlspecialchars('../../document/SURAT PERNYATAAN TI.pdf') ?>"
                                         target="_blank">Unduh File</a></td>
                                 <td><?= htmlspecialchars($detail['poin']) ?></td>
                                 <td><?= htmlspecialchars($detail['status']) ?></td>
@@ -132,7 +132,7 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
 
         <?php
         render_app_footer([
-            'context' => 'views',
+            'context' => 'nested',
         ]);
         ?>
     </div>
@@ -171,12 +171,12 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
 
     <?php
     render_app_flash_modal([
-        'context' => 'views',
+        'context' => 'nested',
     ]);
     ?>
 
     <!-- JavaScript -->
-    <script src="../js/script-pelanggaran.js"></script>
+    <script src="../../js/script-pelanggaran.js"></script>
     <script>
         const showUploadFeedback = (payload) => {
             if (window.AppModal && typeof window.AppModal.show === 'function') {
@@ -193,7 +193,7 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
                 const formData = new FormData(form);
 
                 try {
-                    const response = await fetch('../Request/Handler_uploads.php', {
+                    const response = await fetch('../../Request/Handler_uploads.php', {
                         method: 'POST',
                         body: formData,
                         headers: {

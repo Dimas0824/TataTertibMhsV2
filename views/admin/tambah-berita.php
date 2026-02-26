@@ -1,23 +1,23 @@
 <?php
 session_start();
-require_once __DIR__ . '/../config.php';
+require_once dirname(__DIR__, 2) . '/config.php';
 
-require_once "../Controllers/NewsController.php";
-require_once '../Controllers/UserController.php';
-require_once __DIR__ . '/partials/app-shell.php';
+require_once dirname(__DIR__, 2) . '/Controllers/NewsController.php';
+require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
+require_once dirname(__DIR__) . '/partials/app-shell.php';
 
 if (isset($_SESSION['username'])) {
     // Redirect based on role
     if ($_SESSION['user_type'] === 'mahasiswa') {
-        header("Location: pelanggaranpage.php");
+        header("Location: ../pelanggaran/pelanggaranpage.php");
         exit();
     } else if ($_SESSION['user_type'] === 'dosen') {
-        header("Location: pelanggaran_dosen.php");
+        header("Location: ../pelanggaran/pelanggaran_dosen.php");
         exit();
     }
 }
 if (!isset($_SESSION['username'])) {
-    header("Location: login.php");
+    header("Location: ../auth/login.php");
     exit();
 }
 
@@ -48,8 +48,8 @@ $newsData = $newsController->AdminNews($id_admin);
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/global.css">
-    <link rel="stylesheet" href="../css/news-form.css">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/news-form.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
 </head>
 
@@ -57,7 +57,7 @@ $newsData = $newsController->AdminNews($id_admin);
     <?php
     render_app_sidebar([
         'variant' => 'admin',
-        'context' => 'views',
+        'context' => 'nested',
         'active' => 'news',
     ]);
     ?>
@@ -66,14 +66,14 @@ $newsData = $newsController->AdminNews($id_admin);
         render_app_header([
             'title' => 'Tambah Berita',
             'showLogin' => false,
-            'loginHref' => 'login.php',
+            'loginHref' => '../auth/login.php',
             'roleLabel' => 'Admin',
         ]);
         ?>
         <div class="judul">
             <h1>Tambah Berita</h1>
         </div>
-        <form id="insertBeritaForm" method="POST" action="../Request/Handler_News.php" enctype="multipart/form-data">
+        <form id="insertBeritaForm" method="POST" action="../../Request/Handler_News.php" enctype="multipart/form-data">
             <label for="insertPenulisNama">Penulis:</label>
             <input type="text" id="insertPenulisNama" name="penulis_nama"
                 value="<?= htmlspecialchars($userData['nama_admin']) ?>" required readonly>
