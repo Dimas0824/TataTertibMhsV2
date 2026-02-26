@@ -83,6 +83,24 @@ class PelanggaranController
     {
         return $this->pelanggaranModel->getUpdatePelanggar($id);
     }
+
+    public function getMahasiswaByNim($nim)
+    {
+        if (!$nim) {
+            return null;
+        }
+
+        return $this->pelanggaranModel->getMahasiswaByNim((string) $nim);
+    }
+
+    public function getDefaultSanksiByTingkat($tingkat)
+    {
+        if (!$tingkat) {
+            return null;
+        }
+
+        return $this->pelanggaranModel->getDefaultSanksiByTingkat((string) $tingkat);
+    }
 }
 
 ?>

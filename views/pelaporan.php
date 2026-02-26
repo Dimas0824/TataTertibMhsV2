@@ -25,7 +25,6 @@ $userData = $_SESSION['user_data'];
 
 $tatibController = new TatibController();
 $tatibData = $tatibController->ReadTatib();
-$sanksiData = $tatibController->ReadSanksi();
 ?>
 
 <!DOCTYPE html>
@@ -84,18 +83,25 @@ $sanksiData = $tatibController->ReadSanksi();
                 <div class="form-group">
                     <label for="nim">NIM</label>
                     <input type="text" id="nim" name="nim" placeholder="NIM" required>
+                    <small id="nimHelpText">Isi NIM, identitas mahasiswa akan terisi otomatis.</small>
                 </div>
 
                 <!-- Nama -->
                 <div class="form-group">
                     <label for="nama">Nama</label>
-                    <input type="text" id="nama" name="nama" placeholder="Nama Lengkap">
+                    <input type="text" id="nama" name="nama" placeholder="Nama Lengkap" readonly>
                 </div>
 
                 <!-- Semester -->
                 <div class="form-group">
                     <label for="semester">Semester</label>
-                    <input type="text" id="semester" name="semester" placeholder="Semester">
+                    <input type="text" id="semester" name="semester" placeholder="Semester" readonly>
+                </div>
+
+                <!-- Program Studi -->
+                <div class="form-group">
+                    <label for="prodi">Program Studi</label>
+                    <input type="text" id="prodi" name="prodi" placeholder="Program Studi" readonly>
                 </div>
 
                 <!-- Tingkat -->
@@ -122,26 +128,6 @@ $sanksiData = $tatibController->ReadSanksi();
                         </option>
                         <?php endforeach; ?>
                     </select>
-                </div>
-
-                <!-- Sanksi -->
-                <div class="form-group" id="sanksi-container">
-                    <label for="sanksi">Sanksi</label>
-                    <select id="sanksi" name="sanksi" required>
-                        <option value="">Pilih Sanksi</option>
-                        <?php foreach($sanksiData as $sanksi) :?>
-                        <option value="<?= $sanksi['id_sanksi']?>" data-tingkat="<?= $sanksi['tingkat']?>">
-                            <?= $sanksi['deskripsi']?>
-                        </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-
-                <!-- Deskripsi Pelanggaran -->
-                <div class="form-group">
-                    <label for="deskripsiPelanggaran">Deskripsi Pelanggaran</label>
-                    <textarea id="deskripsiPelanggaran" name="deskripsiPelanggaran" required></textarea>
                 </div>
 
                 <!-- Deskripsi Tugas Khusus -->
