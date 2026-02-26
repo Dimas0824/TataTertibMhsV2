@@ -41,7 +41,7 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
         'robots' => 'noindex, nofollow',
     ]);
     ?>
-    <link rel="icon" type="image/png" href="../../img/logo aja.png">
+    <?php app_seo_favicon_tags('../../'); ?>
     <link rel="stylesheet" href="../../css/global.css">
     <link rel="stylesheet" href="../../css/perlanggaranPage.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />

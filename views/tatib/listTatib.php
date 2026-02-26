@@ -38,13 +38,14 @@ if (isset($_SESSION['user_type'])) {
         'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
     ]);
     ?>
-    <link rel="icon" type="image/png" href="../../img/logo aja.png">
+    <?php app_seo_favicon_tags('../../'); ?>
     <link rel="stylesheet" href="../../css/global.css">
     <link rel="stylesheet" href="../../css/listTatib.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <script defer src="../../js/script.js"></script>
+    <script defer
+        src="<?= htmlspecialchars(app_seo_script_src('js/script.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">

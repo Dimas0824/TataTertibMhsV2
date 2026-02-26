@@ -6,6 +6,7 @@ require_once dirname(__DIR__, 2) . '/helpers/seo_helper.php';
 
 if (!defined('APP_CANONICAL_ENFORCED')) {
     app_seo_enforce_canonical_host();
+    app_seo_apply_security_headers();
     define('APP_CANONICAL_ENFORCED', true);
 }
 
@@ -121,7 +122,7 @@ if (!function_exists('render_app_sidebar')) {
             </ul>
         </aside>
 
-        <script defer src="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>js/layout-nav.js"></script>
+        <script defer src="<?= htmlspecialchars(app_seo_script_src('js/layout-nav.js', $assetPrefix), ENT_QUOTES, 'UTF-8') ?>"></script>
         <?php
     }
 }
@@ -230,7 +231,7 @@ if (!function_exists('render_app_flash_modal')) {
                 window.__APP_FLASH_MODAL = <?= json_encode($flashModal, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
             </script>
         <?php endif; ?>
-        <script defer src="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>js/app-modal.js"></script>
+        <script defer src="<?= htmlspecialchars(app_seo_script_src('js/app-modal.js', $assetPrefix), ENT_QUOTES, 'UTF-8') ?>"></script>
         <?php
     }
 }

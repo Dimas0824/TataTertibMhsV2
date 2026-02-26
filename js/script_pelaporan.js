@@ -49,6 +49,13 @@
         });
     };
 
+    const applySelectEnhancement = () => {
+        refreshSelect2(jenisPelanggaranSelect, 'Cari jenis pelanggaran');
+        if (sanksiSelect) {
+            refreshSelect2(sanksiSelect, 'Pilih sanksi');
+        }
+    };
+
     const toggleTugasKhusus = (tingkat) => {
         if (!deskripsiTugasContainer) {
             return;
@@ -183,18 +190,14 @@
         setSelectOptionsByTingkat(jenisPelanggaranSelect, allJenisOptions, tingkat, 'Pilih Jenis Pelanggaran');
         setSelectOptionsByTingkat(sanksiSelect, allSanksiOptions, tingkat, 'Pilih Sanksi');
         toggleTugasKhusus(tingkat);
-        refreshSelect2(jenisPelanggaranSelect, 'Cari jenis pelanggaran');
-        if (sanksiSelect) {
-            refreshSelect2(sanksiSelect, 'Pilih sanksi');
-        }
+        applySelectEnhancement();
     });
 
     setSelectOptionsByTingkat(jenisPelanggaranSelect, allJenisOptions, tingkatSelect.value, 'Pilih Jenis Pelanggaran');
     setSelectOptionsByTingkat(sanksiSelect, allSanksiOptions, tingkatSelect.value, 'Pilih Sanksi');
-    refreshSelect2(jenisPelanggaranSelect, 'Cari jenis pelanggaran');
-    if (sanksiSelect) {
-        refreshSelect2(sanksiSelect, 'Pilih sanksi');
-    }
+    applySelectEnhancement();
+
+    window.addEventListener('disciplink:select2-ready', applySelectEnhancement);
 
     if (nimInput && nimInput.value.trim() !== '' && form && form.getAttribute('action')) {
         lookupMahasiswa();

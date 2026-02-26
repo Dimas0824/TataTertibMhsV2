@@ -51,7 +51,7 @@ $newsData = $newsController->AdminNews($id_admin);
         'robots' => 'noindex, nofollow',
     ]);
     ?>
-    <link rel="icon" type="image/png" href="../../img/logo aja.png">
+    <?php app_seo_favicon_tags('../../'); ?>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link

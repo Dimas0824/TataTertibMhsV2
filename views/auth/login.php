@@ -33,7 +33,7 @@ if (isset($_SESSION['username'])) {
         'robots' => 'noindex, nofollow',
     ]);
     ?>
-    <link rel="icon" type="image/png" href="../../img/logo aja.png">
+    <?php app_seo_favicon_tags('../../'); ?>
     <link rel="stylesheet" href="../../css/login.css">
     <link rel="stylesheet" href="../../css/global.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -105,7 +105,8 @@ if (isset($_SESSION['username'])) {
         ]);
         ?>
     </div>
-    <script defer src="../../js/login.js"></script>
+    <script defer
+        src="<?= htmlspecialchars(app_seo_script_src('js/login.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
 
 </body>
 

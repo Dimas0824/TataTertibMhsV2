@@ -49,7 +49,7 @@ $tatibData = $tatibController->ReadTatib();
         'robots' => 'noindex, nofollow',
     ]);
     ?>
-    <link rel="icon" type="image/png" href="../../img/logo aja.png">
+    <?php app_seo_favicon_tags('../../'); ?>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -190,7 +190,8 @@ $tatibData = $tatibController->ReadTatib();
         </div>
 
         <!-- javascript -->
-        <script defer src="../../js/admin-tatib.js"></script>
+        <script defer
+            src="<?= htmlspecialchars(app_seo_script_src('js/admin-tatib.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
         <?php
         render_app_footer([
             'context' => 'nested',
@@ -205,4 +206,5 @@ $tatibData = $tatibController->ReadTatib();
     ?>
 
 </body>
+
 </html>

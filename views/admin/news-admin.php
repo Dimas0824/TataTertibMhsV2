@@ -53,7 +53,7 @@ $newsData = $newsController->AdminNews(id: $id_admin);
         'robots' => 'noindex, nofollow',
     ]);
     ?>
-    <link rel="icon" type="image/png" href="../../img/logo aja.png">
+    <?php app_seo_favicon_tags('../../'); ?>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -107,8 +107,8 @@ $newsData = $newsController->AdminNews(id: $id_admin);
                                 <td><?= htmlspecialchars($news['judul']) ?></td>
                                 <td>
                                     <?php if (!empty($news['gambar'])): ?>
-                                        <img src="../../<?= htmlspecialchars($news['gambar']) ?>" alt="Gambar News"
-                                            width="160" height="90" loading="lazy" decoding="async" style="max-width: 100px;">
+                                        <img src="../../<?= htmlspecialchars($news['gambar']) ?>" alt="Gambar News" width="160"
+                                            height="90" loading="lazy" decoding="async" style="max-width: 100px;">
                                     <?php else: ?>
                                         <p>Tidak ada gambar</p>
                                     <?php endif; ?>
@@ -182,7 +182,8 @@ $newsData = $newsController->AdminNews(id: $id_admin);
 </div> -->
 
         <!-- javascript -->
-        <script defer src="../../js/script-news.js"></script>
+        <script defer
+            src="<?= htmlspecialchars(app_seo_script_src('js/script-news.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
         <?php
         render_app_footer([
             'context' => 'nested',
@@ -195,4 +196,5 @@ $newsData = $newsController->AdminNews(id: $id_admin);
     ]);
     ?>
 </body>
+
 </html>

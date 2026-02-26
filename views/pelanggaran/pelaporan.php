@@ -43,7 +43,7 @@ $tatibData = $tatibController->ReadTatib();
         'robots' => 'noindex, nofollow',
     ]);
     ?>
-    <link rel="icon" type="image/png" href="../../img/logo aja.png">
+    <?php app_seo_favicon_tags('../../'); ?>
     <link rel="stylesheet" href="../../css/global.css">
     <link rel="stylesheet" href="../../css/pelaporan.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
@@ -54,9 +54,54 @@ $tatibData = $tatibController->ReadTatib();
         rel="stylesheet">
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <!-- Select2 JS -->
-    <script defer src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        (function () {
+            var loaded = false;
+            var pending = null;
+
+            function loadScript(src) {
+                return new Promise(function (resolve, reject) {
+                    var script = document.createElement('script');
+                    script.src = src;
+                    script.async = true;
+                    script.onload = resolve;
+                    script.onerror = reject;
+                    document.head.appendChild(script);
+                });
+            }
+
+            function loadVendorScripts() {
+                if (loaded) {
+                    return Promise.resolve();
+                }
+                if (pending) {
+                    return pending;
+                }
+
+                pending = loadScript('https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js')
+                    .then(function () {
+                        return loadScript('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js');
+                    })
+                    .then(function () {
+                        loaded = true;
+                        window.dispatchEvent(new Event('disciplink:select2-ready'));
+                    })
+                    .catch(function () {
+                        pending = null;
+                    });
+
+                return pending;
+            }
+
+            ['pointerdown', 'touchstart', 'focusin', 'keydown'].forEach(function (eventName) {
+                window.addEventListener(eventName, loadVendorScripts, { once: true });
+            });
+
+            window.addEventListener('load', function () {
+                setTimeout(loadVendorScripts, 1400);
+            }, { once: true });
+        })();
+    </script>
 </head>
 
 <body>
@@ -79,10 +124,10 @@ $tatibData = $tatibController->ReadTatib();
         ?>
         <div class="profile">
             <p><strong>Nama :
-                    <?= $userData['nama_lengkap']?>
+                    <?= $userData['nama_lengkap'] ?>
                 </strong></p>
             <p><strong>NIP :
-                    <?= $userData['nidn']?>
+                    <?= $userData['nidn'] ?>
                 </strong></p>
         </div>
 
@@ -132,10 +177,10 @@ $tatibData = $tatibController->ReadTatib();
                     <label for="jenisPelanggaran">Jenis Pelanggaran</label>
                     <select id="jenisPelanggaran" name="jenisPelanggaran" required>
                         <option value="" readonly>Pilih Jenis Pelanggaran</option>
-                        <?php foreach($tatibData as $tatib) :?>
-                        <option value="<?= $tatib['id_tata_tertib']?>" data-tingkat="<?= $tatib['tingkat']?>">
-                            <?= $tatib['deskripsi']?>
-                        </option>
+                        <?php foreach ($tatibData as $tatib): ?>
+                            <option value="<?= $tatib['id_tata_tertib'] ?>" data-tingkat="<?= $tatib['tingkat'] ?>">
+                                <?= $tatib['deskripsi'] ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -153,7 +198,8 @@ $tatibData = $tatibController->ReadTatib();
                 </div>
             </form>
         </div>
-        <script defer src="../../js/script_pelaporan.js"></script>
+        <script defer
+            src="<?= htmlspecialchars(app_seo_script_src('js/script_pelaporan.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
         <script>
             function showConfirmation() {
 

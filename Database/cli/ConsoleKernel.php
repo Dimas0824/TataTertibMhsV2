@@ -112,7 +112,9 @@ class ConsoleKernel
             . ' -S '
             . escapeshellarg($host . ':' . $port)
             . ' -t '
-            . escapeshellarg($this->rootPath);
+            . escapeshellarg($this->rootPath)
+            . ' '
+            . escapeshellarg($this->rootPath . DIRECTORY_SEPARATOR . 'router.php');
 
         if (!$hot) {
             echo "[serve] Menjalankan server di http://{$host}:{$port}" . PHP_EOL;

@@ -19,7 +19,7 @@ render_app_sidebar([
 <div class="content">
     <?php
     render_app_header([
-        'title' => 'Tata Tertib Mahasiswa Polinema',
+        'title' => 'Tata Tertib Mahasiswa Polinema (DiscipLink)',
         'showLogin' => !isset($_SESSION['username']),
         'loginHref' => 'views/auth/login.php',
         'roleLabel' => $homeRoleLabel,
@@ -62,7 +62,8 @@ render_app_sidebar([
         <div class="about-logo-wrap">
             <div class="about-brand-card">
                 <img class="logo-disciplink" src="img/ga logo aja.png" alt="Logo DiscipLink" width="250" height="250"
-                    loading="lazy" decoding="async">
+                    loading="lazy" decoding="async" srcset="img/ga logo aja.png 250w"
+                    sizes="(max-width: 992px) 220px, 250px">
             </div>
         </div>
         <div class="about-copy">
@@ -120,6 +121,8 @@ render_app_sidebar([
                         tertib</a>
                     <a href="views/pelanggaran/pelanggaranpage.php"
                         title="Halaman pelanggaran mahasiswa di DiscipLink">Cek data pelanggaran</a>
+                    <a href="views/pelanggaran/notifikasi.php" title="Notifikasi pelanggaran DiscipLink">Lihat
+                        notifikasi</a>
                     <a href="views/auth/login.php" title="Login DiscipLink untuk mahasiswa dan dosen">Masuk ke akun
                         DiscipLink</a>
                     <a href="https://www.polinema.ac.id" target="_blank" rel="noopener noreferrer"
@@ -146,10 +149,15 @@ render_app_sidebar([
                         <?php if (!empty($news['gambar'])): ?>
                             <img src="<?= htmlspecialchars($news['gambar']) ?>"
                                 alt="Gambar berita: <?= htmlspecialchars($news['judul']) ?>" width="1200" height="675"
-                                loading="<?= $index === 0 ? 'eager' : 'lazy' ?>" decoding="async">
+                                loading="<?= $index === 0 ? 'eager' : 'lazy' ?>" decoding="async"
+                                srcset="<?= htmlspecialchars($news['gambar']) ?> 1200w"
+                                fetchpriority="<?= $index === 0 ? 'high' : 'low' ?>"
+                                sizes="(max-width: 768px) 100vw, (max-width: 992px) 48vw, <?= $index === 0 ? '100vw' : '32vw' ?>">
                         <?php else: ?>
                             <img src="img/news.jpg" alt="Gambar berita DiscipLink" width="1200" height="675"
-                                loading="<?= $index === 0 ? 'eager' : 'lazy' ?>" decoding="async">
+                                loading="<?= $index === 0 ? 'eager' : 'lazy' ?>" decoding="async" srcset="img/news.jpg 1200w"
+                                fetchpriority="<?= $index === 0 ? 'high' : 'low' ?>"
+                                sizes="(max-width: 768px) 100vw, (max-width: 992px) 48vw, <?= $index === 0 ? '100vw' : '32vw' ?>">
                         <?php endif; ?>
                         <div class="news-text">
                             <h3><?= htmlspecialchars($news['judul']) ?></h3>
@@ -162,6 +170,26 @@ render_app_sidebar([
         <?php endif; ?>
     </section>
     <?php
+    if (!empty($newsData)) {
+        $firstNews = $newsData[0];
+        $firstNewsContent = trim(strip_tags((string) ($firstNews['konten'] ?? '')));
+        $articleDescription = function_exists('mb_substr')
+            ? mb_substr($firstNewsContent, 0, 240)
+            : substr($firstNewsContent, 0, 240);
+        app_seo_json_ld_tags([
+            'emit_defaults' => false,
+            'canonical_path' => '/',
+            'article' => [
+                'headline' => (string) ($firstNews['judul'] ?? ''),
+                'description' => $articleDescription,
+                'author' => (string) ($firstNews['penulis_nama'] ?? 'Admin DiscipLink'),
+                'image' => !empty($firstNews['gambar']) ? (string) $firstNews['gambar'] : 'img/news.jpg',
+                'datePublished' => !empty($firstNews['created_at']) ? (string) $firstNews['created_at'] : date('c'),
+                'dateModified' => !empty($firstNews['updated_at']) ? (string) $firstNews['updated_at'] : date('c'),
+            ],
+        ]);
+    }
+
     render_app_footer([
         'context' => 'root',
     ]);

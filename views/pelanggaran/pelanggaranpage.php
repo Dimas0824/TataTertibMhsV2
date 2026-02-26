@@ -51,7 +51,7 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
         'robots' => 'noindex, nofollow',
     ]);
     ?>
-    <link rel="icon" type="image/png" href="../../img/logo aja.png">
+    <?php app_seo_favicon_tags('../../'); ?>
     <link rel="stylesheet" href="../../css/global.css">
     <link rel="stylesheet" href="../../css/perlanggaranPage.css">
     <link rel="stylesheet" href="../../css/modal.css">
@@ -186,7 +186,7 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
     ?>
 
     <!-- JavaScript -->
-    <script defer src="../../js/script-pelanggaran.js"></script>
+    <script defer src="<?= htmlspecialchars(app_seo_script_src('js/script-pelanggaran.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
     <script>
         const showUploadFeedback = (payload) => {
             if (window.AppModal && typeof window.AppModal.show === 'function') {

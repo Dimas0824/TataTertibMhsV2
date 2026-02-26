@@ -33,7 +33,7 @@ $notificationRole = $_SESSION['user_type'] === 'dosen' ? 'Dosen' : 'Mahasiswa';
         'robots' => 'noindex, nofollow',
     ]);
     ?>
-    <link rel="icon" type="image/png" href="../../img/logo aja.png">
+    <?php app_seo_favicon_tags('../../'); ?>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -89,17 +89,16 @@ $notificationRole = $_SESSION['user_type'] === 'dosen' ? 'Dosen' : 'Mahasiswa';
             <section class="notif-toolbar" aria-label="Kontrol notifikasi">
                 <label class="notif-search" for="notifSearchInput">
                     <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-                    <input
-                        type="search"
-                        id="notifSearchInput"
-                        placeholder="Cari isi notifikasi..."
-                        autocomplete="off">
+                    <input type="search" id="notifSearchInput" placeholder="Cari isi notifikasi..." autocomplete="off">
                 </label>
 
                 <div class="notif-filters" role="tablist" aria-label="Filter status notifikasi">
-                    <button type="button" class="notif-filter-btn is-active" data-filter="all" aria-selected="true">Semua</button>
-                    <button type="button" class="notif-filter-btn" data-filter="unread" aria-selected="false">Unread</button>
-                    <button type="button" class="notif-filter-btn" data-filter="read" aria-selected="false">Read</button>
+                    <button type="button" class="notif-filter-btn is-active" data-filter="all"
+                        aria-selected="true">Semua</button>
+                    <button type="button" class="notif-filter-btn" data-filter="unread"
+                        aria-selected="false">Unread</button>
+                    <button type="button" class="notif-filter-btn" data-filter="read"
+                        aria-selected="false">Read</button>
                 </div>
 
                 <button type="button" class="notif-mark-all-btn" data-action="mark-all-read" disabled>
@@ -130,7 +129,8 @@ $notificationRole = $_SESSION['user_type'] === 'dosen' ? 'Dosen' : 'Mahasiswa';
         ?>
     </div>
 
-    <script defer src="../../js/notifikasi.js"></script>
+    <script defer
+        src="<?= htmlspecialchars(app_seo_script_src('js/notifikasi.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
 </body>
 
 </html>

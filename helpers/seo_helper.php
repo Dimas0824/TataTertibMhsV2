@@ -178,6 +178,31 @@ if (!function_exists('app_seo_enforce_canonical_host')) {
     }
 }
 
+if (!function_exists('app_seo_apply_security_headers')) {
+    function app_seo_apply_security_headers(): void
+    {
+        if (PHP_SAPI === 'cli' || headers_sent()) {
+            return;
+        }
+
+        $httpHost = (string) ($_SERVER['HTTP_HOST'] ?? '');
+        $currentHost = strtolower((string) preg_replace('/:\d+$/', '', $httpHost));
+        if ($currentHost !== '' && app_seo_is_local_host($currentHost)) {
+            return;
+        }
+
+        $isHttps = (
+            (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || ((string) ($_SERVER['SERVER_PORT'] ?? '') === '443')
+            || (strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https')
+        );
+
+        if ($isHttps) {
+            header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
+        }
+    }
+}
+
 if (!function_exists('app_seo_canonical_url')) {
     function app_seo_canonical_url(?string $path = null): string
     {
@@ -196,6 +221,190 @@ if (!function_exists('app_seo_asset_url')) {
     function app_seo_asset_url(string $relativePath): string
     {
         return rtrim(app_seo_canonical_origin(), '/') . '/' . ltrim($relativePath, '/');
+    }
+}
+
+if (!function_exists('app_seo_script_path')) {
+    function app_seo_script_path(string $relativePath): string
+    {
+        $normalized = ltrim($relativePath, '/');
+        if (substr($normalized, -3) !== '.js') {
+            return $relativePath;
+        }
+
+        $minifiedPath = preg_replace('/\.js$/', '.min.js', $normalized);
+        if (!is_string($minifiedPath) || $minifiedPath === '') {
+            return $relativePath;
+        }
+
+        $absoluteMinifiedPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $minifiedPath);
+        if (is_file($absoluteMinifiedPath)) {
+            return $minifiedPath;
+        }
+
+        return $normalized;
+    }
+}
+
+if (!function_exists('app_seo_script_src')) {
+    function app_seo_script_src(string $relativePath, string $prefix = ''): string
+    {
+        $scriptPath = app_seo_script_path($relativePath);
+        $prefix = rtrim($prefix, '/');
+        if ($prefix === '') {
+            return $scriptPath;
+        }
+
+        return $prefix . '/' . ltrim($scriptPath, '/');
+    }
+}
+
+if (!function_exists('app_seo_favicon_tags')) {
+    function app_seo_favicon_tags(string $assetPrefix = ''): void
+    {
+        $assetPrefix = rtrim($assetPrefix, '/');
+        if ($assetPrefix !== '') {
+            $assetPrefix .= '/';
+        }
+        ?>
+        <link rel="icon" href="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/favicon.ico" sizes="any">
+        <link rel="icon" type="image/svg+xml" href="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/favicon.svg">
+        <link rel="icon" type="image/png" sizes="96x96"
+            href="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/favicon-96x96.png">
+        <link rel="apple-touch-icon" sizes="180x180"
+            href="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/apple-touch-icon.png">
+        <link rel="manifest" href="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/site.webmanifest">
+        <?php
+    }
+}
+
+if (!function_exists('app_seo_json_ld_tags')) {
+    function app_seo_json_ld_tags(array $config = []): void
+    {
+        $emitDefaults = !isset($config['emit_defaults']) || (bool) $config['emit_defaults'];
+        $siteName = (string) ($config['site_name'] ?? 'DiscipLink Polinema');
+        $canonicalPath = isset($config['canonical_path']) ? (string) $config['canonical_path'] : null;
+        $canonicalUrl = app_seo_canonical_url($canonicalPath);
+        $origin = rtrim(app_seo_canonical_origin(), '/');
+
+        $organizationLogo = app_seo_asset_url((string) ($config['organization_logo'] ?? 'img/logo aja.png'));
+        $organizationName = (string) ($config['organization_name'] ?? 'DiscipLink Polinema');
+        $searchTarget = $origin . '/index.php?q={search_term_string}';
+
+        $path = parse_url($canonicalUrl, PHP_URL_PATH);
+        $path = is_string($path) && $path !== '' ? $path : '/';
+        $segments = array_values(array_filter(explode('/', trim($path, '/'))));
+
+        $breadcrumbItems = [
+            [
+                '@type' => 'ListItem',
+                'position' => 1,
+                'name' => 'Home',
+                'item' => $origin . '/',
+            ]
+        ];
+
+        $builtPath = '';
+        foreach ($segments as $index => $segment) {
+            $builtPath .= '/' . rawurlencode($segment);
+            $breadcrumbItems[] = [
+                '@type' => 'ListItem',
+                'position' => $index + 2,
+                'name' => ucwords(str_replace(['-', '_', '.php'], [' ', ' ', ''], $segment)),
+                'item' => $origin . $builtPath,
+            ];
+        }
+
+        $schemas = [];
+
+        if ($emitDefaults) {
+            $schemas[] = [
+                '@context' => 'https://schema.org',
+                '@type' => 'WebSite',
+                'name' => $siteName,
+                'url' => $origin . '/',
+                'potentialAction' => [
+                    '@type' => 'SearchAction',
+                    'target' => $searchTarget,
+                    'query-input' => 'required name=search_term_string',
+                ],
+            ];
+            $schemas[] = [
+                '@context' => 'https://schema.org',
+                '@type' => 'Organization',
+                'name' => $organizationName,
+                'url' => $origin . '/',
+                'logo' => $organizationLogo,
+            ];
+            $schemas[] = [
+                '@context' => 'https://schema.org',
+                '@type' => 'BreadcrumbList',
+                'itemListElement' => $breadcrumbItems,
+            ];
+        }
+
+        if (isset($config['article']) && is_array($config['article'])) {
+            $article = $config['article'];
+            $headline = isset($article['headline']) ? trim((string) $article['headline']) : '';
+            $description = isset($article['description']) ? trim((string) $article['description']) : '';
+
+            if ($headline !== '' && $description !== '') {
+                $schemas[] = [
+                    '@context' => 'https://schema.org',
+                    '@type' => 'Article',
+                    'headline' => $headline,
+                    'description' => $description,
+                    'datePublished' => (string) ($article['datePublished'] ?? date('c')),
+                    'dateModified' => (string) ($article['dateModified'] ?? date('c')),
+                    'author' => [
+                        '@type' => 'Person',
+                        'name' => (string) ($article['author'] ?? 'Admin DiscipLink'),
+                    ],
+                    'publisher' => [
+                        '@type' => 'Organization',
+                        'name' => $organizationName,
+                        'logo' => [
+                            '@type' => 'ImageObject',
+                            'url' => $organizationLogo,
+                        ],
+                    ],
+                    'mainEntityOfPage' => [
+                        '@type' => 'WebPage',
+                        '@id' => $canonicalUrl,
+                    ],
+                    'image' => app_seo_asset_url((string) ($article['image'] ?? 'img/GRAHA-POLINEMA1-slider-01.webp')),
+                ];
+            }
+        }
+
+        foreach ($schemas as $schema) {
+            ?>
+            <script type="application/ld+json"><?= json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?></script>
+            <?php
+        }
+    }
+}
+
+if (!function_exists('app_seo_analytics_tags')) {
+    function app_seo_analytics_tags(): void
+    {
+        $measurementId = trim((string) app_seo_env('GA4_MEASUREMENT_ID', ''));
+        if ($measurementId === '') {
+            return;
+        }
+
+        $escapedId = htmlspecialchars($measurementId, ENT_QUOTES, 'UTF-8');
+        ?>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=<?= $escapedId ?>"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', '<?= htmlspecialchars(date('c'), ENT_QUOTES, 'UTF-8') ?>');
+            gtag('config', '<?= $escapedId ?>');
+        </script>
+        <?php
     }
 }
 
@@ -236,5 +445,7 @@ if (!function_exists('app_seo_meta_tags')) {
         <meta name="twitter:description" content="<?= $escapedDescription ?>">
         <meta name="twitter:image" content="<?= $escapedImage ?>">
         <?php
+        app_seo_json_ld_tags($config);
+        app_seo_analytics_tags();
     }
 }
