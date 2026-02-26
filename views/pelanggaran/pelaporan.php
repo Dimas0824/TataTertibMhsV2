@@ -122,100 +122,117 @@ $tatibData = $tatibController->ReadTatib();
             'roleLabel' => 'Dosen',
         ]);
         ?>
-        <div class="profile">
-            <p><strong>Nama :
-                    <?= $userData['nama_lengkap'] ?>
-                </strong></p>
-            <p><strong>NIP :
-                    <?= $userData['nidn'] ?>
-                </strong></p>
-        </div>
+        <section class="reporting-page">
+            <div class="reporting-header">
+                <h2>Form Pelaporan Pelanggaran</h2>
+                <p>Isi data mahasiswa dan pelanggaran secara lengkap agar proses verifikasi berjalan cepat dan akurat.
+                </p>
+            </div>
 
-        <div class="form-container">
-            <form id="pelanggaranForm" method="POST" action="../../Request/Handler_Pelaporan.php">
-                <!-- Added method POST -->
-                <!-- NIM -->
-                <div class="form-group">
-                    <label for="nim">NIM</label>
-                    <input type="text" id="nim" name="nim" placeholder="NIM" required>
-                    <small id="nimHelpText">Isi NIM, identitas mahasiswa akan terisi otomatis.</small>
+            <div class="reporting-grid">
+                <aside class="reporting-info-card" aria-label="Informasi pelapor">
+                    <h3>Informasi Dosen</h3>
+                    <div class="profile-details">
+                        <p><span>Nama</span><strong><?= htmlspecialchars($userData['nama_lengkap']) ?></strong></p>
+                        <p><span>NIP/NIDN</span><strong><?= htmlspecialchars($userData['nidn']) ?></strong></p>
+                    </div>
+
+                    <div class="reporting-steps">
+                        <h4>Langkah Pelaporan</h4>
+                        <ol>
+                            <li>Masukkan NIM untuk mengambil data mahasiswa otomatis.</li>
+                            <li>Pilih tingkat dan jenis pelanggaran sesuai kejadian.</li>
+                            <li>Tambahkan deskripsi tugas khusus jika diperlukan.</li>
+                            <li>Simpan untuk mengirim laporan ke sistem.</li>
+                        </ol>
+                    </div>
+                </aside>
+
+                <div class="form-container">
+                    <form id="pelanggaranForm" method="POST" action="../../Request/Handler_Pelaporan.php">
+                        <div class="form-grid">
+                            <div class="form-group form-group-wide">
+                                <label for="nim">NIM Mahasiswa</label>
+                                <input type="text" id="nim" name="nim" placeholder="Contoh: 2341720001" required>
+                                <small id="nimHelpText">Isi NIM, identitas mahasiswa akan terisi otomatis.</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="nama">Nama</label>
+                                <input type="text" id="nama" name="nama" placeholder="Nama Lengkap" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="semester">Semester</label>
+                                <input type="text" id="semester" name="semester" placeholder="Semester" readonly>
+                            </div>
+
+                            <div class="form-group form-group-wide">
+                                <label for="prodi">Program Studi</label>
+                                <input type="text" id="prodi" name="prodi" placeholder="Program Studi" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="tingkat">Tingkat</label>
+                                <select id="tingkat" name="tingkat" required>
+                                    <option value="">Pilih Tingkat</option>
+                                    <option value="I">Tingkat 1</option>
+                                    <option value="II">Tingkat 2</option>
+                                    <option value="III">Tingkat 3</option>
+                                    <option value="IV">Tingkat 4</option>
+                                    <option value="V">Tingkat 5</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group form-group-wide">
+                                <label for="jenisPelanggaran">Jenis Pelanggaran</label>
+                                <select id="jenisPelanggaran" name="jenisPelanggaran" required>
+                                    <option value="" readonly>Pilih Jenis Pelanggaran</option>
+                                    <?php foreach ($tatibData as $tatib): ?>
+                                        <option value="<?= $tatib['id_tata_tertib'] ?>"
+                                            data-tingkat="<?= $tatib['tingkat'] ?>">
+                                            <?= $tatib['deskripsi'] ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="form-group form-group-wide" id="deskripsiTugas-container"
+                                style="display: none;">
+                                <label for="deskripsiTugas">Deskripsi Tugas Khusus</label>
+                                <textarea id="deskripsiTugas" name="deskripsiTugas"
+                                    placeholder="Jelaskan tugas khusus atau tindak lanjut yang diberikan."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-buttons">
+                            <button type="submit" name="store" class="btn btn-primary">Simpan Laporan</button>
+                            <button onclick="showCancelConfirmation()" type="button"
+                                class="btn btn-secondary">Batal</button>
+                        </div>
+                    </form>
                 </div>
+            </div>
+        </section>
+    </div>
+    <script defer
+        src="<?= htmlspecialchars(app_seo_script_src('js/script_pelaporan.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
+    <script>
+        function showCancelConfirmation() {
 
-                <!-- Nama -->
-                <div class="form-group">
-                    <label for="nama">Nama</label>
-                    <input type="text" id="nama" name="nama" placeholder="Nama Lengkap" readonly>
-                </div>
+            var confirmAction = confirm("Apakah Anda yakin ingin keluar dari pelaporan page?");
 
-                <!-- Semester -->
-                <div class="form-group">
-                    <label for="semester">Semester</label>
-                    <input type="text" id="semester" name="semester" placeholder="Semester" readonly>
-                </div>
-
-                <!-- Program Studi -->
-                <div class="form-group">
-                    <label for="prodi">Program Studi</label>
-                    <input type="text" id="prodi" name="prodi" placeholder="Program Studi" readonly>
-                </div>
-
-                <!-- Tingkat -->
-                <div class="form-group">
-                    <label for="tingkat">Tingkat</label>
-                    <select id="tingkat" name="tingkat" required>
-                        <option value="">Pilih Tingkat</option>
-                        <option value="I">Tingkat 1</option>
-                        <option value="II">Tingkat 2</option>
-                        <option value="III">Tingkat 3</option>
-                        <option value="IV">Tingkat 4</option>
-                        <option value="V">Tingkat 5</option>
-                    </select>
-                </div>
-
-                <!-- Jenis Pelanggaran -->
-                <div class="form-group">
-                    <label for="jenisPelanggaran">Jenis Pelanggaran</label>
-                    <select id="jenisPelanggaran" name="jenisPelanggaran" required>
-                        <option value="" readonly>Pilih Jenis Pelanggaran</option>
-                        <?php foreach ($tatibData as $tatib): ?>
-                            <option value="<?= $tatib['id_tata_tertib'] ?>" data-tingkat="<?= $tatib['tingkat'] ?>">
-                                <?= $tatib['deskripsi'] ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <!-- Deskripsi Tugas Khusus -->
-                <div class="form-group" id="deskripsiTugas-container" style="display: none;">
-                    <label for="deskripsiTugas">Deskripsi Tugas Khusus</label>
-                    <textarea id="deskripsiTugas" name="deskripsiTugas"></textarea>
-                </div>
-
-                <!-- Buttons -->
-                <div class="form-buttons">
-                    <button type="submit" name="store" class="btn btn-primary">Simpan</button>
-                    <button onclick="showConfirmation()" type="button" class="btn btn-secondary">Batal</button>
-                </div>
-            </form>
-        </div>
-        <script defer
-            src="<?= htmlspecialchars(app_seo_script_src('js/script_pelaporan.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
-        <script>
-            function showConfirmation() {
-
-                var confirmAction = confirm("Apakah Anda yakin ingin keluar dari pelaporan page?");
-
-                if (confirmAction) {
-                    window.location.href = "pelanggaran_dosen.php";
-                }
-
+            if (confirmAction) {
+                window.location.href = "pelanggaran_dosen.php";
             }
-        </script>
-        <?php
-        render_app_footer([
-            'context' => 'nested',
-        ]);
-        ?>
+
+        }
+    </script>
+    <?php
+    render_app_footer([
+        'context' => 'nested',
+    ]);
+    ?>
     </div>
 </body>
 

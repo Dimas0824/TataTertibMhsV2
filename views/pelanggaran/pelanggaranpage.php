@@ -82,63 +82,87 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
             'roleLabel' => 'Mahasiswa',
         ]);
         ?>
-        <div class="profile">
-            <p><strong>Nama: <?= $userData['nama_lengkap'] ?></strong></p>
-            <p><strong>NIM: <?= $userData['nim'] ?></strong></p>
-            <p><strong>Semester: <?= $semester ?></strong></p>
-        </div>
+        <section class="violation-page">
+            <div class="page-hero">
+                <div class="page-hero-copy">
+                    <span class="page-kicker">DiscipLink Student Dashboard</span>
+                    <h2>Status Pelanggaran Mahasiswa</h2>
+                    <p>Pantau riwayat pelanggaran, status tindak lanjut, serta unggah dokumen pendukung secara
+                        terstruktur.</p>
+                </div>
+                <div class="summary-grid" aria-label="Ringkasan mahasiswa">
+                    <article class="summary-item">
+                        <span>Nama</span>
+                        <strong><?= htmlspecialchars($userData['nama_lengkap']) ?></strong>
+                    </article>
+                    <article class="summary-item">
+                        <span>NIM</span>
+                        <strong><?= htmlspecialchars($userData['nim']) ?></strong>
+                    </article>
+                    <article class="summary-item">
+                        <span>Semester</span>
+                        <strong><?= htmlspecialchars((string) $semester) ?></strong>
+                    </article>
+                </div>
+            </div>
 
-        <h3>Tabel Pelanggaran</h3>
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Pelanggaran</th>
-                        <th>Tingkat Pelanggaran</th>
-                        <th>Sanksi</th>
-                        <th>Dosen Pelapor</th>
-                        <th>Tugas Khusus</th>
-                        <th>Surat</th>
-                        <th>Poin</th>
-                        <th>Status</th>
-                        <th>Pengumpulan</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (!empty($pelanggaranDetail)) {
-                        foreach ($pelanggaranDetail as $detail) { ?>
+            <section class="table-card">
+                <div class="table-card-header">
+                    <h3>Tabel Pelanggaran</h3>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
                             <tr>
-                                <td><?= htmlspecialchars($detail['pelanggaran']) ?></td>
-                                <td><?= htmlspecialchars($detail['tingkat']) ?></td>
-                                <td><?= htmlspecialchars($detail['sanksi']) ?></td>
-                                <td><?= htmlspecialchars($detail['nama_lengkap']) ?></td>
-                                <td><?= htmlspecialchars($detail['tugas_khusus'] ?? 'Tidak Ada Tugas') ?></td>
-                                <td><a href="<?= htmlspecialchars('../../document/SURAT PERNYATAAN TI.pdf') ?>"
-                                        target="_blank" rel="noopener noreferrer">Unduh File</a></td>
-                                <td><?= htmlspecialchars($detail['poin']) ?></td>
-                                <td><?= htmlspecialchars($detail['status']) ?></td>
-                                <td>
-                                    <form class="uploadForm" enctype="multipart/form-data">
-                                        <input type="hidden" name="id_detail" value="<?= $detail['id_detail'] ?>">
-                                        <input type="file" name="suratPernyataan" required>
-                                        <button type="button" class="submit-btn uploadButton">Upload Surat Pernyataan</button>
-                                    </form>
-                                    <?php if (in_array($detail['tingkat'], ['I', 'II', 'III'])):  // Check for Roman numerals ?>
-                                        <form class="uploadForm" enctype="multipart/form-data">
-                                            <input type="hidden" name="id_detail" value="<?= $detail['id_detail'] ?>">
-                                            <input type="file" name="tugasKhusus" required>
-                                            <button type="button" class="submit-btn uploadButton">Upload Tugas Khusus</button>
-                                        </form>
-                                    <?php endif; ?>
-                                </td>
+                                <th>Pelanggaran</th>
+                                <th>Tingkat</th>
+                                <th>Sanksi</th>
+                                <th>Dosen Pelapor</th>
+                                <th>Tugas Khusus</th>
+                                <th>Surat</th>
+                                <th>Poin</th>
+                                <th>Status</th>
+                                <th>Pengumpulan</th>
                             </tr>
-                        <?php }
-                    } else {
-                        echo "<tr><td colspan='9'>Data pelanggaran tidak ditemukan.</td></tr>";
-                    } ?>
-                </tbody>
-            </table>
-        </div>
+                        </thead>
+                        <tbody>
+                            <?php if (!empty($pelanggaranDetail)) {
+                                foreach ($pelanggaranDetail as $detail) { ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($detail['pelanggaran']) ?></td>
+                                        <td><span class="tier-pill"><?= htmlspecialchars($detail['tingkat']) ?></span></td>
+                                        <td><?= htmlspecialchars($detail['sanksi']) ?></td>
+                                        <td><?= htmlspecialchars($detail['nama_lengkap']) ?></td>
+                                        <td><?= htmlspecialchars($detail['tugas_khusus'] ?? 'Tidak Ada Tugas') ?></td>
+                                        <td><a class="file-link"
+                                                href="<?= htmlspecialchars('../../document/SURAT PERNYATAAN TI.pdf') ?>"
+                                                target="_blank" rel="noopener noreferrer">Unduh File</a></td>
+                                        <td><span class="point-badge"><?= htmlspecialchars($detail['poin']) ?></span></td>
+                                        <td><span class="status-pill"><?= htmlspecialchars($detail['status']) ?></span></td>
+                                        <td>
+                                            <form class="uploadForm" enctype="multipart/form-data">
+                                                <input type="hidden" name="id_detail" value="<?= $detail['id_detail'] ?>">
+                                                <input type="file" name="suratPernyataan" required>
+                                                <button type="button" class="submit-btn uploadButton">Upload Surat</button>
+                                            </form>
+                                            <?php if (in_array($detail['tingkat'], ['I', 'II', 'III'])): ?>
+                                                <form class="uploadForm" enctype="multipart/form-data">
+                                                    <input type="hidden" name="id_detail" value="<?= $detail['id_detail'] ?>">
+                                                    <input type="file" name="tugasKhusus" required>
+                                                    <button type="button" class="submit-btn uploadButton">Upload Tugas</button>
+                                                </form>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php }
+                            } else {
+                                echo "<tr><td colspan='9' class='empty-cell'>Data pelanggaran tidak ditemukan.</td></tr>";
+                            } ?>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
 
         <?php
         render_app_footer([
@@ -186,7 +210,8 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
     ?>
 
     <!-- JavaScript -->
-    <script defer src="<?= htmlspecialchars(app_seo_script_src('js/script-pelanggaran.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
+    <script defer
+        src="<?= htmlspecialchars(app_seo_script_src('js/script-pelanggaran.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
     <script>
         const showUploadFeedback = (payload) => {
             if (window.AppModal && typeof window.AppModal.show === 'function') {

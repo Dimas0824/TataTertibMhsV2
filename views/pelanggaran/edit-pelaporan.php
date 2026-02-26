@@ -141,100 +141,114 @@ if ($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
             'roleLabel' => 'Dosen',
         ]);
         ?>
-        <div class="profile">
-            <p><strong>Nama :
-                    <?= $userData['nama_lengkap'] ?>
-                </strong></p>
-            <p><strong>NIP :
-                    <?= $userData['nidn'] ?>
-                </strong></p>
-        </div>
+        <section class="reporting-page">
+            <div class="reporting-header">
+                <h2>Edit Pelaporan Pelanggaran</h2>
+                <p>Perbarui data pelanggaran mahasiswa agar status tindak lanjut tetap akurat dan terdokumentasi dengan baik.</p>
+            </div>
 
-        <div class="form-container">
-            <form id="pelanggaranForm" method="POST" action="../../Request/Handler_Pelaporan.php">
-                <!-- Added method POST -->
-                <input type="hidden" name="id_detail" value="<?= $id ?>">
-                <!-- NIM -->
-                <div class="form-group">
-                    <label for="nim">NIM</label>
-                    <input type="text" id="nim" name="nim"
-                        value="<?= htmlspecialchars($detailPelanggar['nim'] ?? '') ?>" required>
+            <div class="reporting-grid">
+                <aside class="reporting-info-card" aria-label="Informasi dosen pelapor">
+                    <h3>Informasi Dosen</h3>
+                    <div class="profile-details">
+                        <p><span>Nama</span><strong><?= htmlspecialchars($userData['nama_lengkap']) ?></strong></p>
+                        <p><span>NIP/NIDN</span><strong><?= htmlspecialchars($userData['nidn']) ?></strong></p>
+                    </div>
+
+                    <div class="reporting-steps">
+                        <h4>Panduan Edit</h4>
+                        <ol>
+                            <li>Pastikan identitas mahasiswa sesuai.</li>
+                            <li>Sesuaikan tingkat, jenis pelanggaran, dan sanksi.</li>
+                            <li>Perbarui deskripsi pelanggaran atau tugas khusus.</li>
+                            <li>Simpan perubahan untuk memperbarui laporan.</li>
+                        </ol>
+                    </div>
+                </aside>
+
+                <div class="form-container">
+                    <form id="pelanggaranForm" method="POST" action="../../Request/Handler_Pelaporan.php">
+                        <input type="hidden" name="id_detail" value="<?= $id ?>">
+
+                        <div class="form-grid">
+                            <div class="form-group form-group-wide">
+                                <label for="nim">NIM Mahasiswa</label>
+                                <input type="text" id="nim" name="nim" value="<?= htmlspecialchars($detailPelanggar['nim'] ?? '') ?>"
+                                    required>
+                                <small id="nimHelpText">Sesuaikan NIM jika data pelanggar perlu dikoreksi.</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="nama">Nama</label>
+                                <input type="text" id="nama" name="nama"
+                                    value="<?= htmlspecialchars($detailPelanggar['nama_lengkap'] ?? '') ?>" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="semester">Semester</label>
+                                <input type="text" id="semester" name="semester" value="<?= htmlspecialchars($semester ?? '') ?>"
+                                    readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="tingkat">Tingkat</label>
+                                <select id="tingkat" name="tingkat" required>
+                                    <option value="">Pilih Tingkat</option>
+                                    <option value="I" <?= (($detailPelanggar['tingkat'] ?? '') === 'I') ? 'selected' : '' ?>>Tingkat 1</option>
+                                    <option value="II" <?= (($detailPelanggar['tingkat'] ?? '') === 'II') ? 'selected' : '' ?>>Tingkat 2</option>
+                                    <option value="III" <?= (($detailPelanggar['tingkat'] ?? '') === 'III') ? 'selected' : '' ?>>Tingkat 3</option>
+                                    <option value="IV" <?= (($detailPelanggar['tingkat'] ?? '') === 'IV') ? 'selected' : '' ?>>Tingkat 4</option>
+                                    <option value="V" <?= (($detailPelanggar['tingkat'] ?? '') === 'V') ? 'selected' : '' ?>>Tingkat 5</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="sanksi">Sanksi</label>
+                                <select id="sanksi" name="sanksi" required>
+                                    <option value="">Pilih Sanksi</option>
+                                    <?php foreach ($sanksiData as $sanksi): ?>
+                                        <option value="<?= $sanksi['id_sanksi'] ?>" data-tingkat="<?= $sanksi['tingkat'] ?>"
+                                            <?= ((string) ($detailPelanggar['id_sanksi'] ?? '') === (string) $sanksi['id_sanksi']) ? 'selected' : '' ?>>
+                                            <?= $sanksi['deskripsi'] ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="form-group form-group-wide">
+                                <label for="jenisPelanggaran">Jenis Pelanggaran</label>
+                                <select id="jenisPelanggaran" name="jenisPelanggaran" required>
+                                    <option value="" readonly>Pilih Jenis Pelanggaran</option>
+                                    <?php foreach ($tatibData as $tatib): ?>
+                                        <option value="<?= $tatib['id_tata_tertib'] ?>" data-tingkat="<?= $tatib['tingkat'] ?>"
+                                            <?= ((string) ($detailPelanggar['id_tata_tertib'] ?? '') === (string) $tatib['id_tata_tertib']) ? 'selected' : '' ?>>
+                                            <?= $tatib['deskripsi'] ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="form-group form-group-wide">
+                                <label for="deskripsiPelanggaran">Deskripsi Pelanggaran</label>
+                                <textarea id="deskripsiPelanggaran" name="deskripsiPelanggaran"
+                                    required><?= htmlspecialchars($detailPelanggar['detail_pelanggaran'] ?? '') ?></textarea>
+                            </div>
+
+                            <div class="form-group form-group-wide" id="deskripsiTugas-container" style="display: none;">
+                                <label for="deskripsiTugas">Deskripsi Tugas Khusus</label>
+                                <textarea id="deskripsiTugas"
+                                    name="deskripsiTugas"><?= htmlspecialchars($detailPelanggar['tugas_khusus'] ?? '') ?></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-buttons">
+                            <button type="submit" name="update" class="btn btn-primary">Simpan Perubahan</button>
+                            <button onclick="showConfirmation()" type="button" class="btn btn-secondary">Batal</button>
+                        </div>
+                    </form>
                 </div>
-
-                <!-- Nama -->
-                <div class="form-group">
-                    <label for="nama">Nama</label>
-                    <input type="text" id="nama" name="nama"
-                        value="<?= htmlspecialchars($detailPelanggar['nama_lengkap'] ?? '') ?>" readonly>
-                </div>
-
-                <!-- Semester -->
-                <div class="form-group">
-                    <label for="semester">Semester</label>
-                    <input type="text" id="semester" name="semester" placeholder="Semester"
-                        value="<?= htmlspecialchars($semester ?? '') ?>" readonly>
-                </div>
-
-                <!-- Tingkat -->
-                <div class="form-group">
-                    <label for="tingkat">Tingkat</label>
-                    <select id="tingkat" name="tingkat" required>
-                        <option value="">Pilih Tingkat</option>
-                        <option value="I">Tingkat 1</option>
-                        <option value="II">Tingkat 2</option>
-                        <option value="III">Tingkat 3</option>
-                        <option value="IV">Tingkat 4</option>
-                        <option value="V">Tingkat 5</option>
-                    </select>
-                </div>
-
-                <!-- Jenis Pelanggaran -->
-                <div class="form-group">
-                    <label for="jenisPelanggaran">Jenis Pelanggaran</label>
-                    <select id="jenisPelanggaran" name="jenisPelanggaran" required>
-                        <option value="" readonly>Pilih Jenis Pelanggaran</option>
-                        <?php foreach ($tatibData as $tatib): ?>
-                            <option value="<?= $tatib['id_tata_tertib'] ?>" data-tingkat="<?= $tatib['tingkat'] ?>">
-                                <?= $tatib['deskripsi'] ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <!-- Sanksi -->
-                <div class="form-group" id="sanksi-container">
-                    <label for="sanksi">Sanksi</label>
-                    <select id="sanksi" name="sanksi" required>
-                        <option value="">Pilih Sanksi</option>
-                        <?php foreach ($sanksiData as $sanksi): ?>
-                            <option value="<?= $sanksi['id_sanksi'] ?>" data-tingkat="<?= $sanksi['tingkat'] ?>">
-                                <?= $sanksi['deskripsi'] ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-
-                <!-- Deskripsi Pelanggaran -->
-                <div class="form-group">
-                    <label for="deskripsiPelanggaran">Deskripsi Pelanggaran</label>
-                    <textarea id="deskripsiPelanggaran" name="deskripsiPelanggaran"
-                        required><?= htmlspecialchars($detailPelanggar['detail_pelanggaran'] ?? '') ?></textarea>
-                </div>
-
-                <!-- Deskripsi Tugas Khusus -->
-                <div class="form-group" id="deskripsiTugas-container" style="display: none;">
-                    <label for="deskripsiTugas">Deskripsi Tugas Khusus</label>
-                    <textarea id="deskripsiTugas"
-                        name="deskripsiTugas"><?= htmlspecialchars($detailPelanggar['tugas_khusus'] ?? '') ?></textarea>
-                </div>
-
-                <!-- Buttons -->
-                <div class="form-buttons">
-                    <button type="submit" name="update" class="btn btn-primary">Simpan</button>
-                    <button onclick="showConfirmation()" type="button" class="btn btn-secondary">Batal</button>
-                </div>
-            </form>
+            </div>
+        </section>
         </div>
         <script defer
             src="<?= htmlspecialchars(app_seo_script_src('js/script_pelaporan.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>

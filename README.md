@@ -6,6 +6,14 @@ DiscipLink adalah sistem informasi berbasis web untuk mengelola tata tertib, pel
 
 Versi ini adalah **DiscipLink V2** dengan perbaikan struktur aplikasi, keamanan autentikasi, UX operasional, dan fondasi deployment lokal.
 
+## Asal Proyek dan Konteks Akademik
+
+Repository dan sistem ini merupakan **hasil refactor, perbaikan, dan upgrade** dari DiscipLink versi sebelumnya:
+
+- Sumber awal: <https://github.com/VarizkyNaldiba/TataTertibMhs>
+
+Pengembangan DiscipLink berangkat dari **Project Based Learning (PBL) PHP Native semester 3**, lalu dilanjutkan pada versi ini untuk peningkatan kualitas arsitektur, maintainability, dan alur operasional aplikasi.
+
 ## Apa Yang Berbeda di V2
 
 Berikut pembeda utama DiscipLink V2 dibanding versi sebelumnya:
@@ -79,8 +87,6 @@ Dokumentasi database: [`Database/README.md`](./Database/README.md)
 ## App Gallery
 
 - ![Login](docs/img/login.png)
-- `document/gallery/02-dashboard-admin.png`
-- `document/gallery/03-news-admin.png`
 - `document/gallery/04-pelaporan-dosen.png`
 - `document/gallery/05-pelanggaran-mahasiswa.png`
 

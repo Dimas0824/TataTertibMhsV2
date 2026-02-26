@@ -70,79 +70,113 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
             'roleLabel' => 'Dosen',
         ]);
         ?>
-
-        <div class="profile">
-            <p><strong>Nama: <?= htmlspecialchars($userData['nama_lengkap'], ENT_QUOTES, 'UTF-8') ?></strong></p>
-            <p><strong>NIP: <?= htmlspecialchars($userData['nidn'], ENT_QUOTES, 'UTF-8') ?></strong></p>
-        </div>
-
-        <h3>Tabel Pelanggaran</h3>
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Pelanggar</th>
-                        <th>Pelanggaran</th>
-                        <th>Tingkat Pelanggaran</th>
-                        <th>Dosen Pelapor</th>
-                        <th>Tugas Khusus</th>
-                        <th>Surat</th>
-                        <th>Poin</th>
-                        <th>Status</th>
-                        <th>Status Tugas</th>
-                        <th>Edit laporan</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (!empty($pelanggaranDetail)): ?>
-                        <?php foreach ($pelanggaranDetail as $detail): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($detail['nama_mahasiswa'], ENT_QUOTES, 'UTF-8') ?></td>
-                                <td><?= htmlspecialchars($detail['pelanggaran'], ENT_QUOTES, 'UTF-8') ?></td>
-                                <td><?= htmlspecialchars($detail['tingkat'], ENT_QUOTES, 'UTF-8') ?></td>
-                                <td><?= htmlspecialchars($detail['dosen_pelapor'], ENT_QUOTES, 'UTF-8') ?></td>
-                                <td><?= htmlspecialchars($detail['tugas_khusus'] ?? 'Tidak Ada Tugas', ENT_QUOTES, 'UTF-8') ?>
-                                </td>
-                                <td>
-                                    <?php if (!empty($detail['surat'])): ?>
-                                        <a href="<?= htmlspecialchars('../../document/' . $detail['surat'], ENT_QUOTES, 'UTF-8') ?>"
-                                            target="_blank" rel="noopener noreferrer">Unduh Surat Pernyataan</a>
-                                    <?php else: ?>
-                                        <span>Tidak ada file surat yang diunggah.</span>
-                                    <?php endif; ?>
-                                    <?php if (!empty($detail['pengumpulan_tgsKhusus'])): ?>
-                                        <a href="<?= htmlspecialchars('../../document/' . $detail['pengumpulan_tgsKhusus'], ENT_QUOTES, 'UTF-8') ?>"
-                                            target="_blank" rel="noopener noreferrer">Unduh Tugas Khusus</a>
-                                    <?php else: ?>
-                                        <span>Tidak ada file tugas yang diunggah.</span>
-                                    <?php endif; ?>
-                                </td>
-                                <td><?= htmlspecialchars($detail['poin'], ENT_QUOTES, 'UTF-8') ?></td>
-                                <td><?= htmlspecialchars($detail['status_pelanggaran'], ENT_QUOTES, 'UTF-8') ?></td>
-                                <?php if ($detail['tingkat'] === 'IV' || $detail['tingkat'] === 'V'): ?>
-                                    <td>Tidak ada tugas</td>
-                                <?php else: ?>
-                                    <td><?= htmlspecialchars($detail['status_tugas'], ENT_QUOTES, 'UTF-8') ?></td>
-                                <?php endif; ?>
-                                <td>
-                                    <button class="edit-laporan">
-                                        <a href="edit-pelaporan.php?id=<?= urlencode((string) $detail['id_detail']) ?>"><i
-                                                class="fa-solid fa-pen-to-square"></i></a>
-                                    </button>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="10">Data pelanggaran tidak ditemukan.</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-            <div class="statement-button">
-                <button onclick="window.location.href='pelaporan.php'">Laporkan</button>
+        <section class="violation-page">
+            <div class="page-hero">
+                <div class="page-hero-copy">
+                    <span class="page-kicker">DiscipLink Lecturer Dashboard</span>
+                    <h2>Rekap Pelanggaran Mahasiswa</h2>
+                    <p>Tinjau status pelanggaran, file pendukung, dan lakukan pembaruan laporan secara terpusat.</p>
+                </div>
+                <div class="summary-grid" aria-label="Ringkasan dosen">
+                    <article class="summary-item">
+                        <span>Nama</span>
+                        <strong><?= htmlspecialchars($userData['nama_lengkap'], ENT_QUOTES, 'UTF-8') ?></strong>
+                    </article>
+                    <article class="summary-item">
+                        <span>NIP/NIDN</span>
+                        <strong><?= htmlspecialchars($userData['nidn'], ENT_QUOTES, 'UTF-8') ?></strong>
+                    </article>
+                    <article class="summary-item">
+                        <span>Total Laporan</span>
+                        <strong><?= count($pelanggaranDetail) ?></strong>
+                    </article>
+                </div>
             </div>
-        </div>
+
+            <section class="table-card">
+                <div class="table-card-header table-card-header-between">
+                    <h3>Tabel Pelanggaran</h3>
+                    <button class="primary-action-btn" onclick="window.location.href='pelaporan.php'">+
+                        Laporkan</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Pelanggar</th>
+                                <th>Pelanggaran</th>
+                                <th>Tingkat</th>
+                                <th>Dosen Pelapor</th>
+                                <th>Tugas Khusus</th>
+                                <th>Dokumen</th>
+                                <th>Poin</th>
+                                <th>Status</th>
+                                <th>Status Tugas</th>
+                                <th>Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (!empty($pelanggaranDetail)): ?>
+                                <?php foreach ($pelanggaranDetail as $detail): ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($detail['nama_mahasiswa'], ENT_QUOTES, 'UTF-8') ?></td>
+                                        <td><?= htmlspecialchars($detail['pelanggaran'], ENT_QUOTES, 'UTF-8') ?></td>
+                                        <td><span
+                                                class="tier-pill"><?= htmlspecialchars($detail['tingkat'], ENT_QUOTES, 'UTF-8') ?></span>
+                                        </td>
+                                        <td><?= htmlspecialchars($detail['dosen_pelapor'], ENT_QUOTES, 'UTF-8') ?></td>
+                                        <td><?= htmlspecialchars($detail['tugas_khusus'] ?? 'Tidak Ada Tugas', ENT_QUOTES, 'UTF-8') ?>
+                                        </td>
+                                        <td>
+                                            <div class="doc-links">
+                                                <?php if (!empty($detail['surat'])): ?>
+                                                    <a class="file-link"
+                                                        href="<?= htmlspecialchars('../../document/' . $detail['surat'], ENT_QUOTES, 'UTF-8') ?>"
+                                                        target="_blank" rel="noopener noreferrer">Surat Pernyataan</a>
+                                                <?php else: ?>
+                                                    <span class="muted-text">Surat belum diunggah</span>
+                                                <?php endif; ?>
+                                                <?php if (!empty($detail['pengumpulan_tgsKhusus'])): ?>
+                                                    <a class="file-link"
+                                                        href="<?= htmlspecialchars('../../document/' . $detail['pengumpulan_tgsKhusus'], ENT_QUOTES, 'UTF-8') ?>"
+                                                        target="_blank" rel="noopener noreferrer">Tugas Khusus</a>
+                                                <?php else: ?>
+                                                    <span class="muted-text">Tugas belum diunggah</span>
+                                                <?php endif; ?>
+                                            </div>
+                                        </td>
+                                        <td><span
+                                                class="point-badge"><?= htmlspecialchars($detail['poin'], ENT_QUOTES, 'UTF-8') ?></span>
+                                        </td>
+                                        <td><span
+                                                class="status-pill"><?= htmlspecialchars($detail['status_pelanggaran'], ENT_QUOTES, 'UTF-8') ?></span>
+                                        </td>
+                                        <?php if ($detail['tingkat'] === 'IV' || $detail['tingkat'] === 'V'): ?>
+                                            <td><span class="muted-text">Tidak ada tugas</span></td>
+                                        <?php else: ?>
+                                            <td><span
+                                                    class="status-pill status-pill-soft"><?= htmlspecialchars($detail['status_tugas'], ENT_QUOTES, 'UTF-8') ?></span>
+                                            </td>
+                                        <?php endif; ?>
+                                        <td>
+                                            <a class="edit-laporan"
+                                                href="edit-pelaporan.php?id=<?= urlencode((string) $detail['id_detail']) ?>"
+                                                aria-label="Edit laporan #<?= htmlspecialchars((string) $detail['id_detail'], ENT_QUOTES, 'UTF-8') ?>">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="10" class="empty-cell">Data pelanggaran tidak ditemukan.</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
 
         <?php
         render_app_footer([
