@@ -23,10 +23,17 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
+  const toggleIcon = toggle.querySelector('i');
+
   const applyPinnedState = (isPinned) => {
     root.classList.toggle('app-shell--rail-pinned', isPinned);
     toggle.setAttribute('aria-pressed', isPinned ? 'true' : 'false');
     toggle.setAttribute('aria-label', isPinned ? 'Unpin sidebar' : 'Pin sidebar');
+    if (toggleIcon) {
+      toggleIcon.className = isPinned
+        ? 'fa-solid fa-chevron-left'
+        : 'fa-solid fa-chevron-right';
+    }
   };
 
   const isDesktop = () => window.matchMedia('(min-width: 901px)').matches;

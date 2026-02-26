@@ -12,7 +12,8 @@
   --app-danger-soft: #fff1f1;
   --app-danger: #c53030;
   --app-radius: 14px;
-  --app-header-height: 74px;
+  --app-header-height: 62px;
+  --app-header-offset: 12px;
   --sidebar-collapsed: 84px;
   --sidebar-expanded: 248px;
   --mobile-nav-height: 76px;
@@ -52,6 +53,7 @@ body {
   transition: width 0.28s ease;
   display: flex;
   flex-direction: column;
+  overflow: visible;
 }
 
 .sidebar-brand {
@@ -86,6 +88,34 @@ body {
   height: 1px;
   margin: 12px 8px 16px;
   background: rgba(217, 226, 236, 0.24);
+}
+
+.sidebar-rail-toggle {
+  position: absolute;
+  top: 98px;
+  right: -14px;
+  width: 28px;
+  height: 52px;
+  border-radius: 12px;
+  border: 1px solid rgba(15, 23, 42, 0.14);
+  border-left-color: rgba(217, 226, 236, 0.6);
+  background: linear-gradient(180deg, #f9fcff 0%, #eef4fb 100%);
+  color: #334155;
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.14);
+  z-index: 1060;
+}
+
+.sidebar-rail-toggle i {
+  font-size: 0.76rem;
+}
+
+.sidebar-rail-toggle:hover {
+  background: linear-gradient(180deg, #ffffff 0%, #e9f2ff 100%);
+  color: #0f6cbd;
+}
+
+body.app-shell--rail-pinned .sidebar-rail-toggle i {
+  transform: rotate(180deg);
 }
 
 .sidebar-nav {
@@ -160,33 +190,35 @@ body {
 
 .header {
   position: fixed;
-  top: 0;
-  left: var(--sidebar-collapsed);
+  top: var(--app-header-offset);
+  left: calc(var(--sidebar-collapsed) + 14px);
   z-index: 1030;
-  width: calc(100% - var(--sidebar-collapsed));
+  width: calc(100% - var(--sidebar-collapsed) - 28px);
   height: var(--app-header-height);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
-  border-bottom: 1px solid var(--app-border);
-  background: rgba(255, 255, 255, 0.84);
-  backdrop-filter: blur(11px);
-  -webkit-backdrop-filter: blur(11px);
-  box-shadow: var(--app-shadow-soft);
+  padding: 0 16px;
+  border: 1px solid rgba(217, 226, 236, 0.9);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.07);
   transition: left 0.28s ease, width 0.28s ease;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0;
   min-width: 0;
 }
 
 .header h1 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1rem;
+  font-weight: 700;
   letter-spacing: -0.01em;
   color: var(--app-text);
   white-space: nowrap;
@@ -195,11 +227,11 @@ body {
 }
 
 .nav-toggle {
-  width: 38px;
-  height: 38px;
-  border-radius: 11px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
   border: 1px solid var(--app-border);
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.9);
   color: var(--app-muted);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -258,7 +290,7 @@ body {
 .content {
   margin-left: var(--sidebar-collapsed);
   min-height: 100vh;
-  padding-top: var(--app-header-height);
+  padding-top: calc(var(--app-header-height) + var(--app-header-offset) + 14px);
   background: transparent;
   transition: margin-left 0.28s ease;
   display: flex;
@@ -284,63 +316,98 @@ body.app-shell--rail-pinned .content {
 }
 
 body.app-shell--rail-pinned .header {
-  left: var(--sidebar-expanded);
-  width: calc(100% - var(--sidebar-expanded));
+  left: calc(var(--sidebar-expanded) + 14px);
+  width: calc(100% - var(--sidebar-expanded) - 28px);
 }
 
 .footer {
-  margin-top: 88px;
-  background: #13263a;
+  margin-top: 56px;
+  background: linear-gradient(180deg, #13263a 0%, #101f30 100%);
   color: #f5f8fc;
-  display: flex;
-  flex-direction: column;
-  padding: 24px 40px;
-  font-size: 0.9rem;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
-  box-sizing: border-box;
-  width: 100%;
-  align-items: center;
-  gap: 18px;
+  padding: 18px clamp(18px, 3vw, 34px) 12px;
+  font-size: 0.86rem;
+  box-shadow: 0 -4px 14px rgba(0, 0, 0, 0.08);
+  border-top: 1px solid rgba(217, 226, 236, 0.2);
 }
 
-.footer-left {
+.footer-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+}
+
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.footer-brand-logos {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 12px;
 }
 
 .footer-logo {
-  height: 64px;
+  height: 46px;
   object-fit: contain;
 }
 
-.footer-center {
-  text-align: center;
-  font-size: 0.95rem;
-  color: #d6e0eb;
+.footer-brand-copy {
+  margin: 0;
+  color: #b6c7d9;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
 }
 
-.footer-center p {
-  margin: 4px 0;
+.footer-contact {
+  color: #d6e0eb;
+  line-height: 1.6;
+  min-width: 0;
+}
+
+.footer-address {
+  margin: 0 0 4px;
+  word-break: break-word;
+}
+
+@media screen and (max-width: 1180px) {
+  .footer-main {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .footer-brand-logos,
+  .footer-social {
+    justify-content: center;
+  }
 }
 
 .footer-link {
   color: #ffffff;
   text-decoration: none;
-  font-weight: 700;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+  padding-bottom: 1px;
 }
 
-.footer-right {
+.footer-social {
   display: flex;
-  gap: 16px;
+  gap: 10px;
+  justify-self: end;
 }
 
 .social-link {
-  font-size: 1.1rem;
+  font-size: 1rem;
   text-decoration: none;
   color: #eff4fa;
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 10px;
   border: 1px solid rgba(215, 226, 238, 0.35);
   display: inline-flex;
@@ -356,8 +423,15 @@ body.app-shell--rail-pinned .header {
 
 .footer-bottom {
   text-align: center;
-  font-size: 0.8rem;
+  font-size: 0.74rem;
   color: #9cb0c4;
+  border-top: 1px solid rgba(217, 226, 236, 0.16);
+  margin-top: 12px;
+  padding-top: 10px;
+}
+
+.footer-bottom p {
+  margin: 0;
 }
 
 .sidebar a:focus-visible,
@@ -510,10 +584,15 @@ textarea:focus-visible {
   }
 
   .header {
+    top: 0;
     left: 0;
     width: 100%;
     height: 66px;
     padding: 0 14px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-top: none;
   }
 
   .header h1 {
@@ -547,17 +626,23 @@ textarea:focus-visible {
   }
 
   .footer {
-    margin-top: 72px;
-    padding: 18px 20px;
-    font-size: 0.82rem;
+    margin-top: 48px;
+    padding: 16px 14px 10px;
+  }
+
+  .footer-main {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    text-align: center;
   }
 
   .footer-logo {
-    height: 48px;
+    height: 40px;
   }
 
-  .footer-center {
-    font-size: 0.86rem;
+  .footer-brand-logos,
+  .footer-social {
+    justify-content: center;
   }
 
   .table-container {

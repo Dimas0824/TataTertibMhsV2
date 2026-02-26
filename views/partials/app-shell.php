@@ -74,6 +74,9 @@ if (!function_exists('render_app_sidebar')) {
                 <img class="logo" src="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/logo aja.png" alt="DiscipLink logo">
                 <span class="brand-text">DiscipLink</span>
             </a>
+            <button type="button" class="nav-toggle sidebar-rail-toggle" data-nav-toggle aria-label="Pin sidebar" aria-pressed="false">
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </button>
             <div class="logo-separator"></div>
             <ul class="sidebar-nav" role="list">
                 <?php foreach ($navItems as $item):
@@ -115,9 +118,6 @@ if (!function_exists('render_app_header')) {
         ?>
         <header class="header">
             <div class="header-left">
-                <button type="button" class="nav-toggle" data-nav-toggle aria-label="Pin sidebar" aria-pressed="false">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
                 <h1><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?></h1>
             </div>
             <div class="header-actions">
@@ -129,6 +129,56 @@ if (!function_exists('render_app_header')) {
                 <?php endif; ?>
             </div>
         </header>
+        <?php
+    }
+}
+
+if (!function_exists('render_app_footer')) {
+    function render_app_footer(array $config = []): void
+    {
+        $context = (string) ($config['context'] ?? 'views');
+        $context = $context === 'root' ? 'root' : 'views';
+        $assetPrefix = $context === 'root' ? '' : '../';
+
+        $address = (string) ($config['address'] ?? 'Jl. Soekarno Hatta No.9, Jatimulyo, Kec. Lowokwaru, Kota Malang, Jawa Timur 65141');
+        $phoneLabel = (string) ($config['phoneLabel'] ?? '(0341) 404424');
+        $phoneHref = (string) ($config['phoneHref'] ?? 'tel:+62341404424');
+        $instagramHref = (string) ($config['instagramHref'] ?? 'https://instagram.com');
+        $whatsappHref = (string) ($config['whatsappHref'] ?? 'https://wa.me/1234567890');
+        $emailHref = (string) ($config['emailHref'] ?? 'mailto:info@disciplink.local');
+        $copyright = (string) ($config['copyright'] ?? '© Copyright 2026 Web Tatib. All Rights Reserved.');
+        ?>
+        <footer class="footer" aria-label="Informasi kontak website">
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <div class="footer-brand-logos">
+                        <img class="footer-logo" src="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/logo aja.png" alt="Logo DiscipLink">
+                        <img class="footer-logo" src="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/logo.png" alt="Logo Polinema">
+                    </div>
+                    <p class="footer-brand-copy">DiscipLink · Platform informasi tata tertib mahasiswa.</p>
+                </div>
+
+                <div class="footer-contact">
+                    <p class="footer-address"><?= htmlspecialchars($address, ENT_QUOTES, 'UTF-8') ?></p>
+                    <a href="<?= htmlspecialchars($phoneHref, ENT_QUOTES, 'UTF-8') ?>" class="footer-link"><?= htmlspecialchars($phoneLabel, ENT_QUOTES, 'UTF-8') ?></a>
+                </div>
+
+                <div class="footer-social" aria-label="Media sosial">
+                    <a href="<?= htmlspecialchars($instagramHref, ENT_QUOTES, 'UTF-8') ?>" class="social-link" aria-label="Instagram">
+                        <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+                    </a>
+                    <a href="<?= htmlspecialchars($whatsappHref, ENT_QUOTES, 'UTF-8') ?>" class="social-link" aria-label="WhatsApp">
+                        <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                    </a>
+                    <a href="<?= htmlspecialchars($emailHref, ENT_QUOTES, 'UTF-8') ?>" class="social-link" aria-label="Email">
+                        <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p><?= htmlspecialchars($copyright, ENT_QUOTES, 'UTF-8') ?></p>
+            </div>
+        </footer>
         <?php
     }
 }

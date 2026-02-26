@@ -62,98 +62,113 @@ if (isset($_SESSION['user_type'])) {
         ]);
         ?>
 
-        <!-- Filter Section -->
-        <div class="filter-container">
-            <div>
-                <label for="filter-tingkat">Filter Tingkat:</label>
-                <select id="filter-tingkat" onchange="filterTingkat()">
-                    <option value="">Semua Tingkat</option>
-                    <option value="I">I</option>
-                    <option value="II">II</option>
-                    <option value="III">III</option>
-                    <option value="IV">IV</option>
-                    <option value="V">V</option>
-                </select>
+        <section class="tatib-hero">
+            <div class="tatib-hero-copy">
+                <span class="tatib-kicker">DiscipLink · Tata Tertib</span>
+                <h2>Daftar Aturan Mahasiswa</h2>
+                <p>Semua poin tata tertib dan sanksi disajikan ringkas agar mudah dipahami sebelum melakukan aktivitas
+                    akademik.</p>
             </div>
-        </div>
+            <div class="tatib-hero-stats" aria-label="Ringkasan data tata tertib">
+                <article>
+                    <span>Total Aturan</span>
+                    <strong><?= is_array($tatibData) ? count($tatibData) : 0 ?></strong>
+                </article>
+                <article>
+                    <span>Total Tingkat</span>
+                    <strong>5</strong>
+                </article>
+                <article>
+                    <span>Total Sanksi</span>
+                    <strong><?= is_array($sanksiData) ? count($sanksiData) : 0 ?></strong>
+                </article>
+            </div>
+        </section>
 
-        <!-- Tabel Pelanggaran -->
-        <div class="table-container">
-            <table id="tatib-table">
-                <thead>
-                    <tr>
-                        <th>Pelanggaran</th>
-                        <th>Tingkat</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if ($tatibData): ?>
-                        <?php foreach ($tatibData as $tatib): ?>
-                            <tr data-tingkat="<?= $tatib['tingkat'] ?>">
-                                <td><?= $tatib['deskripsi'] ?></td>
-                                <td><?= $tatib['tingkat'] ?></td>
+        <section class="tatib-main-card">
+            <div class="filter-container">
+                <div class="filter-copy">
+                    <h3>Filter Data Tata Tertib</h3>
+                    <p>Pilih tingkat untuk menampilkan pelanggaran dan sanksi yang relevan.</p>
+                </div>
+                <div class="filter-field">
+                    <label for="filter-tingkat">Tingkat Pelanggaran</label>
+                    <div class="select-wrap">
+                        <select id="filter-tingkat" onchange="filterTingkat()">
+                            <option value="">Semua Tingkat</option>
+                            <option value="I">I</option>
+                            <option value="II">II</option>
+                            <option value="III">III</option>
+                            <option value="IV">IV</option>
+                            <option value="V">V</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="tatib-table">
+                    <thead>
+                        <tr>
+                            <th>Pelanggaran</th>
+                            <th>Tingkat</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if ($tatibData): ?>
+                            <?php foreach ($tatibData as $tatib): ?>
+                                <tr data-tingkat="<?= htmlspecialchars((string) $tatib['tingkat'], ENT_QUOTES, 'UTF-8') ?>">
+                                    <td><?= htmlspecialchars((string) $tatib['deskripsi'], ENT_QUOTES, 'UTF-8') ?></td>
+                                    <td><span class="tingkat-badge">Tingkat
+                                            <?= htmlspecialchars((string) $tatib['tingkat'], ENT_QUOTES, 'UTF-8') ?></span></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="2" class="table-empty">Data tata tertib belum tersedia.</td>
                             </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
 
-        <!-- Sanksi Section -->
-        <div class="sanksi-section">
-            <h3>Sanksi Berdasarkan Tingkat</h3>
-            <?php
-            if ($sanksiData) {
-                // Mengelompokkan sanksi berdasarkan tingkat
-                $groupedSanksi = [];
-                foreach ($sanksiData as $sanksi) {
-                    $tingkat = $sanksi['tingkat'];
-                    $groupedSanksi[$tingkat][] = $sanksi['deskripsi'];
-                }
-
-                // Menampilkan sanksi per tingkat tanpa titik dua
-                foreach ($groupedSanksi as $tingkat => $sanksiList) {
-                    echo "<div class='sanksi-tingkat' data-tingkat='$tingkat'>";
-                    echo "<b>Tingkat $tingkat</b>";
-                    echo "<ul style='margin-left: 10px;'>";
-                    foreach ($sanksiList as $index => $deskripsi) {
-                        echo chr(codepoint: 97 + $index) . ") " . $deskripsi . "<br>";
+            <div class="sanksi-section">
+                <h3>Sanksi Berdasarkan Tingkat</h3>
+                <p class="sanksi-caption">Sanksi ditampilkan sesuai filter tingkat untuk memudahkan pemahaman aturan.
+                </p>
+                <?php
+                if ($sanksiData) {
+                    $groupedSanksi = [];
+                    foreach ($sanksiData as $sanksi) {
+                        $tingkat = (string) $sanksi['tingkat'];
+                        $groupedSanksi[$tingkat][] = (string) $sanksi['deskripsi'];
                     }
-                    echo "</ul>";
-                    echo "</div>";
+
+                    foreach ($groupedSanksi as $tingkat => $sanksiList) {
+                        echo '<div class="sanksi-tingkat" data-tingkat="' . htmlspecialchars($tingkat, ENT_QUOTES, 'UTF-8') . '">';
+                        echo '<b>Tingkat ' . htmlspecialchars($tingkat, ENT_QUOTES, 'UTF-8') . '</b>';
+                        echo '<ol>';
+                        foreach ($sanksiList as $deskripsi) {
+                            echo '<li>' . htmlspecialchars($deskripsi, ENT_QUOTES, 'UTF-8') . '</li>';
+                        }
+                        echo '</ol>';
+                        echo '</div>';
+                    }
+                } else {
+                    echo '<p class="sanksi-empty">Data sanksi belum tersedia.</p>';
                 }
-            }
-            ?>
-            <!-- <div class="sanksi-tingkat" data-tingkat="II"><b>Tingkat II:</b> Skorsing maksimal 1 minggu.</div>
-            <div class="sanksi-tingkat" data-tingkat="III"><b>Tingkat III:</b> Skorsing maksimal 1 bulan.</div>
-            <div class="sanksi-tingkat" data-tingkat="IV"><b>Tingkat IV:</b> Dilarang mengikuti kegiatan akademik selama
-                1 semester.</div>
-            <div class="sanksi-tingkat" data-tingkat="V"><b>Tingkat V:</b> Dikeluarkan dari institusi (Drop Out).</div> -->
-        </div>
+                ?>
+            </div>
+        </section>
+
+        <?php
+        render_app_footer([
+            'context' => 'views',
+        ]);
+        ?>
     </div>
 
 </body>
-
-<footer class="footer">
-    <div class="footer-left">
-        <img class="footer-logo" src="../img/logo aja.png" alt="Logo">
-        <img class="footer-logo" src="../img/logo.png" alt="logo polinema">
-    </div>
-    <div class="footer-center">
-        <p>Jl. Soekarno Hatta No.9, Jatimulyo, Kec. Lowokwaru, <br>Kota Malang, Jawa Timur 65141</p>
-        <p><a href="tel:(0341)404424" class="footer-link">(0341) 404424</a></p>
-    </div>
-    <div class="footer-right">
-        <a href="https://instagram.com" class="social-link"><i class="fa-brands fa-instagram" alt="Instagram"
-                class="social-icon"></i></a>
-        <a href="https://wa.me/1234567890" class="social-link"><i class="fa-brands fa-whatsapp" alt="WhatsApp"
-                class="social-icon"></i></a>
-        <a href="https://wa.me/1234567890" class="social-link"><i class="fa-solid fa-envelope" alt="Email"
-                class="social-icon"></i></a>
-    </div>
-    <div class="footer-bottom">
-        <p>© Copyright 2024 web Tatib. All Rights Reserved.</p>
-    </div>
-</footer>
 
 </html>
