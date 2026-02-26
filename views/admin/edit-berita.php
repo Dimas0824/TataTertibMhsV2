@@ -149,6 +149,11 @@ if (isset($_GET['id'])) {
             <button type="submit" class="save-button">Simpan</button>
             <button class="cancel-button" name="cancel" onclick="window.location.href='news-admin.php'">Cancel</button>
         </form>
+        <?php
+        render_app_footer([
+            'context' => 'nested',
+        ]);
+        ?>
     </div>
 </body>
 

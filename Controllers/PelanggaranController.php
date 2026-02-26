@@ -80,6 +80,92 @@ class PelanggaranController
         return $this->pelanggaranModel->getNotifikasiDosen($idDosen);
     }
 
+    public function markNotifikasiAsRead(array $sessionData, string $role, int $idNotifikasi): array
+    {
+        if ($idNotifikasi <= 0) {
+            return [
+                'success' => false,
+                'message' => 'ID notifikasi tidak valid.',
+            ];
+        }
+
+        if ($role === 'mahasiswa') {
+            $nim = trim((string) ($sessionData['nim'] ?? ''));
+            if ($nim === '') {
+                return [
+                    'success' => false,
+                    'message' => 'Data mahasiswa tidak ditemukan.',
+                ];
+            }
+
+            $updated = $this->pelanggaranModel->markNotifikasiAsReadForMahasiswa($nim, $idNotifikasi);
+        } elseif ($role === 'dosen') {
+            $nidn = trim((string) ($sessionData['nidn'] ?? ''));
+            if ($nidn === '') {
+                return [
+                    'success' => false,
+                    'message' => 'Data dosen tidak ditemukan.',
+                ];
+            }
+
+            $updated = $this->pelanggaranModel->markNotifikasiAsReadForDosen($nidn, $idNotifikasi);
+        } else {
+            return [
+                'success' => false,
+                'message' => 'Role pengguna tidak valid.',
+            ];
+        }
+
+        if (!$updated) {
+            return [
+                'success' => false,
+                'message' => 'Notifikasi tidak ditemukan atau sudah dibaca.',
+            ];
+        }
+
+        return [
+            'success' => true,
+            'message' => 'Notifikasi ditandai sebagai dibaca.',
+            'id_notifikasi' => $idNotifikasi,
+        ];
+    }
+
+    public function markAllNotifikasiAsRead(array $sessionData, string $role): array
+    {
+        if ($role === 'mahasiswa') {
+            $nim = trim((string) ($sessionData['nim'] ?? ''));
+            if ($nim === '') {
+                return [
+                    'success' => false,
+                    'message' => 'Data mahasiswa tidak ditemukan.',
+                ];
+            }
+
+            $updatedCount = $this->pelanggaranModel->markAllNotifikasiAsReadForMahasiswa($nim);
+        } elseif ($role === 'dosen') {
+            $nidn = trim((string) ($sessionData['nidn'] ?? ''));
+            if ($nidn === '') {
+                return [
+                    'success' => false,
+                    'message' => 'Data dosen tidak ditemukan.',
+                ];
+            }
+
+            $updatedCount = $this->pelanggaranModel->markAllNotifikasiAsReadForDosen($nidn);
+        } else {
+            return [
+                'success' => false,
+                'message' => 'Role pengguna tidak valid.',
+            ];
+        }
+
+        return [
+            'success' => true,
+            'message' => 'Semua notifikasi telah diperbarui.',
+            'updated_count' => $updatedCount,
+        ];
+    }
+
     public function getDetailPelanggar($id)
     {
         return $this->pelanggaranModel->getUpdatePelanggar($id);

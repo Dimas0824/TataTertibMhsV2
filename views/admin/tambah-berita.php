@@ -91,6 +91,11 @@ $newsData = $newsController->AdminNews($id_admin);
 
             <button type="submit" class="save-button" name="store">Simpan</button>
         </form>
+        <?php
+        render_app_footer([
+            'context' => 'nested',
+        ]);
+        ?>
     </div>
 </body>
 

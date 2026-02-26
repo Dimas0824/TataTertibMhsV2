@@ -188,6 +188,12 @@ if($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
 
             }
         </script>
+        <?php
+        render_app_footer([
+            'context' => 'nested',
+        ]);
+        ?>
+    </div>
 </body>
 
 </html>

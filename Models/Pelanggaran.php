@@ -303,5 +303,97 @@ class Pelanggaran
 
         return $result;
     }
+
+    public function markNotifikasiAsReadForMahasiswa(string $nim, int $idNotifikasi): bool
+    {
+        $query = "UPDATE NOTIFIKASI
+                  SET status = 'read'
+                  WHERE id_notifikasi = :id_notifikasi
+                    AND role_penerima = 'mahasiswa'
+                    AND status <> 'read'
+                    AND id_mhs = (
+                      SELECT id_mhs FROM MAHASISWA WHERE nim = :nim LIMIT 1
+                    )";
+
+        try {
+            $stmt = $this->connect->prepare($query);
+            $stmt->bindValue(':id_notifikasi', $idNotifikasi, PDO::PARAM_INT);
+            $stmt->bindValue(':nim', $nim, PDO::PARAM_STR);
+            $stmt->execute();
+
+            return $stmt->rowCount() > 0;
+        } catch (Throwable $e) {
+            error_log('Error in markNotifikasiAsReadForMahasiswa: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function markNotifikasiAsReadForDosen(string $nidn, int $idNotifikasi): bool
+    {
+        $query = "UPDATE NOTIFIKASI
+                  SET status = 'read'
+                  WHERE id_notifikasi = :id_notifikasi
+                    AND role_penerima = 'dosen'
+                    AND status <> 'read'
+                    AND id_dosen = (
+                      SELECT id_dosen FROM DOSEN WHERE nidn = :nidn LIMIT 1
+                    )";
+
+        try {
+            $stmt = $this->connect->prepare($query);
+            $stmt->bindValue(':id_notifikasi', $idNotifikasi, PDO::PARAM_INT);
+            $stmt->bindValue(':nidn', $nidn, PDO::PARAM_STR);
+            $stmt->execute();
+
+            return $stmt->rowCount() > 0;
+        } catch (Throwable $e) {
+            error_log('Error in markNotifikasiAsReadForDosen: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function markAllNotifikasiAsReadForMahasiswa(string $nim): int
+    {
+        $query = "UPDATE NOTIFIKASI
+                  SET status = 'read'
+                  WHERE role_penerima = 'mahasiswa'
+                    AND status <> 'read'
+                    AND id_mhs = (
+                      SELECT id_mhs FROM MAHASISWA WHERE nim = :nim LIMIT 1
+                    )";
+
+        try {
+            $stmt = $this->connect->prepare($query);
+            $stmt->bindValue(':nim', $nim, PDO::PARAM_STR);
+            $stmt->execute();
+
+            return (int) $stmt->rowCount();
+        } catch (Throwable $e) {
+            error_log('Error in markAllNotifikasiAsReadForMahasiswa: ' . $e->getMessage());
+            return 0;
+        }
+    }
+
+    public function markAllNotifikasiAsReadForDosen(string $nidn): int
+    {
+        $query = "UPDATE NOTIFIKASI
+                  SET status = 'read'
+                  WHERE role_penerima = 'dosen'
+                    AND status <> 'read'
+                    AND id_dosen = (
+                      SELECT id_dosen FROM DOSEN WHERE nidn = :nidn LIMIT 1
+                    )";
+
+        try {
+            $stmt = $this->connect->prepare($query);
+            $stmt->bindValue(':nidn', $nidn, PDO::PARAM_STR);
+            $stmt->execute();
+
+            return (int) $stmt->rowCount();
+        } catch (Throwable $e) {
+            error_log('Error in markAllNotifikasiAsReadForDosen: ' . $e->getMessage());
+            return 0;
+        }
+    }
 }
 ?>

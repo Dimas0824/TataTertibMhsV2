@@ -290,6 +290,7 @@ body.app-shell--rail-pinned .sidebar-rail-toggle i {
 .content {
   margin-left: var(--sidebar-collapsed);
   min-height: 100vh;
+  min-height: 100dvh;
   padding-top: calc(var(--app-header-height) + var(--app-header-offset) + 14px);
   background: transparent;
   transition: margin-left 0.28s ease;
@@ -321,13 +322,16 @@ body.app-shell--rail-pinned .header {
 }
 
 .footer {
-  margin-top: 56px;
   background: linear-gradient(180deg, #13263a 0%, #101f30 100%);
   color: #f5f8fc;
   padding: 18px clamp(18px, 3vw, 34px) 12px;
   font-size: 0.86rem;
   box-shadow: 0 -4px 14px rgba(0, 0, 0, 0.08);
   border-top: 1px solid rgba(217, 226, 236, 0.2);
+}
+
+.content > .footer {
+  margin-top: auto;
 }
 
 .footer-main {
@@ -626,7 +630,6 @@ textarea:focus-visible {
   }
 
   .footer {
-    margin-top: 48px;
     padding: 16px 14px 10px;
   }
 

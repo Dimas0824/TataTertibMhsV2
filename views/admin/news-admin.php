@@ -173,6 +173,11 @@ $newsData = $newsController->AdminNews(id: $id_admin);
 
         <!-- javascript -->
         <script src="../../js/script-news.js"></script>
+        <?php
+        render_app_footer([
+            'context' => 'nested',
+        ]);
+        ?>
     </div>
     <?php
     render_app_flash_modal([
@@ -180,26 +185,4 @@ $newsData = $newsController->AdminNews(id: $id_admin);
     ]);
     ?>
 </body>
-<footer class="footer">
-    <div class="footer-left">
-        <img class="footer-logo" src="../../img/logo aja.png" alt="Logo">
-        <img class="footer-logo" src="../../img/logo.png" alt="logo polinema">
-    </div>
-    <div class="footer-center">
-        <p>Jl. Soekarno Hatta No.9, Jatimulyo, Kec. Lowokwaru, <br>Kota Malang, Jawa Timur 65141</p>
-        <p><a href="tel:(0341)404424" class="footer-link">(0341) 404424</a></p>
-    </div>
-    <div class="footer-right">
-        <a href="https://instagram.com" class="social-link"><i class="fa-brands fa-instagram" alt="Instagram"
-                class="social-icon"></i></a>
-        <a href="https://wa.me/1234567890" class="social-link"><i class="fa-brands fa-whatsapp" alt="WhatsApp"
-                class="social-icon"></i></a>
-        <a href="https://wa.me/1234567890" class="social-link"><i class="fa-solid fa-envelope" alt="Email"
-                class="social-icon"></i></a>
-    </div>
-    <div class="footer-bottom">
-        <p>© Copyright 2024 web Tatib. All Rights Reserved.</p>
-    </div>
-</footer>
-
 </html>

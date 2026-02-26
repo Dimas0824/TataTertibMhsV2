@@ -155,6 +155,12 @@ $tatibData = $tatibController->ReadTatib();
 
             }
         </script>
+        <?php
+        render_app_footer([
+            'context' => 'nested',
+        ]);
+        ?>
+    </div>
 </body>
 
 </html>
