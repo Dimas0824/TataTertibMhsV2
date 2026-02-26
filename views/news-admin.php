@@ -174,6 +174,11 @@ $newsData = $newsController->AdminNews(id: $id_admin);
         <!-- javascript -->
         <script src="../js/script-news.js"></script>
     </div>
+    <?php
+    render_app_flash_modal([
+        'context' => 'views',
+    ]);
+    ?>
 </body>
 <footer class="footer">
     <div class="footer-left">

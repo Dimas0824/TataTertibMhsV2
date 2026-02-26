@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+require_once dirname(__DIR__, 2) . '/helpers/flash_modal.php';
 
 if (!function_exists('get_app_nav_items')) {
     function get_app_nav_items(string $variant, string $context): array
@@ -128,6 +129,38 @@ if (!function_exists('render_app_header')) {
                 <?php endif; ?>
             </div>
         </header>
+        <?php
+    }
+}
+
+if (!function_exists('render_app_flash_modal')) {
+    function render_app_flash_modal(array $config = []): void
+    {
+        $context = (string) ($config['context'] ?? 'views');
+        $context = $context === 'root' ? 'root' : 'views';
+        $assetPrefix = $context === 'root' ? '' : '../';
+        $flashModal = consume_app_flash_modal();
+        ?>
+        <link rel="stylesheet" href="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>css/app-modal.css">
+        <div id="appFeedbackModal" class="app-modal" aria-hidden="true">
+            <div class="app-modal__dialog" role="alertdialog" aria-modal="true" aria-labelledby="appFeedbackModalTitle">
+                <button type="button" class="app-modal__close" data-app-modal-close aria-label="Tutup modal">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+                <div class="app-modal__badge" data-app-modal-icon aria-hidden="true">i</div>
+                <h2 class="app-modal__title" id="appFeedbackModalTitle" data-app-modal-title>Informasi</h2>
+                <p class="app-modal__message" data-app-modal-message></p>
+                <div class="app-modal__actions">
+                    <button type="button" class="app-modal__button" data-app-modal-close>OK</button>
+                </div>
+            </div>
+        </div>
+        <?php if ($flashModal !== null): ?>
+            <script>
+                window.__APP_FLASH_MODAL = <?= json_encode($flashModal, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+            </script>
+        <?php endif; ?>
+        <script defer src="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>js/app-modal.js"></script>
         <?php
     }
 }

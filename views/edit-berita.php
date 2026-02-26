@@ -4,6 +4,7 @@ require_once __DIR__ . '/../config.php';
 require_once '../Controllers/NewsController.php';
 require_once '../Controllers/UserController.php';
 require_once __DIR__ . '/partials/app-shell.php';
+require_once __DIR__ . '/../helpers/flash_modal.php';
 
 // Ambil ID berita dari parameter URL
 if (isset($_GET['id'])) {
@@ -50,7 +51,9 @@ if (isset($_GET['id'])) {
 
         // Validasi input
         if (empty($judul) || empty($konten)) {
-            die("Judul dan konten tidak boleh kosong.");
+            set_app_flash_modal('error', 'Judul dan konten tidak boleh kosong.');
+            header("Location: news-admin.php");
+            exit();
         }
 
         // Proses unggah gambar baru
@@ -63,7 +66,9 @@ if (isset($_GET['id'])) {
             if (move_uploaded_file($gambar['tmp_name'], $uploadFile)) {
                 $gambarPath = 'document/news/' . $fileName;
             } else {
-                die("Gagal mengunggah gambar.");
+                set_app_flash_modal('error', 'Gagal mengunggah gambar.');
+                header("Location: news-admin.php");
+                exit();
             }
         } else {
             // Gunakan gambar lama jika tidak ada file baru
@@ -74,10 +79,13 @@ if (isset($_GET['id'])) {
         $result = $newsController->update($id, $judul, $konten, $gambarPath);
 
         if ($result['status'] === 'success') {
+            set_app_flash_modal('success', $result['message'] ?? 'Berita berhasil diperbarui.');
             header("Location: news-admin.php");
             exit();
         } else {
-            echo $result['message'];
+            set_app_flash_modal('error', $result['message'] ?? 'Gagal memperbarui berita.');
+            header("Location: news-admin.php");
+            exit();
         }
     }
 }

@@ -185,6 +185,11 @@ $tatibData = $tatibController->ReadTatib();
         <!-- footer -->
 
     </div>
+    <?php
+    render_app_flash_modal([
+        'context' => 'views',
+    ]);
+    ?>
 
 </body>
 <footer class="footer">

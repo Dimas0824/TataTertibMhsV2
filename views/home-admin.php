@@ -110,6 +110,11 @@ $newsData = $newsController->ReadNews();
     </div>
 </div>
 </div>
+<?php
+render_app_flash_modal([
+    'context' => 'views',
+]);
+?>
 </body>
 
 </html>

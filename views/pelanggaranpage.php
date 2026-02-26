@@ -164,29 +164,54 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
     </div>
 
     </div>
+    <?php
+    render_app_flash_modal([
+        'context' => 'views',
+    ]);
+    ?>
 
     <!-- JavaScript -->
     <script src="../js/script-pelanggaran.js"></script>
     <script>
+        const showUploadFeedback = (payload) => {
+            if (window.AppModal && typeof window.AppModal.show === 'function') {
+                window.AppModal.show(payload);
+                return;
+            }
+
+            alert(payload.message || 'Terjadi kesalahan.');
+        };
+
         document.querySelectorAll('.uploadButton').forEach(button => {
-            button.addEventListener('click', function () {
+            button.addEventListener('click', async function () {
                 const form = this.closest('form');
                 const formData = new FormData(form);
 
-                // Send the AJAX request
-                fetch('../Request/Handler_uploads.php', {
-                    method: 'POST',
-                    body: formData,
-                })
-                    .then(response => response.text())
-                    .then(result => {
-                        alert(result); // Show success message
-                        form.reset(); // Reset the form fields
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Gagal mengunggah file.');
+                try {
+                    const response = await fetch('../Request/Handler_uploads.php', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            Accept: 'application/json',
+                        },
                     });
+
+                    const payload = await response.json();
+                    showUploadFeedback({
+                        type: payload.success ? 'success' : 'error',
+                        message: payload.message || 'Operasi upload selesai.',
+                    });
+
+                    if (payload.success) {
+                        form.reset();
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showUploadFeedback({
+                        type: 'error',
+                        message: 'Gagal mengunggah file.',
+                    });
+                }
             });
         });
     </script>

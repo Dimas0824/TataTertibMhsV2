@@ -19,19 +19,6 @@ if ($_SESSION['user_type'] === 'mahasiswa') {
     exit();
 }
 
-$successMessage = $_SESSION['success_message'] ?? null;
-unset($_SESSION['success_message']);
-
-$errorMessages = $_SESSION['error_messages'] ?? [];
-unset($_SESSION['error_messages']);
-
-$errorMessageText = '';
-if (is_array($errorMessages) && !empty($errorMessages)) {
-    $errorMessageText = implode("\\n", $errorMessages);
-} elseif (is_string($errorMessages) && $errorMessages !== '') {
-    $errorMessageText = $errorMessages;
-}
-
 // Ambil data user dari session
 $userData = $_SESSION['user_data'];
 
@@ -58,18 +45,6 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
 </head>
 
 <body>
-    <?php if ($successMessage): ?>
-        <script>
-            alert(<?= json_encode($successMessage) ?>);
-        </script>
-    <?php endif; ?>
-
-    <?php if ($errorMessageText !== ''): ?>
-        <script>
-            alert(<?= json_encode($errorMessageText) ?>);
-        </script>
-    <?php endif; ?>
-
     <?php
     render_app_sidebar([
         'variant' => 'student',
@@ -155,6 +130,11 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
             </div>
         </div>
     </div>
+    <?php
+    render_app_flash_modal([
+        'context' => 'views',
+    ]);
+    ?>
 </body>
 <footer class="footer">
     <div class="footer-left">

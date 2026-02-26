@@ -38,12 +38,6 @@ render_app_sidebar([
 ]);
 ?>
 <div class="content">
-  <?php if (isset($_SESSION['login_error'])): ?> 
-    <script type="text/javascript"> 
-      alert("<?= $_SESSION['login_error']; ?>"); 
-    </script> 
-    <?php unset($_SESSION['login_error']); ?> 
-  <?php endif; ?>
   <?php
   render_app_header([
       'title' => 'Login',
@@ -59,8 +53,13 @@ render_app_sidebar([
     <input type="text" placeholder="Masukkan Username" id="username" name="username" required>
     <label for="password">Kata Sandi</label>
     <input type="password" placeholder="Masukkan Kata Sandi" id="password" name="password" required>
-    <button type="submit">Masuk</button>
+<button type="submit">Masuk</button>
 </form>
+  <?php
+  render_app_flash_modal([
+      'context' => 'views',
+  ]);
+  ?>
   </div>
     <script src="../js/login.js">
   </script>

@@ -3,6 +3,7 @@ session_start();
 require_once __DIR__ . '/../config.php';
 require_once '../Controllers/PelanggaranController.php';
 require_once '../Controllers/TatibController.php';
+require_once __DIR__ . '/../helpers/flash_modal.php';
 
 $pelanggaranController = new PelanggaranController();
 $tatibController = new TatibController();
@@ -87,13 +88,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
 
       if (($result['success'] ?? false) === true) {
-         $_SESSION['success_message'] = $result['message'] ?? 'Data pelanggaran berhasil disimpan.';
+         set_app_flash_modal('success', $result['message'] ?? 'Data pelanggaran berhasil disimpan.');
       } else {
-         $_SESSION['error_messages'] = [$result['message'] ?? 'Gagal menyimpan data pelanggaran.'];
+         set_app_flash_modal('error', $result['message'] ?? 'Gagal menyimpan data pelanggaran.');
       }
    } catch (Throwable $e) {
       error_log('Pelanggaran Save/Update Error: ' . $e->getMessage());
-      $_SESSION['error_messages'] = [$e->getMessage()];
+      set_app_flash_modal('error', $e->getMessage());
    }
 }
 

@@ -2,6 +2,17 @@
 session_start();
 require_once __DIR__ . '/../config.php'; // Sertakan file konfigurasi untuk mengakses koneksi database
 
+function respondJson(bool $success, string $message, int $statusCode = 200): void
+{
+    http_response_code($statusCode);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode([
+        'success' => $success,
+        'message' => $message,
+    ]);
+    exit();
+}
+
 // Check if the uploads directory exists, if not create it
 $uploadDir = '../document/';
 // Hard limit 2 MB
@@ -21,14 +32,12 @@ if (!is_dir($uploadDir)) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($connect) || !($connect instanceof PDO)) {
-        echo "Koneksi database tidak tersedia.";
-        exit();
+        respondJson(false, 'Koneksi database tidak tersedia.', 500);
     }
 
     $idDetail = $_POST['id_detail'] ?? null;
     if (!is_numeric($idDetail)) {
-        echo "ID detail tidak valid.";
-        exit();
+        respondJson(false, 'ID detail tidak valid.', 422);
     }
 
     $idDetail = (int) $idDetail;
@@ -47,13 +56,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($fileType) {
         $file = $_FILES[$fileType];
         if (($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
-            echo "Upload file gagal.";
-            exit();
+            respondJson(false, 'Upload file gagal.', 422);
         }
 
         if (($file['size'] ?? 0) > $maxSize) {
-            echo "Ukuran file melebihi 2 MB.";
-            exit();
+            respondJson(false, 'Ukuran file melebihi 2 MB.', 422);
         }
 
         $detectedMime = '';
@@ -70,15 +77,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (!in_array($detectedMime, $allowedMimes, true)) {
-            echo "Tipe file tidak diizinkan.";
-            exit();
+            respondJson(false, 'Tipe file tidak diizinkan.', 422);
         }
 
         $originalFileName = basename($file['name']);
         $extension = strtolower(pathinfo($originalFileName, PATHINFO_EXTENSION));
         if (!in_array($extension, $allowedExtensions, true)) {
-            echo "Ekstensi file tidak diizinkan.";
-            exit();
+            respondJson(false, 'Ekstensi file tidak diizinkan.', 422);
         }
 
         $customFileName = $idDetail . '_' . $fileType . '_' . uniqid() . '.' . $extension;
@@ -105,17 +110,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $statusUpdateStmt->bindValue(':idDetail', $idDetail, PDO::PARAM_INT);
                 $statusUpdateStmt->execute();
 
-                echo "File berhasil diunggah dan path tersimpan di database: " . $customFileName;
+                respondJson(true, 'File berhasil diunggah.');
             } else {
-                echo "Gagal menyimpan path file di database.";
+                respondJson(false, 'Gagal menyimpan path file di database.', 500);
             }
         } else {
-            echo "Gagal mengunggah file.";
+            respondJson(false, 'Gagal mengunggah file.', 500);
         }
     } else {
-        echo "Tidak ada file yang diunggah.";
+        respondJson(false, 'Tidak ada file yang diunggah.', 422);
     }
 } else {
-    echo "Request tidak valid.";
+    respondJson(false, 'Request tidak valid.', 405);
 }
 ?>

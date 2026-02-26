@@ -19,16 +19,21 @@ class TatibController {
         return $this->sanksiModel->getAllSanksi();
     }
 
-    public function store($admin, $deskripsi, $tingkat, $poin) {
+    public function store($admin, $deskripsi, $tingkat, $poin): array {
         $result = $this->tatibModel->insertTatib(
             $admin, 
             $deskripsi, 
             $tingkat, 
             $poin
         );
+
+        return [
+            'success' => (bool) $result,
+            'message' => $result ? 'Data tata tertib berhasil ditambahkan.' : 'Gagal menambahkan data tata tertib.',
+        ];
     }
 
-    public function update($id, $admin, $deskripsi, $tingkat, $poin) {
+    public function update($id, $admin, $deskripsi, $tingkat, $poin): array {
         $result = $this->tatibModel->updateTatib(
             $id,
             $admin, 
@@ -36,10 +41,20 @@ class TatibController {
             $tingkat, 
             $poin
         );
+
+        return [
+            'success' => (bool) $result,
+            'message' => $result ? 'Data tata tertib berhasil diperbarui.' : 'Gagal memperbarui data tata tertib.',
+        ];
     }
 
-    public function delete($id) {
+    public function delete($id): array {
         $result = $this->tatibModel->deleteTatib($id);
+
+        return [
+            'success' => (bool) $result,
+            'message' => $result ? 'Data tata tertib berhasil dihapus.' : 'Gagal menghapus data tata tertib.',
+        ];
     }
 
     public function getTatibDetail($id_tata_tertib) {

@@ -1,4 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const showFeedback = (type, message) => {
+        if (window.AppModal && typeof window.AppModal.show === "function") {
+            window.AppModal.show({ type, message });
+            return;
+        }
+        alert(message);
+    };
+
     const modal = document.getElementById("uploadModal");
     const closeModalBtn = document.querySelector(".btn-secondary"); // Tombol Batal
     const saveBtn = document.querySelector(".btn-primary"); // Tombol Simpan
@@ -27,13 +35,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const isTugasKhususValid = validateFile(tugasKhususInput);
 
         if ((isSuratPernyataanValid || isTugasKhususValid)||(isSuratPernyataanValid && isTugasKhususValid)) {
-            alert("File berhasil diunggah!");
+            showFeedback("success", "File berhasil diunggah!");
             // Reset kedua form setelah berhasil
             suratPernyataanInput.value = "";
             tugasKhususInput.value = "";
             closeModal();
         } else {
-            alert("Gagal mengunggah file. Pastikan file sudah dipilih dan ukurannya tidak lebih dari 2 MB.");
+            showFeedback("error", "Gagal mengunggah file. Pastikan file sudah dipilih dan ukurannya tidak lebih dari 2 MB.");
         }
     });
 
@@ -41,13 +49,13 @@ document.addEventListener("DOMContentLoaded", () => {
     function validateFile(inputElement) {
         const file = inputElement.files[0];
         if (!file) {
-            alert(`File ${inputElement.name} tidak boleh kosong.`);
+            showFeedback("error", `File ${inputElement.name} tidak boleh kosong.`);
             return false;
         }
 
         const maxSize = 2 * 1024 * 1024; // 2 MB
         if (file.size > maxSize) {
-            alert(`File ${inputElement.name} terlalu besar! Maksimal ukuran file adalah 2 MB.`);
+            showFeedback("error", `File ${inputElement.name} terlalu besar! Maksimal ukuran file adalah 2 MB.`);
             return false;
         }
 

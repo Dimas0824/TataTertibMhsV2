@@ -2,6 +2,7 @@
 session_start();
 require_once __DIR__ . '/../config.php';
 require_once '../Controllers/NewsController.php';
+require_once __DIR__ . '/../helpers/flash_modal.php';
 
 // Instansiasi controller
 $newsController = new NewsController();
@@ -27,8 +28,10 @@ try {
 
         // Panggil method store()
         $result = $newsController->store($gambar, $judul, $konten, $penulis);
-        $_SESSION['message'] = $result['message'] ?? 'Berita berhasil disimpan.';
-        $_SESSION['status'] = $result['status'] ?? 'success';
+        set_app_flash_modal(
+            ($result['status'] ?? 'success') === 'success' ? 'success' : 'error',
+            $result['message'] ?? 'Berita berhasil disimpan.'
+        );
     }
 
     // Validasi jika tombol "update" diklik
@@ -87,8 +90,10 @@ try {
 
         // Panggil method update()
         $result = $newsController->update($newsId, $judul, $konten, $gambarPath);
-        $_SESSION['message'] = $result['message'] ?? 'Berita berhasil diperbarui.';
-        $_SESSION['status'] = $result['status'] ?? 'success';
+        set_app_flash_modal(
+            ($result['status'] ?? 'success') === 'success' ? 'success' : 'error',
+            $result['message'] ?? 'Berita berhasil diperbarui.'
+        );
     }
 
     // Validasi jika tombol "delete" diklik
@@ -101,15 +106,16 @@ try {
 
         // Panggil method delete()
         $result = $newsController->delete($newsId);
-        $_SESSION['message'] = $result['message'] ?? 'Berita berhasil dihapus.';
-        $_SESSION['status'] = $result['status'] ?? 'success';
+        set_app_flash_modal(
+            ($result['status'] ?? 'success') === 'success' ? 'success' : 'error',
+            $result['message'] ?? 'Berita berhasil dihapus.'
+        );
     } else {
         throw new Exception("Aksi tidak valid.");
     }
 } catch (Exception $e) {
     // Tangkap semua error
-    $_SESSION['message'] = 'Error: ' . $e->getMessage();
-    $_SESSION['status'] = 'error';
+    set_app_flash_modal('error', 'Error: ' . $e->getMessage());
 }
 
 header("Location: ../views/news-admin.php");
