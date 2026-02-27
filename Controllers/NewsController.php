@@ -55,14 +55,28 @@ class NewsController
 
         // Proses gambar jika diunggah
         $gambarPath = null;
-        if (!empty($gambar['name'])) {
-            $uploadDir = '../document/news/'; // Direktori upload
-            $fileName = time() . '_' . basename($gambar['name']);
-            $uploadFile = $uploadDir . $fileName;
+        if (is_array($gambar) && !empty($gambar['name'])) {
+            if (($gambar['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+                throw new Exception("Gagal mengunggah gambar.");
+            }
+
+            $uploadDir = app_path('document/news');
+            if (!is_dir($uploadDir) && !mkdir($uploadDir, 0777, true) && !is_dir($uploadDir)) {
+                throw new Exception("Direktori upload gambar tidak tersedia.");
+            }
+
+            $sanitizedName = (string) preg_replace('/[^a-zA-Z0-9._-]/', '_', basename((string) $gambar['name']));
+            $sanitizedName = trim($sanitizedName, '._');
+            if ($sanitizedName === '') {
+                $sanitizedName = 'news_image';
+            }
+
+            $fileName = time() . '_' . $sanitizedName;
+            $uploadFile = $uploadDir . DIRECTORY_SEPARATOR . $fileName;
 
             // Cek tipe file
             $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-            if (!in_array($gambar['type'], $allowedTypes)) {
+            if (!in_array((string) ($gambar['type'] ?? ''), $allowedTypes, true)) {
                 throw new Exception("Format gambar tidak didukung.");
             }
 
@@ -131,7 +145,7 @@ class NewsController
             $news = $this->newsModel->getNewsById($id);
 
             if ($news && !empty($news['gambar'])) {
-                $filePath = __DIR__ . '/../' . $news['gambar'];
+                $filePath = app_path((string) $news['gambar']);
                 if (file_exists($filePath)) {
                     unlink($filePath); // Hapus file gambar
                 }

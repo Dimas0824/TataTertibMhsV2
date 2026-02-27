@@ -1,10 +1,13 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 require_once dirname(__DIR__, 2) . '/config.php';
 
 require_once dirname(__DIR__, 2) . '/Controllers/TatibController.php';
 require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
 require_once dirname(__DIR__) . '/partials/app-shell.php';
+require_once dirname(__DIR__) . '/components/modals/admin-confirm-modal.php';
 
 if (isset($_SESSION['username'])) {
     // Redirect based on role
@@ -28,6 +31,24 @@ $userData = $_SESSION['user_data'];
 
 $tatibController = new TatibController();
 $tatibData = $tatibController->ReadTatib();
+$tatibCount = is_array($tatibData) ? count($tatibData) : 0;
+
+$tingkatCounts = [
+    'I' => 0,
+    'II' => 0,
+    'III' => 0,
+    'IV' => 0,
+    'V' => 0,
+];
+
+if ($tatibCount > 0) {
+    foreach ($tatibData as $rule) {
+        $level = strtoupper(trim((string) ($rule['tingkat'] ?? '')));
+        if (array_key_exists($level, $tingkatCounts)) {
+            $tingkatCounts[$level]++;
+        }
+    }
+}
 
 ?>
 <!DOCTYPE html>
@@ -94,6 +115,24 @@ $tatibData = $tatibController->ReadTatib();
             </div>
 
             <section class="tatib-table-card">
+                <div class="tatib-table-head">
+                    <div>
+                        <h2>Daftar Aturan Tata Tertib</h2>
+                        <p>Rangkuman aturan aktif berdasarkan level pelanggaran.</p>
+                    </div>
+                    <div class="tatib-level-chips" aria-label="Ringkasan tingkat pelanggaran">
+                        <span class="level-chip">I:
+                            <?= htmlspecialchars((string) $tingkatCounts['I'], ENT_QUOTES, 'UTF-8') ?></span>
+                        <span class="level-chip">II:
+                            <?= htmlspecialchars((string) $tingkatCounts['II'], ENT_QUOTES, 'UTF-8') ?></span>
+                        <span class="level-chip">III:
+                            <?= htmlspecialchars((string) $tingkatCounts['III'], ENT_QUOTES, 'UTF-8') ?></span>
+                        <span class="level-chip">IV:
+                            <?= htmlspecialchars((string) $tingkatCounts['IV'], ENT_QUOTES, 'UTF-8') ?></span>
+                        <span class="level-chip">V:
+                            <?= htmlspecialchars((string) $tingkatCounts['V'], ENT_QUOTES, 'UTF-8') ?></span>
+                    </div>
+                </div>
                 <div class="table-container">
                     <table id="tatib-table">
                         <thead>
@@ -109,19 +148,60 @@ $tatibData = $tatibController->ReadTatib();
                         <tbody>
                             <?php $i = 1 ?>
                             <?php if ($tatibData): ?>
-                                <?php foreach ($tatibData as $tatib): ?>
+                                <?php foreach ($tatibData as $tatib):
+                                    $tingkat = strtoupper(trim((string) ($tatib['tingkat'] ?? '')));
+                                    $tierClass = 'tier-pill';
+                                    if ($tingkat === 'I') {
+                                        $tierClass .= ' tier-pill--one';
+                                    } elseif ($tingkat === 'II') {
+                                        $tierClass .= ' tier-pill--two';
+                                    } elseif ($tingkat === 'III') {
+                                        $tierClass .= ' tier-pill--three';
+                                    } elseif ($tingkat === 'IV') {
+                                        $tierClass .= ' tier-pill--four';
+                                    } elseif ($tingkat === 'V') {
+                                        $tierClass .= ' tier-pill--five';
+                                    }
+
+                                    $point = (int) ($tatib['poin'] ?? 0);
+                                    $pointClass = 'point-badge';
+                                    if ($point >= 20) {
+                                        $pointClass .= ' point-badge--high';
+                                    } elseif ($point >= 8) {
+                                        $pointClass .= ' point-badge--medium';
+                                    } else {
+                                        $pointClass .= ' point-badge--low';
+                                    }
+
+                                    $adminName = trim((string) ($tatib['nama_admin'] ?? ''));
+                                    if ($adminName === '') {
+                                        $adminName = 'Admin Tidak Diketahui';
+                                    }
+                                    ?>
                                     <tr>
                                         <td><?= $i ?></td>
-                                        <td><?= htmlspecialchars($tatib['id_adminTatib']) ?></td>
-                                        <td class="tatib-desc-cell"><?= htmlspecialchars($tatib['deskripsi']) ?></td>
-                                        <td><span class="tier-pill"><?= htmlspecialchars($tatib['tingkat']) ?></span></td>
-                                        <td><span class="point-badge"><?= htmlspecialchars($tatib['poin']) ?></span></td>
+                                        <td><span
+                                                class="admin-pill"><?= htmlspecialchars($adminName, ENT_QUOTES, 'UTF-8') ?></span>
+                                        </td>
+                                        <td class="tatib-desc-cell">
+                                            <p class="tatib-desc-text"><?= htmlspecialchars($tatib['deskripsi']) ?></p>
+                                        </td>
+                                        <td><span
+                                                class="<?= htmlspecialchars($tierClass, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($tatib['tingkat']) ?></span>
+                                        </td>
+                                        <td><span
+                                                class="<?= htmlspecialchars($pointClass, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($tatib['poin']) ?></span>
+                                        </td>
                                         <td class="button-cell">
-                                            <form action="<?= htmlspecialchars(app_action_url('action.tatib'), ENT_QUOTES, 'UTF-8') ?>" method="post">
+                                            <form
+                                                action="<?= htmlspecialchars(app_action_url('action.tatib'), ENT_QUOTES, 'UTF-8') ?>"
+                                                method="post">
                                                 <input type="hidden" name="id_tatib"
                                                     value="<?= htmlspecialchars(app_id_token('tatib', (int) $tatib['id_tata_tertib']), ENT_QUOTES, 'UTF-8') ?>">
-                                                <button class="delete" id="delete" name="delete"
-                                                    onclick="return confirm('Apakah anda yakin ingin menghapus?');"
+                                                <button type="button" class="delete" id="delete" name="delete"
+                                                    data-admin-confirm-trigger data-admin-confirm-title="Hapus tata tertib?"
+                                                    data-admin-confirm-message="Data tata tertib yang dihapus tidak dapat dikembalikan. Lanjutkan penghapusan?"
+                                                    data-admin-confirm-label="Ya, Hapus" data-admin-confirm-action="submit-form"
                                                     aria-label="Hapus tata tertib <?= htmlspecialchars($tatib['deskripsi']) ?>"><i
                                                         class="fa-solid fa-trash"></i></button>
                                             </form>
@@ -178,7 +258,8 @@ $tatibData = $tatibController->ReadTatib();
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2>Tambah Pelanggaran</h2>
-                <form id="insertForm" method="POST" action="<?= htmlspecialchars(app_action_url('action.tatib'), ENT_QUOTES, 'UTF-8') ?>">
+                <form id="insertForm" method="POST"
+                    action="<?= htmlspecialchars(app_action_url('action.tatib'), ENT_QUOTES, 'UTF-8') ?>">
                     <label for="insertAdmin">Id Admin:</label>
                     <input type="text" id="admin" name="admin" value="<?= $userData['id_admin'] ?>" required readonly>
 
@@ -216,6 +297,9 @@ $tatibData = $tatibController->ReadTatib();
     </div>
     <?php
     render_app_flash_modal([
+        'context' => 'nested',
+    ]);
+    render_admin_confirm_modal_component([
         'context' => 'nested',
     ]);
     ?>

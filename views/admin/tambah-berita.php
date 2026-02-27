@@ -1,10 +1,13 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 require_once dirname(__DIR__, 2) . '/config.php';
 
 require_once dirname(__DIR__, 2) . '/Controllers/NewsController.php';
 require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
 require_once dirname(__DIR__) . '/partials/app-shell.php';
+require_once dirname(__DIR__) . '/components/modals/admin-confirm-modal.php';
 
 if (isset($_SESSION['username'])) {
     // Redirect based on role
@@ -93,7 +96,8 @@ $newsData = $newsController->AdminNews($id_admin);
                     </ol>
                 </aside>
 
-                <form id="insertBeritaForm" method="POST" action="<?= htmlspecialchars(app_action_url('action.news'), ENT_QUOTES, 'UTF-8') ?>"
+                <form id="insertBeritaForm" method="POST"
+                    action="<?= htmlspecialchars(app_action_url('action.news'), ENT_QUOTES, 'UTF-8') ?>"
                     enctype="multipart/form-data">
                     <label for="insertPenulisNama">Penulis:</label>
                     <input type="text" id="insertPenulisNama" name="penulis_nama"
@@ -111,6 +115,11 @@ $newsData = $newsController->AdminNews($id_admin);
                     <input type="file" id="insertGambar" name="gambar" accept="image/*">
 
                     <div class="form-actions">
+                        <button type="button" class="cancel-button" data-admin-confirm-trigger
+                            data-admin-confirm-title="Batalkan tambah berita?"
+                            data-admin-confirm-message="Data berita yang belum disimpan akan hilang. Yakin ingin kembali?"
+                            data-admin-confirm-label="Ya, Batalkan" data-admin-confirm-action="navigate"
+                            data-admin-confirm-target="<?= htmlspecialchars(app_page_url('page.admin_news'), ENT_QUOTES, 'UTF-8') ?>">Batal</button>
                         <button type="submit" class="save-button" name="store">Simpan Berita</button>
                     </div>
                 </form>
@@ -118,6 +127,9 @@ $newsData = $newsController->AdminNews($id_admin);
         </section>
         <?php
         render_app_footer([
+            'context' => 'nested',
+        ]);
+        render_admin_confirm_modal_component([
             'context' => 'nested',
         ]);
         ?>

@@ -14,7 +14,18 @@ class Tatib
     public function getAllTatib()
     {
         try {
-            $stmt = $this->connect->prepare("SELECT * FROM TATA_TERTIB");
+            $stmt = $this->connect->prepare(
+                "SELECT
+                    t.id_tata_tertib,
+                    t.id_adminTatib,
+                    t.deskripsi,
+                    t.tingkat,
+                    t.poin,
+                    a.nama_admin
+                 FROM TATA_TERTIB t
+                 LEFT JOIN ADMIN a ON a.id_admin = t.id_adminTatib
+                 ORDER BY t.id_tata_tertib ASC"
+            );
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {

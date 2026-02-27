@@ -1,5 +1,7 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 
 require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
 require_once dirname(__DIR__, 2) . '/Controllers/NewsController.php';
@@ -78,8 +80,10 @@ $newsData = $newsController->ReadNews();
                 <p>Pusat kontrol admin untuk memantau informasi kedisiplinan, mengelola konten berita, dan menjaga alur
                     informasi tetap konsisten.</p>
                 <div class="hero-actions">
-                    <a href="<?= htmlspecialchars(app_page_url('page.admin_news'), ENT_QUOTES, 'UTF-8') ?>" class="hero-btn hero-btn-primary">Kelola News</a>
-                    <a href="<?= htmlspecialchars(app_page_url('page.admin_news_tambah'), ENT_QUOTES, 'UTF-8') ?>" class="hero-btn hero-btn-secondary">Tambah Berita</a>
+                    <a href="<?= htmlspecialchars(app_page_url('page.admin_news'), ENT_QUOTES, 'UTF-8') ?>"
+                        class="hero-btn hero-btn-primary">Kelola Berita</a>
+                    <a href="<?= htmlspecialchars(app_page_url('page.admin_news_tambah'), ENT_QUOTES, 'UTF-8') ?>"
+                        class="hero-btn hero-btn-secondary">Tambah Berita</a>
                 </div>
             </div>
 

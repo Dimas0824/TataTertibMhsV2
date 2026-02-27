@@ -1,9 +1,12 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 require_once dirname(__DIR__, 2) . '/config.php';
 require_once dirname(__DIR__, 2) . '/Controllers/NewsController.php';
 require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
 require_once dirname(__DIR__) . '/partials/app-shell.php';
+require_once dirname(__DIR__) . '/components/modals/admin-confirm-modal.php';
 require_once dirname(__DIR__, 2) . '/helpers/flash_modal.php';
 
 // Ambil ID berita dari route token
@@ -60,9 +63,20 @@ if ($id > 0) {
 
         // Proses unggah gambar baru
         if (isset($gambar) && $gambar['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = '../../document/news/'; // Folder penyimpanan gambar
-            $fileName = time() . '_' . basename($gambar['name']); // Nama unik gambar
-            $uploadFile = $uploadDir . $fileName;
+            $uploadDir = app_path('document/news');
+            if (!is_dir($uploadDir) && !mkdir($uploadDir, 0777, true) && !is_dir($uploadDir)) {
+                set_app_flash_modal('error', 'Direktori upload gambar tidak tersedia.');
+                app_redirect_page('page.admin_news');
+            }
+
+            $sanitizedName = (string) preg_replace('/[^a-zA-Z0-9._-]/', '_', basename((string) $gambar['name']));
+            $sanitizedName = trim($sanitizedName, '._');
+            if ($sanitizedName === '') {
+                $sanitizedName = 'news_image';
+            }
+
+            $fileName = time() . '_' . $sanitizedName;
+            $uploadFile = $uploadDir . DIRECTORY_SEPARATOR . $fileName;
 
             // Pindahkan file ke folder uploads
             if (move_uploaded_file($gambar['tmp_name'], $uploadFile)) {
@@ -155,7 +169,8 @@ if ($id > 0) {
                 </aside>
 
                 <form id="editBeritaForm" method="POST" enctype="multipart/form-data">
-                    <input type="hidden" id="editNewsId" name="news_id" value="<?= htmlspecialchars(app_id_token('news', (int) $id), ENT_QUOTES, 'UTF-8') ?>" required>
+                    <input type="hidden" id="editNewsId" name="news_id"
+                        value="<?= htmlspecialchars(app_id_token('news', (int) $id), ENT_QUOTES, 'UTF-8') ?>" required>
 
                     <label for="editPenulis">Penulis:</label>
                     <input type="text" id="editPenulis" name="penulis" value="<?= htmlspecialchars($penulis_nama) ?>"
@@ -173,8 +188,11 @@ if ($id > 0) {
                     <input type="file" id="editGambar" name="gambar" accept="image/*">
 
                     <div class="form-actions">
-                        <button type="button" class="cancel-button" name="cancel"
-                            onclick="window.location.href='<?= htmlspecialchars(app_page_url('page.admin_news'), ENT_QUOTES, 'UTF-8') ?>'">Batal</button>
+                        <button type="button" class="cancel-button" name="cancel" data-admin-confirm-trigger
+                            data-admin-confirm-title="Batalkan perubahan?"
+                            data-admin-confirm-message="Perubahan yang belum disimpan akan hilang. Yakin ingin kembali?"
+                            data-admin-confirm-label="Ya, Batalkan" data-admin-confirm-action="navigate"
+                            data-admin-confirm-target="<?= htmlspecialchars(app_page_url('page.admin_news'), ENT_QUOTES, 'UTF-8') ?>">Batal</button>
                         <button type="submit" class="save-button">Simpan Perubahan</button>
                     </div>
                 </form>
@@ -182,6 +200,9 @@ if ($id > 0) {
         </section>
         <?php
         render_app_footer([
+            'context' => 'nested',
+        ]);
+        render_admin_confirm_modal_component([
             'context' => 'nested',
         ]);
         ?>

@@ -1,9 +1,12 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 require_once dirname(__DIR__, 2) . '/config.php';
 require_once dirname(__DIR__, 2) . '/Controllers/NewsController.php';
 require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
 require_once dirname(__DIR__) . '/partials/app-shell.php';
+require_once dirname(__DIR__) . '/components/modals/admin-confirm-modal.php';
 
 if (isset($_SESSION['username'])) {
     // Redirect based on role
@@ -93,7 +96,8 @@ $newsData = $newsController->AdminNews(id: $id_admin);
             </div>
 
             <div class="admin-news-toolbar">
-                <a href="<?= htmlspecialchars(app_page_url('page.admin_news_tambah'), ENT_QUOTES, 'UTF-8') ?>" class="add-button" id="addButton">+ Tambah Berita</a>
+                <a href="<?= htmlspecialchars(app_page_url('page.admin_news_tambah'), ENT_QUOTES, 'UTF-8') ?>"
+                    class="add-button" id="addButton">+ Tambah Berita</a>
             </div>
 
             <section class="admin-table-card">
@@ -124,14 +128,20 @@ $newsData = $newsController->AdminNews(id: $id_admin);
                                         <td class="news-content-cell"><?= nl2br(htmlspecialchars($news['konten'])) ?></td>
                                         <td><?= htmlspecialchars($penulis_nama) ?></td>
                                         <td class="button-cell">
-                                            <a href="<?= htmlspecialchars(app_page_url('page.admin_news_edit', ['id_news' => (int) $news['id_news']]), ENT_QUOTES, 'UTF-8') ?>" class="edit-button"
+                                            <a href="<?= htmlspecialchars(app_page_url('page.admin_news_edit', ['id_news' => (int) $news['id_news']]), ENT_QUOTES, 'UTF-8') ?>"
+                                                class="edit-button"
                                                 aria-label="Edit berita <?= htmlspecialchars($news['judul']) ?>">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
-                                            <form action="<?= htmlspecialchars(app_action_url('action.news'), ENT_QUOTES, 'UTF-8') ?>" method="post">
-                                                <input type="hidden" name="news_id" value="<?= htmlspecialchars(app_id_token('news', (int) $news['id_news']), ENT_QUOTES, 'UTF-8') ?>">
-                                                <button class="delete" id="delete" name="delete"
-                                                    onclick="return confirm('Apakah anda yakin ingin menghapus?');"
+                                            <form
+                                                action="<?= htmlspecialchars(app_action_url('action.news'), ENT_QUOTES, 'UTF-8') ?>"
+                                                method="post">
+                                                <input type="hidden" name="news_id"
+                                                    value="<?= htmlspecialchars(app_id_token('news', (int) $news['id_news']), ENT_QUOTES, 'UTF-8') ?>">
+                                                <button type="button" class="delete" id="delete" name="delete"
+                                                    data-admin-confirm-trigger data-admin-confirm-title="Hapus berita?"
+                                                    data-admin-confirm-message="Berita yang dihapus tidak dapat dipulihkan. Yakin ingin melanjutkan?"
+                                                    data-admin-confirm-label="Ya, Hapus" data-admin-confirm-action="submit-form"
                                                     aria-label="Hapus berita <?= htmlspecialchars($news['judul']) ?>"><i
                                                         class="fa-solid fa-trash"></i></button>
                                             </form>
@@ -160,6 +170,9 @@ $newsData = $newsController->AdminNews(id: $id_admin);
     </div>
     <?php
     render_app_flash_modal([
+        'context' => 'nested',
+    ]);
+    render_admin_confirm_modal_component([
         'context' => 'nested',
     ]);
     ?>

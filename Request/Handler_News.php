@@ -69,17 +69,22 @@ try {
 
         $gambarPath = null;
         if (!empty($gambar['name']) && ($gambar['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK) {
-            $uploadDir = '../document/news/';
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
+            $uploadDir = app_path('document/news');
+            if (!is_dir($uploadDir) && !mkdir($uploadDir, 0777, true) && !is_dir($uploadDir)) {
+                throw new Exception("Direktori upload gambar tidak tersedia.");
             }
 
-            $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '_', basename($gambar['name']));
+            $sanitizedName = (string) preg_replace('/[^a-zA-Z0-9._-]/', '_', basename((string) $gambar['name']));
+            $sanitizedName = trim($sanitizedName, '._');
+            if ($sanitizedName === '') {
+                $sanitizedName = 'news_image';
+            }
+
             $fileName = time() . '_' . $sanitizedName;
-            $uploadFile = $uploadDir . $fileName;
+            $uploadFile = $uploadDir . DIRECTORY_SEPARATOR . $fileName;
             $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
 
-            if (!in_array($gambar['type'], $allowedTypes, true)) {
+            if (!in_array((string) ($gambar['type'] ?? ''), $allowedTypes, true)) {
                 throw new Exception("Format gambar tidak didukung.");
             }
 
