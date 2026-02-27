@@ -22,6 +22,7 @@ if (!function_exists('app_route_registry')) {
             'page.pelaporan' => ['kind' => 'page', 'path' => '/pelaporan', 'target' => 'views/pelanggaran/pelaporan.php', 'methods' => ['GET']],
             'page.edit_pelaporan' => ['kind' => 'page', 'path' => '/pelaporan/edit', 'target' => 'views/pelanggaran/edit-pelaporan.php', 'methods' => ['GET']],
             'page.notifikasi' => ['kind' => 'page', 'path' => '/notifikasi', 'target' => 'views/pelanggaran/notifikasi.php', 'methods' => ['GET']],
+            'page.news_detail' => ['kind' => 'page', 'path' => '/berita', 'target' => 'views/public/berita-detail.php', 'methods' => ['GET']],
             'page.admin_home' => ['kind' => 'page', 'path' => '/admin', 'target' => 'views/admin/home-admin.php', 'methods' => ['GET']],
             'page.admin_tatib' => ['kind' => 'page', 'path' => '/admin/tatib', 'target' => 'views/tatib/listTatib-admin.php', 'methods' => ['GET']],
             'page.admin_news' => ['kind' => 'page', 'path' => '/admin/news', 'target' => 'views/admin/news-admin.php', 'methods' => ['GET']],
@@ -362,6 +363,7 @@ if (!function_exists('app_legacy_path_to_public_url')) {
             'views/pelanggaran/pelaporan.php' => ['route' => 'page.pelaporan', 'kind' => 'page'],
             'views/pelanggaran/edit-pelaporan.php' => ['route' => 'page.edit_pelaporan', 'kind' => 'page'],
             'views/pelanggaran/notifikasi.php' => ['route' => 'page.notifikasi', 'kind' => 'page'],
+            'views/public/berita-detail.php' => ['route' => 'page.news_detail', 'kind' => 'page'],
             'views/admin/home-admin.php' => ['route' => 'page.admin_home', 'kind' => 'page'],
             'views/admin/news-admin.php' => ['route' => 'page.admin_news', 'kind' => 'page'],
             'views/admin/tambah-berita.php' => ['route' => 'page.admin_news_tambah', 'kind' => 'page'],
@@ -390,6 +392,12 @@ if (!function_exists('app_legacy_path_to_public_url')) {
         }
         if ($pathOnly === 'views/admin/edit-berita.php' && isset($query['id']) && is_numeric($query['id'])) {
             $data['id_news'] = (int) $query['id'];
+        }
+        if ($pathOnly === 'views/public/berita-detail.php' && isset($query['slug']) && is_string($query['slug'])) {
+            $slug = trim($query['slug']);
+            if ($slug !== '') {
+                $data['slug'] = $slug;
+            }
         }
 
         if ($map[$pathOnly]['kind'] === 'page') {

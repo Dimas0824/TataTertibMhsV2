@@ -24,8 +24,20 @@ class News
     public function getNewsById($id)
     {
         try {
-            $stmt = $this->connect->prepare("SELECT * FROM NEWS WHERE id_news = ?");
-            $stmt->execute([$id]);
+            $stmt = $this->connect->prepare(
+                "SELECT
+                    news.id_news,
+                    news.judul,
+                    news.konten,
+                    news.gambar,
+                    news.penulis_id,
+                    news.published_at,
+                    admin.nama_admin AS penulis_nama
+                FROM NEWS news
+                JOIN ADMIN admin ON news.penulis_id = admin.id_admin
+                WHERE news.id_news = ?"
+            );
+            $stmt->execute([(int) $id]);
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             // Log or display the error
@@ -38,10 +50,11 @@ class News
     {
         try {
             $stmt = $this->connect->prepare("SELECT
-                    news.id_news, news.judul, news.konten, news.gambar,
+                    news.id_news, news.judul, news.konten, news.gambar, news.published_at,
                     admin.nama_admin AS penulis_nama
                 FROM NEWS news
-                JOIN ADMIN admin ON news.penulis_id = admin.id_admin");
+                JOIN ADMIN admin ON news.penulis_id = admin.id_admin
+                ORDER BY news.published_at DESC, news.id_news DESC");
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
@@ -54,13 +67,32 @@ class News
     public function getNewsAdmin($adminId)
     {
         $query = "SELECT
-                    news.id_news, news.judul, news.konten, news.gambar,
+                    news.id_news, news.judul, news.konten, news.gambar, news.published_at,
                     admin.nama_admin AS penulis_nama
                 FROM NEWS news
                 JOIN ADMIN admin ON news.penulis_id = admin.id_admin
-                WHERE news.penulis_id = ?";
+                WHERE news.penulis_id = ?
+                ORDER BY news.published_at DESC, news.id_news DESC";
         $stmt = $this->connect->prepare($query);
-        $stmt->execute([$adminId]);
+        $stmt->execute([(int) $adminId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getLatestNewsExcluding($excludedNewsId, $limit = 8)
+    {
+        $safeLimit = max(1, min(16, (int) $limit));
+        $query = "SELECT
+                    news.id_news, news.judul, news.konten, news.gambar, news.published_at,
+                    admin.nama_admin AS penulis_nama
+                FROM NEWS news
+                JOIN ADMIN admin ON news.penulis_id = admin.id_admin
+                WHERE news.id_news <> :excluded
+                ORDER BY news.published_at DESC, news.id_news DESC
+                LIMIT {$safeLimit}";
+
+        $stmt = $this->connect->prepare($query);
+        $stmt->bindValue(':excluded', (int) $excludedNewsId, PDO::PARAM_INT);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 

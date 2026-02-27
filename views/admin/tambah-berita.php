@@ -109,7 +109,30 @@ $newsData = $newsController->AdminNews($id_admin);
                     <input type="text" id="insertJudul" name="judul" required>
 
                     <label for="insertKonten">Konten:</label>
-                    <textarea id="insertKonten" name="konten" rows="4" required></textarea>
+                    <div class="news-rich-editor" data-rich-editor-wrapper>
+                        <div class="news-rich-toolbar" role="toolbar" aria-label="Toolbar format konten berita">
+                            <button type="button" class="news-rich-btn" data-editor-command="formatBlock"
+                                data-editor-value="P" aria-label="Paragraf">Paragraf</button>
+                            <button type="button" class="news-rich-btn" data-editor-command="formatBlock"
+                                data-editor-value="H3" aria-label="Subjudul">Subjudul</button>
+                            <button type="button" class="news-rich-btn" data-editor-command="bold" aria-label="Tebal"><i
+                                    class="fa-solid fa-bold" aria-hidden="true"></i></button>
+                            <button type="button" class="news-rich-btn" data-editor-command="italic"
+                                aria-label="Miring"><i class="fa-solid fa-italic" aria-hidden="true"></i></button>
+                            <button type="button" class="news-rich-btn" data-editor-command="insertUnorderedList"
+                                aria-label="Daftar poin"><i class="fa-solid fa-list-ul" aria-hidden="true"></i></button>
+                            <button type="button" class="news-rich-btn" data-editor-command="insertOrderedList"
+                                aria-label="Daftar bernomor"><i class="fa-solid fa-list-ol"
+                                    aria-hidden="true"></i></button>
+                            <button type="button" class="news-rich-btn" data-editor-command="removeFormat"
+                                aria-label="Hapus format"><i class="fa-solid fa-eraser" aria-hidden="true"></i></button>
+                        </div>
+                        <div class="news-rich-surface" contenteditable="true" data-rich-editor
+                            placeholder="Tulis isi berita formal di sini..." aria-label="Editor konten berita"></div>
+                    </div>
+                    <textarea id="insertKonten" name="konten" rows="4" class="news-rich-source"></textarea>
+                    <p class="news-rich-hint">Gunakan subjudul, paragraf, poin, dan numbering agar berita lebih
+                        profesional.</p>
 
                     <label for="insertGambar">Unggah Gambar:</label>
                     <input type="file" id="insertGambar" name="gambar" accept="image/*">
@@ -134,6 +157,8 @@ $newsData = $newsController->AdminNews($id_admin);
         ]);
         ?>
     </div>
+    <script defer
+        src="<?= htmlspecialchars(app_seo_script_src('js/news-form-editor.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
 </body>
 
 </html>

@@ -9,6 +9,28 @@ if (isset($_SESSION['user_type'])) {
         : ($_SESSION['user_type'] === 'admin' ? 'Admin' : 'Mahasiswa');
 }
 
+$newsExcerpt = static function (string $content, int $limit = 160): string {
+    $plain = trim((string) preg_replace('/\s+/u', ' ', strip_tags($content)));
+    if ($plain === '') {
+        return '';
+    }
+
+    $slice = function_exists('mb_substr') ? mb_substr($plain, 0, $limit) : substr($plain, 0, $limit);
+    $fullLength = function_exists('mb_strlen') ? mb_strlen($plain) : strlen($plain);
+    if ($fullLength > $limit) {
+        return rtrim($slice) . '...';
+    }
+
+    return $slice;
+};
+
+$newsDetailUrl = static function (array $news): string {
+    $newsId = (int) ($news['id_news'] ?? 0);
+    $title = (string) ($news['judul'] ?? 'berita');
+    $slug = NewsController::news_build_slug($title, $newsId);
+    return app_page_url('page.news_detail', ['slug' => $slug]);
+};
+
 render_app_sidebar([
     'variant' => $homeVariant,
     'context' => 'root',
@@ -145,6 +167,12 @@ render_app_sidebar([
         <?php else: ?>
             <div class="news-grid">
                 <?php foreach ($newsData as $index => $news): ?>
+                    <?php
+                    $detailUrl = $newsDetailUrl($news);
+                    $summary = $newsExcerpt((string) ($news['konten'] ?? ''));
+                    $publishedTimestamp = strtotime((string) ($news['published_at'] ?? ''));
+                    $publishedLabel = $publishedTimestamp !== false ? date('d M Y', $publishedTimestamp) : 'Tanggal tidak tersedia';
+                    ?>
                     <article class="news-content reveal-up" data-delay="220">
                         <?php if (!empty($news['gambar'])): ?>
                             <img src="<?= htmlspecialchars($news['gambar']) ?>"
@@ -160,9 +188,17 @@ render_app_sidebar([
                                 sizes="(max-width: 768px) 100vw, (max-width: 992px) 48vw, <?= $index === 0 ? '100vw' : '32vw' ?>">
                         <?php endif; ?>
                         <div class="news-text">
-                            <h3><?= htmlspecialchars($news['judul']) ?></h3>
+                            <h3>
+                                <a class="news-title-link" href="<?= htmlspecialchars($detailUrl, ENT_QUOTES, 'UTF-8') ?>">
+                                    <?= htmlspecialchars($news['judul']) ?>
+                                </a>
+                            </h3>
                             <h5><?= htmlspecialchars($news['penulis_nama']) ?></h5>
-                            <p><?= nl2br(htmlspecialchars($news['konten'])) ?></p>
+                            <span class="news-date"><?= htmlspecialchars($publishedLabel) ?></span>
+                            <p><?= htmlspecialchars($summary) ?></p>
+                            <a class="news-read-more" href="<?= htmlspecialchars($detailUrl, ENT_QUOTES, 'UTF-8') ?>">
+                                Baca Selengkapnya <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                            </a>
                         </div>
                     </article>
                 <?php endforeach; ?>
@@ -184,8 +220,8 @@ render_app_sidebar([
                 'description' => $articleDescription,
                 'author' => (string) ($firstNews['penulis_nama'] ?? 'Admin DiscipLink'),
                 'image' => !empty($firstNews['gambar']) ? (string) $firstNews['gambar'] : 'img/news.jpg',
-                'datePublished' => !empty($firstNews['created_at']) ? (string) $firstNews['created_at'] : date('c'),
-                'dateModified' => !empty($firstNews['updated_at']) ? (string) $firstNews['updated_at'] : date('c'),
+                'datePublished' => !empty($firstNews['published_at']) ? (string) $firstNews['published_at'] : date('c'),
+                'dateModified' => !empty($firstNews['published_at']) ? (string) $firstNews['published_at'] : date('c'),
             ],
         ]);
     }

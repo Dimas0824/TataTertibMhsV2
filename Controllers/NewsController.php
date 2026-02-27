@@ -35,6 +35,55 @@ class NewsController
         return $this->newsModel->getNewsById($id);
     }
 
+    public function getLatestNewsExcluding($excludedNewsId, $limit = 8)
+    {
+        return $this->newsModel->getLatestNewsExcluding($excludedNewsId, $limit);
+    }
+
+    public static function news_slugify_title(string $judul): string
+    {
+        $slug = trim(strtolower($judul));
+        if ($slug === '') {
+            return 'berita';
+        }
+
+        if (function_exists('iconv')) {
+            $transliterated = @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $slug);
+            if (is_string($transliterated) && $transliterated !== '') {
+                $slug = strtolower($transliterated);
+            }
+        }
+
+        $slug = (string) preg_replace('/[^a-z0-9]+/', '-', $slug);
+        $slug = trim($slug, '-');
+
+        return $slug !== '' ? $slug : 'berita';
+    }
+
+    public static function news_build_slug(string $judul, int $id): string
+    {
+        if ($id <= 0) {
+            return self::news_slugify_title($judul) . '-0';
+        }
+
+        return self::news_slugify_title($judul) . '-' . $id;
+    }
+
+    public static function news_extract_id_from_slug(string $slug): ?int
+    {
+        $slug = trim(strtolower($slug));
+        if ($slug === '') {
+            return null;
+        }
+
+        if (!preg_match('/-(\d+)$/', $slug, $matches)) {
+            return null;
+        }
+
+        $id = (int) ($matches[1] ?? 0);
+        return $id > 0 ? $id : null;
+    }
+
     /**
      * Ambil semua berita.
      */
@@ -48,8 +97,11 @@ class NewsController
      */
     public function store($gambar, $judul, $konten, $penulis_id)
     {
+        $judul = trim((string) $judul);
+        $sanitizedKonten = $this->sanitizeNewsContent((string) $konten);
+
         // Validasi input
-        if (empty($judul) || empty($penulis_id) || empty($konten)) {
+        if ($judul === '' || empty($penulis_id) || $sanitizedKonten === '') {
             throw new Exception("Semua input (judul, penulis, konten) harus diisi.");
         }
 
@@ -91,7 +143,7 @@ class NewsController
 
         // Query untuk menyimpan berita
         try {
-            $saved = $this->newsModel->insertNews($gambarPath, $judul, $konten, $penulis_id);
+            $saved = $this->newsModel->insertNews($gambarPath, $judul, $sanitizedKonten, $penulis_id);
             if (!$saved) {
                 return ['status' => 'error', 'message' => 'Gagal menyimpan berita.'];
             }
@@ -108,9 +160,16 @@ class NewsController
     public function update($id, $judul, $konten, $gambarPath = null)
     {
         try {
+            $judul = trim((string) $judul);
+            $sanitizedKonten = $this->sanitizeNewsContent((string) $konten);
+
             // Validasi ID berita
             if (empty($id)) {
                 throw new Exception("ID berita tidak valid.");
+            }
+
+            if ($judul === '' || $sanitizedKonten === '') {
+                throw new Exception("Judul dan konten tidak boleh kosong.");
             }
 
             // Ambil data lama
@@ -124,7 +183,7 @@ class NewsController
             $gambar = $gambarPath ?: $oldNews['gambar'];
 
             // Update data berita
-            $updated = $this->newsModel->updateNews($id, $judul, $konten, null, $gambar);
+            $updated = $this->newsModel->updateNews($id, $judul, $sanitizedKonten, null, $gambar);
             if (!$updated) {
                 return ['status' => 'error', 'message' => 'Gagal memperbarui data berita.'];
             }
@@ -133,6 +192,29 @@ class NewsController
         } catch (Throwable $e) {
             return ['status' => 'error', 'message' => $e->getMessage()];
         }
+    }
+
+    private function sanitizeNewsContent(string $html): string
+    {
+        $html = trim($html);
+        if ($html === '') {
+            return '';
+        }
+
+        $allowedTags = '<p><br><strong><b><em><i><u><ul><ol><li><h3><blockquote>';
+        $clean = strip_tags($html, $allowedTags);
+
+        $clean = (string) preg_replace('/<\/?(h1|h2|h4|h5|h6)>/i', '', $clean);
+        $clean = (string) preg_replace('/\s+on[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $clean);
+        $clean = (string) preg_replace('/\sstyle\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $clean);
+        $clean = (string) preg_replace('/<(\/?)b>/i', '<$1strong>', $clean);
+        $clean = (string) preg_replace('/<(\/?)i>/i', '<$1em>', $clean);
+
+        if (trim(strip_tags($clean)) === '') {
+            return '';
+        }
+
+        return trim($clean);
     }
 
     /**

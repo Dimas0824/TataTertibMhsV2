@@ -181,8 +181,31 @@ if ($id > 0) {
                         required>
 
                     <label for="editKonten">Konten:</label>
+                    <div class="news-rich-editor" data-rich-editor-wrapper>
+                        <div class="news-rich-toolbar" role="toolbar" aria-label="Toolbar format konten berita">
+                            <button type="button" class="news-rich-btn" data-editor-command="formatBlock"
+                                data-editor-value="P" aria-label="Paragraf">Paragraf</button>
+                            <button type="button" class="news-rich-btn" data-editor-command="formatBlock"
+                                data-editor-value="H3" aria-label="Subjudul">Subjudul</button>
+                            <button type="button" class="news-rich-btn" data-editor-command="bold" aria-label="Tebal"><i
+                                    class="fa-solid fa-bold" aria-hidden="true"></i></button>
+                            <button type="button" class="news-rich-btn" data-editor-command="italic"
+                                aria-label="Miring"><i class="fa-solid fa-italic" aria-hidden="true"></i></button>
+                            <button type="button" class="news-rich-btn" data-editor-command="insertUnorderedList"
+                                aria-label="Daftar poin"><i class="fa-solid fa-list-ul" aria-hidden="true"></i></button>
+                            <button type="button" class="news-rich-btn" data-editor-command="insertOrderedList"
+                                aria-label="Daftar bernomor"><i class="fa-solid fa-list-ol"
+                                    aria-hidden="true"></i></button>
+                            <button type="button" class="news-rich-btn" data-editor-command="removeFormat"
+                                aria-label="Hapus format"><i class="fa-solid fa-eraser" aria-hidden="true"></i></button>
+                        </div>
+                        <div class="news-rich-surface" contenteditable="true" data-rich-editor
+                            placeholder="Perbarui isi berita formal di sini..." aria-label="Editor konten berita"></div>
+                    </div>
                     <textarea id="editKonten" name="konten" rows="4"
-                        required><?= htmlspecialchars($news['konten']) ?></textarea>
+                        class="news-rich-source"><?= htmlspecialchars($news['konten']) ?></textarea>
+                    <p class="news-rich-hint">Pastikan struktur tulisan rapi: subjudul, paragraf, dan daftar poin/nomor.
+                    </p>
 
                     <label for="editGambar">Unggah Gambar:</label>
                     <input type="file" id="editGambar" name="gambar" accept="image/*">
@@ -207,6 +230,8 @@ if ($id > 0) {
         ]);
         ?>
     </div>
+    <script defer
+        src="<?= htmlspecialchars(app_seo_script_src('js/news-form-editor.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
 </body>
 
 </html>
