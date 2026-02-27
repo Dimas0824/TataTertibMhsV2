@@ -262,17 +262,26 @@ if (!function_exists('app_seo_script_src')) {
 if (!function_exists('app_seo_favicon_tags')) {
     function app_seo_favicon_tags(string $assetPrefix = ''): void
     {
-        $assetPrefix = rtrim($assetPrefix, '/');
-        if ($assetPrefix !== '') {
-            $assetPrefix .= '/';
-        }
+        $assetPrefix = trim($assetPrefix);
+        $resolvePath = static function (string $assetPath) use ($assetPrefix): string {
+            $assetPath = ltrim($assetPath, '/');
+            if ($assetPrefix === '') {
+                if (function_exists('app_url')) {
+                    return app_url($assetPath);
+                }
+
+                return '/' . $assetPath;
+            }
+
+            return rtrim($assetPrefix, '/') . '/' . $assetPath;
+        };
         ?>
-        <link rel="icon" href="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/favicon.ico" sizes="any">
+        <link rel="icon" href="<?= htmlspecialchars($resolvePath('img/favicon.ico'), ENT_QUOTES, 'UTF-8') ?>" sizes="any">
         <link rel="icon" type="image/png" sizes="96x96"
-            href="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/favicon-96x96.png">
+            href="<?= htmlspecialchars($resolvePath('img/favicon-96x96.png'), ENT_QUOTES, 'UTF-8') ?>">
         <link rel="apple-touch-icon" sizes="180x180"
-            href="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/apple-touch-icon.png">
-        <link rel="manifest" href="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/site.webmanifest">
+            href="<?= htmlspecialchars($resolvePath('img/apple-touch-icon.png'), ENT_QUOTES, 'UTF-8') ?>">
+        <link rel="manifest" href="<?= htmlspecialchars($resolvePath('img/site.webmanifest'), ENT_QUOTES, 'UTF-8') ?>">
         <?php
     }
 }

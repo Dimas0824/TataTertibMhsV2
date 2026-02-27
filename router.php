@@ -15,6 +15,7 @@ require_once __DIR__ . '/helpers/path_helper.php';
 require_once __DIR__ . '/helpers/token_helper.php';
 require_once __DIR__ . '/helpers/route_helper.php';
 require_once __DIR__ . '/helpers/seo_helper.php';
+require_once __DIR__ . '/helpers/error_page_helper.php';
 
 app_seo_enforce_canonical_host();
 app_seo_apply_security_headers();
@@ -22,9 +23,58 @@ app_seo_apply_security_headers();
 app_session_start_if_needed();
 $sessionAlive = app_session_touch_or_expire(1800);
 
+$renderPageError = static function (int $statusCode): void {
+    app_render_error_page($statusCode);
+};
+
+set_error_handler(static function (int $severity, string $message, string $file = '', int $line = 0): bool {
+    if (!(error_reporting() & $severity)) {
+        return false;
+    }
+
+    throw new ErrorException($message, 0, $severity, $file, $line);
+});
+
+set_exception_handler(static function (Throwable $exception) use ($renderPageError, $requestPath): void {
+    if (app_request_expects_json($requestPath)) {
+        if (!headers_sent()) {
+            http_response_code(500);
+            header('Content-Type: application/json; charset=utf-8');
+        }
+
+        echo json_encode(['success' => false, 'message' => 'Internal Server Error']);
+        return;
+    }
+
+    $renderPageError(500);
+});
+
+register_shutdown_function(static function () use ($renderPageError, $requestPath): void {
+    $lastError = error_get_last();
+    if (!is_array($lastError)) {
+        return;
+    }
+
+    $fatalTypes = [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR];
+    if (!in_array((int) ($lastError['type'] ?? 0), $fatalTypes, true)) {
+        return;
+    }
+
+    if (app_request_expects_json($requestPath)) {
+        if (!headers_sent()) {
+            http_response_code(500);
+            header('Content-Type: application/json; charset=utf-8');
+        }
+
+        echo json_encode(['success' => false, 'message' => 'Internal Server Error']);
+        return;
+    }
+
+    $renderPageError(500);
+});
+
 if (preg_match('#^/(views|Request)(/|$)#', $requestPath) === 1) {
-    http_response_code(403);
-    require $rootPath . DIRECTORY_SEPARATOR . '404.php';
+    $renderPageError(403);
     return true;
 }
 
@@ -57,8 +107,7 @@ if (is_string($pageRouteName) && $pageRouteName !== '') {
         return true;
     }
 
-    http_response_code(403);
-    require $rootPath . DIRECTORY_SEPARATOR . '404.php';
+    $renderPageError(403);
     return true;
 }
 
@@ -81,8 +130,7 @@ if (preg_match('#^/p/([^/]+)$#', $requestPath, $matches) === 1) {
         return true;
     }
 
-    http_response_code(403);
-    require $rootPath . DIRECTORY_SEPARATOR . '404.php';
+    $renderPageError(403);
     return true;
 }
 
@@ -98,5 +146,5 @@ if (preg_match('#^/a/([^/]+)$#', $requestPath, $matches) === 1) {
     return true;
 }
 
-require $rootPath . DIRECTORY_SEPARATOR . '404.php';
+$renderPageError(404);
 return true;

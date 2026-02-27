@@ -11,7 +11,11 @@
     RewriteRule ^ router.php [L,QSA]
 </IfModule>
 
-ErrorDocument 404 /404.php
+ErrorDocument 400 /errors/400.php
+ErrorDocument 403 /errors/403.php
+ErrorDocument 404 /errors/404.php
+ErrorDocument 500 /errors/500.php
+ErrorDocument 503 /errors/503.php
 
 <IfModule mod_headers.c>
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" "expr=%{HTTPS} == 'on'"
