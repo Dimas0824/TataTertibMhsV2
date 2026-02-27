@@ -1,5 +1,7 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
 require_once dirname(__DIR__, 2) . '/Controllers/PelanggaranController.php';
 require_once dirname(__DIR__) . '/partials/app-shell.php';
@@ -32,6 +34,16 @@ if ($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
 $pelanggaranController = new PelanggaranController();
 $nim = $userData['nim'];
 $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim);
+$totalPelanggaran = is_array($pelanggaranDetail) ? count($pelanggaranDetail) : 0;
+$pendingPelanggaran = 0;
+if ($totalPelanggaran > 0) {
+    foreach ($pelanggaranDetail as $item) {
+        $statusValue = strtolower(trim((string) ($item['status'] ?? '')));
+        if ($statusValue === 'pending') {
+            $pendingPelanggaran++;
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -110,7 +122,18 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
 
             <section class="table-card">
                 <div class="table-card-header">
-                    <h3>Tabel Pelanggaran</h3>
+                    <div>
+                        <h3>Tabel Pelanggaran</h3>
+                        <p>Riwayat pelanggaran aktif dan status tindak lanjut Anda.</p>
+                    </div>
+                    <div class="table-card-stats" aria-label="Ringkasan tabel">
+                        <span
+                            class="table-stat-chip"><?= htmlspecialchars((string) $totalPelanggaran, ENT_QUOTES, 'UTF-8') ?>
+                            kasus</span>
+                        <span
+                            class="table-stat-chip table-stat-chip--warning"><?= htmlspecialchars((string) $pendingPelanggaran, ENT_QUOTES, 'UTF-8') ?>
+                            pending</span>
+                    </div>
                 </div>
                 <div class="table-container">
                     <table>
@@ -129,27 +152,74 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
                         </thead>
                         <tbody>
                             <?php if (!empty($pelanggaranDetail)) {
-                                foreach ($pelanggaranDetail as $detail) { ?>
+                                foreach ($pelanggaranDetail as $detail) {
+                                    $tingkat = strtoupper(trim((string) ($detail['tingkat'] ?? '')));
+                                    $tierClass = 'tier-pill';
+                                    if ($tingkat === 'I') {
+                                        $tierClass .= ' tier-pill--one';
+                                    } elseif ($tingkat === 'II') {
+                                        $tierClass .= ' tier-pill--two';
+                                    } elseif ($tingkat === 'III') {
+                                        $tierClass .= ' tier-pill--three';
+                                    }
+
+                                    $statusText = strtolower(trim((string) ($detail['status'] ?? '')));
+                                    $statusClass = 'status-pill';
+                                    if ($statusText === 'pending') {
+                                        $statusClass .= ' status-pill--pending';
+                                    } elseif ($statusText === 'selesai' || $statusText === 'done') {
+                                        $statusClass .= ' status-pill--done';
+                                    } else {
+                                        $statusClass .= ' status-pill--progress';
+                                    }
+
+                                    $poin = (int) ($detail['poin'] ?? 0);
+                                    $pointClass = 'point-badge';
+                                    if ($poin >= 15) {
+                                        $pointClass .= ' point-badge--high';
+                                    } elseif ($poin >= 9) {
+                                        $pointClass .= ' point-badge--medium';
+                                    } else {
+                                        $pointClass .= ' point-badge--low';
+                                    }
+                                    ?>
                                     <tr>
-                                        <td><?= htmlspecialchars($detail['pelanggaran']) ?></td>
-                                        <td><span class="tier-pill"><?= htmlspecialchars($detail['tingkat']) ?></span></td>
-                                        <td><?= htmlspecialchars($detail['sanksi']) ?></td>
+                                        <td>
+                                            <p class="violation-desc"><?= htmlspecialchars($detail['pelanggaran']) ?></p>
+                                        </td>
+                                        <td><span
+                                                class="<?= htmlspecialchars($tierClass, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($detail['tingkat']) ?></span>
+                                        </td>
+                                        <td>
+                                            <p class="sanction-desc"><?= htmlspecialchars($detail['sanksi']) ?></p>
+                                        </td>
                                         <td><?= htmlspecialchars($detail['nama_lengkap']) ?></td>
                                         <td><?= htmlspecialchars($detail['tugas_khusus'] ?? 'Tidak Ada Tugas') ?></td>
-                                        <td><a class="file-link"
-                                                href="<?= htmlspecialchars(app_action_url('action.file_download', ['file' => 'SURAT PERNYATAAN TI.pdf']), ENT_QUOTES, 'UTF-8') ?>"
-                                                target="_blank" rel="noopener noreferrer">Unduh File</a></td>
-                                        <td><span class="point-badge"><?= htmlspecialchars($detail['poin']) ?></span></td>
-                                        <td><span class="status-pill"><?= htmlspecialchars($detail['status']) ?></span></td>
+                                        <td>
+                                            <div class="doc-links">
+                                                <a class="file-link"
+                                                    href="<?= htmlspecialchars(app_action_url('action.file_download', ['file' => 'SURAT PERNYATAAN TI.pdf']), ENT_QUOTES, 'UTF-8') ?>"
+                                                    target="_blank" rel="noopener noreferrer">Unduh Surat Pernyataan</a>
+                                                <span class="muted-text">Format PDF, maksimal 2 MB.</span>
+                                            </div>
+                                        </td>
+                                        <td><span
+                                                class="<?= htmlspecialchars($pointClass, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($detail['poin']) ?></span>
+                                        </td>
+                                        <td><span
+                                                class="<?= htmlspecialchars($statusClass, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($detail['status']) ?></span>
+                                        </td>
                                         <td>
                                             <form class="uploadForm" enctype="multipart/form-data">
-                                                <input type="hidden" name="id_detail" value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $detail['id_detail']), ENT_QUOTES, 'UTF-8') ?>">
+                                                <input type="hidden" name="id_detail"
+                                                    value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $detail['id_detail']), ENT_QUOTES, 'UTF-8') ?>">
                                                 <input type="file" name="suratPernyataan" required>
                                                 <button type="button" class="submit-btn uploadButton">Upload Surat</button>
                                             </form>
                                             <?php if (in_array($detail['tingkat'], ['I', 'II', 'III'])): ?>
                                                 <form class="uploadForm" enctype="multipart/form-data">
-                                                    <input type="hidden" name="id_detail" value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $detail['id_detail']), ENT_QUOTES, 'UTF-8') ?>">
+                                                    <input type="hidden" name="id_detail"
+                                                        value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $detail['id_detail']), ENT_QUOTES, 'UTF-8') ?>">
                                                     <input type="file" name="tugasKhusus" required>
                                                     <button type="button" class="submit-btn uploadButton">Upload Tugas</button>
                                                 </form>
@@ -172,17 +242,21 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
                             ?>
                             <article class="mobile-violation-card" data-mobile-card>
                                 <div class="mobile-violation-card__summary">
-                                    <p class="mobile-violation-card__title"><?= htmlspecialchars($detail['pelanggaran'], ENT_QUOTES, 'UTF-8') ?></p>
+                                    <p class="mobile-violation-card__title">
+                                        <?= htmlspecialchars($detail['pelanggaran'], ENT_QUOTES, 'UTF-8') ?></p>
                                     <div class="mobile-violation-card__chips">
                                         <span class="mobile-chip mobile-chip--tier">Tingkat
                                             <?= htmlspecialchars($detail['tingkat'], ENT_QUOTES, 'UTF-8') ?></span>
-                                        <span class="mobile-chip mobile-chip--status"><?= htmlspecialchars($detail['status'], ENT_QUOTES, 'UTF-8') ?></span>
-                                        <span class="mobile-chip mobile-chip--point"><?= htmlspecialchars((string) $detail['poin'], ENT_QUOTES, 'UTF-8') ?>
+                                        <span
+                                            class="mobile-chip mobile-chip--status"><?= htmlspecialchars($detail['status'], ENT_QUOTES, 'UTF-8') ?></span>
+                                        <span
+                                            class="mobile-chip mobile-chip--point"><?= htmlspecialchars((string) $detail['poin'], ENT_QUOTES, 'UTF-8') ?>
                                             poin</span>
                                     </div>
                                 </div>
                                 <button type="button" class="mobile-violation-card__open-btn" data-mobile-card-open
-                                    aria-expanded="false" aria-controls="<?= htmlspecialchars($sheetId, ENT_QUOTES, 'UTF-8') ?>">
+                                    aria-expanded="false"
+                                    aria-controls="<?= htmlspecialchars($sheetId, ENT_QUOTES, 'UTF-8') ?>">
                                     Lihat detail
                                 </button>
 
@@ -193,9 +267,10 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
                                     <section class="mobile-violation-sheet__panel" role="dialog" aria-modal="true"
                                         aria-labelledby="<?= htmlspecialchars($titleId, ENT_QUOTES, 'UTF-8') ?>" tabindex="-1">
                                         <header class="mobile-violation-sheet__header">
-                                            <h4 id="<?= htmlspecialchars($titleId, ENT_QUOTES, 'UTF-8') ?>">Detail Pelanggaran</h4>
-                                            <button type="button" class="mobile-violation-sheet__close-btn" data-mobile-card-close
-                                                aria-label="Tutup detail">
+                                            <h4 id="<?= htmlspecialchars($titleId, ENT_QUOTES, 'UTF-8') ?>">Detail Pelanggaran
+                                            </h4>
+                                            <button type="button" class="mobile-violation-sheet__close-btn"
+                                                data-mobile-card-close aria-label="Tutup detail">
                                                 <i class="fa-solid fa-xmark" aria-hidden="true"></i>
                                             </button>
                                         </header>
@@ -203,7 +278,8 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
                                             <dl class="mobile-detail-list">
                                                 <div>
                                                     <dt>Pelanggaran</dt>
-                                                    <dd><?= htmlspecialchars($detail['pelanggaran'], ENT_QUOTES, 'UTF-8') ?></dd>
+                                                    <dd><?= htmlspecialchars($detail['pelanggaran'], ENT_QUOTES, 'UTF-8') ?>
+                                                    </dd>
                                                 </div>
                                                 <div>
                                                     <dt>Tingkat</dt>
@@ -215,7 +291,8 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
                                                 </div>
                                                 <div>
                                                     <dt>Dosen Pelapor</dt>
-                                                    <dd><?= htmlspecialchars($detail['nama_lengkap'], ENT_QUOTES, 'UTF-8') ?></dd>
+                                                    <dd><?= htmlspecialchars($detail['nama_lengkap'], ENT_QUOTES, 'UTF-8') ?>
+                                                    </dd>
                                                 </div>
                                                 <div>
                                                     <dt>Tugas Khusus</dt>
@@ -232,7 +309,8 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
                                                 </div>
                                                 <div>
                                                     <dt>Poin</dt>
-                                                    <dd><?= htmlspecialchars((string) $detail['poin'], ENT_QUOTES, 'UTF-8') ?></dd>
+                                                    <dd><?= htmlspecialchars((string) $detail['poin'], ENT_QUOTES, 'UTF-8') ?>
+                                                    </dd>
                                                 </div>
                                                 <div>
                                                     <dt>Status</dt>
