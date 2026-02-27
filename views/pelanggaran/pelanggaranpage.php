@@ -165,6 +165,110 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
                         </tbody>
                     </table>
                 </div>
+                <div class="mobile-violation-list" aria-label="Daftar pelanggaran mobile">
+                    <?php if (!empty($pelanggaranDetail)): ?>
+                        <?php foreach ($pelanggaranDetail as $detail):
+                            $detailIdRaw = (string) ($detail['id_detail'] ?? uniqid('student-', false));
+                            $detailId = preg_replace('/[^a-zA-Z0-9_-]/', '', $detailIdRaw);
+                            $detailId = is_string($detailId) && $detailId !== '' ? $detailId : uniqid('student-', false);
+                            $sheetId = 'mobile-sheet-student-' . $detailId;
+                            $titleId = $sheetId . '-title';
+                            ?>
+                            <article class="mobile-violation-card" data-mobile-card>
+                                <div class="mobile-violation-card__summary">
+                                    <p class="mobile-violation-card__title"><?= htmlspecialchars($detail['pelanggaran'], ENT_QUOTES, 'UTF-8') ?></p>
+                                    <div class="mobile-violation-card__chips">
+                                        <span class="mobile-chip mobile-chip--tier">Tingkat
+                                            <?= htmlspecialchars($detail['tingkat'], ENT_QUOTES, 'UTF-8') ?></span>
+                                        <span class="mobile-chip mobile-chip--status"><?= htmlspecialchars($detail['status'], ENT_QUOTES, 'UTF-8') ?></span>
+                                        <span class="mobile-chip mobile-chip--point"><?= htmlspecialchars((string) $detail['poin'], ENT_QUOTES, 'UTF-8') ?>
+                                            poin</span>
+                                    </div>
+                                </div>
+                                <button type="button" class="mobile-violation-card__open-btn" data-mobile-card-open
+                                    aria-expanded="false" aria-controls="<?= htmlspecialchars($sheetId, ENT_QUOTES, 'UTF-8') ?>">
+                                    Lihat detail
+                                </button>
+
+                                <div class="mobile-violation-sheet" data-mobile-sheet
+                                    id="<?= htmlspecialchars($sheetId, ENT_QUOTES, 'UTF-8') ?>" aria-hidden="true">
+                                    <button type="button" class="mobile-violation-sheet__backdrop" data-mobile-card-close
+                                        aria-label="Tutup detail pelanggaran"></button>
+                                    <section class="mobile-violation-sheet__panel" role="dialog" aria-modal="true"
+                                        aria-labelledby="<?= htmlspecialchars($titleId, ENT_QUOTES, 'UTF-8') ?>" tabindex="-1">
+                                        <header class="mobile-violation-sheet__header">
+                                            <h4 id="<?= htmlspecialchars($titleId, ENT_QUOTES, 'UTF-8') ?>">Detail Pelanggaran</h4>
+                                            <button type="button" class="mobile-violation-sheet__close-btn" data-mobile-card-close
+                                                aria-label="Tutup detail">
+                                                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                                            </button>
+                                        </header>
+                                        <div class="mobile-violation-sheet__content">
+                                            <dl class="mobile-detail-list">
+                                                <div>
+                                                    <dt>Pelanggaran</dt>
+                                                    <dd><?= htmlspecialchars($detail['pelanggaran'], ENT_QUOTES, 'UTF-8') ?></dd>
+                                                </div>
+                                                <div>
+                                                    <dt>Tingkat</dt>
+                                                    <dd><?= htmlspecialchars($detail['tingkat'], ENT_QUOTES, 'UTF-8') ?></dd>
+                                                </div>
+                                                <div>
+                                                    <dt>Sanksi</dt>
+                                                    <dd><?= htmlspecialchars($detail['sanksi'], ENT_QUOTES, 'UTF-8') ?></dd>
+                                                </div>
+                                                <div>
+                                                    <dt>Dosen Pelapor</dt>
+                                                    <dd><?= htmlspecialchars($detail['nama_lengkap'], ENT_QUOTES, 'UTF-8') ?></dd>
+                                                </div>
+                                                <div>
+                                                    <dt>Tugas Khusus</dt>
+                                                    <dd><?= htmlspecialchars($detail['tugas_khusus'] ?? 'Tidak Ada Tugas', ENT_QUOTES, 'UTF-8') ?>
+                                                    </dd>
+                                                </div>
+                                                <div>
+                                                    <dt>Surat</dt>
+                                                    <dd>
+                                                        <a class="file-link"
+                                                            href="<?= htmlspecialchars('../../document/SURAT PERNYATAAN TI.pdf', ENT_QUOTES, 'UTF-8') ?>"
+                                                            target="_blank" rel="noopener noreferrer">Unduh File</a>
+                                                    </dd>
+                                                </div>
+                                                <div>
+                                                    <dt>Poin</dt>
+                                                    <dd><?= htmlspecialchars((string) $detail['poin'], ENT_QUOTES, 'UTF-8') ?></dd>
+                                                </div>
+                                                <div>
+                                                    <dt>Status</dt>
+                                                    <dd><?= htmlspecialchars($detail['status'], ENT_QUOTES, 'UTF-8') ?></dd>
+                                                </div>
+                                            </dl>
+
+                                            <div class="mobile-sheet-actions">
+                                                <form class="uploadForm" enctype="multipart/form-data">
+                                                    <input type="hidden" name="id_detail"
+                                                        value="<?= htmlspecialchars((string) $detail['id_detail'], ENT_QUOTES, 'UTF-8') ?>">
+                                                    <input type="file" name="suratPernyataan" required>
+                                                    <button type="button" class="submit-btn uploadButton">Upload Surat</button>
+                                                </form>
+                                                <?php if (in_array($detail['tingkat'], ['I', 'II', 'III'], true)): ?>
+                                                    <form class="uploadForm" enctype="multipart/form-data">
+                                                        <input type="hidden" name="id_detail"
+                                                            value="<?= htmlspecialchars((string) $detail['id_detail'], ENT_QUOTES, 'UTF-8') ?>">
+                                                        <input type="file" name="tugasKhusus" required>
+                                                        <button type="button" class="submit-btn uploadButton">Upload Tugas</button>
+                                                    </form>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                            </article>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="mobile-violation-empty">Data pelanggaran tidak ditemukan.</div>
+                    <?php endif; ?>
+                </div>
             </section>
         </section>
 
@@ -214,6 +318,8 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
     ?>
 
     <!-- JavaScript -->
+    <script defer
+        src="<?= htmlspecialchars(app_seo_script_src('js/mobile-violation-cards.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
     <script defer
         src="<?= htmlspecialchars(app_seo_script_src('js/script-pelanggaran.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
     <script>
