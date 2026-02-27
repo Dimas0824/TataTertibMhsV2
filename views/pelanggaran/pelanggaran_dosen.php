@@ -44,7 +44,11 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
     <?php app_seo_favicon_tags('../../'); ?>
     <link rel="stylesheet" href="../../css/global.css">
     <link rel="stylesheet" href="../../css/perlanggaranPage.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
+    </noscript>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link

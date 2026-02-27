@@ -268,7 +268,6 @@ if (!function_exists('app_seo_favicon_tags')) {
         }
         ?>
         <link rel="icon" href="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/favicon.ico" sizes="any">
-        <link rel="icon" type="image/svg+xml" href="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/favicon.svg">
         <link rel="icon" type="image/png" sizes="96x96"
             href="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/favicon-96x96.png">
         <link rel="apple-touch-icon" sizes="180x180"

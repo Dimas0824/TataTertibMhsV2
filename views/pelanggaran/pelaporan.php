@@ -5,6 +5,7 @@ require_once dirname(__DIR__, 2) . '/Controllers/TatibController.php';
 require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
 require_once dirname(__DIR__, 2) . '/Controllers/PelanggaranController.php'; // Include PelanggaranController
 require_once dirname(__DIR__) . '/partials/app-shell.php';
+require_once dirname(__DIR__) . '/components/modals/pelaporan-cancel-modal.php';
 
 if (!isset($_SESSION['username'])) {
     header("Location: ../auth/login.php");
@@ -46,14 +47,22 @@ $tatibData = $tatibController->ReadTatib();
     <?php app_seo_favicon_tags('../../'); ?>
     <link rel="stylesheet" href="../../css/global.css">
     <link rel="stylesheet" href="../../css/pelaporan.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
+    </noscript>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">
     <!-- Select2 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    </noscript>
     <script>
         (function () {
             var loaded = false;
@@ -207,33 +216,27 @@ $tatibData = $tatibController->ReadTatib();
 
                         <div class="form-buttons">
                             <button type="submit" name="store" class="btn btn-primary">Simpan Laporan</button>
-                            <button onclick="showCancelConfirmation()" type="button"
-                                class="btn btn-secondary">Batal</button>
+                            <button type="button" class="btn btn-secondary" data-open-cancel-report-modal>Batal</button>
                         </div>
                     </form>
                 </div>
             </div>
         </section>
+
+        <?php
+        render_pelaporan_cancel_modal_component([
+            'context' => 'nested',
+            'redirectHref' => 'pelanggaran_dosen.php',
+        ]);
+        ?>
+        <?php
+        render_app_footer([
+            'context' => 'nested',
+        ]);
+        ?>
     </div>
     <script defer
         src="<?= htmlspecialchars(app_seo_script_src('js/script_pelaporan.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
-    <script>
-        function showCancelConfirmation() {
-
-            var confirmAction = confirm("Apakah Anda yakin ingin keluar dari pelaporan page?");
-
-            if (confirmAction) {
-                window.location.href = "pelanggaran_dosen.php";
-            }
-
-        }
-    </script>
-    <?php
-    render_app_footer([
-        'context' => 'nested',
-    ]);
-    ?>
-    </div>
 </body>
 
 </html>

@@ -7,9 +7,12 @@ $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
 $requestPath = parse_url((string) $requestUri, PHP_URL_PATH);
 $requestPath = is_string($requestPath) ? $requestPath : '/';
 
-$targetPath = $rootPath . DIRECTORY_SEPARATOR . ltrim(str_replace('/', DIRECTORY_SEPARATOR, $requestPath), DIRECTORY_SEPARATOR);
+$decodedRequestPath = rawurldecode($requestPath);
+$decodedRequestPath = $decodedRequestPath !== '' ? $decodedRequestPath : '/';
 
-if ($requestPath !== '/' && is_file($targetPath)) {
+$targetPath = $rootPath . DIRECTORY_SEPARATOR . ltrim(str_replace('/', DIRECTORY_SEPARATOR, $decodedRequestPath), DIRECTORY_SEPARATOR);
+
+if ($decodedRequestPath !== '/' && is_file($targetPath)) {
     return false;
 }
 
@@ -21,7 +24,7 @@ if (is_dir($targetPath)) {
     }
 }
 
-if ($requestPath === '/' || $requestPath === '/index.php') {
+if ($decodedRequestPath === '/' || $decodedRequestPath === '/index.php') {
     require $rootPath . DIRECTORY_SEPARATOR . 'index.php';
     return true;
 }

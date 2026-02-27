@@ -298,27 +298,29 @@ body.app-shell--rail-pinned .sidebar-rail-toggle i {
   flex-direction: column;
 }
 
-.sidebar:hover,
-body.app-shell--rail-pinned .sidebar {
-  width: var(--sidebar-expanded);
-}
+@media screen and (min-width: 901px) {
+  .sidebar:hover,
+  body.app-shell--rail-pinned .sidebar {
+    width: var(--sidebar-expanded);
+  }
 
-.sidebar:hover .brand-text,
-.sidebar:hover .nav-label,
-body.app-shell--rail-pinned .brand-text,
-body.app-shell--rail-pinned .nav-label {
-  opacity: 1;
-  transform: translateX(0);
-  pointer-events: auto;
-}
+  .sidebar:hover .brand-text,
+  .sidebar:hover .nav-label,
+  body.app-shell--rail-pinned .brand-text,
+  body.app-shell--rail-pinned .nav-label {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
 
-body.app-shell--rail-pinned .content {
-  margin-left: var(--sidebar-expanded);
-}
+  body.app-shell--rail-pinned .content {
+    margin-left: var(--sidebar-expanded);
+  }
 
-body.app-shell--rail-pinned .header {
-  left: calc(var(--sidebar-expanded) + 14px);
-  width: calc(100% - var(--sidebar-expanded) - 28px);
+  body.app-shell--rail-pinned .header {
+    left: calc(var(--sidebar-expanded) + 14px);
+    width: calc(100% - var(--sidebar-expanded) - 28px);
+  }
 }
 
 .footer {
@@ -528,6 +530,17 @@ textarea:focus-visible {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+    transition: none;
+  }
+
+  .sidebar:hover,
+  body.app-shell--rail-pinned .sidebar {
+    width: 100%;
+  }
+
+  .sidebar .brand-text,
+  .sidebar .nav-label {
+    transform: none;
   }
 
   .sidebar-brand,
@@ -597,6 +610,7 @@ textarea:focus-visible {
     border-left: none;
     border-right: none;
     border-top: none;
+    transition: none;
   }
 
   .header h1 {
@@ -612,6 +626,7 @@ textarea:focus-visible {
     margin-left: 0;
     padding-top: 66px;
     padding-bottom: calc(var(--mobile-nav-height) + 8px + env(safe-area-inset-bottom));
+    transition: none;
   }
 
   body.app-shell--rail-pinned .header {

@@ -1,113 +1,239 @@
 .app-modal {
     position: fixed;
     inset: 0;
+    z-index: 6000;
     display: none;
     align-items: center;
     justify-content: center;
-    background: rgba(15, 23, 42, 0.5);
-    z-index: 6000;
-    padding: 16px;
+    padding: 20px;
 }
 
 .app-modal.is-open {
     display: flex;
 }
 
+body.app-modal-open {
+    overflow: hidden;
+}
+
+.app-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at top right, rgba(15, 108, 189, 0.18), transparent 42%),
+        rgba(8, 20, 36, 0.48);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
 .app-modal__dialog {
-    width: min(100%, 420px);
-    background: #ffffff;
-    border-radius: 14px;
-    padding: 22px 20px 18px;
     position: relative;
-    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.2);
-    border: 1px solid #e2e8f0;
-    text-align: center;
+    width: min(100%, 450px);
+    border-radius: 20px;
+    border: 1px solid rgba(217, 226, 236, 0.82);
+    background: linear-gradient(170deg, #ffffff 0%, #f8fbff 100%);
+    box-shadow: 0 28px 52px rgba(15, 23, 42, 0.24);
+    padding: 20px 20px 18px;
+    transform: translateY(16px) scale(0.98);
+    opacity: 0;
+    transition: transform 0.24s ease, opacity 0.2s ease;
+}
+
+.app-modal.is-open .app-modal__dialog {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+.app-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.app-modal__tone {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    border: 1px solid var(--app-border, #d9e2ec);
+    background: var(--app-surface-soft, #f7f9fc);
+    color: var(--app-muted, #526074);
+    padding: 6px 11px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
 .app-modal__close {
-    border: none;
-    background: transparent;
-    color: #64748b;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 30px;
-    height: 30px;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--app-border, #d9e2ec);
+    border-radius: 10px;
+    background: #ffffff;
+    color: #526074;
     cursor: pointer;
-    font-size: 18px;
+    transition: all 0.18s ease;
 }
 
-.app-modal__badge {
-    width: 56px;
-    height: 56px;
-    border-radius: 9999px;
-    margin: 0 auto 12px;
+.app-modal__close:hover {
+    border-color: #b8c8d9;
+    color: #0f172a;
+    box-shadow: 0 8px 16px rgba(15, 23, 42, 0.1);
+}
+
+.app-modal__status {
     display: flex;
     align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+}
+
+.app-modal__icon-wrap {
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-    font-size: 26px;
+    background: #e8f2ff;
+    color: #0f6cbd;
+    box-shadow: inset 0 0 0 1px rgba(160, 197, 236, 0.8);
+}
+
+.app-modal__icon {
+    font-size: 1.2rem;
     font-weight: 700;
+    line-height: 1;
 }
 
 .app-modal__title {
     margin: 0;
-    color: #0f172a;
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 1.22rem;
+    line-height: 1.25;
+    color: var(--app-text, #0f172a);
+    letter-spacing: -0.01em;
 }
 
 .app-modal__message {
-    margin: 10px 0 0;
-    color: #334155;
-    line-height: 1.45;
+    margin: 0;
+    color: var(--app-muted, #526074);
+    line-height: 1.58;
+    font-size: 0.94rem;
     white-space: pre-line;
 }
 
 .app-modal__actions {
     margin-top: 18px;
+    display: flex;
+    justify-content: flex-end;
 }
 
 .app-modal__button {
-    border: none;
-    border-radius: 10px;
-    padding: 9px 20px;
+    min-width: 108px;
+    border: 1px solid transparent;
+    border-radius: 11px;
+    padding: 9px 16px;
+    background: linear-gradient(160deg, #0f6cbd, #0b5fa8);
     color: #ffffff;
-    cursor: pointer;
+    font-size: 0.88rem;
     font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
-.app-modal--success .app-modal__badge {
-    background: #dcfce7;
-    color: #166534;
+.app-modal__button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 16px rgba(15, 108, 189, 0.26);
+    filter: brightness(1.02);
+}
+
+.app-modal__button:focus-visible,
+.app-modal__close:focus-visible {
+    outline: 2px solid rgba(15, 108, 189, 0.35);
+    outline-offset: 2px;
+}
+
+.app-modal--success .app-modal__tone {
+    background: #ebfbf1;
+    border-color: #bfe7cf;
+    color: #1c7a46;
+}
+
+.app-modal--success .app-modal__icon-wrap {
+    background: #e8f9ef;
+    color: #1c7a46;
+    box-shadow: inset 0 0 0 1px #bee6cd;
 }
 
 .app-modal--success .app-modal__button {
-    background: #16a34a;
+    background: linear-gradient(160deg, #1f9d56, #178847);
 }
 
-.app-modal--error .app-modal__badge {
-    background: #fee2e2;
-    color: #991b1b;
+.app-modal--error .app-modal__tone {
+    background: #fff0f0;
+    border-color: #f3c6c6;
+    color: #b4232c;
+}
+
+.app-modal--error .app-modal__icon-wrap {
+    background: #fff0f1;
+    color: #b4232c;
+    box-shadow: inset 0 0 0 1px #f0c0c4;
 }
 
 .app-modal--error .app-modal__button {
-    background: #dc2626;
+    background: linear-gradient(160deg, #d64045, #b92b30);
 }
 
-.app-modal--warning .app-modal__badge {
-    background: #fef3c7;
-    color: #92400e;
+.app-modal--warning .app-modal__tone {
+    background: #fff8e8;
+    border-color: #f2d6a8;
+    color: #9c6300;
+}
+
+.app-modal--warning .app-modal__icon-wrap {
+    background: #fff7e2;
+    color: #9c6300;
+    box-shadow: inset 0 0 0 1px #efd4a7;
 }
 
 .app-modal--warning .app-modal__button {
-    background: #d97706;
+    background: linear-gradient(160deg, #d58a0f, #b97504);
 }
 
-.app-modal--info .app-modal__badge {
-    background: #dbeafe;
-    color: #1d4ed8;
+.app-modal--info .app-modal__tone {
+    background: #edf5ff;
+    border-color: #bfd7f2;
+    color: #0f6cbd;
 }
 
-.app-modal--info .app-modal__button {
-    background: #2563eb;
+@media (max-width: 540px) {
+    .app-modal {
+        align-items: flex-end;
+        padding: 10px;
+    }
+
+    .app-modal__dialog {
+        width: 100%;
+        border-radius: 18px 18px 14px 14px;
+        padding: 18px 16px 15px;
+    }
+
+    .app-modal__status {
+        align-items: flex-start;
+    }
+
+    .app-modal__title {
+        font-size: 1.12rem;
+    }
+
+    .app-modal__actions {
+        justify-content: stretch;
+    }
+
+    .app-modal__button {
+        width: 100%;
+    }
 }

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 require_once dirname(__DIR__, 2) . '/helpers/flash_modal.php';
 require_once dirname(__DIR__, 2) . '/helpers/seo_helper.php';
+require_once dirname(__DIR__) . '/components/modals/app-feedback-modal.php';
 
 if (!defined('APP_CANONICAL_ENFORCED')) {
     app_seo_enforce_canonical_host();
@@ -211,27 +212,10 @@ if (!function_exists('render_app_flash_modal')) {
         $context = in_array($context, ['root', 'views', 'nested'], true) ? $context : 'views';
         $assetPrefix = $context === 'root' ? '' : ($context === 'nested' ? '../../' : '../');
         $flashModal = consume_app_flash_modal();
-        ?>
-        <link rel="stylesheet" href="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>css/app-modal.css">
-        <div id="appFeedbackModal" class="app-modal" aria-hidden="true">
-            <div class="app-modal__dialog" role="alertdialog" aria-modal="true" aria-labelledby="appFeedbackModalTitle">
-                <button type="button" class="app-modal__close" data-app-modal-close aria-label="Tutup modal">
-                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-                </button>
-                <div class="app-modal__badge" data-app-modal-icon aria-hidden="true">i</div>
-                <h2 class="app-modal__title" id="appFeedbackModalTitle" data-app-modal-title>Informasi</h2>
-                <p class="app-modal__message" data-app-modal-message></p>
-                <div class="app-modal__actions">
-                    <button type="button" class="app-modal__button" data-app-modal-close>OK</button>
-                </div>
-            </div>
-        </div>
-        <?php if ($flashModal !== null): ?>
-            <script>
-                window.__APP_FLASH_MODAL = <?= json_encode($flashModal, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
-            </script>
-        <?php endif; ?>
-        <script defer src="<?= htmlspecialchars(app_seo_script_src('js/app-modal.js', $assetPrefix), ENT_QUOTES, 'UTF-8') ?>"></script>
-        <?php
+
+        render_app_feedback_modal_component([
+            'assetPrefix' => $assetPrefix,
+            'flashModal' => $flashModal,
+        ]);
     }
 }
