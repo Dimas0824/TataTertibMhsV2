@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
 header('Content-Type: application/json; charset=UTF-8');
 
 require_once dirname(__DIR__) . '/Controllers/PelanggaranController.php';

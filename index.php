@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 // echo realpath(__DIR__ . '/Controllers/UserController.php');
 require_once __DIR__ . '/Controllers/UserController.php';
 require_once __DIR__ . '/Controllers/NewsController.php';

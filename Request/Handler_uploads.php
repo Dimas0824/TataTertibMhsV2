@@ -1,5 +1,5 @@
 <?php
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
 require_once __DIR__ . '/../config.php'; // Sertakan file konfigurasi untuk mengakses koneksi database
 require_once __DIR__ . '/../helpers/token_helper.php';
 

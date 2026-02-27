@@ -53,7 +53,7 @@ class UserController
             foreach ($sequence as $role) {
                 $user = ($authFlows[$role]['auth'])();
                 if ($user) {
-                    session_start();
+                    if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
                     $_SESSION['username'] = $username;
                     $_SESSION['user_type'] = $role;
                     $_SESSION['user_data'] = $user;
@@ -72,7 +72,7 @@ class UserController
 
     public function logout()
     {
-        session_start();
+        if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
         session_destroy();
         app_redirect('index.php');
     }
