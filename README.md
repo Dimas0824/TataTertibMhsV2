@@ -1,127 +1,142 @@
-# DiscipLink V2 - Sistem Informasi Tata Tertib
+# DiscipLink V2
 
-## Deskripsi
-DiscipLink adalah sistem informasi berbasis web untuk mengelola tata tertib, pelanggaran, sanksi, berita, notifikasi, dan dokumen pendukung di lingkungan POLINEMA (JTI).
+Sistem informasi tata tertib mahasiswa untuk membantu proses pembinaan disiplin secara lebih rapi, jelas, dan terdokumentasi.
 
-Versi ini adalah **DiscipLink V2** yang berfokus pada peningkatan arsitektur, keamanan request, UX operasional, dan kesiapan deployment lokal.
+## Apa Itu DiscipLink?
 
-## Asal Proyek dan Konteks Akademik
-Repository ini merupakan hasil **refactor, perbaikan, dan upgrade** dari versi sebelumnya:
+DiscipLink adalah aplikasi web yang dipakai untuk:
 
-- Sumber awal: <https://github.com/VarizkyNaldiba/TataTertibMhs>
+- melihat aturan tata tertib kampus,
+- mencatat pelanggaran mahasiswa,
+- memantau status tindak lanjut,
+- mengelola notifikasi,
+- mengelola berita informasi kedisiplinan.
 
-Pengembangan DiscipLink berangkat dari **Project Based Learning (PBL) PHP Native semester 3**, lalu dilanjutkan pada V2 untuk peningkatan maintainability dan quality standard.
+Aplikasi ini digunakan oleh 3 jenis pengguna:
 
-## Ringkasan Upgrade V2
-Berikut fitur upgrade utama yang sudah diimplementasikan:
+1. `Mahasiswa`
+2. `Dosen`
+3. `Admin`
 
-- **Routing terpusat dan lebih readable**: URL sudah memakai route path jelas seperti `/pelanggaran`, `/admin/news`, `/action/download`.
-- **Masking hanya pada parameter ID**: ID sensitif (`id_news`, `id_detail`, dll) ditokenkan, sementara path URL tetap terbaca.
-- **Kompatibilitas backward**: URL lama berbasis `/p/<token>` dan `/a/<token>` masih didukung.
-- **Session hardening**: idle timeout sesi 30 menit dengan invalidasi otomatis.
-- **Token security layer**: token terenkripsi, terikat ke session, dan memakai TTL.
-- **Proteksi direct access**: akses langsung ke folder `views/` dan `Request/` diblokir dari router.
-- **Handler khusus logout dan download**: alur logout dan download file dipisah ke endpoint terdedikasi.
-- **Validasi download file**: whitelist ekstensi + sanitasi nama file + MIME detection.
-- **Validasi upload lebih ketat**: validasi ukuran, MIME, ekstensi, dan respons JSON yang konsisten.
-- **Auth upgrade**: dukungan bcrypt, fallback legacy plaintext, dan rehash otomatis saat login sukses.
-- **UX feedback seragam**: flash modal global untuk menampilkan status sukses/gagal lintas halaman.
-- **Role-based flow yang jelas**: pemisahan alur mahasiswa, dosen, admin termasuk menu sidebar.
-- **SEO & technical hardening**: canonical host redirect, HSTS (HTTPS), meta SEO helper, JSON-LD, `robots.txt`, `sitemap.xml`.
-- **Asset delivery improvement**: helper otomatis memilih file `.min.js` jika tersedia.
-- **Database tooling built-in**: CLI `artisan` untuk migrate, seed, dan serve.
+## Manfaat Utama
 
-## Contoh Format URL Baru
-Contoh hasil URL setelah upgrade routing:
+- Informasi aturan dan sanksi jadi lebih mudah diakses.
+- Proses pelaporan pelanggaran lebih cepat dan terstruktur.
+- Status kasus bisa dipantau langsung oleh pihak terkait.
+- Berita/pengumuman kedisiplinan bisa dikelola dari satu tempat.
 
-- Halaman umum: `/pelanggaran`
-- Halaman edit admin: `/admin/news/edit?id_news=<token>`
-- Halaman edit pelaporan: `/pelaporan/edit?id_detail=<token>`
-- Endpoint download: `/action/download?file=SURAT%20PERNYATAAN%20TI.pdf`
+## Fitur Berdasarkan Pengguna
 
-Catatan: hanya parameter ID yang dimasking token, bukan seluruh URL.
+| Pengguna | Fitur Utama |
+| --- | --- |
+| Mahasiswa | Melihat status pelanggaran, poin, notifikasi, serta upload dokumen yang diminta. |
+| Dosen | Membuat pelaporan pelanggaran dan memantau rekap laporan mahasiswa. |
+| Admin | Mengelola tata tertib, mengelola berita, dan memelihara konten informasi. |
 
-## Fitur Utama Aplikasi
-- Manajemen data tata tertib dan sanksi.
-- Pelaporan pelanggaran oleh dosen.
-- Monitoring pelanggaran oleh mahasiswa dan dosen.
-- Manajemen berita untuk admin.
-- Notifikasi berbasis role.
-- Upload dokumen pendukung pelanggaran.
+## Cara Menjalankan Aplikasi (Singkat)
 
-## Quick Start
-1. Clone repository.
+Jika kamu ingin menjalankan aplikasi ini di komputer lokal:
+
+1. Clone repository lalu masuk ke folder proyek.
 
 ```bash
-git clone https://github.com/VarizkyNaldiba/TataTertibMhs.git
+git clone <url-repository-anda>
 cd TataTertibMhsV2
 ```
 
-2. Siapkan environment.
-- Salin `.env.example` menjadi `.env`.
-- Sesuaikan kredensial database.
-
-3. Jalankan migration + seed (opsional tapi direkomendasikan).
+1. Buat file `.env` dari contoh.
 
 ```bash
-php artisan migrate --fresh --force
-php artisan db:seed
+cp .env.example .env
 ```
 
-4. Jalankan aplikasi.
+1. Sesuaikan koneksi database di file `.env`.
+
+```dotenv
+DB_DSN="mysql:host=127.0.0.1;port=3306;dbname=DiscipLink;charset=utf8mb4"
+DB_USER="root"
+DB_PASS=""
+```
+
+1. Jalankan migrasi dan isi data contoh.
 
 ```bash
-php artisan serve
+php artisan migrate:fresh --seed --force
 ```
 
-## Database CLI (Artisan-like)
-Command yang tersedia:
+1. Jalankan server lokal.
 
 ```bash
-php artisan list
-php artisan migrate
-php artisan migrate:fresh
-php artisan db:seed
-php artisan serve
+php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-Opsi yang sering dipakai:
+1. Buka aplikasi di browser:
+   <http://127.0.0.1:8000>
 
-- `php artisan migrate --fresh --force`
-- `php artisan migrate:fresh --seed`
-- `php artisan db:seed --file=20260225_000001_data_dummy.sql`
-- `php artisan serve --host=127.0.0.1 --port=8000`
-- `php artisan serve --hot` (butuh Node.js + npx)
+## Akun Contoh (Data Seeder)
 
-Dokumentasi database: [`Database/README.md`](./Database/README.md)
-
-## Struktur Proyek (Ringkas)
-```text
-.
-├── Controllers/
-├── Models/
-├── Request/
-├── views/
-├── helpers/
-├── css/
-├── js/
-├── Database/
-└── document/
-```
+| Role | Username | Password |
+| --- | --- | --- |
+| Mahasiswa | `2341238901` | `password123` |
+| Dosen | `1234567890` | `password123` |
+| Admin | `ADMIN001` | `admin123` |
 
 ## App Gallery
-- ![Login](docs/img/login.png)
-- `document/gallery/04-pelaporan-dosen.png`
-- `document/gallery/05-pelanggaran-mahasiswa.png`
 
-## Dokumentasi Tambahan
-- Arsitektur: [`README-ARCHITECTURE.md`](./README-ARCHITECTURE.md)
-- Referensi UI/UX (Figma): <https://www.figma.com/design/yRxgSGu5uvuoKQznRxPCNg/UI%2FUX-Sistem-Tatib?node-id=10-572&node-type=frame&t=FUBlBYXBfDiK1yST-0>
+### Public / Umum
 
-## Aturan Kolaborasi
-1. Setiap mahasiswa mengerjakan fitur di branch masing-masing.
-2. Jangan push langsung ke `main` tanpa pull request.
-3. Lakukan review sebelum merge.
-4. Uji fitur sebelum push.
-5. Perbarui dokumentasi setiap ada perubahan.
-6. Gunakan kanal komunikasi tim yang sudah disepakati.
+| Halaman | Preview | Deskripsi |
+| --- | --- | --- |
+| Homepage | ![Homepage](docs/img/homepage.png) | Landing page DiscipLink untuk pengguna umum. |
+| Login | ![Login](docs/img/login.png) | Halaman autentikasi multi-role. |
+| List Tata Tertib | ![List Tata Tertib](docs/img/listTatib.png) | Halaman daftar aturan tata tertib yang dapat diakses umum. |
+
+### Mahasiswa
+
+| Halaman | Preview | Deskripsi |
+| --- | --- | --- |
+| Dashboard Pelanggaran Mahasiswa | ![Pelanggaran Mahasiswa](docs/img/pelanggaranMahasiswa.png) | Monitoring riwayat pelanggaran, poin, status, dan upload berkas. |
+| Notifikasi Mahasiswa | ![Notifikasi Mahasiswa](docs/img/notifikasi.png) | Inbox notifikasi aktivitas dan update status pelanggaran. |
+
+### Dosen
+
+| Halaman | Preview | Deskripsi |
+| --- | --- | --- |
+| Rekap Pelanggaran Dosen | ![Pelaporan Dosen](docs/img/pelaporanDosen.png) | Tabel rekap pelanggaran mahasiswa untuk ditinjau dosen. |
+| Form Pelaporan Dosen | ![Form Pelaporan](docs/img/formPelaporan.png) | Form pelaporan pelanggaran baru oleh dosen. |
+
+### Admin
+
+| Halaman | Preview | Deskripsi |
+| --- | --- | --- |
+| Manajemen Tata Tertib | ![Tatib Admin](docs/img/tatibAdmin.png) | CRUD data aturan, tingkat, dan poin pelanggaran. |
+| Manajemen News (List/CRUD) | ![CRUD News Admin](docs/img/CRUDNewsAdmin.png) | Daftar berita admin dengan aksi edit dan hapus. |
+| Tambah Berita (Rich Editor) | ![Tambah Berita Admin](docs/img/buatBeritaAdmin.png) | Form tambah berita dengan editor konten terformat. |
+
+### Branding & Asset Logo
+
+| Aset | Preview | Keterangan |
+| --- | --- | --- |
+| Logo penuh DiscipLink + slogan | ![Logo Penuh DiscipLink](img/ga%20logo%20aja.png) | Logo utama DiscipLink (versi lengkap). |
+| Logo icon DiscipLink | ![Logo Icon DiscipLink](img/logo%20aja.png) | Ikon turunan dari logo DiscipLink. |
+| Hero background | ![Hero Background](img/GRAHA-POLINEMA1-slider-01.webp) | Latar hero halaman public (gedung Graha Polinema). |
+| App icon set (Polinema) | ![Polinema Icon](img/apple-touch-icon.png) | `apple-touch-icon.png`, `favicon.ico`, `favicon.svg`, `favicon-96x96.png`, `web-app-manifest-192x192.png`, dan `web-app-manifest-512x512.png` menggunakan logo Polinema. |
+
+## Dokumentasi Lanjutan
+
+Untuk pembaca non-teknis, README ini sudah cukup jelas.
+
+Jika Anda developer dan butuh detail teknis, buka:
+
+- Arsitektur teknis: [`README-ARCHITECTURE.md`](./README-ARCHITECTURE.md)
+- Database tooling: [`Database/README.md`](./Database/README.md)
+- Referensi UI/UX: <https://www.figma.com/design/yRxgSGu5uvuoKQznRxPCNg/UI%2FUX-Sistem-Tatib?node-id=10-572&node-type=frame&t=FUBlBYXBfDiK1yST-0>
+
+## Sumber Proyek
+
+Refactor dari proyek awal:
+<https://github.com/VarizkyNaldiba/TataTertibMhs>
+
+## Lisensi
+
+MIT License

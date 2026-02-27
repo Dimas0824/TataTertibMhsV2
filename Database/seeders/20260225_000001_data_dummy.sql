@@ -18,11 +18,11 @@ VALUES
 -- Data Dummy untuk Tabel MAHASISWA (dengan id_dpa)
 INSERT INTO MAHASISWA (nim, nama_lengkap, email, angkatan, id_prodi, id_dpa, password, role)
 VALUES
-    ('2347120088', 'Ahmad Irsyad', 'ahmad.irsyad@student.example.com', 2023, 'TI01', 2, 'password123', 'mahasiswa'),
-    ('2347120090', 'Budi Santoso', 'budi.santoso@student.example.com', 2023, 'TI01', 3, 'password456', 'mahasiswa'),
-    ('2347120100', 'Citra Dewi', 'citra.dewi@student.example.com', 2023, 'TI01', 4, 'password789', 'mahasiswa'),
-    ('2347120110', 'Dian Putri', 'dian.putri@student.example.com', 2023, 'TI02', 4, 'password101', 'mahasiswa'),
-    ('2347120120', 'Eko Prasetyo', 'eko.prasetyo@student.example.com', 2023, 'TI02', 1, 'password102', 'mahasiswa');
+    ('2341238901', 'Ahmad Irsyad', 'ahmad.irsyad@student.example.com', 2023, 'TI01', 2, 'password123', 'mahasiswa'),
+    ('2341238902', 'Budi Santoso', 'budi.santoso@student.example.com', 2023, 'TI01', 3, 'password456', 'mahasiswa'),
+    ('2341238903', 'Citra Dewi', 'citra.dewi@student.example.com', 2023, 'TI01', 4, 'password789', 'mahasiswa'),
+    ('2341238904', 'Dian Putri', 'dian.putri@student.example.com', 2023, 'TI02', 4, 'password101', 'mahasiswa'),
+    ('2341238905', 'Eko Prasetyo', 'eko.prasetyo@student.example.com', 2023, 'TI02', 1, 'password102', 'mahasiswa');
 
 -- Data Dummy untuk Tabel ADMIN
 INSERT INTO ADMIN (NIP, nama_admin, password)
