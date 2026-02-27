@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../helpers/path_helper.php';
+require_once __DIR__ . '/../helpers/route_helper.php';
 app_require('config.php');
 app_require('Controllers/UserController.php');
 app_require('helpers/flash_modal.php');

@@ -8,8 +8,7 @@ require_once dirname(__DIR__) . '/partials/app-shell.php';
 require_once dirname(__DIR__) . '/components/modals/pelaporan-cancel-modal.php';
 
 if (!isset($_SESSION['username'])) {
-    header("Location: ../auth/login.php");
-    exit();
+    app_redirect_page('page.login');
 }
 if (isset($_GET['logout'])) {
     $userController = new UserController();
@@ -17,8 +16,7 @@ if (isset($_GET['logout'])) {
     exit();
 }
 if ($_SESSION['user_type'] === 'mahasiswa') {
-    header("Location: ../pelanggaran/pelanggaranpage.php");
-    exit();
+    app_redirect_page('page.pelanggaran');
 }
 
 // Ambil data user dari session
@@ -39,7 +37,7 @@ $tatibData = $tatibController->ReadTatib();
     app_seo_meta_tags([
         'title' => 'Pelaporan Pelanggaran Mahasiswa | DiscipLink',
         'description' => 'Form pelaporan pelanggaran mahasiswa oleh dosen di DiscipLink untuk proses kedisiplinan kampus yang terstruktur.',
-        'canonical_path' => '/views/pelanggaran/pelaporan.php',
+        'canonical_path' => '/',
         'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
         'robots' => 'noindex, nofollow',
     ]);
@@ -127,7 +125,7 @@ $tatibData = $tatibController->ReadTatib();
         render_app_header([
             'title' => 'Pelaporan',
             'showLogin' => false,
-            'loginHref' => '../auth/login.php',
+            'loginHref' => app_page_url('page.login'),
             'roleLabel' => 'Dosen',
         ]);
         ?>
@@ -158,7 +156,9 @@ $tatibData = $tatibController->ReadTatib();
                 </aside>
 
                 <div class="form-container">
-                    <form id="pelanggaranForm" method="POST" action="../../Request/Handler_Pelaporan.php">
+                    <form id="pelanggaranForm" method="POST"
+                        action="<?= htmlspecialchars(app_action_url('action.pelanggaran'), ENT_QUOTES, 'UTF-8') ?>"
+                        data-lookup-endpoint="<?= htmlspecialchars(app_action_url('action.pelanggaran', ['action' => 'lookup_mahasiswa']), ENT_QUOTES, 'UTF-8') ?>">
                         <div class="form-grid">
                             <div class="form-group form-group-wide">
                                 <label for="nim">NIM Mahasiswa</label>
@@ -198,7 +198,7 @@ $tatibData = $tatibController->ReadTatib();
                                 <select id="jenisPelanggaran" name="jenisPelanggaran" required>
                                     <option value="" readonly>Pilih Jenis Pelanggaran</option>
                                     <?php foreach ($tatibData as $tatib): ?>
-                                        <option value="<?= $tatib['id_tata_tertib'] ?>"
+                                        <option value="<?= htmlspecialchars(app_id_token('tatib', (int) $tatib['id_tata_tertib']), ENT_QUOTES, 'UTF-8') ?>"
                                             data-tingkat="<?= $tatib['tingkat'] ?>">
                                             <?= $tatib['deskripsi'] ?>
                                         </option>
@@ -226,7 +226,7 @@ $tatibData = $tatibController->ReadTatib();
         <?php
         render_pelaporan_cancel_modal_component([
             'context' => 'nested',
-            'redirectHref' => 'pelanggaran_dosen.php',
+            'redirectHref' => app_page_url('page.pelanggaran_dosen'),
         ]);
         ?>
         <?php

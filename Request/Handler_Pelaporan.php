@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../helpers/path_helper.php';
+require_once __DIR__ . '/../helpers/route_helper.php';
 app_require('config.php');
 app_require('Controllers/PelanggaranController.php');
 app_require('Controllers/TatibController.php');
@@ -17,7 +18,9 @@ function respondJson(array $payload, int $statusCode = 200): void
    exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && ($_GET['action'] ?? '') === 'lookup_mahasiswa') {
+$routeAction = (string) app_route_data('action', '');
+
+if ($routeAction === 'lookup_mahasiswa') {
    if (!isset($_SESSION['username'])) {
       respondJson(['success' => false, 'message' => 'Unauthorized'], 401);
    }
@@ -26,7 +29,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && ($_GET['action'] ?? '') === 'lookup_
       respondJson(['success' => false, 'message' => 'Forbidden'], 403);
    }
 
-   $nim = trim((string) ($_GET['nim'] ?? ''));
+   $nim = '';
+   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      $rawInput = file_get_contents('php://input');
+      $decodedInput = json_decode($rawInput ?? '', true);
+      $input = is_array($decodedInput) ? $decodedInput : $_POST;
+      $nim = trim((string) ($input['nim'] ?? ''));
+   } else {
+      $nim = trim((string) ($_GET['nim'] ?? ''));
+   }
    if ($nim === '') {
       respondJson(['success' => false, 'message' => 'NIM wajib diisi.'], 422);
    }
@@ -45,9 +56,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && ($_GET['action'] ?? '') === 'lookup_
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    try {
       $isUpdate = isset($_POST['update']) || isset($_POST['id_detail']);
-      $tatibDetail = $tatibController->getTatibDetail($_POST['jenisPelanggaran'] ?? null);
+      $tatibId = app_id_resolve((string) ($_POST['jenisPelanggaran'] ?? ''), 'tatib');
+      if ($tatibId === null) {
+         throw new RuntimeException('Token jenis pelanggaran tidak valid.');
+      }
+
+      $tatibDetail = $tatibController->getTatibDetail($tatibId);
       $tingkat = $tatibDetail['tingkat'] ?? '';
-      $resolvedSanksi = $_POST['sanksi'] ?? null;
+      $resolvedSanksi = null;
+      if (isset($_POST['sanksi']) && trim((string) $_POST['sanksi']) !== '') {
+         $resolvedSanksi = app_id_resolve((string) $_POST['sanksi'], 'sanksi');
+         if ($resolvedSanksi === null) {
+            throw new RuntimeException('Token sanksi tidak valid.');
+         }
+      }
       $detailPelanggaran = $_POST['deskripsiPelanggaran'] ?? ($tatibDetail['deskripsi'] ?? null);
 
       if ((!$resolvedSanksi || trim((string) $resolvedSanksi) === '') && $tingkat !== '') {
@@ -63,10 +85,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          $status_tugas = 'Tidak Ada Tugas';
       }
 
+      $resolvedDetailId = null;
+      if ($isUpdate) {
+         $resolvedDetailId = app_id_resolve((string) ($_POST['id_detail'] ?? ''), 'detail_pelanggaran');
+         if ($resolvedDetailId === null) {
+            throw new RuntimeException('Token detail pelanggaran tidak valid.');
+         }
+      }
+
       if ($isUpdate) {
          $result = $pelanggaranController->updateDetailPelanggaran(
-            $_POST['id_detail'] ?? null,
-            $_POST['jenisPelanggaran'] ?? null,
+            $resolvedDetailId,
+            $tatibId,
             $_POST['nim'] ?? null,
             $resolvedSanksi,
             $detailPelanggaran,
@@ -77,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       } else {
          $result = $pelanggaranController->simpanDetailPelanggaran(
             $_SESSION['user_data']['nidn'] ?? null,
-            $_POST['jenisPelanggaran'] ?? null,
+            $tatibId,
             $_POST['nim'] ?? null,
             $resolvedSanksi,
             $detailPelanggaran,

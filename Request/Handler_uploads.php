@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../config.php'; // Sertakan file konfigurasi untuk mengakses koneksi database
+require_once __DIR__ . '/../helpers/token_helper.php';
 
 function respondJson(bool $success, string $message, int $statusCode = 200): void
 {
@@ -35,12 +36,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         respondJson(false, 'Koneksi database tidak tersedia.', 500);
     }
 
-    $idDetail = $_POST['id_detail'] ?? null;
-    if (!is_numeric($idDetail)) {
+    $idDetail = app_id_resolve((string) ($_POST['id_detail'] ?? ''), 'detail_pelanggaran');
+    if ($idDetail === null) {
         respondJson(false, 'ID detail tidak valid.', 422);
     }
 
-    $idDetail = (int) $idDetail;
     $fileType = '';
     $filePath = ''; // Untuk menyimpan jalur file
 

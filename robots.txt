@@ -9,5 +9,7 @@ Disallow: /document/
 Disallow: /views/admin/
 Disallow: /views/pelanggaran/
 Disallow: /views/auth/
+Disallow: /p/
+Disallow: /a/
 
 Sitemap: https://dimspersonal.my.id/sitemap.xml

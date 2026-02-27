@@ -126,7 +126,7 @@
     };
 
     let lookupRequestId = 0;
-    const lookupEndpoint = '../../Request/Handler_Pelaporan.php?action=lookup_mahasiswa';
+    const lookupEndpoint = form ? String(form.getAttribute('data-lookup-endpoint') || '') : '';
 
     const lookupMahasiswa = async () => {
         if (!nimInput) {
@@ -146,9 +146,17 @@
         }
 
         try {
-            const response = await fetch(`${lookupEndpoint}&nim=${encodeURIComponent(nim)}`, {
-                method: 'GET',
-                headers: { Accept: 'application/json' },
+            if (lookupEndpoint === '') {
+                throw new Error('Lookup endpoint is not configured.');
+            }
+
+            const response = await fetch(lookupEndpoint, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ nim }),
             });
             const payload = await response.json();
 
@@ -207,6 +215,6 @@
 function showConfirmation() {
     const confirmAction = confirm('Apakah Anda yakin ingin melaporkan?');
     if (confirmAction) {
-        window.location.href = 'pelanggaran_dosen.php';
+        window.location.href = '/';
     }
 }

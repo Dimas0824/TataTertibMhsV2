@@ -4,8 +4,7 @@ require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
 require_once dirname(__DIR__) . '/partials/app-shell.php';
 
 if (!isset($_SESSION['username'])) {
-    header("Location: ../auth/login.php");
-    exit();
+    app_redirect_page('page.login');
 }
 
 if (isset($_GET['logout'])) {
@@ -28,7 +27,7 @@ $notificationRole = $_SESSION['user_type'] === 'dosen' ? 'Dosen' : 'Mahasiswa';
     app_seo_meta_tags([
         'title' => 'Notifikasi Pelanggaran | DiscipLink',
         'description' => 'Inbox notifikasi DiscipLink untuk memantau pembaruan laporan pelanggaran mahasiswa secara real-time.',
-        'canonical_path' => '/views/pelanggaran/notifikasi.php',
+        'canonical_path' => '/',
         'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
         'robots' => 'noindex, nofollow',
     ]);
@@ -61,12 +60,12 @@ $notificationRole = $_SESSION['user_type'] === 'dosen' ? 'Dosen' : 'Mahasiswa';
         render_app_header([
             'title' => 'Notifikasi',
             'showLogin' => false,
-            'loginHref' => '../auth/login.php',
+            'loginHref' => app_page_url('page.login'),
             'roleLabel' => $notificationRole,
         ]);
         ?>
 
-        <section class="notif-page" data-notif-root data-endpoint="../../Request/Handler_Notifikasi.php">
+        <section class="notif-page" data-notif-root data-endpoint="<?= htmlspecialchars(app_action_url('action.notifikasi'), ENT_QUOTES, 'UTF-8') ?>">
             <section class="notif-overview" aria-label="Ringkasan notifikasi">
                 <div class="notif-overview-copy">
                     <span class="notif-kicker">DiscipLink Inbox</span>

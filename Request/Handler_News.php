@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../helpers/path_helper.php';
+require_once __DIR__ . '/../helpers/route_helper.php';
 app_require('config.php');
 app_require('Controllers/NewsController.php');
 app_require('helpers/flash_modal.php');
@@ -37,14 +38,14 @@ try {
 
     // Validasi jika tombol "update" diklik
     elseif (isset($_POST['update'])) {
-        $newsId = $_POST['news_id'] ?? '';
+        $newsId = app_id_resolve((string) ($_POST['news_id'] ?? ''), 'news');
         $judul = $_POST['judul'] ?? '';
         $konten = $_POST['konten'] ?? '';
         $penulis = $_POST['penulis'] ?? '';
         $gambar = $_FILES['gambar'] ?? null;
 
         // Input tidak boleh kosong
-        if (empty($newsId) || empty($judul) || empty($konten) || empty($penulis)) {
+        if ($newsId === null || empty($judul) || empty($konten) || empty($penulis)) {
             throw new Exception("Semua input wajib diisi.");
         }
 
@@ -99,9 +100,9 @@ try {
 
     // Validasi jika tombol "delete" diklik
     elseif (isset($_POST['delete'])) {
-        $newsId = $_POST['news_id'] ?? '';
+        $newsId = app_id_resolve((string) ($_POST['news_id'] ?? ''), 'news');
 
-        if (empty($newsId)) {
+        if ($newsId === null) {
             throw new Exception("ID berita tidak boleh kosong.");
         }
 

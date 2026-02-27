@@ -9,15 +9,12 @@ require_once dirname(__DIR__) . '/partials/app-shell.php';
 if (isset($_SESSION['username'])) {
     // Redirect based on role
     if ($_SESSION['user_type'] === 'mahasiswa') {
-        header("Location: ../pelanggaran/pelanggaranpage.php");
-        exit();
+        app_redirect_page('page.pelanggaran');
     } else if ($_SESSION['user_type'] === 'dosen') {
-        header("Location: ../pelanggaran/pelanggaran_dosen.php");
-        exit();
+        app_redirect_page('page.pelanggaran_dosen');
     }
 } else {
-    header("Location: ../auth/login.php");
-    exit();
+    app_redirect_page('page.login');
 }
 
 if (isset($_GET['logout'])) {
@@ -44,7 +41,7 @@ $tatibData = $tatibController->ReadTatib();
     app_seo_meta_tags([
         'title' => 'Admin Tata Tertib Mahasiswa | DiscipLink',
         'description' => 'Panel admin DiscipLink untuk mengelola data tata tertib mahasiswa, tingkat pelanggaran, dan poin aturan kampus.',
-        'canonical_path' => '/views/tatib/listTatib-admin.php',
+        'canonical_path' => '/',
         'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
         'robots' => 'noindex, nofollow',
     ]);
@@ -74,7 +71,7 @@ $tatibData = $tatibController->ReadTatib();
         render_app_header([
             'title' => 'Tata Tertib Admin',
             'showLogin' => false,
-            'loginHref' => '../auth/login.php',
+            'loginHref' => app_page_url('page.login'),
             'roleLabel' => 'Admin',
         ]);
         ?>
@@ -120,9 +117,9 @@ $tatibData = $tatibController->ReadTatib();
                                         <td><span class="tier-pill"><?= htmlspecialchars($tatib['tingkat']) ?></span></td>
                                         <td><span class="point-badge"><?= htmlspecialchars($tatib['poin']) ?></span></td>
                                         <td class="button-cell">
-                                            <form action="../../Request/Handler_Tatib.php" method="post">
+                                            <form action="<?= htmlspecialchars(app_action_url('action.tatib'), ENT_QUOTES, 'UTF-8') ?>" method="post">
                                                 <input type="hidden" name="id_tatib"
-                                                    value="<?= htmlspecialchars($tatib['id_tata_tertib']) ?>">
+                                                    value="<?= htmlspecialchars(app_id_token('tatib', (int) $tatib['id_tata_tertib']), ENT_QUOTES, 'UTF-8') ?>">
                                                 <button class="delete" id="delete" name="delete"
                                                     onclick="return confirm('Apakah anda yakin ingin menghapus?');"
                                                     aria-label="Hapus tata tertib <?= htmlspecialchars($tatib['deskripsi']) ?>"><i
@@ -181,7 +178,7 @@ $tatibData = $tatibController->ReadTatib();
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2>Tambah Pelanggaran</h2>
-                <form id="insertForm" method="POST" action="../../Request/Handler_Tatib.php">
+                <form id="insertForm" method="POST" action="<?= htmlspecialchars(app_action_url('action.tatib'), ENT_QUOTES, 'UTF-8') ?>">
                     <label for="insertAdmin">Id Admin:</label>
                     <input type="text" id="admin" name="admin" value="<?= $userData['id_admin'] ?>" required readonly>
 

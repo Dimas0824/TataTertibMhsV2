@@ -9,8 +9,7 @@ require_once dirname(__DIR__) . '/partials/app-shell.php';
 require_once dirname(__DIR__) . '/components/modals/pelaporan-cancel-modal.php';
 
 if (!isset($_SESSION['username'])) {
-    header("Location: ../auth/login.php");
-    exit();
+    app_redirect_page('page.login');
 }
 if (isset($_GET['logout'])) {
     $userController = new UserController();
@@ -18,13 +17,11 @@ if (isset($_GET['logout'])) {
     exit();
 }
 if ($_SESSION['user_type'] === 'mahasiswa') {
-    header("Location: ../pelanggaran/pelanggaranpage.php");
-    exit();
+    app_redirect_page('page.pelanggaran');
 }
-if (isset($_GET['id'])) {
-    $id = intval($_GET['id']);
-} else {
-    $id = 0;
+$id = (int) app_route_data('id_detail', 0);
+if ($id <= 0) {
+    app_redirect_page('page.pelanggaran_dosen');
 }
 
 $pelanggar = new PelanggaranController();
@@ -58,7 +55,7 @@ if ($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
     app_seo_meta_tags([
         'title' => 'Edit Pelaporan Pelanggaran | DiscipLink',
         'description' => 'Halaman edit pelaporan pelanggaran mahasiswa pada panel dosen DiscipLink.',
-        'canonical_path' => '/views/pelanggaran/edit-pelaporan.php',
+        'canonical_path' => '/',
         'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
         'robots' => 'noindex, nofollow',
     ]);
@@ -146,7 +143,7 @@ if ($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
         render_app_header([
             'title' => 'Edit Pelaporan',
             'showLogin' => false,
-            'loginHref' => '../auth/login.php',
+            'loginHref' => app_page_url('page.login'),
             'roleLabel' => 'Dosen',
         ]);
         ?>
@@ -176,8 +173,10 @@ if ($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
                 </aside>
 
                 <div class="form-container">
-                    <form id="pelanggaranForm" method="POST" action="../../Request/Handler_Pelaporan.php">
-                        <input type="hidden" name="id_detail" value="<?= $id ?>">
+                    <form id="pelanggaranForm" method="POST"
+                        action="<?= htmlspecialchars(app_action_url('action.pelanggaran'), ENT_QUOTES, 'UTF-8') ?>"
+                        data-lookup-endpoint="<?= htmlspecialchars(app_action_url('action.pelanggaran', ['action' => 'lookup_mahasiswa']), ENT_QUOTES, 'UTF-8') ?>">
+                        <input type="hidden" name="id_detail" value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $id), ENT_QUOTES, 'UTF-8') ?>">
 
                         <div class="form-grid">
                             <div class="form-group form-group-wide">
@@ -216,7 +215,7 @@ if ($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
                                 <select id="sanksi" name="sanksi" required>
                                     <option value="">Pilih Sanksi</option>
                                     <?php foreach ($sanksiData as $sanksi): ?>
-                                        <option value="<?= $sanksi['id_sanksi'] ?>" data-tingkat="<?= $sanksi['tingkat'] ?>"
+                                        <option value="<?= htmlspecialchars(app_id_token('sanksi', (int) $sanksi['id_sanksi']), ENT_QUOTES, 'UTF-8') ?>" data-tingkat="<?= $sanksi['tingkat'] ?>"
                                             <?= ((string) ($detailPelanggar['id_sanksi'] ?? '') === (string) $sanksi['id_sanksi']) ? 'selected' : '' ?>>
                                             <?= $sanksi['deskripsi'] ?>
                                         </option>
@@ -229,7 +228,7 @@ if ($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
                                 <select id="jenisPelanggaran" name="jenisPelanggaran" required>
                                     <option value="" readonly>Pilih Jenis Pelanggaran</option>
                                     <?php foreach ($tatibData as $tatib): ?>
-                                        <option value="<?= $tatib['id_tata_tertib'] ?>" data-tingkat="<?= $tatib['tingkat'] ?>"
+                                        <option value="<?= htmlspecialchars(app_id_token('tatib', (int) $tatib['id_tata_tertib']), ENT_QUOTES, 'UTF-8') ?>" data-tingkat="<?= $tatib['tingkat'] ?>"
                                             <?= ((string) ($detailPelanggar['id_tata_tertib'] ?? '') === (string) $tatib['id_tata_tertib']) ? 'selected' : '' ?>>
                                             <?= $tatib['deskripsi'] ?>
                                         </option>
@@ -262,7 +261,7 @@ if ($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
         <?php
         render_pelaporan_cancel_modal_component([
             'context' => 'nested',
-            'redirectHref' => 'pelanggaran_dosen.php',
+            'redirectHref' => app_page_url('page.pelanggaran_dosen'),
         ]);
 
         render_app_footer([

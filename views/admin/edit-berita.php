@@ -6,9 +6,9 @@ require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
 require_once dirname(__DIR__) . '/partials/app-shell.php';
 require_once dirname(__DIR__, 2) . '/helpers/flash_modal.php';
 
-// Ambil ID berita dari parameter URL
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
+// Ambil ID berita dari route token
+$id = (int) app_route_data('id_news', 0);
+if ($id > 0) {
     $newsController = new NewsController($connect);
     $news = $newsController->getNewsById($id);
 
@@ -19,15 +19,12 @@ if (isset($_GET['id'])) {
     // Ambil nama penulis
     if (isset($_SESSION['username'])) {
         if ($_SESSION['user_type'] === 'mahasiswa') {
-            header("Location: ../pelanggaran/pelanggaranpage.php");
-            exit();
+            app_redirect_page('page.pelanggaran');
         } elseif ($_SESSION['user_type'] === 'dosen') {
-            header("Location: ../pelanggaran/pelanggaran_dosen.php");
-            exit();
+            app_redirect_page('page.pelanggaran_dosen');
         }
     } else {
-        header("Location: ../auth/login.php");
-        exit();
+        app_redirect_page('page.login');
     }
 
     if (isset($_GET['logout'])) {
@@ -52,8 +49,13 @@ if (isset($_GET['id'])) {
         // Validasi input
         if (empty($judul) || empty($konten)) {
             set_app_flash_modal('error', 'Judul dan konten tidak boleh kosong.');
-            header("Location: news-admin.php");
-            exit();
+            app_redirect_page('page.admin_news');
+        }
+
+        $postNewsId = app_id_resolve((string) ($_POST['news_id'] ?? ''), 'news');
+        if ($postNewsId === null || $postNewsId !== (int) $id) {
+            set_app_flash_modal('error', 'Token berita tidak valid.');
+            app_redirect_page('page.admin_news');
         }
 
         // Proses unggah gambar baru
@@ -67,8 +69,7 @@ if (isset($_GET['id'])) {
                 $gambarPath = 'document/news/' . $fileName;
             } else {
                 set_app_flash_modal('error', 'Gagal mengunggah gambar.');
-                header("Location: news-admin.php");
-                exit();
+                app_redirect_page('page.admin_news');
             }
         } else {
             // Gunakan gambar lama jika tidak ada file baru
@@ -80,14 +81,15 @@ if (isset($_GET['id'])) {
 
         if ($result['status'] === 'success') {
             set_app_flash_modal('success', $result['message'] ?? 'Berita berhasil diperbarui.');
-            header("Location: news-admin.php");
-            exit();
+            app_redirect_page('page.admin_news');
         } else {
             set_app_flash_modal('error', $result['message'] ?? 'Gagal memperbarui berita.');
-            header("Location: news-admin.php");
-            exit();
+            app_redirect_page('page.admin_news');
         }
     }
+} else {
+    http_response_code(404);
+    die('Berita tidak ditemukan!');
 }
 ?>
 
@@ -102,7 +104,7 @@ if (isset($_GET['id'])) {
     app_seo_meta_tags([
         'title' => 'Edit Berita | Admin DiscipLink',
         'description' => 'Halaman admin DiscipLink untuk memperbarui berita kedisiplinan kampus.',
-        'canonical_path' => '/views/admin/edit-berita.php',
+        'canonical_path' => '/',
         'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
         'robots' => 'noindex, nofollow',
     ]);
@@ -132,7 +134,7 @@ if (isset($_GET['id'])) {
         render_app_header([
             'title' => 'Edit Berita',
             'showLogin' => false,
-            'loginHref' => '../auth/login.php',
+            'loginHref' => app_page_url('page.login'),
             'roleLabel' => 'Admin',
         ]);
         ?>
@@ -153,7 +155,7 @@ if (isset($_GET['id'])) {
                 </aside>
 
                 <form id="editBeritaForm" method="POST" enctype="multipart/form-data">
-                    <input type="hidden" id="editNewsId" name="news_id" value="<?= htmlspecialchars($id) ?>" required>
+                    <input type="hidden" id="editNewsId" name="news_id" value="<?= htmlspecialchars(app_id_token('news', (int) $id), ENT_QUOTES, 'UTF-8') ?>" required>
 
                     <label for="editPenulis">Penulis:</label>
                     <input type="text" id="editPenulis" name="penulis" value="<?= htmlspecialchars($penulis_nama) ?>"
@@ -172,7 +174,7 @@ if (isset($_GET['id'])) {
 
                     <div class="form-actions">
                         <button type="button" class="cancel-button" name="cancel"
-                            onclick="window.location.href='news-admin.php'">Batal</button>
+                            onclick="window.location.href='<?= htmlspecialchars(app_page_url('page.admin_news'), ENT_QUOTES, 'UTF-8') ?>'">Batal</button>
                         <button type="submit" class="save-button">Simpan Perubahan</button>
                     </div>
                 </form>

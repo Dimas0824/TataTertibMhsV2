@@ -3,6 +3,7 @@
 declare(strict_types=1);
 require_once dirname(__DIR__, 2) . '/helpers/flash_modal.php';
 require_once dirname(__DIR__, 2) . '/helpers/seo_helper.php';
+require_once dirname(__DIR__, 2) . '/helpers/route_helper.php';
 require_once dirname(__DIR__) . '/components/modals/app-feedback-modal.php';
 
 if (!defined('APP_CANONICAL_ENFORCED')) {
@@ -17,42 +18,16 @@ if (!function_exists('get_app_nav_items')) {
         $variant = in_array($variant, ['guest', 'student', 'admin'], true) ? $variant : 'guest';
         $context = in_array($context, ['root', 'views', 'nested'], true) ? $context : 'views';
 
-        $rootMap = [
-            'home' => 'index.php',
-            'tatib' => 'views/tatib/listTatib.php',
-            'pelanggaran' => 'views/pelanggaran/pelanggaranpage.php',
-            'notifikasi' => 'views/pelanggaran/notifikasi.php',
-            'logout' => '?logout=true',
-            'news' => 'views/admin/news-admin.php',
-            'admin_home' => 'views/admin/home-admin.php',
-            'admin_tatib' => 'views/tatib/listTatib-admin.php',
+        $hrefMap = [
+            'home' => '/',
+            'tatib' => app_page_url('page.tatib'),
+            'pelanggaran' => app_page_url('page.pelanggaran'),
+            'notifikasi' => app_page_url('page.notifikasi'),
+            'logout' => app_action_url('action.logout'),
+            'news' => app_page_url('page.admin_news'),
+            'admin_home' => app_page_url('page.admin_home'),
+            'admin_tatib' => app_page_url('page.admin_tatib'),
         ];
-
-        $viewsMap = [
-            'home' => '../index.php',
-            'tatib' => 'tatib/listTatib.php',
-            'pelanggaran' => 'pelanggaran/pelanggaranpage.php',
-            'notifikasi' => 'pelanggaran/notifikasi.php',
-            'logout' => '../?logout=true',
-            'news' => 'admin/news-admin.php',
-            'admin_home' => 'admin/home-admin.php',
-            'admin_tatib' => 'tatib/listTatib-admin.php',
-        ];
-
-        $nestedMap = [
-            'home' => '../../index.php',
-            'tatib' => '../tatib/listTatib.php',
-            'pelanggaran' => '../pelanggaran/pelanggaranpage.php',
-            'notifikasi' => '../pelanggaran/notifikasi.php',
-            'logout' => '../../?logout=true',
-            'news' => '../admin/news-admin.php',
-            'admin_home' => '../admin/home-admin.php',
-            'admin_tatib' => '../tatib/listTatib-admin.php',
-        ];
-
-        $hrefMap = $context === 'root'
-            ? $rootMap
-            : ($context === 'nested' ? $nestedMap : $viewsMap);
 
         $baseItems = [
             'guest' => [
@@ -87,7 +62,7 @@ if (!function_exists('render_app_sidebar')) {
         $context = in_array($context, ['root', 'views', 'nested'], true) ? $context : 'views';
         $active = isset($config['active']) ? (string) $config['active'] : null;
         $assetPrefix = $context === 'root' ? '' : ($context === 'nested' ? '../../' : '../');
-        $homeHref = $context === 'root' ? 'index.php' : ($context === 'nested' ? '../../index.php' : '../index.php');
+        $homeHref = '/';
 
         $navItems = get_app_nav_items($variant, $context);
         ?>
@@ -133,7 +108,7 @@ if (!function_exists('render_app_header')) {
     {
         $title = (string) ($config['title'] ?? 'DiscipLink');
         $showLogin = (bool) ($config['showLogin'] ?? false);
-        $loginHref = (string) ($config['loginHref'] ?? 'views/auth/login.php');
+        $loginHref = (string) ($config['loginHref'] ?? app_page_url('page.login'));
         $roleLabel = isset($config['roleLabel']) && $config['roleLabel'] !== ''
             ? (string) $config['roleLabel']
             : null;

@@ -5,8 +5,7 @@ require_once dirname(__DIR__, 2) . '/Controllers/PelanggaranController.php';
 require_once dirname(__DIR__) . '/partials/app-shell.php';
 
 if (!isset($_SESSION['username'])) {
-    header("Location: ../auth/login.php");
-    exit();
+    app_redirect_page('page.login');
 }
 
 if (isset($_GET['logout'])) {
@@ -16,8 +15,7 @@ if (isset($_GET['logout'])) {
 }
 
 if ($_SESSION['user_type'] === 'mahasiswa') {
-    header("Location: ../pelanggaran/pelanggaranpage.php");
-    exit();
+    app_redirect_page('page.pelanggaran');
 }
 
 $userData = $_SESSION['user_data'];
@@ -36,7 +34,7 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
     app_seo_meta_tags([
         'title' => 'Pelanggaran Mahasiswa Dosen | DiscipLink',
         'description' => 'Dashboard dosen DiscipLink untuk meninjau laporan pelanggaran mahasiswa, status, dan dokumen pendukung.',
-        'canonical_path' => '/views/pelanggaran/pelanggaran_dosen.php',
+        'canonical_path' => '/',
         'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
         'robots' => 'noindex, nofollow',
     ]);
@@ -70,7 +68,7 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
         render_app_header([
             'title' => 'Pelanggaran',
             'showLogin' => false,
-            'loginHref' => '../auth/login.php',
+            'loginHref' => app_page_url('page.login'),
             'roleLabel' => 'Dosen',
         ]);
         ?>
@@ -100,7 +98,7 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
             <section class="table-card">
                 <div class="table-card-header table-card-header-between">
                     <h3>Tabel Pelanggaran</h3>
-                    <button class="primary-action-btn" onclick="window.location.href='pelaporan.php'">+
+                    <button class="primary-action-btn" onclick="window.location.href='<?= htmlspecialchars(app_page_url('page.pelaporan'), ENT_QUOTES, 'UTF-8') ?>'">+
                         Laporkan</button>
                 </div>
                 <div class="table-container">
@@ -135,14 +133,14 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
                                             <div class="doc-links">
                                                 <?php if (!empty($detail['surat'])): ?>
                                                     <a class="file-link"
-                                                        href="<?= htmlspecialchars('../../document/' . $detail['surat'], ENT_QUOTES, 'UTF-8') ?>"
+                                                        href="<?= htmlspecialchars(app_action_url('action.file_download', ['file' => (string) $detail['surat']]), ENT_QUOTES, 'UTF-8') ?>"
                                                         target="_blank" rel="noopener noreferrer">Surat Pernyataan</a>
                                                 <?php else: ?>
                                                     <span class="muted-text">Surat belum diunggah</span>
                                                 <?php endif; ?>
                                                 <?php if (!empty($detail['pengumpulan_tgsKhusus'])): ?>
                                                     <a class="file-link"
-                                                        href="<?= htmlspecialchars('../../document/' . $detail['pengumpulan_tgsKhusus'], ENT_QUOTES, 'UTF-8') ?>"
+                                                        href="<?= htmlspecialchars(app_action_url('action.file_download', ['file' => (string) $detail['pengumpulan_tgsKhusus']]), ENT_QUOTES, 'UTF-8') ?>"
                                                         target="_blank" rel="noopener noreferrer">Tugas Khusus</a>
                                                 <?php else: ?>
                                                     <span class="muted-text">Tugas belum diunggah</span>
@@ -164,8 +162,8 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
                                         <?php endif; ?>
                                         <td>
                                             <a class="edit-laporan"
-                                                href="edit-pelaporan.php?id=<?= urlencode((string) $detail['id_detail']) ?>"
-                                                aria-label="Edit laporan #<?= htmlspecialchars((string) $detail['id_detail'], ENT_QUOTES, 'UTF-8') ?>">
+                                                href="<?= htmlspecialchars(app_page_url('page.edit_pelaporan', ['id_detail' => (int) $detail['id_detail']]), ENT_QUOTES, 'UTF-8') ?>"
+                                                aria-label="Edit laporan">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
                                         </td>
@@ -181,10 +179,8 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
                 </div>
                 <div class="mobile-violation-list" aria-label="Daftar pelanggaran mobile">
                     <?php if (!empty($pelanggaranDetail)): ?>
-                        <?php foreach ($pelanggaranDetail as $detail):
-                            $detailIdRaw = (string) ($detail['id_detail'] ?? uniqid('lecturer-', false));
-                            $detailId = preg_replace('/[^a-zA-Z0-9_-]/', '', $detailIdRaw);
-                            $detailId = is_string($detailId) && $detailId !== '' ? $detailId : uniqid('lecturer-', false);
+                        <?php foreach ($pelanggaranDetail as $mobileIndex => $detail):
+                            $detailId = 'lecturer-' . (string) ((int) $mobileIndex + 1);
                             $sheetId = 'mobile-sheet-lecturer-' . $detailId;
                             $titleId = $sheetId . '-title';
                             ?>
@@ -263,14 +259,14 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
                                                         <div class="doc-links">
                                                             <?php if (!empty($detail['surat'])): ?>
                                                                 <a class="file-link"
-                                                                    href="<?= htmlspecialchars('../../document/' . $detail['surat'], ENT_QUOTES, 'UTF-8') ?>"
+                                                                    href="<?= htmlspecialchars(app_action_url('action.file_download', ['file' => (string) $detail['surat']]), ENT_QUOTES, 'UTF-8') ?>"
                                                                     target="_blank" rel="noopener noreferrer">Surat Pernyataan</a>
                                                             <?php else: ?>
                                                                 <span class="muted-text">Surat belum diunggah</span>
                                                             <?php endif; ?>
                                                             <?php if (!empty($detail['pengumpulan_tgsKhusus'])): ?>
                                                                 <a class="file-link"
-                                                                    href="<?= htmlspecialchars('../../document/' . $detail['pengumpulan_tgsKhusus'], ENT_QUOTES, 'UTF-8') ?>"
+                                                                    href="<?= htmlspecialchars(app_action_url('action.file_download', ['file' => (string) $detail['pengumpulan_tgsKhusus']]), ENT_QUOTES, 'UTF-8') ?>"
                                                                     target="_blank" rel="noopener noreferrer">Tugas Khusus</a>
                                                             <?php else: ?>
                                                                 <span class="muted-text">Tugas belum diunggah</span>
@@ -282,8 +278,8 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
 
                                             <div class="mobile-sheet-actions">
                                                 <a class="edit-laporan"
-                                                    href="edit-pelaporan.php?id=<?= urlencode((string) $detail['id_detail']) ?>"
-                                                    aria-label="Edit laporan #<?= htmlspecialchars((string) $detail['id_detail'], ENT_QUOTES, 'UTF-8') ?>">
+                                                    href="<?= htmlspecialchars(app_page_url('page.edit_pelaporan', ['id_detail' => (int) $detail['id_detail']]), ENT_QUOTES, 'UTF-8') ?>"
+                                                    aria-label="Edit laporan">
                                                     <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
                                                     Edit Laporan
                                                 </a>

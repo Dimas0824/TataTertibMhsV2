@@ -6,10 +6,4 @@
     <changefreq>yearly</changefreq>
     <priority>1.0</priority>
   </url>
-  <url>
-    <loc>https://dimspersonal.my.id/views/tatib/listTatib.php</loc>
-    <lastmod>2026-02-26</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.8</priority>
-  </url>
 </urlset>

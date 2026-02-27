@@ -8,16 +8,13 @@ require_once dirname(__DIR__) . '/partials/app-shell.php';
 if (isset($_SESSION['username'])) {
     // Redirect based on role
     if ($_SESSION['user_type'] === 'mahasiswa') {
-        header("Location: ../pelanggaran/pelanggaranpage.php");
-        exit();
+        app_redirect_page('page.pelanggaran');
     } else if ($_SESSION['user_type'] === 'dosen') {
-        header("Location: ../pelanggaran/pelanggaran_dosen.php");
-        exit();
+        app_redirect_page('page.pelanggaran_dosen');
     }
 }
 if (!isset($_SESSION['username'])) {
-    header("Location: ../auth/login.php");
-    exit();
+    app_redirect_page('page.login');
 }
 
 if (isset($_GET['logout'])) {
@@ -39,7 +36,7 @@ $newsData = $newsController->ReadNews();
     app_seo_meta_tags([
         'title' => 'Dashboard Admin DiscipLink',
         'description' => 'Dashboard admin DiscipLink untuk mengelola informasi tata tertib mahasiswa, berita, dan kedisiplinan kampus.',
-        'canonical_path' => '/views/admin/home-admin.php',
+        'canonical_path' => '/',
         'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
         'robots' => 'noindex, nofollow',
     ]);
@@ -69,7 +66,7 @@ $newsData = $newsController->ReadNews();
         render_app_header([
             'title' => 'Home Admin',
             'showLogin' => false,
-            'loginHref' => '../auth/login.php',
+            'loginHref' => app_page_url('page.login'),
             'roleLabel' => 'Admin',
         ]);
         ?>
@@ -81,8 +78,8 @@ $newsData = $newsController->ReadNews();
                 <p>Pusat kontrol admin untuk memantau informasi kedisiplinan, mengelola konten berita, dan menjaga alur
                     informasi tetap konsisten.</p>
                 <div class="hero-actions">
-                    <a href="news-admin.php" class="hero-btn hero-btn-primary">Kelola News</a>
-                    <a href="tambah-berita.php" class="hero-btn hero-btn-secondary">Tambah Berita</a>
+                    <a href="<?= htmlspecialchars(app_page_url('page.admin_news'), ENT_QUOTES, 'UTF-8') ?>" class="hero-btn hero-btn-primary">Kelola News</a>
+                    <a href="<?= htmlspecialchars(app_page_url('page.admin_news_tambah'), ENT_QUOTES, 'UTF-8') ?>" class="hero-btn hero-btn-secondary">Tambah Berita</a>
                 </div>
             </div>
 

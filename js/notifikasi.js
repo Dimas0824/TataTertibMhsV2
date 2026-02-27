@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  const endpoint = root.dataset.endpoint || '../../Request/Handler_Notifikasi.php';
+  const endpoint = root.dataset.endpoint || '';
   const searchInput = document.getElementById('notifSearchInput');
   const filterButtons = Array.from(root.querySelectorAll('.notif-filter-btn'));
   const markAllButton = root.querySelector('[data-action="mark-all-read"]');
@@ -126,8 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const status = normalizeStatus(item.status);
         const statusLabel = status === 'read' ? 'Read' : 'Unread';
         const message = escapeHtml(item.pesan || 'Notifikasi baru');
-        const id = Number.parseInt(item.id_notifikasi, 10);
-        const safeId = Number.isInteger(id) && id > 0 ? id : 0;
+        const id = String(item.id_notifikasi || '');
+        const safeId = escapeHtml(id);
         const icon = status === 'unread' ? 'fa-solid fa-bell' : 'fa-solid fa-check';
 
         return `
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const payload = await sendRequest({ action: 'fetch_list' });
       const notifications = Array.isArray(payload.notifications) ? payload.notifications : [];
       state.notifications = notifications.map((item) => ({
-        id_notifikasi: Number.parseInt(item.id_notifikasi, 10) || 0,
+        id_notifikasi: String(item.id_notifikasi || ''),
         pesan: String(item.pesan || ''),
         status: normalizeStatus(item.status)
       }));
@@ -193,12 +193,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  const markNotificationAsRead = async (id) => {
-    if (!Number.isInteger(id) || id <= 0 || state.loading) {
+  const markNotificationAsRead = async (idToken) => {
+    if (!idToken || state.loading) {
       return;
     }
 
-    const index = state.notifications.findIndex((item) => item.id_notifikasi === id);
+    const index = state.notifications.findIndex((item) => item.id_notifikasi === idToken);
     if (index < 0 || normalizeStatus(state.notifications[index].status) === 'read') {
       return;
     }
@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
 
     try {
-      await sendRequest({ action: 'mark_read', id_notifikasi: id });
+      await sendRequest({ action: 'mark_read', id_notifikasi: idToken });
     } catch (error) {
       state.notifications[index].status = previousStatus;
       render();
@@ -284,8 +284,8 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const id = Number.parseInt(card.dataset.id || '', 10);
-    void markNotificationAsRead(id);
+    const idToken = String(card.dataset.id || '');
+    void markNotificationAsRead(idToken);
   });
 
   list.addEventListener('keydown', (event) => {
@@ -299,8 +299,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     event.preventDefault();
-    const id = Number.parseInt(card.dataset.id || '', 10);
-    void markNotificationAsRead(id);
+    const idToken = String(card.dataset.id || '');
+    void markNotificationAsRead(idToken);
   });
 
   void loadNotifications();

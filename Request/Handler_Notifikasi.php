@@ -6,6 +6,7 @@ session_start();
 header('Content-Type: application/json; charset=UTF-8');
 
 require_once dirname(__DIR__) . '/Controllers/PelanggaranController.php';
+require_once dirname(__DIR__) . '/helpers/token_helper.php';
 
 function respond_json(int $statusCode, array $payload): void
 {
@@ -75,8 +76,12 @@ if ($action === 'fetch_list') {
     $mappedNotifications = [];
     foreach ((array) $notifications as $notification) {
         $statusRaw = strtolower(trim((string) ($notification['status'] ?? 'unread')));
+        $rawId = (int) ($notification['id_notifikasi'] ?? 0);
+        if ($rawId <= 0) {
+            continue;
+        }
         $mappedNotifications[] = [
-            'id_notifikasi' => (int) ($notification['id_notifikasi'] ?? 0),
+            'id_notifikasi' => app_id_token('notifikasi', $rawId),
             'pesan' => (string) ($notification['pesan'] ?? ''),
             'status' => $statusRaw === 'read' ? 'read' : 'unread',
         ];
@@ -89,15 +94,15 @@ if ($action === 'fetch_list') {
 }
 
 if ($action === 'mark_read') {
-    $idNotifikasi = filter_var($input['id_notifikasi'] ?? null, FILTER_VALIDATE_INT);
-    if ($idNotifikasi === false || $idNotifikasi <= 0) {
+    $idNotifikasi = app_id_resolve((string) ($input['id_notifikasi'] ?? ''), 'notifikasi');
+    if ($idNotifikasi === null || $idNotifikasi <= 0) {
         respond_json(422, [
             'success' => false,
             'message' => 'ID notifikasi tidak valid.',
         ]);
     }
 
-    $result = $controller->markNotifikasiAsRead($sessionData, $role, (int) $idNotifikasi);
+    $result = $controller->markNotifikasiAsRead($sessionData, $role, $idNotifikasi);
     $statusCode = ($result['success'] ?? false) ? 200 : 400;
     respond_json($statusCode, $result);
 }

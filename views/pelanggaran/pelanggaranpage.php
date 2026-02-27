@@ -4,8 +4,7 @@ require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
 require_once dirname(__DIR__, 2) . '/Controllers/PelanggaranController.php';
 require_once dirname(__DIR__) . '/partials/app-shell.php';
 if (!isset($_SESSION['username'])) {
-    header("Location: ../auth/login.php");
-    exit();
+    app_redirect_page('page.login');
 }
 
 if (isset($_GET['logout'])) {
@@ -15,8 +14,7 @@ if (isset($_GET['logout'])) {
 }
 
 if ($_SESSION['user_type'] === 'dosen') {
-    header("Location: ../pelanggaran/pelanggaran_dosen.php");
-    exit();
+    app_redirect_page('page.pelanggaran_dosen');
 }
 
 // Ambil data user dari session
@@ -46,7 +44,7 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
     app_seo_meta_tags([
         'title' => 'Status Pelanggaran Mahasiswa | DiscipLink',
         'description' => 'Pantau status pelanggaran mahasiswa, poin, sanksi, dan pengumpulan dokumen melalui dashboard DiscipLink.',
-        'canonical_path' => '/views/pelanggaran/pelanggaranpage.php',
+        'canonical_path' => '/',
         'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
         'robots' => 'noindex, nofollow',
     ]);
@@ -82,7 +80,7 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
         render_app_header([
             'title' => 'Pelanggaran',
             'showLogin' => false,
-            'loginHref' => '../auth/login.php',
+            'loginHref' => app_page_url('page.login'),
             'roleLabel' => 'Mahasiswa',
         ]);
         ?>
@@ -139,19 +137,19 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
                                         <td><?= htmlspecialchars($detail['nama_lengkap']) ?></td>
                                         <td><?= htmlspecialchars($detail['tugas_khusus'] ?? 'Tidak Ada Tugas') ?></td>
                                         <td><a class="file-link"
-                                                href="<?= htmlspecialchars('../../document/SURAT PERNYATAAN TI.pdf') ?>"
+                                                href="<?= htmlspecialchars(app_action_url('action.file_download', ['file' => 'SURAT PERNYATAAN TI.pdf']), ENT_QUOTES, 'UTF-8') ?>"
                                                 target="_blank" rel="noopener noreferrer">Unduh File</a></td>
                                         <td><span class="point-badge"><?= htmlspecialchars($detail['poin']) ?></span></td>
                                         <td><span class="status-pill"><?= htmlspecialchars($detail['status']) ?></span></td>
                                         <td>
                                             <form class="uploadForm" enctype="multipart/form-data">
-                                                <input type="hidden" name="id_detail" value="<?= $detail['id_detail'] ?>">
+                                                <input type="hidden" name="id_detail" value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $detail['id_detail']), ENT_QUOTES, 'UTF-8') ?>">
                                                 <input type="file" name="suratPernyataan" required>
                                                 <button type="button" class="submit-btn uploadButton">Upload Surat</button>
                                             </form>
                                             <?php if (in_array($detail['tingkat'], ['I', 'II', 'III'])): ?>
                                                 <form class="uploadForm" enctype="multipart/form-data">
-                                                    <input type="hidden" name="id_detail" value="<?= $detail['id_detail'] ?>">
+                                                    <input type="hidden" name="id_detail" value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $detail['id_detail']), ENT_QUOTES, 'UTF-8') ?>">
                                                     <input type="file" name="tugasKhusus" required>
                                                     <button type="button" class="submit-btn uploadButton">Upload Tugas</button>
                                                 </form>
@@ -167,10 +165,8 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
                 </div>
                 <div class="mobile-violation-list" aria-label="Daftar pelanggaran mobile">
                     <?php if (!empty($pelanggaranDetail)): ?>
-                        <?php foreach ($pelanggaranDetail as $detail):
-                            $detailIdRaw = (string) ($detail['id_detail'] ?? uniqid('student-', false));
-                            $detailId = preg_replace('/[^a-zA-Z0-9_-]/', '', $detailIdRaw);
-                            $detailId = is_string($detailId) && $detailId !== '' ? $detailId : uniqid('student-', false);
+                        <?php foreach ($pelanggaranDetail as $mobileIndex => $detail):
+                            $detailId = 'student-' . (string) ((int) $mobileIndex + 1);
                             $sheetId = 'mobile-sheet-student-' . $detailId;
                             $titleId = $sheetId . '-title';
                             ?>
@@ -230,7 +226,7 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
                                                     <dt>Surat</dt>
                                                     <dd>
                                                         <a class="file-link"
-                                                            href="<?= htmlspecialchars('../../document/SURAT PERNYATAAN TI.pdf', ENT_QUOTES, 'UTF-8') ?>"
+                                                            href="<?= htmlspecialchars(app_action_url('action.file_download', ['file' => 'SURAT PERNYATAAN TI.pdf']), ENT_QUOTES, 'UTF-8') ?>"
                                                             target="_blank" rel="noopener noreferrer">Unduh File</a>
                                                     </dd>
                                                 </div>
@@ -247,14 +243,14 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
                                             <div class="mobile-sheet-actions">
                                                 <form class="uploadForm" enctype="multipart/form-data">
                                                     <input type="hidden" name="id_detail"
-                                                        value="<?= htmlspecialchars((string) $detail['id_detail'], ENT_QUOTES, 'UTF-8') ?>">
+                                                        value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $detail['id_detail']), ENT_QUOTES, 'UTF-8') ?>">
                                                     <input type="file" name="suratPernyataan" required>
                                                     <button type="button" class="submit-btn uploadButton">Upload Surat</button>
                                                 </form>
                                                 <?php if (in_array($detail['tingkat'], ['I', 'II', 'III'], true)): ?>
                                                     <form class="uploadForm" enctype="multipart/form-data">
                                                         <input type="hidden" name="id_detail"
-                                                            value="<?= htmlspecialchars((string) $detail['id_detail'], ENT_QUOTES, 'UTF-8') ?>">
+                                                            value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $detail['id_detail']), ENT_QUOTES, 'UTF-8') ?>">
                                                         <input type="file" name="tugasKhusus" required>
                                                         <button type="button" class="submit-btn uploadButton">Upload Tugas</button>
                                                     </form>
@@ -338,7 +334,7 @@ $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim)
                 const formData = new FormData(form);
 
                 try {
-                    const response = await fetch('../../Request/Handler_uploads.php', {
+                    const response = await fetch('<?= htmlspecialchars(app_action_url('action.upload'), ENT_QUOTES, 'UTF-8') ?>', {
                         method: 'POST',
                         body: formData,
                         headers: {

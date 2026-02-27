@@ -126,7 +126,6 @@ class PelanggaranController
         return [
             'success' => true,
             'message' => 'Notifikasi ditandai sebagai dibaca.',
-            'id_notifikasi' => $idNotifikasi,
         ];
     }
 

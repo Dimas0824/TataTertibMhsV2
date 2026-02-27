@@ -9,16 +9,13 @@ require_once dirname(__DIR__) . '/partials/app-shell.php';
 if (isset($_SESSION['username'])) {
     // Redirect based on role
     if ($_SESSION['user_type'] === 'mahasiswa') {
-        header("Location: ../pelanggaran/pelanggaranpage.php");
-        exit();
+        app_redirect_page('page.pelanggaran');
     } else if ($_SESSION['user_type'] === 'dosen') {
-        header("Location: ../pelanggaran/pelanggaran_dosen.php");
-        exit();
+        app_redirect_page('page.pelanggaran_dosen');
     }
 }
 if (!isset($_SESSION['username'])) {
-    header("Location: ../auth/login.php");
-    exit();
+    app_redirect_page('page.login');
 }
 
 if (isset($_GET['logout'])) {
@@ -46,7 +43,7 @@ $newsData = $newsController->AdminNews($id_admin);
     app_seo_meta_tags([
         'title' => 'Tambah Berita | Admin DiscipLink',
         'description' => 'Halaman admin DiscipLink untuk menambahkan berita kedisiplinan kampus.',
-        'canonical_path' => '/views/admin/tambah-berita.php',
+        'canonical_path' => '/',
         'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
         'robots' => 'noindex, nofollow',
     ]);
@@ -76,7 +73,7 @@ $newsData = $newsController->AdminNews($id_admin);
         render_app_header([
             'title' => 'Tambah Berita',
             'showLogin' => false,
-            'loginHref' => '../auth/login.php',
+            'loginHref' => app_page_url('page.login'),
             'roleLabel' => 'Admin',
         ]);
         ?>
@@ -96,7 +93,7 @@ $newsData = $newsController->AdminNews($id_admin);
                     </ol>
                 </aside>
 
-                <form id="insertBeritaForm" method="POST" action="../../Request/Handler_News.php"
+                <form id="insertBeritaForm" method="POST" action="<?= htmlspecialchars(app_action_url('action.news'), ENT_QUOTES, 'UTF-8') ?>"
                     enctype="multipart/form-data">
                     <label for="insertPenulisNama">Penulis:</label>
                     <input type="text" id="insertPenulisNama" name="penulis_nama"

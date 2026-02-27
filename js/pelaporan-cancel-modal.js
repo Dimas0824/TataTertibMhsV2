@@ -9,7 +9,7 @@
     const dialogElement = modalElement.querySelector('.cancel-report-modal__dialog');
     const closeButtons = Array.from(modalElement.querySelectorAll('[data-cancel-report-close]'));
     const confirmButton = modalElement.querySelector('[data-cancel-report-confirm]');
-    const redirectHref = String(modalElement.getAttribute('data-redirect-href') || 'pelanggaran_dosen.php');
+    const redirectHref = String(modalElement.getAttribute('data-redirect-href') || '/');
 
     if (!dialogElement || !confirmButton) {
         return;

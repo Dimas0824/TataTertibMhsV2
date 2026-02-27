@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/helpers/seo_helper.php';
+require_once __DIR__ . '/helpers/route_helper.php';
 
 app_seo_enforce_canonical_host();
 app_seo_apply_security_headers();
@@ -42,7 +43,7 @@ http_response_code(404);
             <p>Maaf, halaman yang Anda cari mungkin dipindahkan atau URL tidak valid. Gunakan tautan cepat di bawah
                 untuk kembali ke halaman utama DiscipLink.</p>
 
-            <form action="index.php" method="get" class="not-found-search" role="search" aria-label="Cari halaman">
+            <form action="/" method="get" class="not-found-search" role="search" aria-label="Cari halaman">
                 <label for="searchTerm">Cari halaman</label>
                 <input id="searchTerm" type="search" name="q" placeholder="Cari tata tertib, pelanggaran, sanksi..."
                     autocomplete="off">
@@ -50,9 +51,9 @@ http_response_code(404);
             </form>
 
             <nav class="not-found-links" aria-label="Tautan populer">
-                <a href="index.php" title="Kembali ke halaman utama DiscipLink">Beranda</a>
-                <a href="views/tatib/listTatib.php" title="Lihat daftar tata tertib mahasiswa">Tata Tertib</a>
-                <a href="views/auth/login.php" title="Masuk ke akun DiscipLink">Login</a>
+                <a href="/" title="Kembali ke halaman utama DiscipLink">Beranda</a>
+                <a href="<?= htmlspecialchars(app_page_url('page.tatib'), ENT_QUOTES, 'UTF-8') ?>" title="Lihat daftar tata tertib mahasiswa">Tata Tertib</a>
+                <a href="<?= htmlspecialchars(app_page_url('page.login'), ENT_QUOTES, 'UTF-8') ?>" title="Masuk ke akun DiscipLink">Login</a>
                 <a href="https://www.polinema.ac.id" target="_blank" rel="noopener noreferrer"
                     title="Website resmi Politeknik Negeri Malang">Website Resmi Polinema</a>
             </nav>
@@ -74,7 +75,7 @@ http_response_code(404);
                     return;
                 }
 
-                window.location.href = 'index.php';
+                window.location.href = '/';
             });
         })();
     </script>

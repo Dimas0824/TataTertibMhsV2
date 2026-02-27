@@ -34,7 +34,7 @@ if (isset($_SESSION['user_type'])) {
     app_seo_meta_tags([
         'title' => 'Daftar Tata Tertib Mahasiswa Polinema | DiscipLink',
         'description' => 'Baca daftar tata tertib mahasiswa Polinema lengkap dengan tingkat pelanggaran dan sanksi. Gunakan DiscipLink untuk memahami aturan kampus secara ringkas.',
-        'canonical_path' => '/views/tatib/listTatib.php',
+        'canonical_path' => '/',
         'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
     ]);
     ?>
@@ -67,7 +67,7 @@ if (isset($_SESSION['user_type'])) {
         render_app_header([
             'title' => 'List Tata Tertib',
             'showLogin' => !isset($_SESSION['username']),
-            'loginHref' => '../auth/login.php',
+            'loginHref' => app_page_url('page.login'),
             'roleLabel' => $listTatibRole,
         ]);
         ?>

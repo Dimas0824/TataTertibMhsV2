@@ -6,11 +6,9 @@ session_start();
 if (isset($_SESSION['username'])) {
     // Redirect based on role
     if ($_SESSION['user_type'] === 'mahasiswa') {
-        header("Location: ../pelanggaran/pelanggaranpage.php");
-        exit();
+        app_redirect_page('page.pelanggaran');
     } else if ($_SESSION['user_type'] === 'dosen') {
-        header("Location: ../pelanggaran/pelanggaran_dosen.php");
-        exit();
+        app_redirect_page('page.pelanggaran_dosen');
     }
 }
 
@@ -28,7 +26,7 @@ if (isset($_SESSION['username'])) {
     app_seo_meta_tags([
         'title' => 'Login DiscipLink',
         'description' => 'Login DiscipLink untuk mahasiswa, dosen, dan admin dalam mengakses sistem tata tertib kampus.',
-        'canonical_path' => '/views/auth/login.php',
+        'canonical_path' => '/',
         'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
         'robots' => 'noindex, nofollow',
     ]);
@@ -60,7 +58,7 @@ if (isset($_SESSION['username'])) {
         render_app_header([
             'title' => 'Login',
             'showLogin' => false,
-            'loginHref' => '../auth/login.php',
+            'loginHref' => app_page_url('page.login'),
             'roleLabel' => null,
         ]);
         ?>
@@ -76,7 +74,7 @@ if (isset($_SESSION['username'])) {
             </section>
 
             <section class="login-panel">
-                <form class="login-form" method="POST" action="../../Request/Handler_Login.php">
+                <form class="login-form" method="POST" action="<?= htmlspecialchars(app_action_url('action.login'), ENT_QUOTES, 'UTF-8') ?>">
                     <h3>Selamat Datang</h3>
                     <p class="login-subtitle">Masuk ke akun DiscipLink kamu</p>
                     <input type="hidden" id="user-type" name="user_type" value="nim">

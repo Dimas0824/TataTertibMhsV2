@@ -55,6 +55,13 @@ if (!function_exists('app_base_url')) {
 if (!function_exists('app_url')) {
     function app_url(string $relativePath = ''): string
     {
+        if (function_exists('app_legacy_path_to_public_url')) {
+            $mapped = app_legacy_path_to_public_url($relativePath);
+            if (is_string($mapped) && $mapped !== '') {
+                return $mapped;
+            }
+        }
+
         $relativePath = ltrim(str_replace('\\', '/', $relativePath), '/');
         $base = app_base_url();
 
@@ -73,6 +80,14 @@ if (!function_exists('app_url')) {
 if (!function_exists('app_redirect')) {
     function app_redirect(string $relativePath, int $statusCode = 302): void
     {
+        if (function_exists('app_legacy_path_to_public_url')) {
+            $mapped = app_legacy_path_to_public_url($relativePath);
+            if (is_string($mapped) && $mapped !== '') {
+                header('Location: ' . $mapped, true, $statusCode);
+                exit();
+            }
+        }
+
         header('Location: ' . app_url($relativePath), true, $statusCode);
         exit();
     }

@@ -8,15 +8,12 @@ require_once dirname(__DIR__) . '/partials/app-shell.php';
 if (isset($_SESSION['username'])) {
     // Redirect based on role
     if ($_SESSION['user_type'] === 'mahasiswa') {
-        header("Location: ../pelanggaran/pelanggaranpage.php");
-        exit();
+        app_redirect_page('page.pelanggaran');
     } elseif ($_SESSION['user_type'] === 'dosen') {
-        header("Location: ../pelanggaran/pelanggaran_dosen.php");
-        exit();
+        app_redirect_page('page.pelanggaran_dosen');
     }
 } else {
-    header("Location: ../auth/login.php");
-    exit();
+    app_redirect_page('page.login');
 }
 
 if (isset($_GET['logout'])) {
@@ -48,7 +45,7 @@ $newsData = $newsController->AdminNews(id: $id_admin);
     app_seo_meta_tags([
         'title' => 'Manajemen News Admin | DiscipLink',
         'description' => 'Panel admin untuk mengelola berita kedisiplinan kampus pada sistem DiscipLink.',
-        'canonical_path' => '/views/admin/news-admin.php',
+        'canonical_path' => '/',
         'image' => 'img/GRAHA-POLINEMA1-slider-01.webp',
         'robots' => 'noindex, nofollow',
     ]);
@@ -78,7 +75,7 @@ $newsData = $newsController->AdminNews(id: $id_admin);
         render_app_header([
             'title' => 'News Admin',
             'showLogin' => false,
-            'loginHref' => '../auth/login.php',
+            'loginHref' => app_page_url('page.login'),
             'roleLabel' => 'Admin',
         ]);
         ?>
@@ -96,7 +93,7 @@ $newsData = $newsController->AdminNews(id: $id_admin);
             </div>
 
             <div class="admin-news-toolbar">
-                <a href="tambah-berita.php" class="add-button" id="addButton">+ Tambah Berita</a>
+                <a href="<?= htmlspecialchars(app_page_url('page.admin_news_tambah'), ENT_QUOTES, 'UTF-8') ?>" class="add-button" id="addButton">+ Tambah Berita</a>
             </div>
 
             <section class="admin-table-card">
@@ -127,12 +124,12 @@ $newsData = $newsController->AdminNews(id: $id_admin);
                                         <td class="news-content-cell"><?= nl2br(htmlspecialchars($news['konten'])) ?></td>
                                         <td><?= htmlspecialchars($penulis_nama) ?></td>
                                         <td class="button-cell">
-                                            <a href="edit-berita.php?id=<?= $news['id_news'] ?>" class="edit-button"
+                                            <a href="<?= htmlspecialchars(app_page_url('page.admin_news_edit', ['id_news' => (int) $news['id_news']]), ENT_QUOTES, 'UTF-8') ?>" class="edit-button"
                                                 aria-label="Edit berita <?= htmlspecialchars($news['judul']) ?>">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
-                                            <form action="../../Request/Handler_News.php" method="post">
-                                                <input type="hidden" name="news_id" value="<?= $news['id_news'] ?>">
+                                            <form action="<?= htmlspecialchars(app_action_url('action.news'), ENT_QUOTES, 'UTF-8') ?>" method="post">
+                                                <input type="hidden" name="news_id" value="<?= htmlspecialchars(app_id_token('news', (int) $news['id_news']), ENT_QUOTES, 'UTF-8') ?>">
                                                 <button class="delete" id="delete" name="delete"
                                                     onclick="return confirm('Apakah anda yakin ingin menghapus?');"
                                                     aria-label="Hapus berita <?= htmlspecialchars($news['judul']) ?>"><i
@@ -151,53 +148,6 @@ $newsData = $newsController->AdminNews(id: $id_admin);
                 </div>
             </section>
         </section>
-
-        <!-- Modal Edit Berita -->
-        <!-- <div id="editBeritaModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Edit Berita</h2>
-        <form id="editBeritaForm" method="POST" action="../../Request/Handler_News.php">
-            <input type="hidden" id="editNewsId" name="news_id" required>
-            
-            <label for="editPenulis">Penulis:</label>
-            <input type="text" id="editPenulis" name="penulis" value="<?= htmlspecialchars($penulis_nama) ?>" required readonly>
-            
-            <label for="editJudul">Judul:</label>
-            <input type="text" id="editJudul" name="judul" required>
-            
-            <label for="editKonten">Konten:</label>
-            <textarea id="editKonten" name="konten" rows="4" required></textarea>
-            
-            <label for="editGambar">Unggah Gambar:</label>
-            <input type="file" id="editGambar" name="gambar" accept="image/*">
-            <button type="submit" class="save-button">Simpan</button>
-        </form>
-    </div>
-</div> -->
-
-        <!-- Modal Tambah Berita -->
-        <!-- <div id="insertBeritaModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Tambah Berita</h2>
-        <form id="insertBeritaForm" method="POST" action="../../Request/Handler_News.php" enctype="multipart/form-data">
-            <label for="insertPenulis">Penulis:</label>
-            <input type="text" id="insertPenulis" name="penulis" value="<?= htmlspecialchars($penulis_nama) ?>" required readonly>
-            
-            <label for="insertJudul">Judul:</label>
-            <input type="text" id="insertJudul" name="judul" required>
-            
-            <label for="insertKonten">Konten:</label>
-            <textarea id="insertKonten" name="konten" rows="4" required></textarea>
-
-            <label for="insertGambar">Unggah Gambar:</label>
-            <input type="file" id="insertGambar" name="gambar" accept="image/*">
-
-            <button type="submit" class="save-button" name="store">Simpan</button>
-        </form>
-    </div>
-</div> -->
 
         <!-- javascript -->
         <script defer

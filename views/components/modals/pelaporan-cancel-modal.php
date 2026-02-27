@@ -8,7 +8,7 @@ if (!function_exists('render_pelaporan_cancel_modal_component')) {
         $context = (string) ($config['context'] ?? 'views');
         $context = in_array($context, ['root', 'views', 'nested'], true) ? $context : 'views';
         $assetPrefix = $context === 'root' ? '' : ($context === 'nested' ? '../../' : '../');
-        $redirectHref = (string) ($config['redirectHref'] ?? 'pelanggaran_dosen.php');
+        $redirectHref = (string) ($config['redirectHref'] ?? app_page_url('page.pelanggaran_dosen'));
 
         ?>
         <link rel="stylesheet" href="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>css/pelaporan-cancel-modal.css">
