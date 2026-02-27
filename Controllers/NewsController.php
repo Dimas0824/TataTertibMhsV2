@@ -201,12 +201,32 @@ class NewsController
             return '';
         }
 
-        $allowedTags = '<p><br><strong><b><em><i><u><ul><ol><li><h3><blockquote>';
+        $allowedTags = '<div><p><br><strong><b><em><i><u><ul><ol><li><h3><blockquote>';
         $clean = strip_tags($html, $allowedTags);
 
         $clean = (string) preg_replace('/<\/?(h1|h2|h4|h5|h6)>/i', '', $clean);
         $clean = (string) preg_replace('/\s+on[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $clean);
         $clean = (string) preg_replace('/\sstyle\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $clean);
+        $clean = (string) preg_replace_callback('/\sclass\s*=\s*("([^"]*)"|\'([^\']*)\')/i', static function (array $matches): string {
+            $rawClasses = trim((string) (($matches[2] ?? '') !== '' ? $matches[2] : ($matches[3] ?? '')));
+            if ($rawClasses === '') {
+                return '';
+            }
+
+            $allowed = ['news-font-small', 'news-font-normal', 'news-font-large'];
+            $selected = [];
+            foreach (preg_split('/\s+/', $rawClasses) ?: [] as $className) {
+                if (in_array($className, $allowed, true)) {
+                    $selected[] = $className;
+                }
+            }
+
+            if (empty($selected)) {
+                return '';
+            }
+
+            return ' class="' . implode(' ', array_unique($selected)) . '"';
+        }, $clean);
         $clean = (string) preg_replace('/<(\/?)b>/i', '<$1strong>', $clean);
         $clean = (string) preg_replace('/<(\/?)i>/i', '<$1em>', $clean);
 

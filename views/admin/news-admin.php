@@ -35,6 +35,17 @@ $penulis_nama = $id_admin ? $userController->getAdminName($id_admin) : 'Admin';
 // Ambil berita terkait admin
 $newsController = new NewsController();
 $newsData = $newsController->AdminNews(id: $id_admin);
+
+$newsExcerpt = static function (string $html, int $limit = 210): string {
+    $plain = trim((string) preg_replace('/\s+/u', ' ', strip_tags($html)));
+    if ($plain === '') {
+        return '-';
+    }
+
+    $slice = function_exists('mb_substr') ? mb_substr($plain, 0, $limit) : substr($plain, 0, $limit);
+    $length = function_exists('mb_strlen') ? mb_strlen($plain) : strlen($plain);
+    return $length > $limit ? rtrim($slice) . '...' : $slice;
+};
 ?>
 
 <!DOCTYPE html>
@@ -125,7 +136,8 @@ $newsData = $newsController->AdminNews(id: $id_admin);
                                                 <span class="muted-text">Tidak ada gambar</span>
                                             <?php endif; ?>
                                         </td>
-                                        <td class="news-content-cell"><?= nl2br(htmlspecialchars($news['konten'])) ?></td>
+                                        <td class="news-content-cell">
+                                            <?= htmlspecialchars($newsExcerpt((string) ($news['konten'] ?? ''))) ?></td>
                                         <td><?= htmlspecialchars($penulis_nama) ?></td>
                                         <td class="button-cell">
                                             <a href="<?= htmlspecialchars(app_page_url('page.admin_news_edit', ['id_news' => (int) $news['id_news']]), ENT_QUOTES, 'UTF-8') ?>"

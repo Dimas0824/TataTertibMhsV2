@@ -61,10 +61,30 @@ $readMinutes = max(1, (int) ceil($wordCount / 200));
 
 $rawContent = (string) ($news['konten'] ?? '');
 $containsHtml = $rawContent !== strip_tags($rawContent);
-$allowedContentTags = '<p><br><strong><em><ul><ol><li><h3><blockquote>';
+$allowedContentTags = '<div><p><br><strong><em><ul><ol><li><h3><blockquote>';
 $safeHtmlContent = strip_tags($rawContent, $allowedContentTags);
 $safeHtmlContent = (string) preg_replace('/\s+on[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $safeHtmlContent);
 $safeHtmlContent = (string) preg_replace('/\sstyle\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $safeHtmlContent);
+$safeHtmlContent = (string) preg_replace_callback('/\sclass\s*=\s*("([^"]*)"|\'([^\']*)\')/i', static function (array $matches): string {
+    $rawClasses = trim((string) (($matches[2] ?? '') !== '' ? $matches[2] : ($matches[3] ?? '')));
+    if ($rawClasses === '') {
+        return '';
+    }
+
+    $allowed = ['news-font-small', 'news-font-normal', 'news-font-large'];
+    $selected = [];
+    foreach (preg_split('/\s+/', $rawClasses) ?: [] as $className) {
+        if (in_array($className, $allowed, true)) {
+            $selected[] = $className;
+        }
+    }
+
+    if (empty($selected)) {
+        return '';
+    }
+
+    return ' class="' . implode(' ', array_unique($selected)) . '"';
+}, $safeHtmlContent);
 $formattedContent = $containsHtml
     ? $safeHtmlContent
     : nl2br(htmlspecialchars($rawContent, ENT_QUOTES, 'UTF-8'));

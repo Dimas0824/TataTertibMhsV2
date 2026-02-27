@@ -119,6 +119,23 @@
     background: #f8fafc;
 }
 
+.news-rich-size-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #475569;
+}
+
+.news-rich-size {
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #334155;
+    min-height: 32px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 4px 8px;
+}
+
 .news-rich-btn {
     display: inline-flex;
     align-items: center;
@@ -151,6 +168,18 @@
     line-height: 1.7;
     color: #0f172a;
     font-size: 0.95rem;
+}
+
+.news-rich-surface.news-font-small {
+    font-size: 0.88rem;
+}
+
+.news-rich-surface.news-font-normal {
+    font-size: 0.95rem;
+}
+
+.news-rich-surface.news-font-large {
+    font-size: 1.04rem;
 }
 
 .news-rich-surface:focus {

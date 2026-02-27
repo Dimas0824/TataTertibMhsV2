@@ -111,6 +111,13 @@ $newsData = $newsController->AdminNews($id_admin);
                     <label for="insertKonten">Konten:</label>
                     <div class="news-rich-editor" data-rich-editor-wrapper>
                         <div class="news-rich-toolbar" role="toolbar" aria-label="Toolbar format konten berita">
+                            <label class="news-rich-size-label" for="insertKontenFontSize">Ukuran</label>
+                            <select id="insertKontenFontSize" class="news-rich-size" data-editor-font-size
+                                aria-label="Ukuran font konten">
+                                <option value="small">Kecil</option>
+                                <option value="normal" selected>Normal</option>
+                                <option value="large">Besar</option>
+                            </select>
                             <button type="button" class="news-rich-btn" data-editor-command="formatBlock"
                                 data-editor-value="P" aria-label="Paragraf">Paragraf</button>
                             <button type="button" class="news-rich-btn" data-editor-command="formatBlock"
