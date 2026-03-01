@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
+require_once dirname(__DIR__, 2) . '/controllers/UserController.php';
 require_once dirname(__DIR__) . '/partials/app-shell.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }

@@ -3,8 +3,8 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 require_once dirname(__DIR__, 2) . '/config.php';
-require_once dirname(__DIR__, 2) . '/Controllers/NewsController.php';
-require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
+require_once dirname(__DIR__, 2) . '/controllers/NewsController.php';
+require_once dirname(__DIR__, 2) . '/controllers/UserController.php';
 require_once dirname(__DIR__) . '/partials/app-shell.php';
 require_once dirname(__DIR__) . '/components/modals/admin-confirm-modal.php';
 require_once dirname(__DIR__, 2) . '/helpers/flash_modal.php';

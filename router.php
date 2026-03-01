@@ -73,7 +73,7 @@ register_shutdown_function(static function () use ($renderPageError, $requestPat
     $renderPageError(500);
 });
 
-if (preg_match('#^/(views|Request)(/|$)#', $requestPath) === 1) {
+if (preg_match('#^/(views|requests)(/|$)#', $requestPath) === 1) {
     $renderPageError(403);
     return true;
 }

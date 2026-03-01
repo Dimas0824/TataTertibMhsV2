@@ -54,8 +54,10 @@ render_app_sidebar([
             <h2>Tata Tertib Mahasiswa</h2>
             <p>Satu pusat informasi untuk aturan, pelanggaran, dan sanksi di lingkungan Politeknik Negeri Malang.</p>
             <div class="hero-actions">
-                <a href="<?= htmlspecialchars(app_page_url('page.tatib'), ENT_QUOTES, 'UTF-8') ?>" class="hero-btn hero-btn-primary">Lihat Tata Tertib</a>
-                <a href="<?= htmlspecialchars(app_page_url('page.pelanggaran'), ENT_QUOTES, 'UTF-8') ?>" class="hero-btn hero-btn-secondary">Lihat
+                <a href="<?= htmlspecialchars(app_page_url('page.tatib'), ENT_QUOTES, 'UTF-8') ?>"
+                    class="hero-btn hero-btn-primary">Lihat Tata Tertib</a>
+                <a href="<?= htmlspecialchars(app_page_url('page.pelanggaran'), ENT_QUOTES, 'UTF-8') ?>"
+                    class="hero-btn hero-btn-secondary">Lihat
                     Pelanggaran</a>
             </div>
         </div>
@@ -83,8 +85,8 @@ render_app_sidebar([
     <section class="dashboard-container reveal-up" data-delay="120">
         <div class="about-logo-wrap">
             <div class="about-brand-card">
-                <img class="logo-disciplink" src="img/ga logo aja.png" alt="Logo DiscipLink" width="250" height="250"
-                    loading="lazy" decoding="async" srcset="img/ga logo aja.png 250w"
+                <img class="logo-disciplink" src="img/logo-full.png" alt="Logo DiscipLink" width="250" height="250"
+                    loading="lazy" decoding="async" srcset="img/logo-full.png 250w"
                     sizes="(max-width: 992px) 220px, 250px">
             </div>
         </div>
@@ -139,13 +141,16 @@ render_app_sidebar([
                 <h3>Akses Cepat</h3>
                 <p>Masuk ke halaman penting DiscipLink dalam satu klik.</p>
                 <div class="info-links" aria-label="Tautan cepat DiscipLink">
-                    <a href="<?= htmlspecialchars(app_page_url('page.tatib'), ENT_QUOTES, 'UTF-8') ?>" title="Daftar tata tertib mahasiswa Polinema">Lihat daftar tata
+                    <a href="<?= htmlspecialchars(app_page_url('page.tatib'), ENT_QUOTES, 'UTF-8') ?>"
+                        title="Daftar tata tertib mahasiswa Polinema">Lihat daftar tata
                         tertib</a>
                     <a href="<?= htmlspecialchars(app_page_url('page.pelanggaran'), ENT_QUOTES, 'UTF-8') ?>"
                         title="Halaman pelanggaran mahasiswa di DiscipLink">Cek data pelanggaran</a>
-                    <a href="<?= htmlspecialchars(app_page_url('page.notifikasi'), ENT_QUOTES, 'UTF-8') ?>" title="Notifikasi pelanggaran DiscipLink">Lihat
+                    <a href="<?= htmlspecialchars(app_page_url('page.notifikasi'), ENT_QUOTES, 'UTF-8') ?>"
+                        title="Notifikasi pelanggaran DiscipLink">Lihat
                         notifikasi</a>
-                    <a href="<?= htmlspecialchars(app_page_url('page.login'), ENT_QUOTES, 'UTF-8') ?>" title="Login DiscipLink untuk mahasiswa dan dosen">Masuk ke akun
+                    <a href="<?= htmlspecialchars(app_page_url('page.login'), ENT_QUOTES, 'UTF-8') ?>"
+                        title="Login DiscipLink untuk mahasiswa dan dosen">Masuk ke akun
                         DiscipLink</a>
                     <a href="https://www.polinema.ac.id" target="_blank" rel="noopener noreferrer"
                         title="Website resmi Politeknik Negeri Malang">Website resmi Polinema</a>

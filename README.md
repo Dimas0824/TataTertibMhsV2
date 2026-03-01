@@ -81,6 +81,30 @@ php artisan serve --host=127.0.0.1 --port=8000
 | Dosen | `1234567890` | `password123` |
 | Admin | `ADMIN001` | `admin123` |
 
+## Struktur Folder (Ringkas)
+
+```text
+.
+├── controllers/              # Orkestrasi use-case
+├── models/                   # Query dan akses data
+├── requests/                  # Handler action HTTP
+├── views/                    # Template UI (public/admin/auth/components)
+├── helpers/                  # Utilitas route/path/token/SEO/error
+├── database/
+│   ├── migrations/           # SQL migrasi aktif
+│   ├── seeders/              # SQL seeder aktif
+│   └── legacy/               # Arsip SQL lama (non-active)
+├── css/ js/ img/             # Aset frontend
+├── document/                 # Dokumen upload runtime
+├── storage/                  # Penyimpanan private runtime
+└── docs/structure/           # Dokumen struktur proyek + file index
+```
+
+Detail lengkap:
+
+- [`docs/structure/PROJECT-STRUCTURE.md`](./docs/structure/PROJECT-STRUCTURE.md)
+- [`docs/structure/FILE-INDEX.md`](./docs/structure/FILE-INDEX.md)
+
 ## App Gallery
 
 ### Public / Umum
@@ -117,8 +141,8 @@ php artisan serve --host=127.0.0.1 --port=8000
 
 | Aset | Preview | Keterangan |
 | --- | --- | --- |
-| Logo penuh DiscipLink + slogan | ![Logo Penuh DiscipLink](img/ga%20logo%20aja.png) | Logo utama DiscipLink (versi lengkap). |
-| Logo icon DiscipLink | ![Logo Icon DiscipLink](img/logo%20aja.png) | Ikon turunan dari logo DiscipLink. |
+| Logo penuh DiscipLink + slogan | ![Logo Penuh DiscipLink](img/logo-full.png) | Logo utama DiscipLink (versi lengkap). |
+| Logo icon DiscipLink | ![Logo Icon DiscipLink](img/logo-icon.png) | Ikon turunan dari logo DiscipLink. |
 | Hero background | ![Hero Background](img/GRAHA-POLINEMA1-slider-01.webp) | Latar hero halaman public (gedung Graha Polinema). |
 | App icon set (Polinema) | ![Polinema Icon](img/apple-touch-icon.png) | `apple-touch-icon.png`, `favicon.ico`, `favicon.svg`, `favicon-96x96.png`, `web-app-manifest-192x192.png`, dan `web-app-manifest-512x512.png` menggunakan logo Polinema. |
 
@@ -129,7 +153,9 @@ Untuk pembaca non-teknis, README ini sudah cukup jelas.
 Jika Anda developer dan butuh detail teknis, buka:
 
 - Arsitektur teknis: [`README-ARCHITECTURE.md`](./README-ARCHITECTURE.md)
-- Database tooling: [`Database/README.md`](./Database/README.md)
+- Database tooling: [`database/README.md`](./database/README.md)
+- Struktur folder detail: [`docs/structure/PROJECT-STRUCTURE.md`](./docs/structure/PROJECT-STRUCTURE.md)
+- Indeks file sederhana: [`docs/structure/FILE-INDEX.md`](./docs/structure/FILE-INDEX.md)
 - Referensi UI/UX: <https://www.figma.com/design/yRxgSGu5uvuoKQznRxPCNg/UI%2FUX-Sistem-Tatib?node-id=10-572&node-type=frame&t=FUBlBYXBfDiK1yST-0>
 
 ## Sumber Proyek

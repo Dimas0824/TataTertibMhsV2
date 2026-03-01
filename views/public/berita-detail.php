@@ -4,7 +4,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 
 require_once dirname(__DIR__, 2) . '/config.php';
-require_once dirname(__DIR__, 2) . '/Controllers/NewsController.php';
+require_once dirname(__DIR__, 2) . '/controllers/NewsController.php';
 require_once dirname(__DIR__) . '/partials/app-shell.php';
 
 $rawSlug = (string) app_route_data('slug', '');

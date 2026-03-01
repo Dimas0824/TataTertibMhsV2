@@ -295,7 +295,7 @@ if (!function_exists('app_seo_json_ld_tags')) {
         $canonicalUrl = app_seo_canonical_url($canonicalPath);
         $origin = rtrim(app_seo_canonical_origin(), '/');
 
-        $organizationLogo = app_seo_asset_url((string) ($config['organization_logo'] ?? 'img/logo aja.png'));
+        $organizationLogo = app_seo_asset_url((string) ($config['organization_logo'] ?? 'img/logo-icon.png'));
         $organizationName = (string) ($config['organization_name'] ?? 'DiscipLink Polinema');
         $searchTarget = $origin . '/index.php?q={search_term_string}';
 

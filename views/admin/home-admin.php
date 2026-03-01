@@ -3,8 +3,8 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
-require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
-require_once dirname(__DIR__, 2) . '/Controllers/NewsController.php';
+require_once dirname(__DIR__, 2) . '/controllers/UserController.php';
+require_once dirname(__DIR__, 2) . '/controllers/NewsController.php';
 require_once dirname(__DIR__) . '/partials/app-shell.php';
 
 if (isset($_SESSION['username'])) {
@@ -110,7 +110,7 @@ $newsData = $newsController->ReadNews();
         <section class="dashboard-container">
             <div class="about-logo-wrap">
                 <div class="about-brand-card">
-                    <img class="logo-disciplink" src="../../img/ga logo aja.png" width="250" height="250" loading="lazy"
+                    <img class="logo-disciplink" src="../../img/logo-full.png" width="250" height="250" loading="lazy"
                         decoding="async" alt="Logo DiscipLink">
                     <p>Panel admin DiscipLink dirancang untuk mempercepat pengelolaan konten dan menjaga akurasi
                         informasi kedisiplinan.</p>

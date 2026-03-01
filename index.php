@@ -2,9 +2,9 @@
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
-// echo realpath(__DIR__ . '/Controllers/UserController.php');
-require_once __DIR__ . '/Controllers/UserController.php';
-require_once __DIR__ . '/Controllers/NewsController.php';
+// echo realpath(__DIR__ . '/controllers/UserController.php');
+require_once __DIR__ . '/controllers/UserController.php';
+require_once __DIR__ . '/controllers/NewsController.php';
 require_once __DIR__ . '/helpers/seo_helper.php';
 
 app_seo_enforce_canonical_host();

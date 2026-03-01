@@ -22,9 +22,9 @@ Dokumen ringkas untuk pengguna umum tersedia di [`README.md`](./README.md).
 
 ```text
 .
-├── Controllers/          # Orkestrasi business flow
-├── Models/               # Query database dan akses data
-├── Request/              # HTTP action entrypoint
+├── controllers/          # Orkestrasi business flow
+├── models/               # Query database dan akses data
+├── requests/              # HTTP action entrypoint
 ├── views/                # UI layer
 │   ├── admin/
 │   ├── auth/
@@ -33,12 +33,20 @@ Dokumen ringkas untuk pengguna umum tersedia di [`README.md`](./README.md).
 │   ├── tatib/
 │   └── partials/
 ├── helpers/              # Helper routing, token, SEO, path, flash
-├── Database/             # Migration, seeder, CLI command kernel
+├── database/             # Migration, seeder, CLI command kernel
+│   ├── migrations/       # SQL migrasi aktif
+│   ├── seeders/          # SQL seed aktif
+│   └── legacy/           # Arsip SQL dump legacy (non-active)
 ├── js/
 ├── css/
 ├── document/             # Dokumen upload runtime
 └── img/                  # Aset visual statis
 ```
+
+Dokumen struktur rinci:
+
+- `docs/structure/PROJECT-STRUCTURE.md`
+- `docs/structure/FILE-INDEX.md`
 
 ## Pola Arsitektur
 
@@ -46,7 +54,7 @@ DiscipLink V2 menggunakan pola **MVC + Request Handler + Central Router**:
 
 1. `router.php` menerima semua request.
 2. Request dipetakan ke page route atau action route.
-3. Untuk action route, file di `Request/` melakukan validasi awal.
+3. Untuk action route, file di `requests/` melakukan validasi awal.
 4. `Controller` mengeksekusi logic aplikasi.
 5. `Model` melakukan query melalui PDO.
 6. Response kembali sebagai redirect HTML atau JSON.
@@ -134,19 +142,19 @@ Implementasi utama:
 
 ### 4) Access Guard
 
-- Akses langsung ke `/views/*` dan `/Request/*` diblok oleh router
+- Akses langsung ke `/views/*` dan `/requests/*` diblok oleh router
 - Route yang tidak valid mengembalikan error page/JSON sesuai konteks
 
 ### 5) File Security
 
-Upload (`Request/Handler_uploads.php`):
+Upload (`requests/handler-upload.php`):
 
 - validasi ukuran (maks 2 MB),
 - validasi MIME,
 - validasi ekstensi whitelist,
 - penamaan file disanitasi.
 
-Download (`Request/Handler_Download.php`):
+Download (`requests/handler-download.php`):
 
 - validasi ekstensi whitelist,
 - sanitasi nama file (`basename`),
@@ -157,31 +165,31 @@ Download (`Request/Handler_Download.php`):
 
 ### Auth
 
-- Handler: `Request/Handler_Login.php`
-- Controller: `Controllers/UserController.php`
-- Model: `Models/Users.php`
+- Handler: `requests/handler-login.php`
+- Controller: `controllers/UserController.php`
+- Model: `models/Users.php`
 - Output: set session + redirect by role
 
 ### Pelanggaran & Pelaporan
 
-- Handler: `Request/Handler_Pelaporan.php`
-- Controller: `Controllers/PelanggaranController.php`
-- Model: `Models/Pelanggaran.php`
+- Handler: `requests/handler-pelanggaran.php`
+- Controller: `controllers/PelanggaranController.php`
+- Model: `models/Pelanggaran.php`
 - Catatan:
   - lookup mahasiswa by NIM (`action=lookup_mahasiswa`)
   - update status notifikasi read/all-read
 
 ### Tata Tertib
 
-- Handler: `Request/Handler_Tatib.php`
-- Controller: `Controllers/TatibController.php`
-- Model: `Models/Tatib.php`, `Models/Sanksi.php`
+- Handler: `requests/handler-tatib.php`
+- Controller: `controllers/TatibController.php`
+- Model: `models/Tatib.php`, `models/Sanksi.php`
 
 ### News
 
-- Handler: `Request/Handler_News.php`
-- Controller: `Controllers/NewsController.php`
-- Model: `Models/News.php`
+- Handler: `requests/handler-news.php`
+- Controller: `controllers/NewsController.php`
+- Model: `models/News.php`
 - Catatan:
   - slug builder + canonical redirect 301 pada detail berita,
   - sanitasi HTML whitelist saat create/update,
@@ -189,8 +197,8 @@ Download (`Request/Handler_Download.php`):
 
 ### Notifikasi
 
-- Handler: `Request/Handler_Notifikasi.php`
-- Controller: `Controllers/PelanggaranController.php`
+- Handler: `requests/handler-notifikasi.php`
+- Controller: `controllers/PelanggaranController.php`
 - Output: JSON untuk update status baca notifikasi
 
 ## UI Composition
@@ -229,7 +237,7 @@ Fitur:
 
 Command runner:
 
-- `artisan` -> `Database/cli/ConsoleKernel.php`
+- `artisan` -> `database/cli/ConsoleKernel.php`
 
 Command utama:
 
@@ -242,13 +250,14 @@ Command utama:
 
 Aturan migrasi/seed:
 
-- migration: `Database/migrations/*.sql`
-- seeder: `Database/seeders/*.sql`
+- migration: `database/migrations/*.sql`
+- seeder: `database/seeders/*.sql`
+- arsip SQL lama: `database/legacy/*.sql` (tidak dieksekusi otomatis)
 - file dieksekusi ter-track dan punya checksum drift detection
 
 Referensi lengkap:
 
-- [`Database/README.md`](./Database/README.md)
+- [`database/README.md`](./database/README.md)
 
 ## Area Lanjutan (Backlog Teknis)
 

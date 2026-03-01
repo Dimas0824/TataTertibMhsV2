@@ -2,9 +2,9 @@
 <?php
 if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
 
-require_once dirname(__DIR__, 2) . '/Controllers/TatibController.php';
-require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
-require_once dirname(__DIR__, 2) . '/Controllers/PelanggaranController.php'; // Include PelanggaranController
+require_once dirname(__DIR__, 2) . '/controllers/TatibController.php';
+require_once dirname(__DIR__, 2) . '/controllers/UserController.php';
+require_once dirname(__DIR__, 2) . '/controllers/PelanggaranController.php'; // Include PelanggaranController
 require_once dirname(__DIR__) . '/partials/app-shell.php';
 require_once dirname(__DIR__) . '/components/modals/pelaporan-cancel-modal.php';
 
@@ -301,7 +301,7 @@ if ($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
         ?>
     </div>
     <script defer
-        src="<?= htmlspecialchars(app_seo_script_src('js/script_pelaporan.js', '../..') . '?v=20260301-dpa', ENT_QUOTES, 'UTF-8') ?>"></script>
+        src="<?= htmlspecialchars(app_seo_script_src('js/script-pelaporan.js', '../..') . '?v=20260301-dpa', ENT_QUOTES, 'UTF-8') ?>"></script>
 </body>
 
 </html>
