@@ -24,10 +24,25 @@ if ($id <= 0) {
     app_redirect_page('page.pelanggaran_dosen');
 }
 
-$pelanggar = new PelanggaranController();
-$detailPelanggar = $pelanggar->getDetailPelanggar($id);
 // Ambil data user dari session
 $userData = $_SESSION['user_data'];
+$nidn = trim((string) ($userData['nidn'] ?? ''));
+
+$pelanggar = new PelanggaranController();
+$detailPelanggar = $pelanggar->getDetailPelanggar($id, $nidn);
+if (!$detailPelanggar) {
+    set_app_flash_modal('error', 'Data pelanggaran tidak ditemukan atau bukan milik Anda.');
+    app_redirect_page('page.pelanggaran_dosen');
+}
+
+$statusPelanggaran = strtolower(trim((string) ($detailPelanggar['status'] ?? '')));
+$statusTugas = strtolower(trim((string) ($detailPelanggar['status_tugas'] ?? '')));
+$laporanSelesai = in_array($statusPelanggaran, ['selesai', 'done'], true);
+$tugasSelesai = in_array($statusTugas, ['sudah dikumpulkan', 'selesai', 'done'], true);
+if ($laporanSelesai || $tugasSelesai) {
+    set_app_flash_modal('error', 'Data tidak dapat diedit karena tugas atau laporan sudah selesai.');
+    app_redirect_page('page.pelanggaran_dosen');
+}
 
 $tatibController = new TatibController();
 $tatibData = $tatibController->ReadTatib();

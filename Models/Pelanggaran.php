@@ -80,18 +80,27 @@ class Pelanggaran
         return $result;
     }
 
-    public function getUpdatePelanggar($id)
+    public function getUpdatePelanggar($id, ?string $nidn = null)
     {
         $query = "SELECT dp.*, m.nim, m.nama_lengkap, m.angkatan
               FROM DETAIL_PELANGGARAN dp
               JOIN MAHASISWA m ON dp.id_mahasiswa = m.id_mhs
               JOIN TATA_TERTIB tt ON dp.id_tata_tertib = tt.id_tata_tertib
+              JOIN DOSEN d ON dp.id_dosen = d.id_dosen
               JOIN SANKSI s ON dp.id_sanksi = s.id_sanksi
               WHERE dp.id_detail = ?";
 
+        $params = [(int) $id];
+        $nidn = trim((string) $nidn);
+        if ($nidn !== '') {
+            $query .= " AND d.nidn = ?";
+            $params[] = $nidn;
+        }
+
+        $query .= " LIMIT 1";
+
         $stmt = $this->connect->prepare($query);
-        $stmt->bindParam(1, $id, PDO::PARAM_INT);
-        $stmt->execute();
+        $stmt->execute($params);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -236,6 +245,21 @@ class Pelanggaran
         $statusTugas = $this->normalizeStatusTugas($status_tugas);
 
         try {
+            $stmtCurrent = $this->connect->prepare("SELECT status, status_tugas FROM DETAIL_PELANGGARAN WHERE id_detail = ? LIMIT 1");
+            $stmtCurrent->execute([$idDetail]);
+            $currentDetail = $stmtCurrent->fetch(PDO::FETCH_ASSOC);
+            if (!$currentDetail) {
+                throw new RuntimeException('Data pelanggaran tidak ditemukan.');
+            }
+
+            $statusCurrent = strtolower(trim((string) ($currentDetail['status'] ?? '')));
+            $statusTugasCurrent = strtolower(trim((string) ($currentDetail['status_tugas'] ?? '')));
+            $isLaporanSelesai = in_array($statusCurrent, ['selesai', 'done'], true);
+            $isTugasSelesai = in_array($statusTugasCurrent, ['sudah dikumpulkan', 'selesai', 'done'], true);
+            if ($isLaporanSelesai || $isTugasSelesai) {
+                throw new RuntimeException('Edit tidak diizinkan karena tugas atau laporan sudah selesai.');
+            }
+
             $stmtMhs = $this->connect->prepare("SELECT id_mhs FROM MAHASISWA WHERE nim = ? LIMIT 1");
             $stmtMhs->execute([$nim_mahasiswa]);
             $mahasiswa = $stmtMhs->fetch(PDO::FETCH_ASSOC);
@@ -394,6 +418,68 @@ class Pelanggaran
             return [
                 'success' => false,
                 'message' => 'Terjadi kesalahan saat konfirmasi laporan.',
+            ];
+        }
+    }
+
+    public function hapusDetailPelanggaranByDosen(string $nidn, int $idDetail): array
+    {
+        $nidn = trim($nidn);
+        if ($nidn === '' || $idDetail <= 0) {
+            return [
+                'success' => false,
+                'message' => 'Data penghapusan tidak valid.',
+            ];
+        }
+
+        try {
+            $this->connect->beginTransaction();
+
+            $stmt = $this->connect->prepare(
+                "SELECT dp.id_detail
+                 FROM DETAIL_PELANGGARAN dp
+                 JOIN DOSEN d ON dp.id_dosen = d.id_dosen
+                 WHERE dp.id_detail = ?
+                   AND d.nidn = ?
+                 LIMIT 1"
+            );
+            $stmt->execute([$idDetail, $nidn]);
+            $detail = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (!$detail) {
+                $this->connect->rollBack();
+                return [
+                    'success' => false,
+                    'message' => 'Laporan tidak ditemukan atau bukan milik Anda.',
+                ];
+            }
+
+            $stmtDeleteNotif = $this->connect->prepare(
+                "DELETE FROM NOTIFIKASI WHERE id_detail_pelanggaran = ?"
+            );
+            $stmtDeleteNotif->execute([$idDetail]);
+
+            $stmtDeleteDetail = $this->connect->prepare(
+                "DELETE FROM DETAIL_PELANGGARAN WHERE id_detail = ?"
+            );
+            $stmtDeleteDetail->execute([$idDetail]);
+            if ($stmtDeleteDetail->rowCount() <= 0) {
+                throw new RuntimeException('Laporan gagal dihapus.');
+            }
+
+            $this->connect->commit();
+            return [
+                'success' => true,
+                'message' => 'Laporan berhasil dihapus.',
+            ];
+        } catch (Throwable $e) {
+            if ($this->connect->inTransaction()) {
+                $this->connect->rollBack();
+            }
+
+            error_log('Error in hapusDetailPelanggaranByDosen: ' . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menghapus laporan.',
             ];
         }
     }

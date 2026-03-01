@@ -62,8 +62,17 @@ $buildLecturerRowState = static function (array $detail): array {
     $hasTugas = trim((string) ($detail['pengumpulan_tgsKhusus'] ?? '')) !== '';
     $dokumenLengkap = $hasSurat && (!$requiresTugas || $hasTugas);
     $statusLower = strtolower(trim((string) ($detail['status_pelanggaran'] ?? '')));
+    $statusTugasLower = strtolower(trim((string) ($detail['status_tugas'] ?? '')));
     $isSelesai = ($statusLower === 'selesai' || $statusLower === 'done');
+    $isTugasSelesai = in_array($statusTugasLower, ['sudah dikumpulkan', 'selesai', 'done'], true);
     $canConfirm = $dokumenLengkap && !$isSelesai;
+    $canEdit = !$isSelesai && !$isTugasSelesai;
+    $editLockNote = '';
+    if (!$canEdit) {
+        $editLockNote = $isSelesai
+            ? 'Edit dikunci karena laporan sudah selesai.'
+            : 'Edit dikunci karena tugas sudah diselesaikan.';
+    }
     $confirmNote = 'Dokumen sudah lengkap. Laporan bisa dikonfirmasi selesai.';
 
     if ($isSelesai) {
@@ -126,7 +135,10 @@ $buildLecturerRowState = static function (array $detail): array {
         'dokumenLengkap' => $dokumenLengkap,
         'statusLower' => $statusLower,
         'isSelesai' => $isSelesai,
+        'isTugasSelesai' => $isTugasSelesai,
         'canConfirm' => $canConfirm,
+        'canEdit' => $canEdit,
+        'editLockNote' => $editLockNote,
         'confirmNote' => $confirmNote,
         'statusClass' => $statusClass,
         'taskStatusLabel' => $taskStatusLabel,
@@ -257,12 +269,16 @@ $lecturerTableColumns = [
             ob_start();
             ?>
             <div class="action-stack">
-                <a class="edit-laporan"
-                    href="<?= $escapeHtml(app_page_url('page.edit_pelaporan', ['id_detail' => (int) ($detail['id_detail'] ?? 0)])) ?>"
-                    aria-label="Edit laporan">
-                    <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                    Edit
-                </a>
+                <?php if ($state['canEdit']): ?>
+                    <a class="edit-laporan"
+                        href="<?= $escapeHtml(app_page_url('page.edit_pelaporan', ['id_detail' => (int) ($detail['id_detail'] ?? 0)])) ?>"
+                        aria-label="Edit laporan">
+                        <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                        Edit
+                    </a>
+                <?php else: ?>
+                    <span class="muted-text">Edit dikunci</span>
+                <?php endif; ?>
                 <form method="POST" class="confirm-form"
                     action="<?= $escapeHtml($confirmSelesaiAction) ?>"
                     onsubmit="return confirm('Konfirmasi laporan ini sebagai selesai?');">
@@ -272,6 +288,9 @@ $lecturerTableColumns = [
                         <?= $escapeHtml($state['isSelesai'] ? 'Selesai' : 'Konfirmasi') ?>
                     </button>
                 </form>
+                <?php if (!$state['canEdit']): ?>
+                    <span class="action-note"><?= $escapeHtml((string) $state['editLockNote']) ?></span>
+                <?php endif; ?>
             </div>
             <?php
             return (string) ob_get_clean();
@@ -488,8 +507,17 @@ $lecturerTableConfig = [
                             $hasTugas = trim((string) ($detail['pengumpulan_tgsKhusus'] ?? '')) !== '';
                             $dokumenLengkap = $hasSurat && (!$requiresTugas || $hasTugas);
                             $statusLower = strtolower(trim((string) ($detail['status_pelanggaran'] ?? '')));
+                            $statusTugasLower = strtolower(trim((string) ($detail['status_tugas'] ?? '')));
                             $isSelesai = ($statusLower === 'selesai' || $statusLower === 'done');
+                            $isTugasSelesai = in_array($statusTugasLower, ['sudah dikumpulkan', 'selesai', 'done'], true);
                             $canConfirm = $dokumenLengkap && !$isSelesai;
+                            $canEdit = !$isSelesai && !$isTugasSelesai;
+                            $editLockNote = '';
+                            if (!$canEdit) {
+                                $editLockNote = $isSelesai
+                                    ? 'Edit dikunci karena laporan sudah selesai.'
+                                    : 'Edit dikunci karena tugas sudah diselesaikan.';
+                            }
                             $confirmNote = 'Dokumen sudah lengkap. Laporan bisa dikonfirmasi selesai.';
                             if ($isSelesai) {
                                 $confirmNote = 'Laporan sudah berstatus selesai.';
@@ -618,12 +646,16 @@ $lecturerTableConfig = [
                                             </dl>
 
                                             <div class="mobile-sheet-actions">
-                                                <a class="edit-laporan"
-                                                    href="<?= htmlspecialchars(app_page_url('page.edit_pelaporan', ['id_detail' => (int) $detail['id_detail']]), ENT_QUOTES, 'UTF-8') ?>"
-                                                    aria-label="Edit laporan">
-                                                    <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                                                    Edit Laporan
-                                                </a>
+                                                <?php if ($canEdit): ?>
+                                                    <a class="edit-laporan"
+                                                        href="<?= htmlspecialchars(app_page_url('page.edit_pelaporan', ['id_detail' => (int) $detail['id_detail']]), ENT_QUOTES, 'UTF-8') ?>"
+                                                        aria-label="Edit laporan">
+                                                        <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                                                        Edit Laporan
+                                                    </a>
+                                                <?php else: ?>
+                                                    <span class="muted-text">Edit dikunci</span>
+                                                <?php endif; ?>
                                                 <form method="POST" class="confirm-form"
                                                     action="<?= htmlspecialchars($confirmSelesaiAction, ENT_QUOTES, 'UTF-8') ?>"
                                                     onsubmit="return confirm('Konfirmasi laporan ini sebagai selesai?');">
@@ -633,6 +665,9 @@ $lecturerTableConfig = [
                                                         <?= htmlspecialchars($isSelesai ? 'Selesai' : 'Konfirmasi Selesai', ENT_QUOTES, 'UTF-8') ?>
                                                     </button>
                                                 </form>
+                                                <?php if (!$canEdit): ?>
+                                                    <span class="action-note"><?= htmlspecialchars($editLockNote, ENT_QUOTES, 'UTF-8') ?></span>
+                                                <?php endif; ?>
                                                 <span class="action-note"><?= htmlspecialchars($confirmNote, ENT_QUOTES, 'UTF-8') ?></span>
                                             </div>
                                         </div>

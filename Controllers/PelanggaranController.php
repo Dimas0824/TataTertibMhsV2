@@ -165,9 +165,9 @@ class PelanggaranController
         ];
     }
 
-    public function getDetailPelanggar($id)
+    public function getDetailPelanggar($id, ?string $nidn = null)
     {
-        return $this->pelanggaranModel->getUpdatePelanggar($id);
+        return $this->pelanggaranModel->getUpdatePelanggar($id, $nidn);
     }
 
     public function konfirmasiLaporanSelesai(string $nidn, int $idDetail): array
@@ -180,6 +180,18 @@ class PelanggaranController
         }
 
         return $this->pelanggaranModel->konfirmasiLaporanSelesaiByDosen($nidn, $idDetail);
+    }
+
+    public function hapusDetailPelanggaran(string $nidn, int $idDetail): array
+    {
+        if (trim($nidn) === '' || $idDetail <= 0) {
+            return [
+                'success' => false,
+                'message' => 'Data penghapusan tidak valid.',
+            ];
+        }
+
+        return $this->pelanggaranModel->hapusDetailPelanggaranByDosen($nidn, $idDetail);
     }
 
     public function getMahasiswaByNim($nim)

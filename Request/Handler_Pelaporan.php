@@ -30,7 +30,7 @@ if ($routeAction === 'lookup_mahasiswa') {
    }
 
    $nim = '';
-   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $rawInput = file_get_contents('php://input');
       $decodedInput = json_decode($rawInput ?? '', true);
       $input = is_array($decodedInput) ? $decodedInput : $_POST;
@@ -83,6 +83,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $routeAction === 'confirm_selesai')
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    try {
+      if (!isset($_SESSION['username'])) {
+         throw new RuntimeException('Unauthorized.');
+      }
+
+      if (($_SESSION['user_type'] ?? '') !== 'dosen') {
+         throw new RuntimeException('Hanya dosen yang dapat mengubah data pelanggaran.');
+      }
+
+      $nidn = trim((string) ($_SESSION['user_data']['nidn'] ?? ''));
+      if ($nidn === '') {
+         throw new RuntimeException('Data dosen tidak valid.');
+      }
+
       $isUpdate = isset($_POST['update']) || isset($_POST['id_detail']);
       $tatibId = app_id_resolve((string) ($_POST['jenisPelanggaran'] ?? ''), 'tatib');
       if ($tatibId === null) {
@@ -119,6 +132,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          if ($resolvedDetailId === null) {
             throw new RuntimeException('Token detail pelanggaran tidak valid.');
          }
+
+         $existingDetail = $pelanggaranController->getDetailPelanggar((int) $resolvedDetailId, $nidn);
+         if (!$existingDetail) {
+            throw new RuntimeException('Data pelanggaran tidak ditemukan atau bukan milik Anda.');
+         }
+
+         $existingStatus = strtolower(trim((string) ($existingDetail['status'] ?? '')));
+         $existingStatusTugas = strtolower(trim((string) ($existingDetail['status_tugas'] ?? '')));
+         $laporanSelesai = in_array($existingStatus, ['selesai', 'done'], true);
+         $tugasSelesai = in_array($existingStatusTugas, ['sudah dikumpulkan', 'selesai', 'done'], true);
+         if ($laporanSelesai || $tugasSelesai) {
+            throw new RuntimeException('Data tidak dapat diedit karena tugas atau laporan sudah selesai.');
+         }
       }
 
       if ($isUpdate) {
@@ -134,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          );
       } else {
          $result = $pelanggaranController->simpanDetailPelanggaran(
-            $_SESSION['user_data']['nidn'] ?? null,
+            $nidn,
             $tatibId,
             $_POST['nim'] ?? null,
             $resolvedSanksi,
