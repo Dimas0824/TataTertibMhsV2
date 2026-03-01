@@ -99,21 +99,19 @@ $newsAdminColumns = [
             $judul = (string) ($news['judul'] ?? '');
             ob_start();
             ?>
-            <a href="<?= $escapeHtml(app_page_url('page.admin_news_edit', ['id_news' => (int) ($news['id_news'] ?? 0)])) ?>"
-                class="edit-button"
-                aria-label="Edit berita <?= $escapeHtml($judul) ?>">
-                <i class="fa-solid fa-pen-to-square"></i>
-            </a>
-            <form action="<?= $escapeHtml(app_action_url('action.news')) ?>" method="post">
-                <input type="hidden" name="news_id"
-                    value="<?= $escapeHtml(app_id_token('news', (int) ($news['id_news'] ?? 0))) ?>">
-                <button type="button" class="delete" id="delete" name="delete"
-                    data-admin-confirm-trigger data-admin-confirm-title="Hapus berita?"
-                    data-admin-confirm-message="Berita yang dihapus tidak dapat dipulihkan. Yakin ingin melanjutkan?"
-                    data-admin-confirm-label="Ya, Hapus" data-admin-confirm-action="submit-form"
-                    aria-label="Hapus berita <?= $escapeHtml($judul) ?>"><i class="fa-solid fa-trash"></i></button>
-            </form>
-            <?php
+    <a href="<?= $escapeHtml(app_page_url('page.admin_news_edit', ['id_news' => (int) ($news['id_news'] ?? 0)])) ?>"
+        class="edit-button" aria-label="Edit berita <?= $escapeHtml($judul) ?>">
+        <i class="fa-solid fa-pen-to-square"></i>
+    </a>
+    <form action="<?= $escapeHtml(app_action_url('action.news')) ?>" method="post">
+        <input type="hidden" name="news_id" value="<?= $escapeHtml(app_id_token('news', (int) ($news['id_news'] ?? 0))) ?>">
+        <button type="button" class="delete" id="delete" name="delete" data-admin-confirm-trigger
+            data-admin-confirm-title="Hapus berita?"
+            data-admin-confirm-message="Berita yang dihapus tidak dapat dipulihkan. Yakin ingin melanjutkan?"
+            data-admin-confirm-label="Ya, Hapus" data-admin-confirm-action="submit-form"
+            aria-label="Hapus berita <?= $escapeHtml($judul) ?>"><i class="fa-solid fa-trash"></i></button>
+    </form>
+    <?php
             return (string) ob_get_clean();
         },
     ],
@@ -236,7 +234,7 @@ $newsAdminTableConfig = [
         <script defer
             src="<?= htmlspecialchars(app_seo_script_src('js/universal-table-filter.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
         <script defer
-            src="<?= htmlspecialchars(app_seo_script_src('js/script-news.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
+            src="<?= htmlspecialchars(app_seo_script_src('js/news-admin.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
         <?php
         render_app_footer([
             'context' => 'nested',

@@ -301,7 +301,7 @@ if ($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
         ?>
     </div>
     <script defer
-        src="<?= htmlspecialchars(app_seo_script_src('js/script-pelaporan.js', '../..') . '?v=20260301-dpa', ENT_QUOTES, 'UTF-8') ?>"></script>
+        src="<?= htmlspecialchars(app_seo_script_src('js/pelaporan-form.js', '../..') . '?v=20260301-dpa', ENT_QUOTES, 'UTF-8') ?>"></script>
 </body>
 
 </html>

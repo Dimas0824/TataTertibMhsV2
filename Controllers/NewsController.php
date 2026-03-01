@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../helpers/path_helper.php';
-app_require('Models/News.php');
+app_require('models/News.php');
 
 class NewsController
 {
@@ -112,7 +112,7 @@ class NewsController
                 throw new Exception("Gagal mengunggah gambar.");
             }
 
-            $uploadDir = app_path('document/news');
+            $uploadDir = app_path('storage/uploads/news');
             if (!is_dir($uploadDir) && !mkdir($uploadDir, 0777, true) && !is_dir($uploadDir)) {
                 throw new Exception("Direktori upload gambar tidak tersedia.");
             }
@@ -138,7 +138,7 @@ class NewsController
             }
 
             // Simpan path gambar ke database
-            $gambarPath = 'document/news/' . $fileName;
+            $gambarPath = 'storage/uploads/news/' . $fileName;
         }
 
         // Query untuk menyimpan berita

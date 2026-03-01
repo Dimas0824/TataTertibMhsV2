@@ -3,8 +3,9 @@ Allow: /
 Disallow: /controllers/
 Disallow: /models/
 Disallow: /database/
-Disallow: /requests/
+Disallow: /request/
 Disallow: /helpers/
+Disallow: /storage/uploads/
 Disallow: /document/
 Disallow: /views/admin/
 Disallow: /views/pelanggaran/

@@ -1,5 +1,7 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 
 require_once dirname(__DIR__, 2) . '/controllers/TatibController.php';
 require_once dirname(__DIR__, 2) . '/controllers/UserController.php';
@@ -198,7 +200,8 @@ $tatibData = $tatibController->ReadTatib();
                                 <select id="jenisPelanggaran" name="jenisPelanggaran" required>
                                     <option value="" readonly>Pilih Jenis Pelanggaran</option>
                                     <?php foreach ($tatibData as $tatib): ?>
-                                        <option value="<?= htmlspecialchars(app_id_token('tatib', (int) $tatib['id_tata_tertib']), ENT_QUOTES, 'UTF-8') ?>"
+                                        <option
+                                            value="<?= htmlspecialchars(app_id_token('tatib', (int) $tatib['id_tata_tertib']), ENT_QUOTES, 'UTF-8') ?>"
                                             data-tingkat="<?= $tatib['tingkat'] ?>">
                                             <?= $tatib['deskripsi'] ?>
                                         </option>
@@ -246,7 +249,7 @@ $tatibData = $tatibController->ReadTatib();
         ?>
     </div>
     <script defer
-        src="<?= htmlspecialchars(app_seo_script_src('js/script-pelaporan.js', '../..') . '?v=20260301-dpa', ENT_QUOTES, 'UTF-8') ?>"></script>
+        src="<?= htmlspecialchars(app_seo_script_src('js/pelaporan-form.js', '../..') . '?v=20260301-dpa', ENT_QUOTES, 'UTF-8') ?>"></script>
 </body>
 
 </html>

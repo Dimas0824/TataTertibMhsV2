@@ -8,7 +8,7 @@ Dokumen ini menjelaskan struktur folder proyek setelah perapihan.
 .
 ├── controllers/              # Business flow orchestration
 ├── models/                   # Data access / query layer
-├── requests/                  # HTTP action handlers
+├── request/                  # HTTP action handlers
 ├── views/                    # UI templates (public, admin, auth, components)
 ├── helpers/                  # Routing, token, SEO, path, error helpers
 ├── database/

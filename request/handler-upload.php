@@ -17,8 +17,8 @@ function respondJson(bool $success, string $message, int $statusCode = 200): voi
     exit();
 }
 
-// Simpan dokumen upload di folder document milik aplikasi (path absolut).
-$uploadDir = app_path('document') . DIRECTORY_SEPARATOR;
+// Simpan dokumen upload di folder storage/uploads milik aplikasi (path absolut).
+$uploadDir = app_path('storage/uploads') . DIRECTORY_SEPARATOR;
 // Hard limit 2 MB
 $maxSize = 2 * 1024 * 1024;
 $allowedMimes = [

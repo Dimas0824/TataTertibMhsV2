@@ -87,7 +87,7 @@ php artisan serve --host=127.0.0.1 --port=8000
 .
 ├── controllers/              # Orkestrasi use-case
 ├── models/                   # Query dan akses data
-├── requests/                  # Handler action HTTP
+├── request/                  # Handler action HTTP
 ├── views/                    # Template UI (public/admin/auth/components)
 ├── helpers/                  # Utilitas route/path/token/SEO/error
 ├── database/

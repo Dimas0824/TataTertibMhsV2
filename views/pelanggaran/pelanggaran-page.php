@@ -141,13 +141,13 @@ $studentTableColumns = [
         'render' => static function () use ($escapeHtml): string {
             ob_start();
             ?>
-            <div class="doc-links">
-                <a class="file-link"
-                    href="<?= $escapeHtml(app_action_url('action.file_download', ['file' => 'SURAT PERNYATAAN TI.pdf'])) ?>"
-                    target="_blank" rel="noopener noreferrer">Unduh Surat Pernyataan</a>
-                <span class="muted-text">Format PDF, maksimal 2 MB.</span>
-            </div>
-            <?php
+    <div class="doc-links">
+        <a class="file-link"
+            href="<?= $escapeHtml(app_action_url('action.file_download', ['file' => 'SURAT PERNYATAAN TI.pdf'])) ?>"
+            target="_blank" rel="noopener noreferrer">Unduh Surat Pernyataan</a>
+        <span class="muted-text">Format PDF, maksimal 2 MB.</span>
+    </div>
+    <?php
             return (string) ob_get_clean();
         },
     ],
@@ -171,21 +171,21 @@ $studentTableColumns = [
             $requiresTugas = $requiresTugasKhusus($detail);
             ob_start();
             ?>
-            <form class="uploadForm" enctype="multipart/form-data">
-                <input type="hidden" name="id_detail"
-                    value="<?= $escapeHtml(app_id_token('detail_pelanggaran', (int) ($detail['id_detail'] ?? 0))) ?>">
-                <input type="file" name="suratPernyataan" required>
-                <button type="button" class="submit-btn uploadButton">Upload Surat</button>
-            </form>
-            <?php if ($requiresTugas): ?>
-                <form class="uploadForm" enctype="multipart/form-data">
-                    <input type="hidden" name="id_detail"
-                        value="<?= $escapeHtml(app_id_token('detail_pelanggaran', (int) ($detail['id_detail'] ?? 0))) ?>">
-                    <input type="file" name="tugasKhusus" required>
-                    <button type="button" class="submit-btn uploadButton">Upload Tugas</button>
-                </form>
-            <?php endif; ?>
-            <?php
+    <form class="uploadForm" enctype="multipart/form-data">
+        <input type="hidden" name="id_detail"
+            value="<?= $escapeHtml(app_id_token('detail_pelanggaran', (int) ($detail['id_detail'] ?? 0))) ?>">
+        <input type="file" name="suratPernyataan" required>
+        <button type="button" class="submit-btn uploadButton">Upload Surat</button>
+    </form>
+    <?php if ($requiresTugas): ?>
+        <form class="uploadForm" enctype="multipart/form-data">
+            <input type="hidden" name="id_detail"
+                value="<?= $escapeHtml(app_id_token('detail_pelanggaran', (int) ($detail['id_detail'] ?? 0))) ?>">
+            <input type="file" name="tugasKhusus" required>
+            <button type="button" class="submit-btn uploadButton">Upload Tugas</button>
+        </form>
+    <?php endif; ?>
+    <?php
             return (string) ob_get_clean();
         },
     ],
@@ -337,9 +337,10 @@ $studentTableConfig = [
             <section class="table-card table-card--mobile-only" data-mobile-violation-section>
                 <div class="mobile-violation-tools" data-mobile-violation-tools>
                     <div class="mobile-violation-tabs" role="group" aria-label="Filter status pelanggaran">
-                        <button type="button" class="mobile-violation-tab-btn is-active" data-mobile-status-value="aktif"
-                            aria-pressed="true">
-                            Pelanggaran Aktif (<?= htmlspecialchars((string) $activePelanggaran, ENT_QUOTES, 'UTF-8') ?>)
+                        <button type="button" class="mobile-violation-tab-btn is-active"
+                            data-mobile-status-value="aktif" aria-pressed="true">
+                            Pelanggaran Aktif
+                            (<?= htmlspecialchars((string) $activePelanggaran, ENT_QUOTES, 'UTF-8') ?>)
                         </button>
                         <button type="button" class="mobile-violation-tab-btn" data-mobile-status-value="selesai"
                             aria-pressed="false">
@@ -366,9 +367,11 @@ $studentTableConfig = [
                     </div>
                     <p class="mobile-violation-result">
                         Menampilkan
-                        <strong data-mobile-visible-count><?= htmlspecialchars((string) $activePelanggaran, ENT_QUOTES, 'UTF-8') ?></strong>
+                        <strong
+                            data-mobile-visible-count><?= htmlspecialchars((string) $activePelanggaran, ENT_QUOTES, 'UTF-8') ?></strong>
                         dari
-                        <strong data-mobile-total-count><?= htmlspecialchars((string) $totalPelanggaran, ENT_QUOTES, 'UTF-8') ?></strong>
+                        <strong
+                            data-mobile-total-count><?= htmlspecialchars((string) $totalPelanggaran, ENT_QUOTES, 'UTF-8') ?></strong>
                         kasus
                     </p>
                 </div>
@@ -397,7 +400,8 @@ $studentTableConfig = [
                                 data-mobile-filter-tingkat="<?= htmlspecialchars($tingkatMobile, ENT_QUOTES, 'UTF-8') ?>">
                                 <div class="mobile-violation-card__summary">
                                     <p class="mobile-violation-card__title">
-                                        <?= htmlspecialchars($detail['pelanggaran'], ENT_QUOTES, 'UTF-8') ?></p>
+                                        <?= htmlspecialchars($detail['pelanggaran'], ENT_QUOTES, 'UTF-8') ?>
+                                    </p>
                                     <div class="mobile-violation-card__chips">
                                         <span class="mobile-chip mobile-chip--tier">Tingkat
                                             <?= htmlspecialchars($detail['tingkat'], ENT_QUOTES, 'UTF-8') ?></span>
@@ -497,7 +501,8 @@ $studentTableConfig = [
                                 </div>
                             </article>
                         <?php endforeach; ?>
-                        <div class="mobile-violation-empty" data-mobile-empty-filtered hidden>Tidak ada data pada status ini.</div>
+                        <div class="mobile-violation-empty" data-mobile-empty-filtered hidden>Tidak ada data pada status
+                            ini.</div>
                     <?php else: ?>
                         <div class="mobile-violation-empty">Data pelanggaran tidak ditemukan.</div>
                     <?php endif; ?>
@@ -555,7 +560,7 @@ $studentTableConfig = [
     <script defer
         src="<?= htmlspecialchars(app_seo_script_src('js/mobile-violation-cards.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
     <script defer
-        src="<?= htmlspecialchars(app_seo_script_src('js/script-pelanggaran.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
+        src="<?= htmlspecialchars(app_seo_script_src('js/pelanggaran-dashboard.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
     <script>
         const showUploadFeedback = (payload) => {
             if (window.AppModal && typeof window.AppModal.show === 'function') {

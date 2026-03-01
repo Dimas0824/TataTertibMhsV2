@@ -1,5 +1,7 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 require_once __DIR__ . '/../helpers/path_helper.php';
 require_once __DIR__ . '/../helpers/route_helper.php';
 app_require('config.php');
@@ -69,7 +71,7 @@ try {
 
         $gambarPath = null;
         if (!empty($gambar['name']) && ($gambar['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK) {
-            $uploadDir = app_path('document/news');
+            $uploadDir = app_path('storage/uploads/news');
             if (!is_dir($uploadDir) && !mkdir($uploadDir, 0777, true) && !is_dir($uploadDir)) {
                 throw new Exception("Direktori upload gambar tidak tersedia.");
             }
@@ -92,7 +94,7 @@ try {
                 throw new Exception("Gagal mengunggah gambar.");
             }
 
-            $gambarPath = 'document/news/' . $fileName;
+            $gambarPath = 'storage/uploads/news/' . $fileName;
         }
 
         // Panggil method update()

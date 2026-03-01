@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../config.php';
 
-class Users
+class User
 {
     private $connect;
     private const BCRYPT_COST = 12;

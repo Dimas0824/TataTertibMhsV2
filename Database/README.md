@@ -18,10 +18,10 @@ Pilih salah satu:
 - `php artisan migrate --seed`
 - `php artisan migrate:fresh`
 - `php artisan migrate:fresh --seed --force`
-- `php artisan migrate --path=Database/migrations`
+- `php artisan migrate --path=database/migrations`
 - `php artisan db:seed`
 - `php artisan db:seed --file=20260225_000001_data_dummy.sql`
-- `php artisan db:seed --path=Database/seeders --force`
+- `php artisan db:seed --path=database/seeders --force`
 - `php artisan serve`
 - `php artisan serve --host=127.0.0.1 --port=8000`
 - `php artisan serve --hot` (proxy hot-reload di port `8001` default)
@@ -34,8 +34,8 @@ Pilih salah satu:
 
 ## Aturan Migrasi & Seed
 
-- Folder migrasi: `Database/migrations`
-- Folder seed: `Database/seeders`
+- Folder migrasi: `database/migrations`
+- Folder seed: `database/seeders`
 - Format nama file wajib: `YYYYMMDD_HHMMSS_name.sql`
 - File yang sudah dijalankan dicatat di:
   - `schema_migrations`
@@ -54,6 +54,6 @@ Jika `APP_ENV=production`, command `migrate` dan `db:seed` akan ditolak kecuali 
 
 ## Catatan Baseline
 
-- Baseline schema: `Database/migrations/20260225_000001_initial_schema.sql`
-- Baseline seed: `Database/seeders/20260225_000001_data_dummy.sql`
+- Baseline schema: `database/migrations/20260225_000001_initial_schema.sql`
+- Baseline seed: `database/seeders/20260225_000001_data_dummy.sql`
 - Kedua baseline disanitasi dari SQL legacy agar aman dipakai sebagai migrasi terkontrol.

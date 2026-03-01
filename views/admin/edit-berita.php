@@ -63,7 +63,7 @@ if ($id > 0) {
 
         // Proses unggah gambar baru
         if (isset($gambar) && $gambar['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = app_path('document/news');
+            $uploadDir = app_path('storage/uploads/news');
             if (!is_dir($uploadDir) && !mkdir($uploadDir, 0777, true) && !is_dir($uploadDir)) {
                 set_app_flash_modal('error', 'Direktori upload gambar tidak tersedia.');
                 app_redirect_page('page.admin_news');
@@ -80,7 +80,7 @@ if ($id > 0) {
 
             // Pindahkan file ke folder uploads
             if (move_uploaded_file($gambar['tmp_name'], $uploadFile)) {
-                $gambarPath = 'document/news/' . $fileName;
+                $gambarPath = 'storage/uploads/news/' . $fileName;
             } else {
                 set_app_flash_modal('error', 'Gagal mengunggah gambar.');
                 app_redirect_page('page.admin_news');

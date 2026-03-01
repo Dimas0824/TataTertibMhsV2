@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../helpers/path_helper.php';
 app_require('config.php');
-app_require('Models/Users.php');
+app_require('models/User.php');
 app_require('helpers/flash_modal.php');
 
 class UserController
@@ -10,7 +10,7 @@ class UserController
 
     public function __construct()
     {
-        $this->userModel = new Users();
+        $this->userModel = new User();
     }
 
     public function login($username, $password, $userType = null)
@@ -21,11 +21,11 @@ class UserController
             $authFlows = [
                 'mahasiswa' => [
                     'auth' => fn() => $this->userModel->getMahasiswaLogin($username, $password),
-                    'redirect' => 'views/pelanggaran/pelanggaranpage.php',
+                    'redirect' => 'views/pelanggaran/pelanggaran-page.php',
                 ],
                 'dosen' => [
                     'auth' => fn() => $this->userModel->getDosenLogin($username, $password),
-                    'redirect' => 'views/pelanggaran/pelanggaran_dosen.php',
+                    'redirect' => 'views/pelanggaran/pelanggaran-dosen.php',
                 ],
                 'admin' => [
                     'auth' => fn() => $this->userModel->getAdminLogin($username, $password),
@@ -53,7 +53,9 @@ class UserController
             foreach ($sequence as $role) {
                 $user = ($authFlows[$role]['auth'])();
                 if ($user) {
-                    if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+                    if (session_status() !== PHP_SESSION_ACTIVE) {
+                        session_start();
+                    }
                     $_SESSION['username'] = $username;
                     $_SESSION['user_type'] = $role;
                     $_SESSION['user_data'] = $user;
@@ -72,7 +74,9 @@ class UserController
 
     public function logout()
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
         session_destroy();
         app_redirect('index.php');
     }

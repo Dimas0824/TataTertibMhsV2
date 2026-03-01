@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../helpers/path_helper.php';
-app_require('Models/Tatib.php');
-app_require('Models/Sanksi.php');
+app_require('models/Tatib.php');
+app_require('models/Sanksi.php');
 
 class TatibController
 {

@@ -38,7 +38,7 @@ if (!function_exists('app_base_url')) {
             return '';
         }
 
-        $markers = ['/requests/', '/controllers/', '/views/', '/models/', '/helpers/', '/database/'];
+        $markers = ['/request/', '/controllers/', '/views/', '/models/', '/helpers/', '/database/'];
         foreach ($markers as $marker) {
             $position = strpos($scriptName, $marker);
             if ($position !== false) {

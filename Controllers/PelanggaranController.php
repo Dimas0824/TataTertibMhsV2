@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../helpers/path_helper.php';
 app_require('config.php');
-app_require('Models/Pelanggaran.php');
+app_require('models/Pelanggaran.php');
 
 class PelanggaranController
 {

@@ -24,7 +24,7 @@ Dokumen ringkas untuk pengguna umum tersedia di [`README.md`](./README.md).
 .
 ├── controllers/          # Orkestrasi business flow
 ├── models/               # Query database dan akses data
-├── requests/              # HTTP action entrypoint
+├── request/              # HTTP action entrypoint
 ├── views/                # UI layer
 │   ├── admin/
 │   ├── auth/
@@ -54,7 +54,7 @@ DiscipLink V2 menggunakan pola **MVC + Request Handler + Central Router**:
 
 1. `router.php` menerima semua request.
 2. Request dipetakan ke page route atau action route.
-3. Untuk action route, file di `requests/` melakukan validasi awal.
+3. Untuk action route, file di `request/` melakukan validasi awal.
 4. `Controller` mengeksekusi logic aplikasi.
 5. `Model` melakukan query melalui PDO.
 6. Response kembali sebagai redirect HTML atau JSON.
@@ -142,19 +142,19 @@ Implementasi utama:
 
 ### 4) Access Guard
 
-- Akses langsung ke `/views/*` dan `/requests/*` diblok oleh router
+- Akses langsung ke `/views/*` dan `/request/*` diblok oleh router
 - Route yang tidak valid mengembalikan error page/JSON sesuai konteks
 
 ### 5) File Security
 
-Upload (`requests/handler-upload.php`):
+Upload (`request/handler-upload.php`):
 
 - validasi ukuran (maks 2 MB),
 - validasi MIME,
 - validasi ekstensi whitelist,
 - penamaan file disanitasi.
 
-Download (`requests/handler-download.php`):
+Download (`request/handler-download.php`):
 
 - validasi ekstensi whitelist,
 - sanitasi nama file (`basename`),
@@ -165,14 +165,14 @@ Download (`requests/handler-download.php`):
 
 ### Auth
 
-- Handler: `requests/handler-login.php`
+- Handler: `request/handler-login.php`
 - Controller: `controllers/UserController.php`
-- Model: `models/Users.php`
+- Model: `models/User.php`
 - Output: set session + redirect by role
 
 ### Pelanggaran & Pelaporan
 
-- Handler: `requests/handler-pelanggaran.php`
+- Handler: `request/handler-pelanggaran.php`
 - Controller: `controllers/PelanggaranController.php`
 - Model: `models/Pelanggaran.php`
 - Catatan:
@@ -181,13 +181,13 @@ Download (`requests/handler-download.php`):
 
 ### Tata Tertib
 
-- Handler: `requests/handler-tatib.php`
+- Handler: `request/handler-tatib.php`
 - Controller: `controllers/TatibController.php`
 - Model: `models/Tatib.php`, `models/Sanksi.php`
 
 ### News
 
-- Handler: `requests/handler-news.php`
+- Handler: `request/handler-news.php`
 - Controller: `controllers/NewsController.php`
 - Model: `models/News.php`
 - Catatan:
@@ -197,7 +197,7 @@ Download (`requests/handler-download.php`):
 
 ### Notifikasi
 
-- Handler: `requests/handler-notifikasi.php`
+- Handler: `request/handler-notifikasi.php`
 - Controller: `controllers/PelanggaranController.php`
 - Output: JSON untuk update status baca notifikasi
 

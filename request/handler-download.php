@@ -34,6 +34,7 @@ if (!in_array($extension, $allowedExtensions, true)) {
 }
 
 $candidatePaths = [
+    app_path('storage/uploads/' . $fileName),
     app_path('document/' . $fileName),
     dirname(app_path()) . DIRECTORY_SEPARATOR . 'document' . DIRECTORY_SEPARATOR . $fileName, // kompatibilitas file lama
 ];

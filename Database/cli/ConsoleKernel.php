@@ -58,7 +58,7 @@ class ConsoleKernel
     {
         $resolved = $this->resolveConnection();
 
-        $path = $this->resolvePath($options['path'] ?? 'Database/migrations');
+        $path = $this->resolvePath($options['path'] ?? 'database/migrations');
         $fresh = !empty($options['fresh']);
         $seed = !empty($options['seed']);
         $force = !empty($options['force']);
@@ -71,7 +71,7 @@ class ConsoleKernel
 
         echo "[migrate] Menjalankan seed (--seed)..." . PHP_EOL;
         $seedService = new SeederService($resolved['pdo'], new SqlRunner(), $resolved['app_env']);
-        $seedPath = $this->resolvePath('Database/seeders');
+        $seedPath = $this->resolvePath('database/seeders');
 
         return $seedService->seed($seedPath, null, $force);
     }
@@ -86,7 +86,7 @@ class ConsoleKernel
     {
         $resolved = $this->resolveConnection();
 
-        $path = $this->resolvePath($options['path'] ?? 'Database/seeders');
+        $path = $this->resolvePath($options['path'] ?? 'database/seeders');
         $file = isset($options['file']) ? $options['file'] : null;
         $force = !empty($options['force']);
 
@@ -130,7 +130,7 @@ class ConsoleKernel
 
         $proxyUrl = 'http://' . $host . ':' . $port;
         $browserSyncPort = $port + 1;
-        $watchFiles = '*.php,views/**/*.php,Controllers/**/*.php,Models/**/*.php,Request/**/*.php,css/**/*.css,js/**/*.js';
+        $watchFiles = '*.php,views/**/*.php,controllers/**/*.php,models/**/*.php,request/**/*.php,css/**/*.css,js/**/*.js';
         $browserSyncCommand = 'npx --yes browser-sync start'
             . ' --proxy ' . escapeshellarg($proxyUrl)
             . ' --port ' . (int) $browserSyncPort
@@ -254,9 +254,9 @@ class ConsoleKernel
             'Usage:',
             '  php artisan list',
             '  php artisan help',
-            '  php artisan migrate [--fresh] [--seed] [--force] [--path=Database/migrations]',
-            '  php artisan migrate:fresh [--seed] [--force] [--path=Database/migrations]',
-            '  php artisan db:seed [--force] [--path=Database/seeders] [--file=<filename.sql>]',
+            '  php artisan migrate [--fresh] [--seed] [--force] [--path=database/migrations]',
+            '  php artisan migrate:fresh [--seed] [--force] [--path=database/migrations]',
+            '  php artisan db:seed [--force] [--path=database/seeders] [--file=<filename.sql>]',
             '  php artisan serve [--host=127.0.0.1] [--port=8000] [--hot]',
             '',
             'Notes:',

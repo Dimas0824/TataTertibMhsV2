@@ -23,7 +23,7 @@ Ringkasan fungsi file utama proyek. Fokus pada file source code dan file konfigu
 
 ## Backend - Models
 
-- `models/Users.php`: query user dan role.
+- `models/User.php`: query user dan role.
 - `models/News.php`: query data berita.
 - `models/Pelanggaran.php`: query pelanggaran + detail.
 - `models/Tatib.php`: query aturan tata tertib.
@@ -31,14 +31,14 @@ Ringkasan fungsi file utama proyek. Fokus pada file source code dan file konfigu
 
 ## Backend - Request Handlers
 
-- `requests/handler-login.php`: endpoint login.
-- `requests/handler-logout.php`: endpoint logout.
-- `requests/handler-pelanggaran.php`: endpoint aksi pelanggaran/pelaporan.
-- `requests/handler-notifikasi.php`: endpoint aksi notifikasi.
-- `requests/handler-news.php`: endpoint aksi news.
-- `requests/handler-tatib.php`: endpoint aksi tatib.
-- `requests/handler-upload.php`: endpoint upload dokumen.
-- `requests/handler-download.php`: endpoint download dokumen.
+- `request/handler-login.php`: endpoint login.
+- `request/handler-logout.php`: endpoint logout.
+- `request/handler-pelanggaran.php`: endpoint aksi pelanggaran/pelaporan.
+- `request/handler-notifikasi.php`: endpoint aksi notifikasi.
+- `request/handler-news.php`: endpoint aksi news.
+- `request/handler-tatib.php`: endpoint aksi tatib.
+- `request/handler-upload.php`: endpoint upload dokumen.
+- `request/handler-download.php`: endpoint download dokumen.
 
 ## Backend - Helpers
 
@@ -102,12 +102,12 @@ Ringkasan fungsi file utama proyek. Fokus pada file source code dan file konfigu
 - `js/login.js`: script login.
 - `js/homepage.js`: script homepage.
 - `js/news-detail.js`: script detail berita.
-- `js/script-news.js`: script berita admin.
+- `js/news-admin.js`: script berita admin.
 - `js/news-form-editor.js`: script editor berita.
 - `js/admin-tatib.js`: script tatib admin.
 - `js/admin-confirm-modal.js`: script modal konfirmasi.
-- `js/script-pelanggaran.js`: script dashboard pelanggaran.
-- `js/script-pelaporan.js`: script form pelaporan.
+- `js/pelanggaran-dashboard.js`: script dashboard pelanggaran.
+- `js/pelaporan-form.js`: script form pelaporan.
 - `js/notifikasi.js`: script notifikasi.
 - `js/pelaporan-cancel-modal.js`: script modal batal.
 - `js/app-modal.js`: script modal global.
@@ -136,7 +136,7 @@ Ringkasan fungsi file utama proyek. Fokus pada file source code dan file konfigu
 - `errors/500.php`: fallback 500.
 - `errors/503.php`: fallback 503.
 - `storage/keys/*`: key/token runtime aplikasi.
-- `document/news/*`: file upload gambar berita runtime.
+- `storage/uploads/news/*`: file upload gambar berita runtime.
 
 ## Visual / Documentation Assets
 
