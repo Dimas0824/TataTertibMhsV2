@@ -3,6 +3,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
 require_once dirname(__DIR__, 2) . '/Controllers/UserController.php';
 require_once dirname(__DIR__, 2) . '/Controllers/PelanggaranController.php';
 require_once dirname(__DIR__) . '/partials/app-shell.php';
+require_once dirname(__DIR__) . '/components/modals/admin-confirm-modal.php';
 
 if (!isset($_SESSION['username'])) {
     app_redirect_page('page.login');
@@ -23,6 +24,7 @@ $pelanggaranController = new PelanggaranController();
 $nidn = $userData['nidn'];
 $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
 $confirmSelesaiAction = app_action_url('action.pelanggaran', ['action' => 'confirm_selesai']);
+$deleteLaporanAction = app_action_url('action.pelanggaran', ['action' => 'delete']);
 $totalLaporan = is_array($pelanggaranDetail) ? count($pelanggaranDetail) : 0;
 $pendingLaporan = 0;
 $activeLaporan = 0;
@@ -264,7 +266,7 @@ $lecturerTableColumns = [
     [
         'label' => 'Aksi',
         'cellClass' => 'action-column',
-        'render' => static function (array $detail) use ($escapeHtml, $buildLecturerRowState, $confirmSelesaiAction): string {
+        'render' => static function (array $detail) use ($escapeHtml, $buildLecturerRowState, $confirmSelesaiAction, $deleteLaporanAction): string {
             $state = $buildLecturerRowState($detail);
             ob_start();
             ?>
@@ -281,12 +283,26 @@ $lecturerTableColumns = [
                 <?php endif; ?>
                 <form method="POST" class="confirm-form"
                     action="<?= $escapeHtml($confirmSelesaiAction) ?>"
-                    onsubmit="return confirm('Konfirmasi laporan ini sebagai selesai?');">
+                    >
                     <input type="hidden" name="id_detail"
                         value="<?= $escapeHtml(app_id_token('detail_pelanggaran', (int) ($detail['id_detail'] ?? 0))) ?>">
-                    <button type="submit" class="confirm-laporan" <?= $state['canConfirm'] ? '' : 'disabled' ?>>
+                    <button type="button" class="confirm-laporan" <?= $state['canConfirm'] ? '' : 'disabled' ?>
+                        data-admin-confirm-trigger data-admin-confirm-title="Konfirmasi laporan selesai?"
+                        data-admin-confirm-message="Status laporan akan diubah menjadi selesai. Lanjutkan?"
+                        data-admin-confirm-label="Ya, Konfirmasi" data-admin-confirm-action="submit-form"
+                        data-admin-confirm-variant="primary">
                         <?= $escapeHtml($state['isSelesai'] ? 'Selesai' : 'Konfirmasi') ?>
                     </button>
+                </form>
+                <form method="POST" class="delete-form"
+                    action="<?= $escapeHtml($deleteLaporanAction) ?>"
+                    >
+                    <input type="hidden" name="id_detail"
+                        value="<?= $escapeHtml(app_id_token('detail_pelanggaran', (int) ($detail['id_detail'] ?? 0))) ?>">
+                    <button type="button" class="delete-laporan" data-admin-confirm-trigger
+                        data-admin-confirm-title="Hapus laporan?"
+                        data-admin-confirm-message="Data laporan yang dihapus tidak dapat dikembalikan. Yakin lanjut?"
+                        data-admin-confirm-label="Ya, Hapus" data-admin-confirm-action="submit-form">Hapus</button>
                 </form>
                 <?php if (!$state['canEdit']): ?>
                     <span class="action-note"><?= $escapeHtml((string) $state['editLockNote']) ?></span>
@@ -658,12 +674,26 @@ $lecturerTableConfig = [
                                                 <?php endif; ?>
                                                 <form method="POST" class="confirm-form"
                                                     action="<?= htmlspecialchars($confirmSelesaiAction, ENT_QUOTES, 'UTF-8') ?>"
-                                                    onsubmit="return confirm('Konfirmasi laporan ini sebagai selesai?');">
+                                                    >
                                                     <input type="hidden" name="id_detail"
                                                         value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $detail['id_detail']), ENT_QUOTES, 'UTF-8') ?>">
-                                                    <button type="submit" class="confirm-laporan" <?= $canConfirm ? '' : 'disabled' ?>>
+                                                    <button type="button" class="confirm-laporan" <?= $canConfirm ? '' : 'disabled' ?>
+                                                        data-admin-confirm-trigger data-admin-confirm-title="Konfirmasi laporan selesai?"
+                                                        data-admin-confirm-message="Status laporan akan diubah menjadi selesai. Lanjutkan?"
+                                                        data-admin-confirm-label="Ya, Konfirmasi" data-admin-confirm-action="submit-form"
+                                                        data-admin-confirm-variant="primary">
                                                         <?= htmlspecialchars($isSelesai ? 'Selesai' : 'Konfirmasi Selesai', ENT_QUOTES, 'UTF-8') ?>
                                                     </button>
+                                                </form>
+                                                <form method="POST" class="delete-form"
+                                                    action="<?= htmlspecialchars($deleteLaporanAction, ENT_QUOTES, 'UTF-8') ?>"
+                                                    >
+                                                    <input type="hidden" name="id_detail"
+                                                        value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $detail['id_detail']), ENT_QUOTES, 'UTF-8') ?>">
+                                                    <button type="button" class="delete-laporan" data-admin-confirm-trigger
+                                                        data-admin-confirm-title="Hapus laporan?"
+                                                        data-admin-confirm-message="Data laporan yang dihapus tidak dapat dikembalikan. Yakin lanjut?"
+                                                        data-admin-confirm-label="Ya, Hapus" data-admin-confirm-action="submit-form">Hapus Laporan</button>
                                                 </form>
                                                 <?php if (!$canEdit): ?>
                                                     <span class="action-note"><?= htmlspecialchars($editLockNote, ENT_QUOTES, 'UTF-8') ?></span>
@@ -691,6 +721,10 @@ $lecturerTableConfig = [
     </div>
 
     <?php
+    render_admin_confirm_modal_component([
+        'context' => 'nested',
+    ]);
+
     render_app_flash_modal([
         'context' => 'nested',
     ]);

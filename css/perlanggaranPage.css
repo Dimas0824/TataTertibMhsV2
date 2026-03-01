@@ -539,6 +539,10 @@
   margin: 0;
 }
 
+.delete-form {
+  margin: 0;
+}
+
 .confirm-laporan {
   border: 0;
   border-radius: 7px;
@@ -560,6 +564,23 @@
   cursor: not-allowed;
   background: #cbd5e1;
   color: #475569;
+}
+
+.delete-laporan {
+  border: 0;
+  border-radius: 7px;
+  padding: 7px 11px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: #dc2626;
+  color: #ffffff;
+  transition: transform 0.15s ease, filter 0.2s ease;
+}
+
+.delete-laporan:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.96);
 }
 
 .action-note {
@@ -790,7 +811,8 @@
 }
 
 .action-column .edit-laporan,
-.action-column .confirm-laporan {
+.action-column .confirm-laporan,
+.action-column .delete-laporan {
   width: 100%;
   justify-content: center;
   gap: 7px;
@@ -1109,7 +1131,8 @@
 
 .mobile-sheet-actions .submit-btn,
 .mobile-sheet-actions .edit-laporan,
-.mobile-sheet-actions .confirm-laporan {
+.mobile-sheet-actions .confirm-laporan,
+.mobile-sheet-actions .delete-laporan {
   width: 100%;
 }
 

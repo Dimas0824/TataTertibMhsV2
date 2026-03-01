@@ -109,6 +109,11 @@ body.admin-confirm-modal-open {
 }
 
 .admin-confirm-modal__btn--danger {
+    background: linear-gradient(160deg, #ef4444, #dc2626);
+    color: #ffffff;
+}
+
+.admin-confirm-modal__btn--primary {
     background: linear-gradient(160deg, #2563eb, #1d4ed8);
     color: #ffffff;
 }

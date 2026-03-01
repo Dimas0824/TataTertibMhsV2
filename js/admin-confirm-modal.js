@@ -48,10 +48,14 @@
         const confirmLabel = String(triggerElement.getAttribute('data-admin-confirm-label') || 'Ya, Lanjutkan');
         const action = String(triggerElement.getAttribute('data-admin-confirm-action') || 'submit-form');
         const target = String(triggerElement.getAttribute('data-admin-confirm-target') || '');
+        const variantRaw = String(triggerElement.getAttribute('data-admin-confirm-variant') || 'danger').trim().toLowerCase();
+        const variant = variantRaw === 'primary' ? 'primary' : 'danger';
 
         titleElement.textContent = title;
         descElement.textContent = message;
         confirmButton.textContent = confirmLabel;
+        confirmButton.classList.remove('admin-confirm-modal__btn--danger', 'admin-confirm-modal__btn--primary');
+        confirmButton.classList.add(variant === 'primary' ? 'admin-confirm-modal__btn--primary' : 'admin-confirm-modal__btn--danger');
 
         pendingAction = () => {
             if (action === 'navigate' && target !== '') {
