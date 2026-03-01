@@ -47,6 +47,7 @@ if (isset($_SESSION['user_type'])) {
 }
 
 $newsImage = !empty($news['gambar']) ? (string) $news['gambar'] : 'img/news.jpg';
+$newsImageUrl = app_url(ltrim($newsImage, '/'));
 $plainContent = trim((string) preg_replace('/\s+/u', ' ', strip_tags((string) ($news['konten'] ?? ''))));
 $excerpt = function_exists('mb_substr') ? mb_substr($plainContent, 0, 180) : substr($plainContent, 0, 180);
 if ($excerpt === '') {
@@ -184,7 +185,7 @@ $relatedExcerpt = static function (string $text, int $limit = 120): string {
 
             <article class="news-detail-article">
                 <div class="news-detail-image-wrap">
-                    <img src="../../<?= htmlspecialchars($newsImage, ENT_QUOTES, 'UTF-8') ?>"
+                    <img src="<?= htmlspecialchars($newsImageUrl, ENT_QUOTES, 'UTF-8') ?>"
                         alt="Gambar berita: <?= htmlspecialchars((string) ($news['judul'] ?? '')) ?>" width="1200"
                         height="675" loading="eager" decoding="async" fetchpriority="high">
                 </div>
@@ -223,12 +224,13 @@ $relatedExcerpt = static function (string $text, int $limit = 120): string {
                                 $itemSlug = NewsController::news_build_slug((string) ($item['judul'] ?? ''), (int) ($item['id_news'] ?? 0));
                                 $itemUrl = app_page_url('page.news_detail', ['slug' => $itemSlug]);
                                 $itemImage = !empty($item['gambar']) ? (string) $item['gambar'] : 'img/news.jpg';
+                                $itemImageUrl = app_url(ltrim($itemImage, '/'));
                                 $itemText = $relatedExcerpt((string) ($item['konten'] ?? ''));
                                 $itemPublished = strtotime((string) ($item['published_at'] ?? ''));
                                 $itemDateLabel = $itemPublished !== false ? date('d M Y', $itemPublished) : '-';
                                 ?>
                                 <article class="related-news-card">
-                                    <img src="../../<?= htmlspecialchars($itemImage, ENT_QUOTES, 'UTF-8') ?>"
+                                    <img src="<?= htmlspecialchars($itemImageUrl, ENT_QUOTES, 'UTF-8') ?>"
                                         alt="Gambar berita: <?= htmlspecialchars((string) ($item['judul'] ?? '')) ?>"
                                         width="720" height="405" loading="lazy" decoding="async">
                                     <div class="related-news-content">

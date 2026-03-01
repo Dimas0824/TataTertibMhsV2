@@ -76,7 +76,8 @@ $newsAdminColumns = [
             if ($gambar === '') {
                 return '<span class="muted-text">Tidak ada gambar</span>';
             }
-            return '<img class="news-thumb" src="../../' . $escapeHtml($gambar) . '" alt="Gambar News" width="160" height="90" loading="lazy" decoding="async">';
+            $imageUrl = $escapeHtml(app_url(ltrim($gambar, '/')));
+            return '<img class="news-thumb" src="' . $imageUrl . '" alt="Gambar News" width="160" height="90" loading="lazy" decoding="async">';
         },
     ],
     [

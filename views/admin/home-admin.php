@@ -26,6 +26,10 @@ if (isset($_GET['logout'])) {
 }
 $newsController = new NewsController();
 $newsData = $newsController->ReadNews();
+
+$assetUrl = static function (string $path): string {
+    return htmlspecialchars(app_url(ltrim($path, '/')), ENT_QUOTES, 'UTF-8');
+};
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -110,7 +114,7 @@ $newsData = $newsController->ReadNews();
         <section class="dashboard-container">
             <div class="about-logo-wrap">
                 <div class="about-brand-card">
-                    <img class="logo-disciplink" src="../../img/logo-full.png" width="250" height="250" loading="lazy"
+                    <img class="logo-disciplink" src="<?= $assetUrl('img/logo-full.png') ?>" width="250" height="250" loading="lazy"
                         decoding="async" alt="Logo DiscipLink">
                     <p>Panel admin DiscipLink dirancang untuk mempercepat pengelolaan konten dan menjaga akurasi
                         informasi kedisiplinan.</p>
@@ -139,10 +143,10 @@ $newsData = $newsController->ReadNews();
                     <?php foreach ($newsData as $news): ?>
                         <article class="news-content">
                             <?php if (!empty($news['gambar'])): ?>
-                                <img src="../../<?= htmlspecialchars($news['gambar']) ?>" alt="Gambar News" width="1200"
+                                <img src="<?= $assetUrl((string) $news['gambar']) ?>" alt="Gambar News" width="1200"
                                     height="675" loading="lazy" decoding="async">
                             <?php else: ?>
-                                <img src="../../img/news.jpg" alt="Gambar News" width="1200" height="675" loading="lazy"
+                                <img src="<?= $assetUrl('img/news.jpg') ?>" alt="Gambar News" width="1200" height="675" loading="lazy"
                                     decoding="async">
                             <?php endif; ?>
                             <div class="news-text">
