@@ -6,6 +6,7 @@ require_once dirname(__DIR__, 2) . '/helpers/seo_helper.php';
 require_once dirname(__DIR__, 2) . '/helpers/route_helper.php';
 require_once dirname(__DIR__) . '/components/modals/app-feedback-modal.php';
 require_once dirname(__DIR__) . '/components/tables/universal-filterable-table.php';
+require_once dirname(__DIR__) . '/components/notifications/notification-center.php';
 
 if (!defined('APP_CANONICAL_ENFORCED')) {
     app_seo_enforce_canonical_host();

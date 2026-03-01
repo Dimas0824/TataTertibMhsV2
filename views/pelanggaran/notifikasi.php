@@ -44,7 +44,6 @@ $notificationRole = $_SESSION['user_type'] === 'dosen' ? 'Dosen' : 'Mahasiswa';
     <noscript>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
     </noscript>
-    <link rel="stylesheet" href="../../css/notifikasi.css">
 </head>
 
 <body>
@@ -65,64 +64,13 @@ $notificationRole = $_SESSION['user_type'] === 'dosen' ? 'Dosen' : 'Mahasiswa';
         ]);
         ?>
 
-        <section class="notif-page" data-notif-root data-endpoint="<?= htmlspecialchars(app_action_url('action.notifikasi'), ENT_QUOTES, 'UTF-8') ?>">
-            <section class="notif-overview" aria-label="Ringkasan notifikasi">
-                <div class="notif-overview-copy">
-                    <span class="notif-kicker">DiscipLink Inbox</span>
-                    <h2>Notifikasi Aktivitas</h2>
-                    <p>Pantau pembaruan pelanggaran dengan cepat, ringkas, dan mudah dicari.</p>
-                </div>
-                <div class="notif-stats" aria-live="polite">
-                    <article class="notif-stat">
-                        <span>Total</span>
-                        <strong data-counter="total">0</strong>
-                    </article>
-                    <article class="notif-stat notif-stat--unread">
-                        <span>Unread</span>
-                        <strong data-counter="unread">0</strong>
-                    </article>
-                    <article class="notif-stat notif-stat--read">
-                        <span>Read</span>
-                        <strong data-counter="read">0</strong>
-                    </article>
-                </div>
-            </section>
-
-            <section class="notif-toolbar" aria-label="Kontrol notifikasi">
-                <label class="notif-search" for="notifSearchInput">
-                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-                    <input type="search" id="notifSearchInput" placeholder="Cari isi notifikasi..." autocomplete="off">
-                </label>
-
-                <div class="notif-filters" role="tablist" aria-label="Filter status notifikasi">
-                    <button type="button" class="notif-filter-btn is-active" data-filter="all"
-                        aria-selected="true">Semua</button>
-                    <button type="button" class="notif-filter-btn" data-filter="unread"
-                        aria-selected="false">Unread</button>
-                    <button type="button" class="notif-filter-btn" data-filter="read"
-                        aria-selected="false">Read</button>
-                </div>
-
-                <button type="button" class="notif-mark-all-btn" data-action="mark-all-read" disabled>
-                    <i class="fa-solid fa-check-double" aria-hidden="true"></i>
-                    Tandai semua dibaca
-                </button>
-            </section>
-
-            <section class="notifications-panel" aria-live="polite">
-                <div class="notifications" id="notifList" role="list"></div>
-
-                <div class="notifications-empty is-hidden" id="notifEmptyServer">
-                    <i class="fa-regular fa-bell-slash" aria-hidden="true"></i>
-                    <p>Belum ada notifikasi untuk akun ini.</p>
-                </div>
-
-                <div class="notifications-empty is-hidden" id="notifEmptyFiltered">
-                    <i class="fa-solid fa-filter-circle-xmark" aria-hidden="true"></i>
-                    <p>Tidak ada notifikasi yang sesuai dengan pencarian/filter.</p>
-                </div>
-            </section>
-        </section>
+        <?php
+        render_notification_center_component([
+            'context' => 'nested',
+            'endpoint' => app_action_url('action.notifikasi'),
+            'roleLabel' => $notificationRole,
+        ]);
+        ?>
 
         <?php
         render_app_footer([
@@ -131,8 +79,6 @@ $notificationRole = $_SESSION['user_type'] === 'dosen' ? 'Dosen' : 'Mahasiswa';
         ?>
     </div>
 
-    <script defer
-        src="<?= htmlspecialchars(app_seo_script_src('js/notifikasi.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
 </body>
 
 </html>

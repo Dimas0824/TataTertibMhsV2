@@ -11,6 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const list = document.getElementById('notifList');
   const emptyServer = document.getElementById('notifEmptyServer');
   const emptyFiltered = document.getElementById('notifEmptyFiltered');
+  const visibleCounter = root.querySelector('[data-counter-visible]');
+  const activeFilterLabel = root.querySelector('[data-active-filter-label]');
+  const unreadHighlight = root.querySelector('[data-unread-highlight]');
+  const filterCountBadges = Array.from(root.querySelectorAll('[data-filter-count]'));
 
   if (!list) {
     return;
@@ -20,6 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
     total: root.querySelector('[data-counter="total"]'),
     unread: root.querySelector('[data-counter="unread"]'),
     read: root.querySelector('[data-counter="read"]')
+  };
+
+  const filterLabels = {
+    all: 'Semua',
+    unread: 'Unread',
+    read: 'Read'
   };
 
   const state = {
@@ -40,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const normalizeStatus = (value) => (String(value || '').toLowerCase() === 'read' ? 'read' : 'unread');
+  const normalizeText = (value) => String(value || '').trim().replace(/\s+/g, ' ').toLowerCase();
 
   const escapeHtml = (text) => {
     return String(text)
@@ -48,6 +59,40 @@ document.addEventListener('DOMContentLoaded', () => {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
+  };
+
+  const getNotifCategory = (message) => {
+    const normalized = normalizeText(message);
+
+    if (normalized.includes('selesai') || normalized.includes('dikonfirmasi')) {
+      return {
+        key: 'complete',
+        label: 'Status Selesai',
+        icon: 'fa-solid fa-circle-check'
+      };
+    }
+
+    if (normalized.includes('upload') || normalized.includes('unggah') || normalized.includes('surat') || normalized.includes('tugas')) {
+      return {
+        key: 'document',
+        label: 'Dokumen',
+        icon: 'fa-solid fa-file-arrow-up'
+      };
+    }
+
+    if (normalized.includes('lapor') || normalized.includes('pelanggaran')) {
+      return {
+        key: 'report',
+        label: 'Laporan Baru',
+        icon: 'fa-solid fa-triangle-exclamation'
+      };
+    }
+
+    return {
+      key: 'info',
+      label: 'Informasi',
+      icon: 'fa-solid fa-circle-info'
+    };
   };
 
   const sendRequest = async (payload) => {
@@ -75,15 +120,41 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const getFilteredNotifications = () => {
-    const query = (searchInput?.value || '').trim().toLowerCase();
+    const query = normalizeText(searchInput?.value || '');
 
     return state.notifications.filter((item) => {
       const status = normalizeStatus(item.status);
-      const message = String(item.pesan || '').toLowerCase();
+      const message = normalizeText(item.pesan || '');
       const passFilter = state.currentFilter === 'all' || status === state.currentFilter;
       const passQuery = query === '' || message.includes(query);
 
       return passFilter && passQuery;
+    });
+  };
+
+  const setMarkAllButtonLabel = (unread) => {
+    if (!markAllButton) {
+      return;
+    }
+
+    const label = unread > 0 ? `Tandai semua dibaca (${unread})` : 'Tandai semua dibaca';
+    markAllButton.innerHTML = `<i class="fa-solid fa-check-double" aria-hidden="true"></i><span>${escapeHtml(label)}</span>`;
+  };
+
+  const renderFilterCountBadges = () => {
+    const total = state.notifications.length;
+    const unread = state.notifications.filter((item) => normalizeStatus(item.status) === 'unread').length;
+    const read = total - unread;
+
+    filterCountBadges.forEach((badge) => {
+      const key = String(badge.getAttribute('data-filter-count') || '');
+      if (key === 'all') {
+        badge.textContent = String(total);
+      } else if (key === 'unread') {
+        badge.textContent = String(unread);
+      } else if (key === 'read') {
+        badge.textContent = String(read);
+      }
     });
   };
 
@@ -95,6 +166,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (counters.total) counters.total.textContent = String(total);
     if (counters.unread) counters.unread.textContent = String(unread);
     if (counters.read) counters.read.textContent = String(read);
+    if (unreadHighlight) unreadHighlight.textContent = String(unread);
+
+    renderFilterCountBadges();
+    setMarkAllButtonLabel(unread);
 
     if (markAllButton) {
       markAllButton.disabled = unread === 0 || state.loading;
@@ -103,6 +178,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const renderList = () => {
     const filtered = getFilteredNotifications();
+
+    if (visibleCounter) {
+      visibleCounter.textContent = String(filtered.length);
+    }
+
+    if (activeFilterLabel) {
+      activeFilterLabel.textContent = filterLabels[state.currentFilter] || 'Semua';
+    }
 
     if (state.notifications.length === 0) {
       list.innerHTML = '';
@@ -126,24 +209,33 @@ document.addEventListener('DOMContentLoaded', () => {
         const status = normalizeStatus(item.status);
         const statusLabel = status === 'read' ? 'Read' : 'Unread';
         const message = escapeHtml(item.pesan || 'Notifikasi baru');
-        const id = String(item.id_notifikasi || '');
-        const safeId = escapeHtml(id);
-        const icon = status === 'unread' ? 'fa-solid fa-bell' : 'fa-solid fa-check';
+        const id = escapeHtml(String(item.id_notifikasi || ''));
+        const category = getNotifCategory(item.pesan || '');
+
+        const actionHtml = status === 'unread'
+          ? `<button type="button" class="notif-inline-btn" data-action="mark-read" data-id="${id}">Tandai dibaca</button>`
+          : '<span class="notif-read-note">Sudah dibaca</span>';
 
         return `
           <article
-            class="notification-card ${status === 'unread' ? 'is-unread' : 'is-read'}"
-            data-id="${safeId}"
+            class="notification-card ${status === 'unread' ? 'is-unread' : 'is-read'} type-${category.key}"
+            data-id="${id}"
             data-status="${status}"
             role="listitem"
             tabindex="0"
             aria-label="Notifikasi ${statusLabel}">
             <div class="notif-icon" aria-hidden="true">
-              <i class="${icon}"></i>
+              <i class="${category.icon}"></i>
             </div>
             <div class="notification-content">
+              <div class="notification-meta">
+                <span class="notif-topic">${category.label}</span>
+                <span class="notif-status-chip notif-status-chip--${status}">${statusLabel}</span>
+              </div>
               <p class="notification-message">${message}</p>
-              <span class="notif-status-chip notif-status-chip--${status}">${statusLabel}</span>
+              <div class="notification-footer">
+                ${actionHtml}
+              </div>
             </div>
           </article>
         `;
@@ -160,14 +252,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const setLoadingState = (isLoading) => {
     state.loading = isLoading;
+    root.classList.toggle('is-loading', isLoading);
+
     filterButtons.forEach((button) => {
       button.disabled = isLoading;
     });
+
     if (searchInput) {
       searchInput.disabled = isLoading;
     }
+
     if (markAllButton) {
-      markAllButton.disabled = isLoading || state.notifications.every((item) => normalizeStatus(item.status) === 'read');
+      const unread = state.notifications.some((item) => normalizeStatus(item.status) === 'unread');
+      markAllButton.disabled = isLoading || !unread;
     }
   };
 
@@ -279,12 +376,25 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   list.addEventListener('click', (event) => {
-    const card = event.target.closest('.notification-card');
+    const target = event.target;
+    if (!(target instanceof Element)) {
+      return;
+    }
+
+    const directActionButton = target.closest('[data-action="mark-read"]');
+    if (directActionButton instanceof HTMLButtonElement) {
+      event.preventDefault();
+      const idToken = String(directActionButton.getAttribute('data-id') || '');
+      void markNotificationAsRead(idToken);
+      return;
+    }
+
+    const card = target.closest('.notification-card');
     if (!card) {
       return;
     }
 
-    const idToken = String(card.dataset.id || '');
+    const idToken = String(card.getAttribute('data-id') || '');
     void markNotificationAsRead(idToken);
   });
 
@@ -293,13 +403,18 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const card = event.target.closest('.notification-card');
+    const target = event.target;
+    if (!(target instanceof Element) || target.closest('button')) {
+      return;
+    }
+
+    const card = target.closest('.notification-card');
     if (!card) {
       return;
     }
 
     event.preventDefault();
-    const idToken = String(card.dataset.id || '');
+    const idToken = String(card.getAttribute('data-id') || '');
     void markNotificationAsRead(idToken);
   });
 
