@@ -282,27 +282,30 @@
   color: #0f172a;
 }
 
-#tatib-table th:last-child,
-#tatib-table td:last-child {
-  width: 176px;
+#tatib-table th:nth-child(2),
+#tatib-table td:nth-child(2) {
+  width: 156px;
+  text-align: center;
+}
+
+#tatib-table th:nth-child(3),
+#tatib-table td:nth-child(3) {
+  width: 116px;
   text-align: center;
 }
 
 .tatib-rule-text {
   margin: 0;
   line-height: 1.58;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  word-break: break-word;
   max-width: 86ch;
 }
 
 .tingkat-badge {
-  display: inline-grid;
-  justify-items: center;
-  gap: 2px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
   border-radius: 16px;
   padding: 7px 12px;
   min-width: 132px;
@@ -319,11 +322,16 @@
   text-transform: uppercase;
 }
 
-.tingkat-badge__point {
-  font-size: 0.71rem;
-  letter-spacing: 0.01em;
-  text-transform: none;
-  color: #1e4f83;
+.tatib-point-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid #c6e0ff;
+  background: #edf5ff;
+  color: #0d5089;
+  padding: 6px 10px;
+  font-size: 0.72rem;
   font-weight: 700;
 }
 
@@ -428,12 +436,13 @@
     font-size: 0.82rem;
   }
 
-  #tatib-table th:last-child,
-  #tatib-table td:last-child {
-    width: 148px;
+  #tatib-table th:nth-child(2),
+  #tatib-table td:nth-child(2) {
+    width: 138px;
   }
 
-  .tatib-rule-text {
-    -webkit-line-clamp: 3;
+  #tatib-table th:nth-child(3),
+  #tatib-table td:nth-child(3) {
+    width: 102px;
   }
 }

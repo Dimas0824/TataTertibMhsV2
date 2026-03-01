@@ -40,23 +40,30 @@ $tatibTableColumns = [
         'cellClass' => 'tatib-col-desc',
         'render' => static function (array $tatib) use ($escapeHtml): string {
             $deskripsi = trim((string) ($tatib['deskripsi'] ?? ''));
-            return '<p class="tatib-rule-text" title="' . $escapeHtml($deskripsi) . '">' . $escapeHtml($deskripsi) . '</p>';
+            return '<p class="tatib-rule-text">' . $escapeHtml($deskripsi) . '</p>';
         },
     ],
     [
         'label' => 'Tingkat',
         'cellClass' => 'tatib-col-level',
-        'render' => static function (array $tatib) use ($escapeHtml, $tingkatPointMap): string {
+        'render' => static function (array $tatib) use ($escapeHtml): string {
             $tingkat = strtoupper(trim((string) ($tatib['tingkat'] ?? '')));
-            $point = (int) ($tingkatPointMap[$tingkat] ?? 0);
             ob_start();
             ?>
-            <span class="tingkat-badge" title="<?= $escapeHtml('Tingkat ' . $tingkat . ' (' . $point . ' poin)') ?>">
+            <span class="tingkat-badge">
                 <span class="tingkat-badge__level">Tingkat <?= $escapeHtml($tingkat) ?></span>
-                <span class="tingkat-badge__point"><?= $escapeHtml((string) $point) ?> poin</span>
             </span>
             <?php
             return (string) ob_get_clean();
+        },
+    ],
+    [
+        'label' => 'Poin',
+        'cellClass' => 'tatib-col-point',
+        'render' => static function (array $tatib) use ($escapeHtml, $tingkatPointMap): string {
+            $tingkat = strtoupper(trim((string) ($tatib['tingkat'] ?? '')));
+            $point = isset($tatib['poin']) ? (int) $tatib['poin'] : (int) ($tingkatPointMap[$tingkat] ?? 0);
+            return '<span class="tatib-point-badge">' . $escapeHtml((string) $point) . ' poin</span>';
         },
     ],
 ];
