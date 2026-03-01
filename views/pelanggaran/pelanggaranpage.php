@@ -36,9 +36,16 @@ $nim = $userData['nim'];
 $pelanggaranDetail = $pelanggaranController->getDetailPelanggaranMahasiswa($nim);
 $totalPelanggaran = is_array($pelanggaranDetail) ? count($pelanggaranDetail) : 0;
 $pendingPelanggaran = 0;
+$activePelanggaran = 0;
+$selesaiPelanggaran = 0;
 if ($totalPelanggaran > 0) {
     foreach ($pelanggaranDetail as $item) {
         $statusValue = strtolower(trim((string) ($item['status'] ?? '')));
+        if ($statusValue === 'selesai' || $statusValue === 'done') {
+            $selesaiPelanggaran++;
+        } else {
+            $activePelanggaran++;
+        }
         if ($statusValue === 'pending') {
             $pendingPelanggaran++;
         }
@@ -175,11 +182,9 @@ $studentTableColumns = [
 
 $studentRowMetaBuilder = static function (array $detail) use ($buildStudentRowState): array {
     $state = $buildStudentRowState($detail);
-    $statusFilter = 'proses';
-    if ((string) $state['statusText'] === 'pending') {
-        $statusFilter = 'pending';
-    } elseif ((string) $state['statusText'] === 'selesai' || (string) $state['statusText'] === 'done') {
-        $statusFilter = 'selesai';
+    $statusTab = 'aktif';
+    if ((string) $state['statusText'] === 'selesai' || (string) $state['statusText'] === 'done') {
+        $statusTab = 'selesai';
     }
 
     return [
@@ -192,7 +197,7 @@ $studentRowMetaBuilder = static function (array $detail) use ($buildStudentRowSt
             (string) ($detail['tugas_khusus'] ?? ''),
         ]),
         'filters' => [
-            'status' => $statusFilter,
+            'status_tab' => $statusTab,
             'tingkat' => (string) $state['tingkat'],
         ],
     ];
@@ -206,16 +211,18 @@ $studentTableConfig = [
         ['label' => $totalPelanggaran . ' kasus'],
         ['label' => $pendingPelanggaran . ' pending', 'class' => 'table-stat-chip--warning'],
     ],
-    'filters' => [
+    'tabs' => [
         [
-            'key' => 'status',
-            'label' => 'Status',
+            'key' => 'status_tab',
+            'label' => 'Status Pelanggaran',
+            'defaultValue' => 'aktif',
             'options' => [
-                ['value' => 'pending', 'label' => 'Pending'],
-                ['value' => 'proses', 'label' => 'Proses'],
+                ['value' => 'aktif', 'label' => 'Pelanggaran Aktif'],
                 ['value' => 'selesai', 'label' => 'Selesai'],
             ],
         ],
+    ],
+    'filters' => [
         [
             'key' => 'tingkat',
             'label' => 'Tingkat',
@@ -316,15 +323,66 @@ $studentTableConfig = [
             </div>
 
             <?php render_universal_filterable_table_component($studentTableConfig); ?>
-            <section class="table-card table-card--mobile-only">
-                <div class="mobile-violation-list" aria-label="Daftar pelanggaran mobile">
+            <section class="table-card table-card--mobile-only" data-mobile-violation-section>
+                <div class="mobile-violation-tools" data-mobile-violation-tools>
+                    <div class="mobile-violation-tabs" role="group" aria-label="Filter status pelanggaran">
+                        <button type="button" class="mobile-violation-tab-btn is-active" data-mobile-status-value="aktif"
+                            aria-pressed="true">
+                            Pelanggaran Aktif (<?= htmlspecialchars((string) $activePelanggaran, ENT_QUOTES, 'UTF-8') ?>)
+                        </button>
+                        <button type="button" class="mobile-violation-tab-btn" data-mobile-status-value="selesai"
+                            aria-pressed="false">
+                            Selesai (<?= htmlspecialchars((string) $selesaiPelanggaran, ENT_QUOTES, 'UTF-8') ?>)
+                        </button>
+                    </div>
+                    <div class="mobile-violation-controls">
+                        <label class="mobile-violation-field mobile-violation-field--search">
+                            <span>Cari Pelanggaran</span>
+                            <input type="search" data-mobile-search
+                                placeholder="Cari pelanggaran, sanksi, dosen pelapor, atau status">
+                        </label>
+                        <label class="mobile-violation-field">
+                            <span>Tingkat</span>
+                            <select data-mobile-filter-key="tingkat">
+                                <option value="">Semua Tingkat</option>
+                                <option value="i">Tingkat I</option>
+                                <option value="ii">Tingkat II</option>
+                                <option value="iii">Tingkat III</option>
+                                <option value="iv">Tingkat IV</option>
+                                <option value="v">Tingkat V</option>
+                            </select>
+                        </label>
+                    </div>
+                    <p class="mobile-violation-result">
+                        Menampilkan
+                        <strong data-mobile-visible-count><?= htmlspecialchars((string) $activePelanggaran, ENT_QUOTES, 'UTF-8') ?></strong>
+                        dari
+                        <strong data-mobile-total-count><?= htmlspecialchars((string) $totalPelanggaran, ENT_QUOTES, 'UTF-8') ?></strong>
+                        kasus
+                    </p>
+                </div>
+                <div class="mobile-violation-list" data-mobile-violation-list aria-label="Daftar pelanggaran mobile">
                     <?php if (!empty($pelanggaranDetail)): ?>
                         <?php foreach ($pelanggaranDetail as $mobileIndex => $detail):
+                            $statusLowerMobile = strtolower(trim((string) ($detail['status'] ?? '')));
+                            $statusTabMobile = ($statusLowerMobile === 'selesai' || $statusLowerMobile === 'done') ? 'selesai' : 'aktif';
+                            $tingkatMobile = strtolower(trim((string) ($detail['tingkat'] ?? '')));
+                            $mobileSearchText = trim(implode(' ', [
+                                (string) ($detail['pelanggaran'] ?? ''),
+                                (string) ($detail['sanksi'] ?? ''),
+                                (string) ($detail['nama_lengkap'] ?? ''),
+                                (string) ($detail['status'] ?? ''),
+                                (string) ($detail['tingkat'] ?? ''),
+                                (string) ($detail['tugas_khusus'] ?? ''),
+                            ]));
                             $detailId = 'student-' . (string) ((int) $mobileIndex + 1);
                             $sheetId = 'mobile-sheet-student-' . $detailId;
                             $titleId = $sheetId . '-title';
                             ?>
-                            <article class="mobile-violation-card" data-mobile-card>
+                            <article class="mobile-violation-card" data-mobile-card
+                                data-mobile-card-status="<?= htmlspecialchars($statusTabMobile, ENT_QUOTES, 'UTF-8') ?>"
+                                data-mobile-search="<?= htmlspecialchars($mobileSearchText, ENT_QUOTES, 'UTF-8') ?>"
+                                data-mobile-filter-tingkat="<?= htmlspecialchars($tingkatMobile, ENT_QUOTES, 'UTF-8') ?>">
                                 <div class="mobile-violation-card__summary">
                                     <p class="mobile-violation-card__title">
                                         <?= htmlspecialchars($detail['pelanggaran'], ENT_QUOTES, 'UTF-8') ?></p>
@@ -423,6 +481,7 @@ $studentTableConfig = [
                                 </div>
                             </article>
                         <?php endforeach; ?>
+                        <div class="mobile-violation-empty" data-mobile-empty-filtered hidden>Tidak ada data pada status ini.</div>
                     <?php else: ?>
                         <div class="mobile-violation-empty">Data pelanggaran tidak ditemukan.</div>
                     <?php endif; ?>

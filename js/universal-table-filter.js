@@ -32,7 +32,10 @@
         }
 
         const searchInput = tools.querySelector("[data-table-search]");
-        const filterInputs = Array.from(tools.querySelectorAll("[data-table-filter-key]"));
+        const filterInputs = Array.from(tools.querySelectorAll("select[data-table-filter-key]"));
+        const tabButtons = Array.from(
+            tools.querySelectorAll("button[data-table-tab-key][data-table-tab-value]")
+        );
         const visibleCountElement = tools.querySelector("[data-table-visible-count]");
 
         const buildNoResultRow = () => {
@@ -53,6 +56,24 @@
 
         const applyFilter = () => {
             const searchTerm = searchInput instanceof HTMLInputElement ? normalize(searchInput.value) : "";
+            const activeTabFilters = new Map();
+
+            tabButtons.forEach((button) => {
+                if (!(button instanceof HTMLButtonElement)) {
+                    return;
+                }
+
+                if (button.getAttribute("aria-pressed") !== "true") {
+                    return;
+                }
+
+                const filterKey = normalize(button.getAttribute("data-table-tab-key"));
+                const filterValue = normalize(button.getAttribute("data-table-tab-value"));
+                if (filterKey !== "" && filterValue !== "") {
+                    activeTabFilters.set(filterKey, filterValue);
+                }
+            });
+
             let visibleCount = 0;
 
             rows.forEach((row) => {
@@ -63,7 +84,7 @@
                 const searchText = normalize(row.getAttribute("data-table-search") || "");
                 const searchMatched = searchTerm === "" || searchText.includes(searchTerm);
 
-                const filtersMatched = filterInputs.every((filterInput) => {
+                const selectFiltersMatched = filterInputs.every((filterInput) => {
                     if (!(filterInput instanceof HTMLSelectElement)) {
                         return true;
                     }
@@ -82,7 +103,19 @@
                     return rowValue === expectedValue;
                 });
 
-                const isVisible = searchMatched && filtersMatched;
+                let tabFiltersMatched = true;
+                activeTabFilters.forEach((expectedValue, filterKey) => {
+                    if (!tabFiltersMatched) {
+                        return;
+                    }
+
+                    const rowValue = normalize(row.getAttribute(`data-table-filter-${filterKey}`) || "");
+                    if (rowValue !== expectedValue) {
+                        tabFiltersMatched = false;
+                    }
+                });
+
+                const isVisible = searchMatched && selectFiltersMatched && tabFiltersMatched;
                 row.hidden = !isVisible;
                 if (isVisible) {
                     visibleCount += 1;
@@ -111,6 +144,36 @@
 
         filterInputs.forEach((filterInput) => {
             filterInput.addEventListener("change", applyFilter);
+        });
+
+        tabButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                if (!(button instanceof HTMLButtonElement)) {
+                    return;
+                }
+
+                const currentKey = normalize(button.getAttribute("data-table-tab-key"));
+                if (currentKey === "") {
+                    return;
+                }
+
+                tabButtons.forEach((candidate) => {
+                    if (!(candidate instanceof HTMLButtonElement)) {
+                        return;
+                    }
+
+                    const candidateKey = normalize(candidate.getAttribute("data-table-tab-key"));
+                    if (candidateKey !== currentKey) {
+                        return;
+                    }
+
+                    const isActive = candidate === button;
+                    candidate.setAttribute("aria-pressed", isActive ? "true" : "false");
+                    candidate.classList.toggle("is-active", isActive);
+                });
+
+                applyFilter();
+            });
         });
 
         applyFilter();

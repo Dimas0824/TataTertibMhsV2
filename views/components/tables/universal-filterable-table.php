@@ -24,6 +24,7 @@ if (!function_exists('render_universal_filterable_table_component')) {
         $columns = is_array($config['columns'] ?? null) ? $config['columns'] : [];
         $rows = is_array($config['rows'] ?? null) ? $config['rows'] : [];
         $filters = is_array($config['filters'] ?? null) ? $config['filters'] : [];
+        $tabs = is_array($config['tabs'] ?? null) ? $config['tabs'] : [];
         $searchConfig = is_array($config['search'] ?? null) ? $config['search'] : [];
         $rowMetaBuilder = is_callable($config['rowMetaBuilder'] ?? null) ? $config['rowMetaBuilder'] : null;
         $emptyMessage = (string) ($config['emptyMessage'] ?? 'Data tidak ditemukan.');
@@ -38,7 +39,7 @@ if (!function_exists('render_universal_filterable_table_component')) {
         $searchEnabled = (bool) ($searchConfig['enabled'] ?? true);
         $searchPlaceholder = (string) ($searchConfig['placeholder'] ?? 'Cari data...');
         $searchLabel = (string) ($searchConfig['label'] ?? 'Pencarian');
-        $showTools = $searchEnabled || !empty($filters);
+        $showTools = $searchEnabled || !empty($filters) || !empty($tabs);
         $totalRows = count($rows);
         $colspan = max(1, count($columns));
         ?>
@@ -77,6 +78,85 @@ if (!function_exists('render_universal_filterable_table_component')) {
 
             <?php if ($showTools): ?>
                 <div class="table-tools" data-table-tools data-table-target="<?= $escape($componentId) ?>">
+                    <?php if (!empty($tabs)): ?>
+                        <div class="table-tools__tabs">
+                            <?php foreach ($tabs as $tabGroup):
+                                if (!is_array($tabGroup)) {
+                                    continue;
+                                }
+
+                                $tabKey = (string) ($tabGroup['key'] ?? '');
+                                $safeTabKey = $sanitizeFilterKey($tabKey);
+                                if ($safeTabKey === '') {
+                                    continue;
+                                }
+
+                                $tabOptions = is_array($tabGroup['options'] ?? null) ? $tabGroup['options'] : [];
+                                $normalizedTabOptions = [];
+                                foreach ($tabOptions as $tabOptionKey => $tabOptionValue) {
+                                    $optionValue = '';
+                                    $optionLabel = '';
+                                    if (is_array($tabOptionValue)) {
+                                        $optionValue = (string) ($tabOptionValue['value'] ?? '');
+                                        $optionLabel = (string) ($tabOptionValue['label'] ?? $optionValue);
+                                    } elseif (is_string($tabOptionKey)) {
+                                        $optionValue = (string) $tabOptionKey;
+                                        $optionLabel = (string) $tabOptionValue;
+                                    } else {
+                                        $optionValue = (string) $tabOptionValue;
+                                        $optionLabel = (string) $tabOptionValue;
+                                    }
+
+                                    if ($optionValue === '' || $optionLabel === '') {
+                                        continue;
+                                    }
+
+                                    $normalizedTabOptions[] = [
+                                        'value' => $normalizeText($optionValue),
+                                        'label' => $optionLabel,
+                                    ];
+                                }
+
+                                if (empty($normalizedTabOptions)) {
+                                    continue;
+                                }
+
+                                $tabLabel = (string) ($tabGroup['label'] ?? 'Tab');
+                                $defaultTabValue = $normalizeText((string) ($tabGroup['defaultValue'] ?? $normalizedTabOptions[0]['value']));
+                                $activeTabValue = $normalizedTabOptions[0]['value'];
+                                foreach ($normalizedTabOptions as $tabOption) {
+                                    if ((string) ($tabOption['value'] ?? '') === $defaultTabValue) {
+                                        $activeTabValue = $defaultTabValue;
+                                        break;
+                                    }
+                                }
+                                ?>
+                                <div class="table-tools__tab-group" data-table-tab-group="<?= $escape($safeTabKey) ?>">
+                                    <span class="table-tools__tab-label"><?= $escape($tabLabel) ?></span>
+                                    <div class="table-tools__tab-list" role="group" aria-label="<?= $escape($tabLabel) ?>">
+                                        <?php foreach ($normalizedTabOptions as $tabOption):
+                                            $tabOptionValue = (string) ($tabOption['value'] ?? '');
+                                            $tabOptionLabel = (string) ($tabOption['label'] ?? '');
+                                            if ($tabOptionValue === '' || $tabOptionLabel === '') {
+                                                continue;
+                                            }
+
+                                            $isActive = ($tabOptionValue === $activeTabValue);
+                                            ?>
+                                            <button type="button"
+                                                class="table-tools__tab-btn<?= $isActive ? ' is-active' : '' ?>"
+                                                data-table-tab-key="<?= $escape($safeTabKey) ?>"
+                                                data-table-tab-value="<?= $escape($tabOptionValue) ?>"
+                                                aria-pressed="<?= $isActive ? 'true' : 'false' ?>">
+                                                <?= $escape($tabOptionLabel) ?>
+                                            </button>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+
                     <div class="table-tools__inputs">
                         <?php if ($searchEnabled): ?>
                             <label class="table-tools__search">
