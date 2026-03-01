@@ -227,23 +227,71 @@ $tatibTableConfig = [
         src="<?= htmlspecialchars(app_seo_script_src('js/universal-table-filter.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
     <script>
         (function () {
-            const filterSelect = document.querySelector('[data-table-tools][data-table-target="tatib-table"] [data-table-filter-key="tingkat"]');
+            const tableRoot = document.getElementById('tatib-table');
             const sanksiItems = document.querySelectorAll('.sanksi-tingkat');
 
-            if (!(filterSelect instanceof HTMLSelectElement) || sanksiItems.length === 0) {
+            if (!(tableRoot instanceof HTMLTableElement) || sanksiItems.length === 0) {
                 return;
             }
 
+            const collectVisibleLevels = () => {
+                const rows = Array.from(tableRoot.querySelectorAll('tbody [data-table-row]'));
+                const levels = new Set();
+
+                rows.forEach((row) => {
+                    if (!(row instanceof HTMLTableRowElement) || row.hidden) {
+                        return;
+                    }
+
+                    const level = String(row.getAttribute('data-table-filter-tingkat') || '').trim().toLowerCase();
+                    if (level !== '') {
+                        levels.add(level);
+                    }
+                });
+
+                return levels;
+            };
+
             const applySanksiFilter = () => {
-                const selected = String(filterSelect.value || '').trim().toLowerCase();
+                const visibleLevels = collectVisibleLevels();
                 sanksiItems.forEach((item) => {
                     const level = String(item.getAttribute('data-tingkat') || '').trim().toLowerCase();
-                    item.style.display = selected === '' || selected === level ? '' : 'none';
+                    item.style.display = visibleLevels.has(level) ? '' : 'none';
                 });
             };
 
-            filterSelect.addEventListener('change', applySanksiFilter);
-            applySanksiFilter();
+            document.addEventListener('input', (event) => {
+                const target = event.target;
+                if (!(target instanceof Element)) {
+                    return;
+                }
+                if (target.matches('[data-table-tools][data-table-target="tatib-table"] [data-table-search]')) {
+                    applySanksiFilter();
+                }
+            });
+
+            document.addEventListener('change', (event) => {
+                const target = event.target;
+                if (!(target instanceof Element)) {
+                    return;
+                }
+                if (target.matches('[data-table-tools][data-table-target="tatib-table"] [data-table-filter-key]')) {
+                    applySanksiFilter();
+                }
+            });
+
+            const tbody = tableRoot.querySelector('tbody');
+            if (tbody instanceof HTMLTableSectionElement && typeof MutationObserver !== 'undefined') {
+                const observer = new MutationObserver(applySanksiFilter);
+                observer.observe(tbody, {
+                    subtree: true,
+                    attributes: true,
+                    attributeFilter: ['hidden'],
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', applySanksiFilter);
+            window.addEventListener('load', applySanksiFilter);
         })();
     </script>
 
