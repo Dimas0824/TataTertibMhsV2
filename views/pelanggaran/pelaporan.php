@@ -149,7 +149,7 @@ $tatibData = $tatibController->ReadTatib();
                         <ol>
                             <li>Masukkan NIM untuk mengambil data mahasiswa otomatis.</li>
                             <li>Pilih tingkat dan jenis pelanggaran sesuai kejadian.</li>
-                            <li>Tambahkan deskripsi tugas khusus jika diperlukan.</li>
+                            <li>Tentukan penanggung jawab tugas khusus (dosen pelapor atau DPA).</li>
                             <li>Simpan untuk mengirim laporan ke sistem.</li>
                         </ol>
                     </div>
@@ -212,6 +212,16 @@ $tatibData = $tatibController->ReadTatib();
                                 <textarea id="deskripsiTugas" name="deskripsiTugas"
                                     placeholder="Jelaskan tugas khusus atau tindak lanjut yang diberikan."></textarea>
                             </div>
+
+                            <div class="form-group form-group-wide" id="penanggungTugas-container"
+                                style="display: none;">
+                                <label for="penanggungTugas">Penanggung Jawab Tugas Khusus</label>
+                                <select id="penanggungTugas" name="penanggungTugas">
+                                    <option value="dosen" selected>Dosen Pelapor</option>
+                                    <option value="dpa">DPA Mahasiswa</option>
+                                </select>
+                                <small>Jika memilih DPA, dosen pelapor hanya menerima notifikasi progres.</small>
+                            </div>
                         </div>
 
                         <div class="form-buttons">
@@ -236,7 +246,7 @@ $tatibData = $tatibController->ReadTatib();
         ?>
     </div>
     <script defer
-        src="<?= htmlspecialchars(app_seo_script_src('js/script_pelaporan.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
+        src="<?= htmlspecialchars(app_seo_script_src('js/script_pelaporan.js', '../..') . '?v=20260301-dpa', ENT_QUOTES, 'UTF-8') ?>"></script>
 </body>
 
 </html>

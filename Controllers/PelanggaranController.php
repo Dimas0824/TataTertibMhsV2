@@ -22,7 +22,7 @@ class PelanggaranController
         return $this->pelanggaranModel->getDetailLaporanDosen($idDosen);
     }
 
-    public function simpanDetailPelanggaran($nidn, $id_tata_tertib, $nim, $id_sanksi, $detail_pelanggaran, $tugas_khusus, $surat, $status, $status_tugas)
+    public function simpanDetailPelanggaran($nidn, $id_tata_tertib, $nim, $id_sanksi, $detail_pelanggaran, $tugas_khusus, $surat, $status, $status_tugas, $delegasi_tugas_ke_dpa = false)
     {
         // Validate input
         if (!$id_tata_tertib || !$nidn || !$nim) {
@@ -42,12 +42,13 @@ class PelanggaranController
             $tugas_khusus,
             $surat,
             $status,
-            $status_tugas
+            $status_tugas,
+            $delegasi_tugas_ke_dpa
         );
         return $result; // Tambahkan return
     }
 
-    public function updateDetailPelanggaran($id_detail, $id_tata_tertib, $nim, $id_sanksi, $detail_pelanggaran, $tugas_khusus, $status, $status_tugas)
+    public function updateDetailPelanggaran($id_detail, $id_tata_tertib, $nim, $id_sanksi, $detail_pelanggaran, $tugas_khusus, $status, $status_tugas, $delegasi_tugas_ke_dpa = false)
     {
         if (!$id_tata_tertib || !$id_detail || !$nim) {
             return [
@@ -65,7 +66,8 @@ class PelanggaranController
             $detail_pelanggaran,
             $tugas_khusus,
             $status,
-            $status_tugas
+            $status_tugas,
+            $delegasi_tugas_ke_dpa
         );
         return $result; // Tambahkan return
     }

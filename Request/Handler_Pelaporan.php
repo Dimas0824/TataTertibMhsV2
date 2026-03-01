@@ -146,11 +146,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
 
       $tugas_khusus = null;
-      $status_tugas = 'Belum Dikumpulkan';
+      $status_tugas = 'Belum Diberikan';
+      $penanggungTugasInput = strtolower(trim((string) ($_POST['penanggungTugas'] ?? 'dosen')));
+      $delegasiTugasKeDpa = $penanggungTugasInput === 'dpa';
 
       if (in_array($tingkat, ['I', 'II', 'III'], true)) {
-         $tugas_khusus = $_POST['deskripsiTugas'] ?? null;
+         if ($delegasiTugasKeDpa) {
+            $tugasInput = trim((string) ($_POST['deskripsiTugas'] ?? ''));
+            if ($isUpdate && $tugasInput !== '') {
+               $tugas_khusus = $tugasInput;
+               $status_tugas = 'Belum Diberikan';
+            } else {
+               $tugas_khusus = null;
+               $status_tugas = 'Menunggu Penugasan DPA';
+            }
+         } else {
+            $tugas_khusus = $_POST['deskripsiTugas'] ?? null;
+         }
       } elseif (in_array($tingkat, ['IV', 'V'], true)) {
+         $delegasiTugasKeDpa = false;
          $status_tugas = 'Tidak Ada Tugas';
       }
 
@@ -164,6 +178,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          $existingDetail = $pelanggaranController->getDetailPelanggar((int) $resolvedDetailId, $nidn);
          if (!$existingDetail) {
             throw new RuntimeException('Data pelanggaran tidak ditemukan atau bukan milik Anda.');
+         }
+
+         $nidnPenanggungJawab = trim((string) ($existingDetail['nidn_penanggung_jawab'] ?? ''));
+         if ($nidnPenanggungJawab !== '' && $nidnPenanggungJawab !== $nidn) {
+            throw new RuntimeException('Perubahan ditolak: hanya dosen penanggung jawab yang dapat mengedit laporan ini.');
          }
 
          $existingStatus = strtolower(trim((string) ($existingDetail['status'] ?? '')));
@@ -184,7 +203,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $detailPelanggaran,
             $tugas_khusus,
             'pending',
-            $status_tugas
+            $status_tugas,
+            $delegasiTugasKeDpa
          );
       } else {
          $result = $pelanggaranController->simpanDetailPelanggaran(
@@ -196,7 +216,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $tugas_khusus,
             null,
             'pending',
-            $status_tugas
+            $status_tugas,
+            $delegasiTugasKeDpa
          );
       }
 

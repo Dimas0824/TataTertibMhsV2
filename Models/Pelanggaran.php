@@ -45,6 +45,35 @@ class Pelanggaran
         return $normalized;
     }
 
+    private function normalizeBooleanFlag($value): bool
+    {
+        if (is_bool($value)) {
+            return $value;
+        }
+
+        $normalized = strtolower(trim((string) $value));
+        return in_array($normalized, ['1', 'true', 'yes', 'y', 'on', 'dpa'], true);
+    }
+
+    private function getDosenByNidn(string $nidn): ?array
+    {
+        $nidn = trim($nidn);
+        if ($nidn === '') {
+            return null;
+        }
+
+        $stmt = $this->connect->prepare(
+            "SELECT id_dosen, nidn, nama_lengkap
+             FROM DOSEN
+             WHERE nidn = ?
+             LIMIT 1"
+        );
+        $stmt->execute([$nidn]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result !== false ? $result : null;
+    }
+
     private function kirimNotifikasi(int $idDosen, int $idMahasiswa, int $idDetail, string $pesan, string $rolePenerima): void
     {
         try {
@@ -71,10 +100,47 @@ class Pelanggaran
 
     public function getDetailLaporanDosen($nidn)
     {
-        $query = "SELECT * FROM v_DosenMelaporkan WHERE nidn = ?";
+        $dosen = $this->getDosenByNidn((string) $nidn);
+        if (!$dosen || !isset($dosen['id_dosen'])) {
+            return [];
+        }
+
+        $idDosen = (int) $dosen['id_dosen'];
+
+        $query = "SELECT
+                    dp.id_detail,
+                    pelapor.nidn,
+                    m.nama_lengkap AS nama_mahasiswa,
+                    m.nim,
+                    p.nama_prodi,
+                    t.deskripsi AS pelanggaran,
+                    dp.detail_pelanggaran,
+                    t.tingkat,
+                    pelapor.nama_lengkap AS dosen_pelapor,
+                    dp.tugas_khusus,
+                    dp.surat,
+                    dp.pengumpulan_tgsKhusus,
+                    t.poin,
+                    dp.status AS status_pelanggaran,
+                    dp.status_tugas,
+                    dp.delegasi_tugas_ke_dpa,
+                    dp.id_dosen_penanggung_jawab,
+                    penanggung.nidn AS nidn_penanggung_jawab,
+                    penanggung.nama_lengkap AS dosen_penanggung_jawab,
+                    CASE WHEN dp.id_dosen = ? THEN 1 ELSE 0 END AS is_dosen_pelapor,
+                    CASE WHEN dp.id_dosen_penanggung_jawab = ? THEN 1 ELSE 0 END AS is_penanggung_jawab
+                FROM DETAIL_PELANGGARAN dp
+                JOIN DOSEN pelapor ON dp.id_dosen = pelapor.id_dosen
+                JOIN MAHASISWA m ON dp.id_mahasiswa = m.id_mhs
+                JOIN TATA_TERTIB t ON dp.id_tata_tertib = t.id_tata_tertib
+                JOIN PRODI p ON m.id_prodi = p.id_prodi
+                LEFT JOIN DOSEN penanggung ON dp.id_dosen_penanggung_jawab = penanggung.id_dosen
+                WHERE dp.id_dosen = ?
+                   OR dp.id_dosen_penanggung_jawab = ?
+                ORDER BY dp.id_detail DESC";
+
         $stmt = $this->connect->prepare($query);
-        $stmt->bindParam(1, $nidn, PDO::PARAM_STR);
-        $stmt->execute();
+        $stmt->execute([$idDosen, $idDosen, $idDosen, $idDosen]);
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return $result;
@@ -82,18 +148,28 @@ class Pelanggaran
 
     public function getUpdatePelanggar($id, ?string $nidn = null)
     {
-        $query = "SELECT dp.*, m.nim, m.nama_lengkap, m.angkatan
-              FROM DETAIL_PELANGGARAN dp
-              JOIN MAHASISWA m ON dp.id_mahasiswa = m.id_mhs
-              JOIN TATA_TERTIB tt ON dp.id_tata_tertib = tt.id_tata_tertib
-              JOIN DOSEN d ON dp.id_dosen = d.id_dosen
-              JOIN SANKSI s ON dp.id_sanksi = s.id_sanksi
-              WHERE dp.id_detail = ?";
+        $query = "SELECT
+                    dp.*,
+                    m.nim,
+                    m.nama_lengkap,
+                    m.angkatan,
+                    pelapor.nidn AS nidn_pelapor,
+                    pelapor.nama_lengkap AS dosen_pelapor,
+                    penanggung.nidn AS nidn_penanggung_jawab,
+                    penanggung.nama_lengkap AS dosen_penanggung_jawab
+                FROM DETAIL_PELANGGARAN dp
+                JOIN MAHASISWA m ON dp.id_mahasiswa = m.id_mhs
+                JOIN TATA_TERTIB tt ON dp.id_tata_tertib = tt.id_tata_tertib
+                JOIN SANKSI s ON dp.id_sanksi = s.id_sanksi
+                JOIN DOSEN pelapor ON dp.id_dosen = pelapor.id_dosen
+                LEFT JOIN DOSEN penanggung ON dp.id_dosen_penanggung_jawab = penanggung.id_dosen
+                WHERE dp.id_detail = ?";
 
         $params = [(int) $id];
         $nidn = trim((string) $nidn);
         if ($nidn !== '') {
-            $query .= " AND d.nidn = ?";
+            $query .= " AND (pelapor.nidn = ? OR penanggung.nidn = ?)";
+            $params[] = $nidn;
             $params[] = $nidn;
         }
 
@@ -133,7 +209,7 @@ class Pelanggaran
         return (int) $result['id_sanksi'];
     }
 
-    public function simpanDetailPelanggaran($nidn_dosen, $id_tata_tertib, $nim_mahasiswa, $id_sanksi, $detail_pelanggaran, $tugas_khusus, $surat, $status, $status_tugas)
+    public function simpanDetailPelanggaran($nidn_dosen, $id_tata_tertib, $nim_mahasiswa, $id_sanksi, $detail_pelanggaran, $tugas_khusus, $surat, $status, $status_tugas, $delegasi_tugas_ke_dpa = false)
     {
         $idTatib = (int) $id_tata_tertib;
         $idSanksi = (int) $id_sanksi;
@@ -142,6 +218,7 @@ class Pelanggaran
         $suratMahasiswa = $this->normalizeNullableString($surat, 255);
         $statusPelanggaran = $this->normalizeNullableString($status, 50) ?? 'pending';
         $statusTugas = $this->normalizeStatusTugas($status_tugas);
+        $delegasiKeDpa = $this->normalizeBooleanFlag($delegasi_tugas_ke_dpa);
 
         try {
             $this->connect->beginTransaction();
@@ -150,7 +227,12 @@ class Pelanggaran
             $stmtDosen->execute([$nidn_dosen]);
             $dosen = $stmtDosen->fetch(PDO::FETCH_ASSOC);
 
-            $stmtMhs = $this->connect->prepare("SELECT id_mhs, nim FROM MAHASISWA WHERE nim = ? LIMIT 1");
+            $stmtMhs = $this->connect->prepare(
+                "SELECT id_mhs, nim, id_dpa
+                 FROM MAHASISWA
+                 WHERE nim = ?
+                 LIMIT 1"
+            );
             $stmtMhs->execute([$nim_mahasiswa]);
             $mahasiswa = $stmtMhs->fetch(PDO::FETCH_ASSOC);
 
@@ -158,9 +240,15 @@ class Pelanggaran
                 throw new RuntimeException('Dosen atau mahasiswa tidak ditemukan.');
             }
 
-            $stmtTatib = $this->connect->prepare("SELECT id_tata_tertib FROM TATA_TERTIB WHERE id_tata_tertib = ? LIMIT 1");
+            $stmtTatib = $this->connect->prepare(
+                "SELECT id_tata_tertib, tingkat
+                 FROM TATA_TERTIB
+                 WHERE id_tata_tertib = ?
+                 LIMIT 1"
+            );
             $stmtTatib->execute([$idTatib]);
-            if (!$stmtTatib->fetch(PDO::FETCH_ASSOC)) {
+            $tatib = $stmtTatib->fetch(PDO::FETCH_ASSOC);
+            if (!$tatib) {
                 throw new RuntimeException('Jenis pelanggaran tidak valid.');
             }
 
@@ -168,6 +256,22 @@ class Pelanggaran
             $stmtSanksi->execute([$idSanksi]);
             if (!$stmtSanksi->fetch(PDO::FETCH_ASSOC)) {
                 throw new RuntimeException('Sanksi tidak valid.');
+            }
+
+            $idDosen = (int) $dosen['id_dosen'];
+            $idMahasiswa = (int) $mahasiswa['id_mhs'];
+            $tingkat = strtoupper(trim((string) ($tatib['tingkat'] ?? '')));
+            $requiresTugas = in_array($tingkat, ['I', 'II', 'III'], true);
+            $idDosenPenanggungJawab = $idDosen;
+
+            if ($requiresTugas && $delegasiKeDpa) {
+                $idDpa = (int) ($mahasiswa['id_dpa'] ?? 0);
+                if ($idDpa <= 0) {
+                    throw new RuntimeException('Mahasiswa belum memiliki DPA, tidak bisa melimpahkan tugas.');
+                }
+                $idDosenPenanggungJawab = $idDpa;
+            } else {
+                $delegasiKeDpa = false;
             }
 
             $stmtInsert = $this->connect->prepare(
@@ -180,33 +284,43 @@ class Pelanggaran
                     detail_pelanggaran,
                     surat,
                     status,
-                    status_tugas
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                    status_tugas,
+                    delegasi_tugas_ke_dpa,
+                    id_dosen_penanggung_jawab
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
             );
 
             $stmtInsert->execute([
-                (int) $dosen['id_dosen'],
+                $idDosen,
                 $idTatib,
-                (int) $mahasiswa['id_mhs'],
+                $idMahasiswa,
                 $idSanksi,
                 $tugasKhusus,
                 $detailPelanggaran,
                 $suratMahasiswa,
                 $statusPelanggaran,
-                $statusTugas
+                $statusTugas,
+                $delegasiKeDpa ? 1 : 0,
+                $idDosenPenanggungJawab,
             ]);
 
             $idDetail = (int) $this->connect->lastInsertId();
-            $idDosen = (int) $dosen['id_dosen'];
-            $idMahasiswa = (int) $mahasiswa['id_mhs'];
 
             $this->connect->commit();
 
             $pesanDosen = 'Mahasiswa dengan NIM ' . $mahasiswa['nim'] . ' telah dilaporkan oleh Anda.';
+            if ($delegasiKeDpa && $idDosenPenanggungJawab !== $idDosen) {
+                $pesanDosen = 'Laporan NIM ' . $mahasiswa['nim'] . ' berhasil dibuat. Tugas khusus dilimpahkan ke DPA.';
+            }
             $this->kirimNotifikasi($idDosen, $idMahasiswa, $idDetail, $pesanDosen, 'dosen');
 
             $pesanMahasiswa = 'Anda telah dilaporkan melakukan pelanggaran oleh ' . $dosen['nama_lengkap'];
             $this->kirimNotifikasi($idDosen, $idMahasiswa, $idDetail, $pesanMahasiswa, 'mahasiswa');
+
+            if ($delegasiKeDpa && $idDosenPenanggungJawab !== $idDosen) {
+                $pesanDpa = 'Sebagai DPA, Anda ditugaskan menangani tugas khusus untuk laporan NIM ' . $mahasiswa['nim'] . '.';
+                $this->kirimNotifikasi($idDosenPenanggungJawab, $idMahasiswa, $idDetail, $pesanDpa, 'dosen');
+            }
 
             return [
                 'success' => true,
@@ -234,7 +348,7 @@ class Pelanggaran
         }
     }
 
-    public function updateDetailPelanggaran($id_detail, $id_tata_tertib, $nim_mahasiswa, $id_sanksi, $detail_pelanggaran, $tugas_khusus, $status, $status_tugas)
+    public function updateDetailPelanggaran($id_detail, $id_tata_tertib, $nim_mahasiswa, $id_sanksi, $detail_pelanggaran, $tugas_khusus, $status, $status_tugas, $delegasi_tugas_ke_dpa = false)
     {
         $idDetail = (int) $id_detail;
         $idTatib = (int) $id_tata_tertib;
@@ -243,9 +357,15 @@ class Pelanggaran
         $tugasKhusus = $this->normalizeNullableString($tugas_khusus, 255);
         $statusPelanggaran = $this->normalizeNullableString($status, 50) ?? 'pending';
         $statusTugas = $this->normalizeStatusTugas($status_tugas);
+        $delegasiKeDpa = $this->normalizeBooleanFlag($delegasi_tugas_ke_dpa);
 
         try {
-            $stmtCurrent = $this->connect->prepare("SELECT status, status_tugas FROM DETAIL_PELANGGARAN WHERE id_detail = ? LIMIT 1");
+            $stmtCurrent = $this->connect->prepare(
+                "SELECT status, status_tugas, id_dosen
+                 FROM DETAIL_PELANGGARAN
+                 WHERE id_detail = ?
+                 LIMIT 1"
+            );
             $stmtCurrent->execute([$idDetail]);
             $currentDetail = $stmtCurrent->fetch(PDO::FETCH_ASSOC);
             if (!$currentDetail) {
@@ -260,7 +380,7 @@ class Pelanggaran
                 throw new RuntimeException('Edit tidak diizinkan karena tugas atau laporan sudah selesai.');
             }
 
-            $stmtMhs = $this->connect->prepare("SELECT id_mhs FROM MAHASISWA WHERE nim = ? LIMIT 1");
+            $stmtMhs = $this->connect->prepare("SELECT id_mhs, id_dpa FROM MAHASISWA WHERE nim = ? LIMIT 1");
             $stmtMhs->execute([$nim_mahasiswa]);
             $mahasiswa = $stmtMhs->fetch(PDO::FETCH_ASSOC);
 
@@ -268,9 +388,15 @@ class Pelanggaran
                 throw new RuntimeException('Mahasiswa tidak ditemukan.');
             }
 
-            $stmtTatib = $this->connect->prepare("SELECT id_tata_tertib FROM TATA_TERTIB WHERE id_tata_tertib = ? LIMIT 1");
+            $stmtTatib = $this->connect->prepare(
+                "SELECT id_tata_tertib, tingkat
+                 FROM TATA_TERTIB
+                 WHERE id_tata_tertib = ?
+                 LIMIT 1"
+            );
             $stmtTatib->execute([$idTatib]);
-            if (!$stmtTatib->fetch(PDO::FETCH_ASSOC)) {
+            $tatib = $stmtTatib->fetch(PDO::FETCH_ASSOC);
+            if (!$tatib) {
                 throw new RuntimeException('Jenis pelanggaran tidak valid.');
             }
 
@@ -280,6 +406,24 @@ class Pelanggaran
                 throw new RuntimeException('Sanksi tidak valid.');
             }
 
+            $idDosenPelapor = (int) ($currentDetail['id_dosen'] ?? 0);
+            if ($idDosenPelapor <= 0) {
+                throw new RuntimeException('Dosen pelapor tidak valid.');
+            }
+
+            $tingkat = strtoupper(trim((string) ($tatib['tingkat'] ?? '')));
+            $requiresTugas = in_array($tingkat, ['I', 'II', 'III'], true);
+            $idDosenPenanggungJawab = $idDosenPelapor;
+            if ($requiresTugas && $delegasiKeDpa) {
+                $idDpa = (int) ($mahasiswa['id_dpa'] ?? 0);
+                if ($idDpa <= 0) {
+                    throw new RuntimeException('Mahasiswa belum memiliki DPA, tidak bisa melimpahkan tugas.');
+                }
+                $idDosenPenanggungJawab = $idDpa;
+            } else {
+                $delegasiKeDpa = false;
+            }
+
             $query = "UPDATE DETAIL_PELANGGARAN
                       SET id_tata_tertib = ?,
                           id_mahasiswa = ?,
@@ -287,7 +431,9 @@ class Pelanggaran
                           tugas_khusus = ?,
                           detail_pelanggaran = ?,
                           status = ?,
-                          status_tugas = ?
+                          status_tugas = ?,
+                          delegasi_tugas_ke_dpa = ?,
+                          id_dosen_penanggung_jawab = ?
                       WHERE id_detail = ?";
 
             $stmt = $this->connect->prepare($query);
@@ -299,6 +445,8 @@ class Pelanggaran
                 $detailPelanggaran,
                 $statusPelanggaran,
                 $statusTugas,
+                $delegasiKeDpa ? 1 : 0,
+                $idDosenPenanggungJawab,
                 $idDetail
             ]);
 
@@ -335,29 +483,35 @@ class Pelanggaran
             $stmt = $this->connect->prepare(
                 "SELECT
                     dp.id_detail,
-                    dp.id_dosen,
+                    dp.id_dosen AS id_dosen_pelapor,
+                    dp.id_dosen_penanggung_jawab,
                     dp.id_mahasiswa,
                     dp.status,
                     dp.surat,
                     dp.pengumpulan_tgsKhusus,
+                    dp.delegasi_tugas_ke_dpa,
                     tt.tingkat,
-                    d.nama_lengkap AS nama_dosen,
-                    m.nim
+                    m.nim,
+                    pelapor.nama_lengkap AS nama_dosen_pelapor,
+                    penanggung.nama_lengkap AS nama_dosen_penanggung_jawab,
+                    aktor.id_dosen AS id_dosen_aktor
                  FROM DETAIL_PELANGGARAN dp
-                 JOIN DOSEN d ON dp.id_dosen = d.id_dosen
+                 JOIN DOSEN aktor ON aktor.nidn = ?
+                 JOIN DOSEN pelapor ON dp.id_dosen = pelapor.id_dosen
+                 LEFT JOIN DOSEN penanggung ON dp.id_dosen_penanggung_jawab = penanggung.id_dosen
                  JOIN MAHASISWA m ON dp.id_mahasiswa = m.id_mhs
                  JOIN TATA_TERTIB tt ON dp.id_tata_tertib = tt.id_tata_tertib
                  WHERE dp.id_detail = ?
-                   AND d.nidn = ?
+                   AND dp.id_dosen_penanggung_jawab = aktor.id_dosen
                  LIMIT 1"
             );
-            $stmt->execute([$idDetail, $nidn]);
+            $stmt->execute([$nidn, $idDetail]);
             $detail = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$detail) {
                 return [
                     'success' => false,
-                    'message' => 'Laporan tidak ditemukan atau bukan milik Anda.',
+                    'message' => 'Laporan tidak ditemukan atau Anda bukan penanggung jawab konfirmasi.',
                 ];
             }
 
@@ -399,14 +553,25 @@ class Pelanggaran
             $stmtUpdate->bindValue(':id_detail', $idDetail, PDO::PARAM_INT);
             $stmtUpdate->execute();
 
-            $idDosen = (int) ($detail['id_dosen'] ?? 0);
+            $idDosenPelapor = (int) ($detail['id_dosen_pelapor'] ?? 0);
+            $idDosenAktor = (int) ($detail['id_dosen_aktor'] ?? 0);
             $idMahasiswa = (int) ($detail['id_mahasiswa'] ?? 0);
-            if ($idDosen > 0 && $idMahasiswa > 0) {
-                $pesanMahasiswa = 'Laporan pelanggaran Anda telah dikonfirmasi selesai oleh dosen.';
-                $this->kirimNotifikasi($idDosen, $idMahasiswa, $idDetail, $pesanMahasiswa, 'mahasiswa');
+            if ($idDosenAktor > 0 && $idMahasiswa > 0) {
+                $namaKonfirmator = trim((string) ($detail['nama_dosen_penanggung_jawab'] ?? ''));
+                if ($namaKonfirmator === '') {
+                    $namaKonfirmator = 'dosen penanggung jawab';
+                }
+
+                $pesanMahasiswa = 'Laporan pelanggaran Anda telah dikonfirmasi selesai oleh ' . $namaKonfirmator . '.';
+                $this->kirimNotifikasi($idDosenAktor, $idMahasiswa, $idDetail, $pesanMahasiswa, 'mahasiswa');
 
                 $pesanDosen = 'Laporan pelanggaran mahasiswa NIM ' . (string) ($detail['nim'] ?? '-') . ' telah Anda selesaikan.';
-                $this->kirimNotifikasi($idDosen, $idMahasiswa, $idDetail, $pesanDosen, 'dosen');
+                $this->kirimNotifikasi($idDosenAktor, $idMahasiswa, $idDetail, $pesanDosen, 'dosen');
+
+                if ($idDosenPelapor > 0 && $idDosenPelapor !== $idDosenAktor) {
+                    $pesanPelapor = 'Laporan pelanggaran NIM ' . (string) ($detail['nim'] ?? '-') . ' telah dikonfirmasi selesai oleh DPA.';
+                    $this->kirimNotifikasi($idDosenPelapor, $idMahasiswa, $idDetail, $pesanPelapor, 'dosen');
+                }
             }
 
             return [

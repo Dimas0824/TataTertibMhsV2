@@ -10,6 +10,9 @@
     const sanksiSelect = document.getElementById('sanksi');
     const deskripsiTugasContainer = document.getElementById('deskripsiTugas-container');
     const deskripsiTugasInput = document.getElementById('deskripsiTugas');
+    const penanggungTugasContainer = document.getElementById('penanggungTugas-container');
+    const penanggungTugasSelect = document.getElementById('penanggungTugas');
+    const isEditMode = Boolean(form && form.querySelector('input[name="id_detail"]'));
 
     if (!tingkatSelect || !jenisPelanggaranSelect) {
         return;
@@ -57,26 +60,40 @@
         }
     };
 
-    const toggleTugasKhusus = (tingkat) => {
-        if (!deskripsiTugasContainer) {
-            return;
-        }
-
-        const normalizedTingkat = String(tingkat || '').trim().toUpperCase();
-        const requiresTugasKhusus = ['I', 'II', 'III', '1', '2', '3'].includes(normalizedTingkat);
-
-        if (requiresTugasKhusus) {
-            deskripsiTugasContainer.style.display = 'block';
-        } else {
-            deskripsiTugasContainer.style.display = 'none';
-        }
+    const syncTaskResponsibilityState = (requiresTugasKhusus) => {
+        const delegasiKeDpa = requiresTugasKhusus
+            && penanggungTugasSelect
+            && String(penanggungTugasSelect.value || '').trim().toLowerCase() === 'dpa';
+        const lockDeskripsiByDelegasi = delegasiKeDpa && !isEditMode;
 
         if (deskripsiTugasInput) {
-            deskripsiTugasInput.disabled = !requiresTugasKhusus;
-            if (!requiresTugasKhusus) {
+            deskripsiTugasInput.disabled = !requiresTugasKhusus || lockDeskripsiByDelegasi;
+            if (!requiresTugasKhusus || lockDeskripsiByDelegasi) {
                 deskripsiTugasInput.value = '';
             }
         }
+    };
+
+    const toggleTugasKhusus = (tingkat) => {
+        const normalizedTingkat = String(tingkat || '').trim().toUpperCase();
+        const requiresTugasKhusus = ['I', 'II', 'III', '1', '2', '3'].includes(normalizedTingkat);
+
+        if (deskripsiTugasContainer) {
+            deskripsiTugasContainer.style.display = requiresTugasKhusus ? 'block' : 'none';
+        }
+
+        if (penanggungTugasContainer) {
+            penanggungTugasContainer.style.display = requiresTugasKhusus ? 'block' : 'none';
+        }
+
+        if (penanggungTugasSelect) {
+            penanggungTugasSelect.disabled = !requiresTugasKhusus;
+            if (!requiresTugasKhusus) {
+                penanggungTugasSelect.value = 'dosen';
+            }
+        }
+
+        syncTaskResponsibilityState(requiresTugasKhusus);
     };
 
     const setSelectOptionsByTingkat = (selectElement, options, tingkat, placeholderText) => {
@@ -211,6 +228,14 @@
         toggleTugasKhusus(tingkat);
         applySelectEnhancement();
     });
+
+    if (penanggungTugasSelect) {
+        penanggungTugasSelect.addEventListener('change', () => {
+            const normalizedTingkat = String(tingkatSelect.value || '').trim().toUpperCase();
+            const requiresTugasKhusus = ['I', 'II', 'III', '1', '2', '3'].includes(normalizedTingkat);
+            syncTaskResponsibilityState(requiresTugasKhusus);
+        });
+    }
 
     setSelectOptionsByTingkat(jenisPelanggaranSelect, allJenisOptions, tingkatSelect.value, 'Pilih Jenis Pelanggaran');
     setSelectOptionsByTingkat(sanksiSelect, allSanksiOptions, tingkatSelect.value, 'Pilih Sanksi');

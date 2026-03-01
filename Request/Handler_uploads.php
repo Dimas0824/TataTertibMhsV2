@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $detailStmt = $connect->prepare(
-        "SELECT dp.id_detail, dp.surat, dp.pengumpulan_tgsKhusus, tt.tingkat
+        "SELECT dp.id_detail, dp.surat, dp.pengumpulan_tgsKhusus, dp.delegasi_tugas_ke_dpa, tt.tingkat
          FROM DETAIL_PELANGGARAN dp
          JOIN TATA_TERTIB tt ON tt.id_tata_tertib = dp.id_tata_tertib
          WHERE dp.id_detail = :idDetail
@@ -140,7 +140,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $statusTugas = 'Tidak Ada Tugas';
                 if ($requiresTugas) {
-                    $statusTugas = $currentTugas !== '' ? 'Sudah Dikumpulkan' : 'Belum Diberikan';
+                    $delegasiKeDpa = ((int) ($detailData['delegasi_tugas_ke_dpa'] ?? 0)) === 1;
+                    if ($currentTugas !== '') {
+                        $statusTugas = 'Sudah Dikumpulkan';
+                    } else {
+                        $statusTugas = $delegasiKeDpa ? 'Menunggu Penugasan DPA' : 'Belum Diberikan';
+                    }
                 }
 
                 // Perbarui status proses tanpa menurunkan laporan yang sudah selesai.

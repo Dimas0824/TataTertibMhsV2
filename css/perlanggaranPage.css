@@ -699,13 +699,20 @@
 .case-detail-grid {
   margin: 0;
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
   padding: 0 10px 10px;
 }
 
 .case-detail-grid div {
-  border-top: 1px solid #e2e8f0;
-  padding-top: 8px;
+  border: 1px solid #dbe5f0;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 8px 10px;
+  min-height: 64px;
+  display: grid;
+  align-content: start;
+  gap: 4px;
 }
 
 .case-detail-grid dt {
@@ -718,10 +725,11 @@
 }
 
 .case-detail-grid dd {
-  margin: 5px 0 0;
+  margin: 0;
   color: #1f3348;
   font-size: 0.81rem;
   line-height: 1.45;
+  word-break: break-word;
 }
 
 .progress-column {
@@ -1165,6 +1173,10 @@ body.mobile-sheet-open {
 
   .table-container table {
     min-width: 940px;
+  }
+
+  .case-detail-grid {
+    grid-template-columns: 1fr;
   }
 }
 

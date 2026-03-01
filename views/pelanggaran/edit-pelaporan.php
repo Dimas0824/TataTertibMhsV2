@@ -35,6 +35,12 @@ if (!$detailPelanggar) {
     app_redirect_page('page.pelanggaran_dosen');
 }
 
+$nidnPenanggungJawab = trim((string) ($detailPelanggar['nidn_penanggung_jawab'] ?? ''));
+if ($nidnPenanggungJawab !== '' && $nidnPenanggungJawab !== $nidn) {
+    set_app_flash_modal('error', 'Halaman edit hanya dapat diakses oleh dosen penanggung jawab laporan.');
+    app_redirect_page('page.pelanggaran_dosen');
+}
+
 $statusPelanggaran = strtolower(trim((string) ($detailPelanggar['status'] ?? '')));
 $statusTugas = strtolower(trim((string) ($detailPelanggar['status_tugas'] ?? '')));
 $laporanSelesai = in_array($statusPelanggaran, ['selesai', 'done'], true);
@@ -43,6 +49,7 @@ if ($laporanSelesai || $tugasSelesai) {
     set_app_flash_modal('error', 'Data tidak dapat diedit karena tugas atau laporan sudah selesai.');
     app_redirect_page('page.pelanggaran_dosen');
 }
+$delegasiTugasKeDpa = ((int) ($detailPelanggar['delegasi_tugas_ke_dpa'] ?? 0)) === 1;
 
 $tatibController = new TatibController();
 $tatibData = $tatibController->ReadTatib();
@@ -181,7 +188,7 @@ if ($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
                         <ol>
                             <li>Pastikan identitas mahasiswa sesuai.</li>
                             <li>Sesuaikan tingkat, jenis pelanggaran, dan sanksi.</li>
-                            <li>Perbarui deskripsi pelanggaran atau tugas khusus.</li>
+                            <li>Tentukan penanggung jawab tugas khusus (dosen pelapor atau DPA).</li>
                             <li>Simpan perubahan untuk memperbarui laporan.</li>
                         </ol>
                     </div>
@@ -262,6 +269,15 @@ if ($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
                                 <textarea id="deskripsiTugas"
                                     name="deskripsiTugas"><?= htmlspecialchars($detailPelanggar['tugas_khusus'] ?? '') ?></textarea>
                             </div>
+
+                            <div class="form-group form-group-wide" id="penanggungTugas-container" style="display: none;">
+                                <label for="penanggungTugas">Penanggung Jawab Tugas Khusus</label>
+                                <select id="penanggungTugas" name="penanggungTugas">
+                                    <option value="dosen" <?= $delegasiTugasKeDpa ? '' : 'selected' ?>>Dosen Pelapor</option>
+                                    <option value="dpa" <?= $delegasiTugasKeDpa ? 'selected' : '' ?>>DPA Mahasiswa</option>
+                                </select>
+                                <small>Jika memilih DPA, dosen pelapor hanya menerima notifikasi progres.</small>
+                            </div>
                         </div>
 
                         <div class="form-buttons">
@@ -285,7 +301,7 @@ if ($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
         ?>
     </div>
     <script defer
-        src="<?= htmlspecialchars(app_seo_script_src('js/script_pelaporan.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
+        src="<?= htmlspecialchars(app_seo_script_src('js/script_pelaporan.js', '../..') . '?v=20260301-dpa', ENT_QUOTES, 'UTF-8') ?>"></script>
 </body>
 
 </html>

@@ -67,18 +67,41 @@ $buildLecturerRowState = static function (array $detail): array {
     $statusTugasLower = strtolower(trim((string) ($detail['status_tugas'] ?? '')));
     $isSelesai = ($statusLower === 'selesai' || $statusLower === 'done');
     $isTugasSelesai = in_array($statusTugasLower, ['sudah dikumpulkan', 'selesai', 'done'], true);
-    $canConfirm = $dokumenLengkap && !$isSelesai;
-    $canEdit = !$isSelesai && !$isTugasSelesai;
+    $isDosenPelapor = ((int) ($detail['is_dosen_pelapor'] ?? 0)) === 1;
+    $isPenanggungJawab = ((int) ($detail['is_penanggung_jawab'] ?? 0)) === 1;
+    $delegasiKeDpa = ((int) ($detail['delegasi_tugas_ke_dpa'] ?? 0)) === 1;
+    $namaPenanggungJawab = trim((string) ($detail['dosen_penanggung_jawab'] ?? ''));
+    if ($namaPenanggungJawab === '') {
+        $namaPenanggungJawab = trim((string) ($detail['dosen_pelapor'] ?? '-'));
+    }
+    $canConfirm = $dokumenLengkap && !$isSelesai && $isPenanggungJawab;
+    $canEdit = !$isSelesai && !$isTugasSelesai && $isPenanggungJawab;
+    $canDelete = $isDosenPelapor && !$isSelesai;
+    $roleLabel = 'Dosen Pelapor';
+    if ($isPenanggungJawab && $isDosenPelapor) {
+        $roleLabel = 'Pelapor & Penanggung';
+    } elseif ($isPenanggungJawab) {
+        $roleLabel = 'DPA Penanggung Jawab';
+    } elseif ($isDosenPelapor && $delegasiKeDpa) {
+        $roleLabel = 'Dosen Pelapor (Notifikasi)';
+    }
+
     $editLockNote = '';
     if (!$canEdit) {
-        $editLockNote = $isSelesai
-            ? 'Edit dikunci karena laporan sudah selesai.'
-            : 'Edit dikunci karena tugas sudah diselesaikan.';
+        if (!$isPenanggungJawab) {
+            $editLockNote = 'Edit dikunci. Penanganan dialihkan ke ' . $namaPenanggungJawab . '.';
+        } else {
+            $editLockNote = $isSelesai
+                ? 'Edit dikunci karena laporan sudah selesai.'
+                : 'Edit dikunci karena tugas sudah diselesaikan.';
+        }
     }
     $confirmNote = 'Dokumen sudah lengkap. Laporan bisa dikonfirmasi selesai.';
 
     if ($isSelesai) {
         $confirmNote = 'Laporan sudah berstatus selesai.';
+    } elseif (!$isPenanggungJawab) {
+        $confirmNote = 'Konfirmasi ditangani oleh ' . $namaPenanggungJawab . '. Anda hanya menerima notifikasi.';
     } elseif (!$hasSurat) {
         $confirmNote = 'Menunggu upload surat pernyataan.';
     } elseif ($requiresTugas && !$hasTugas) {
@@ -97,7 +120,10 @@ $buildLecturerRowState = static function (array $detail): array {
     $taskStatusLabel = 'Tidak diwajibkan';
     $taskStatusClass = 'status-pill status-pill-soft';
     if ($requiresTugas) {
-        if ($hasTugas) {
+        if ($statusTugasLower === 'menunggu penugasan dpa') {
+            $taskStatusLabel = 'Menunggu penugasan DPA';
+            $taskStatusClass = 'status-pill status-pill--pending';
+        } elseif ($hasTugas) {
             $taskStatusLabel = 'Sudah dikumpulkan';
             $taskStatusClass = 'status-pill status-pill--done';
         } else {
@@ -138,8 +164,14 @@ $buildLecturerRowState = static function (array $detail): array {
         'statusLower' => $statusLower,
         'isSelesai' => $isSelesai,
         'isTugasSelesai' => $isTugasSelesai,
+        'isDosenPelapor' => $isDosenPelapor,
+        'isPenanggungJawab' => $isPenanggungJawab,
+        'delegasiKeDpa' => $delegasiKeDpa,
+        'namaPenanggungJawab' => $namaPenanggungJawab,
+        'roleLabel' => $roleLabel,
         'canConfirm' => $canConfirm,
         'canEdit' => $canEdit,
+        'canDelete' => $canDelete,
         'editLockNote' => $editLockNote,
         'confirmNote' => $confirmNote,
         'statusClass' => $statusClass,
@@ -179,12 +211,22 @@ $lecturerTableColumns = [
                     $tugasKhususText = 'Tidak diwajibkan';
                     if ($state['requiresTugas']) {
                         $rawTugasKhusus = trim((string) ($detail['tugas_khusus'] ?? ''));
-                        $tugasKhususText = $rawTugasKhusus !== '' ? $rawTugasKhusus : 'Belum diisi';
+                        if ($rawTugasKhusus !== '') {
+                            $tugasKhususText = $rawTugasKhusus;
+                        } elseif (strtolower(trim((string) ($detail['status_tugas'] ?? ''))) === 'menunggu penugasan dpa') {
+                            $tugasKhususText = 'Menunggu penugasan dari DPA';
+                        } else {
+                            $tugasKhususText = 'Belum diisi';
+                        }
                     }
                     ?>
                     <div>
                         <dt>Dosen Pelapor</dt>
                         <dd><?= $escapeHtml((string) ($detail['dosen_pelapor'] ?? '')) ?></dd>
+                    </div>
+                    <div>
+                        <dt>Dosen Penanggung</dt>
+                        <dd><?= $escapeHtml((string) $state['namaPenanggungJawab']) ?></dd>
                     </div>
                     <div>
                         <dt>Tugas Khusus</dt>
@@ -193,6 +235,10 @@ $lecturerTableColumns = [
                     <div>
                         <dt>Status Tugas</dt>
                         <dd><?= $escapeHtml((string) $state['taskStatusLabel']) ?></dd>
+                    </div>
+                    <div>
+                        <dt>Peran Anda</dt>
+                        <dd><?= $escapeHtml((string) $state['roleLabel']) ?></dd>
                     </div>
                 </dl>
             </details>
@@ -295,17 +341,19 @@ $lecturerTableColumns = [
                     </button>
                 </form>
                 <form method="POST" class="delete-form"
-                    action="<?= $escapeHtml($deleteLaporanAction) ?>"
-                    >
+                    action="<?= $escapeHtml($deleteLaporanAction) ?>">
                     <input type="hidden" name="id_detail"
                         value="<?= $escapeHtml(app_id_token('detail_pelanggaran', (int) ($detail['id_detail'] ?? 0))) ?>">
-                    <button type="button" class="delete-laporan" data-admin-confirm-trigger
+                    <button type="button" class="delete-laporan" <?= $state['canDelete'] ? '' : 'disabled' ?> data-admin-confirm-trigger
                         data-admin-confirm-title="Hapus laporan?"
                         data-admin-confirm-message="Data laporan yang dihapus tidak dapat dikembalikan. Yakin lanjut?"
                         data-admin-confirm-label="Ya, Hapus" data-admin-confirm-action="submit-form">Hapus</button>
                 </form>
                 <?php if (!$state['canEdit']): ?>
                     <span class="action-note"><?= $escapeHtml((string) $state['editLockNote']) ?></span>
+                <?php endif; ?>
+                <?php if (!$state['canDelete']): ?>
+                    <span class="action-note">Hapus hanya tersedia untuk dosen pelapor pada kasus aktif.</span>
                 <?php endif; ?>
             </div>
             <?php
@@ -323,9 +371,11 @@ $lecturerRowMetaBuilder = static function (array $detail) use ($buildLecturerRow
             (string) ($detail['nama_mahasiswa'] ?? ''),
             (string) ($detail['pelanggaran'] ?? ''),
             (string) ($detail['dosen_pelapor'] ?? ''),
+            (string) ($detail['dosen_penanggung_jawab'] ?? ''),
             (string) ($detail['status_pelanggaran'] ?? ''),
             (string) ($detail['status_tugas'] ?? ''),
             (string) ($detail['tingkat'] ?? ''),
+            (string) ($state['roleLabel'] ?? ''),
         ]),
         'filters' => [
             'status_tab' => $statusTab,
@@ -383,7 +433,7 @@ $lecturerTableConfig = [
     'search' => [
         'enabled' => true,
         'label' => 'Cari Kasus',
-        'placeholder' => 'Cari nama mahasiswa, pelanggaran, atau dosen pelapor',
+        'placeholder' => 'Cari nama mahasiswa, pelanggaran, pelapor, atau penanggung jawab',
     ],
     'columns' => $lecturerTableColumns,
     'rows' => $pelanggaranDetail,
@@ -484,7 +534,7 @@ $lecturerTableConfig = [
                         <label class="mobile-violation-field mobile-violation-field--search">
                             <span>Cari Kasus</span>
                             <input type="search" data-mobile-search
-                                placeholder="Cari nama mahasiswa, pelanggaran, atau dosen pelapor">
+                                placeholder="Cari nama mahasiswa, pelanggaran, pelapor, atau penanggung jawab">
                         </label>
                         <label class="mobile-violation-field">
                             <span>Tingkat</span>
@@ -517,31 +567,15 @@ $lecturerTableConfig = [
                 <div class="mobile-violation-list" data-mobile-violation-list aria-label="Daftar pelanggaran mobile">
                     <?php if (!empty($pelanggaranDetail)): ?>
                         <?php foreach ($pelanggaranDetail as $mobileIndex => $detail):
-                            $tingkat = strtoupper(trim((string) ($detail['tingkat'] ?? '')));
-                            $requiresTugas = in_array($tingkat, ['I', 'II', 'III'], true);
-                            $hasSurat = trim((string) ($detail['surat'] ?? '')) !== '';
-                            $hasTugas = trim((string) ($detail['pengumpulan_tgsKhusus'] ?? '')) !== '';
-                            $dokumenLengkap = $hasSurat && (!$requiresTugas || $hasTugas);
-                            $statusLower = strtolower(trim((string) ($detail['status_pelanggaran'] ?? '')));
-                            $statusTugasLower = strtolower(trim((string) ($detail['status_tugas'] ?? '')));
-                            $isSelesai = ($statusLower === 'selesai' || $statusLower === 'done');
-                            $isTugasSelesai = in_array($statusTugasLower, ['sudah dikumpulkan', 'selesai', 'done'], true);
-                            $canConfirm = $dokumenLengkap && !$isSelesai;
-                            $canEdit = !$isSelesai && !$isTugasSelesai;
-                            $editLockNote = '';
-                            if (!$canEdit) {
-                                $editLockNote = $isSelesai
-                                    ? 'Edit dikunci karena laporan sudah selesai.'
-                                    : 'Edit dikunci karena tugas sudah diselesaikan.';
-                            }
-                            $confirmNote = 'Dokumen sudah lengkap. Laporan bisa dikonfirmasi selesai.';
-                            if ($isSelesai) {
-                                $confirmNote = 'Laporan sudah berstatus selesai.';
-                            } elseif (!$hasSurat) {
-                                $confirmNote = 'Menunggu upload surat pernyataan.';
-                            } elseif ($requiresTugas && !$hasTugas) {
-                                $confirmNote = 'Menunggu upload tugas khusus.';
-                            }
+                            $state = $buildLecturerRowState($detail);
+                            $requiresTugas = (bool) ($state['requiresTugas'] ?? false);
+                            $dokumenLengkap = (bool) ($state['dokumenLengkap'] ?? false);
+                            $isSelesai = (bool) ($state['isSelesai'] ?? false);
+                            $canConfirm = (bool) ($state['canConfirm'] ?? false);
+                            $canEdit = (bool) ($state['canEdit'] ?? false);
+                            $canDelete = (bool) ($state['canDelete'] ?? false);
+                            $editLockNote = (string) ($state['editLockNote'] ?? '');
+                            $confirmNote = (string) ($state['confirmNote'] ?? '');
                             $detailId = 'lecturer-' . (string) ((int) $mobileIndex + 1);
                             $sheetId = 'mobile-sheet-lecturer-' . $detailId;
                             $titleId = $sheetId . '-title';
@@ -552,9 +586,11 @@ $lecturerTableConfig = [
                                 (string) ($detail['nama_mahasiswa'] ?? ''),
                                 (string) ($detail['pelanggaran'] ?? ''),
                                 (string) ($detail['dosen_pelapor'] ?? ''),
+                                (string) ($detail['dosen_penanggung_jawab'] ?? ''),
                                 (string) ($detail['status_pelanggaran'] ?? ''),
                                 (string) ($detail['status_tugas'] ?? ''),
                                 (string) ($detail['tingkat'] ?? ''),
+                                (string) ($state['roleLabel'] ?? ''),
                             ]));
                             ?>
                             <article class="mobile-violation-card" data-mobile-card
@@ -610,12 +646,24 @@ $lecturerTableConfig = [
                                                     <dd><?= htmlspecialchars($detail['dosen_pelapor'], ENT_QUOTES, 'UTF-8') ?></dd>
                                                 </div>
                                                 <div>
+                                                    <dt>Dosen Penanggung</dt>
+                                                    <dd><?= htmlspecialchars((string) ($state['namaPenanggungJawab'] ?? '-'), ENT_QUOTES, 'UTF-8') ?></dd>
+                                                </div>
+                                                <div>
                                                     <dt>Tugas Khusus</dt>
                                                     <?php if (!$requiresTugas): ?>
                                                         <dd>Tidak diwajibkan</dd>
                                                     <?php else: ?>
-                                                        <dd><?= htmlspecialchars((string) ($detail['tugas_khusus'] ?? 'Belum diisi'), ENT_QUOTES, 'UTF-8') ?>
-                                                        </dd>
+                                                        <?php
+                                                        $mobileTugasKhusus = trim((string) ($detail['tugas_khusus'] ?? ''));
+                                                        if ($mobileTugasKhusus === '' && strtolower(trim((string) ($detail['status_tugas'] ?? ''))) === 'menunggu penugasan dpa') {
+                                                            $mobileTugasKhusus = 'Menunggu penugasan dari DPA';
+                                                        }
+                                                        if ($mobileTugasKhusus === '') {
+                                                            $mobileTugasKhusus = 'Belum diisi';
+                                                        }
+                                                        ?>
+                                                        <dd><?= htmlspecialchars($mobileTugasKhusus, ENT_QUOTES, 'UTF-8') ?></dd>
                                                     <?php endif; ?>
                                                 </div>
                                                 <div>
@@ -627,8 +675,12 @@ $lecturerTableConfig = [
                                                     <?php if (!$requiresTugas): ?>
                                                         <dd>Tidak diwajibkan</dd>
                                                     <?php else: ?>
-                                                        <dd><?= htmlspecialchars($detail['status_tugas'], ENT_QUOTES, 'UTF-8') ?></dd>
+                                                        <dd><?= htmlspecialchars((string) ($state['taskStatusLabel'] ?? ''), ENT_QUOTES, 'UTF-8') ?></dd>
                                                     <?php endif; ?>
+                                                </div>
+                                                <div>
+                                                    <dt>Peran Anda</dt>
+                                                    <dd><?= htmlspecialchars((string) ($state['roleLabel'] ?? ''), ENT_QUOTES, 'UTF-8') ?></dd>
                                                 </div>
                                                 <div>
                                                     <dt>Poin</dt>
@@ -690,13 +742,16 @@ $lecturerTableConfig = [
                                                     >
                                                     <input type="hidden" name="id_detail"
                                                         value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $detail['id_detail']), ENT_QUOTES, 'UTF-8') ?>">
-                                                    <button type="button" class="delete-laporan" data-admin-confirm-trigger
+                                                    <button type="button" class="delete-laporan" <?= $canDelete ? '' : 'disabled' ?> data-admin-confirm-trigger
                                                         data-admin-confirm-title="Hapus laporan?"
                                                         data-admin-confirm-message="Data laporan yang dihapus tidak dapat dikembalikan. Yakin lanjut?"
                                                         data-admin-confirm-label="Ya, Hapus" data-admin-confirm-action="submit-form">Hapus Laporan</button>
                                                 </form>
                                                 <?php if (!$canEdit): ?>
                                                     <span class="action-note"><?= htmlspecialchars($editLockNote, ENT_QUOTES, 'UTF-8') ?></span>
+                                                <?php endif; ?>
+                                                <?php if (!$canDelete): ?>
+                                                    <span class="action-note">Hapus hanya tersedia untuk dosen pelapor pada kasus aktif.</span>
                                                 <?php endif; ?>
                                                 <span class="action-note"><?= htmlspecialchars($confirmNote, ENT_QUOTES, 'UTF-8') ?></span>
                                             </div>
