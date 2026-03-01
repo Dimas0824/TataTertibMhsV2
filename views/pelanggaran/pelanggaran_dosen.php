@@ -161,13 +161,20 @@ $lecturerTableColumns = [
             <details class="case-detail-toggle">
                 <summary>Lihat rincian</summary>
                 <dl class="case-detail-grid">
+                    <?php
+                    $tugasKhususText = 'Tidak diwajibkan';
+                    if ($state['requiresTugas']) {
+                        $rawTugasKhusus = trim((string) ($detail['tugas_khusus'] ?? ''));
+                        $tugasKhususText = $rawTugasKhusus !== '' ? $rawTugasKhusus : 'Belum diisi';
+                    }
+                    ?>
                     <div>
                         <dt>Dosen Pelapor</dt>
                         <dd><?= $escapeHtml((string) ($detail['dosen_pelapor'] ?? '')) ?></dd>
                     </div>
                     <div>
                         <dt>Tugas Khusus</dt>
-                        <dd><?= $escapeHtml((string) ($detail['tugas_khusus'] ?? 'Tidak Ada Tugas')) ?></dd>
+                        <dd><?= $escapeHtml($tugasKhususText) ?></dd>
                     </div>
                     <div>
                         <dt>Status Tugas</dt>
@@ -560,8 +567,12 @@ $lecturerTableConfig = [
                                                 </div>
                                                 <div>
                                                     <dt>Tugas Khusus</dt>
-                                                    <dd><?= htmlspecialchars($detail['tugas_khusus'] ?? 'Tidak Ada Tugas', ENT_QUOTES, 'UTF-8') ?>
-                                                    </dd>
+                                                    <?php if (!$requiresTugas): ?>
+                                                        <dd>Tidak diwajibkan</dd>
+                                                    <?php else: ?>
+                                                        <dd><?= htmlspecialchars((string) ($detail['tugas_khusus'] ?? 'Belum diisi'), ENT_QUOTES, 'UTF-8') ?>
+                                                        </dd>
+                                                    <?php endif; ?>
                                                 </div>
                                                 <div>
                                                     <dt>Status</dt>
@@ -570,7 +581,7 @@ $lecturerTableConfig = [
                                                 <div>
                                                     <dt>Status Tugas</dt>
                                                     <?php if (!$requiresTugas): ?>
-                                                        <dd>Tidak ada tugas</dd>
+                                                        <dd>Tidak diwajibkan</dd>
                                                     <?php else: ?>
                                                         <dd><?= htmlspecialchars($detail['status_tugas'], ENT_QUOTES, 'UTF-8') ?></dd>
                                                     <?php endif; ?>

@@ -56,6 +56,11 @@ $escapeHtml = static function (string $value): string {
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 };
 
+$requiresTugasKhusus = static function (array $detail): bool {
+    $tingkat = strtoupper(trim((string) ($detail['tingkat'] ?? '')));
+    return in_array($tingkat, ['I', 'II', 'III'], true);
+};
+
 $buildStudentRowState = static function (array $detail): array {
     $tingkat = strtoupper(trim((string) ($detail['tingkat'] ?? '')));
     $tierClass = 'tier-pill';
@@ -122,8 +127,13 @@ $studentTableColumns = [
     ],
     [
         'label' => 'Tugas Khusus',
-        'render' => static function (array $detail) use ($escapeHtml): string {
-            return $escapeHtml((string) ($detail['tugas_khusus'] ?? 'Tidak Ada Tugas'));
+        'render' => static function (array $detail) use ($escapeHtml, $requiresTugasKhusus): string {
+            if (!$requiresTugasKhusus($detail)) {
+                return $escapeHtml('Tidak diwajibkan');
+            }
+
+            $tugasKhusus = trim((string) ($detail['tugas_khusus'] ?? ''));
+            return $escapeHtml($tugasKhusus !== '' ? $tugasKhusus : 'Belum diisi');
         },
     ],
     [
@@ -157,7 +167,8 @@ $studentTableColumns = [
     ],
     [
         'label' => 'Pengumpulan',
-        'render' => static function (array $detail) use ($escapeHtml): string {
+        'render' => static function (array $detail) use ($escapeHtml, $requiresTugasKhusus): string {
+            $requiresTugas = $requiresTugasKhusus($detail);
             ob_start();
             ?>
             <form class="uploadForm" enctype="multipart/form-data">
@@ -166,7 +177,7 @@ $studentTableColumns = [
                 <input type="file" name="suratPernyataan" required>
                 <button type="button" class="submit-btn uploadButton">Upload Surat</button>
             </form>
-            <?php if (in_array((string) ($detail['tingkat'] ?? ''), ['I', 'II', 'III'], true)): ?>
+            <?php if ($requiresTugas): ?>
                 <form class="uploadForm" enctype="multipart/form-data">
                     <input type="hidden" name="id_detail"
                         value="<?= $escapeHtml(app_id_token('detail_pelanggaran', (int) ($detail['id_detail'] ?? 0))) ?>">
@@ -367,6 +378,7 @@ $studentTableConfig = [
                             $statusLowerMobile = strtolower(trim((string) ($detail['status'] ?? '')));
                             $statusTabMobile = ($statusLowerMobile === 'selesai' || $statusLowerMobile === 'done') ? 'selesai' : 'aktif';
                             $tingkatMobile = strtolower(trim((string) ($detail['tingkat'] ?? '')));
+                            $requiresTugas = $requiresTugasKhusus($detail);
                             $mobileSearchText = trim(implode(' ', [
                                 (string) ($detail['pelanggaran'] ?? ''),
                                 (string) ($detail['sanksi'] ?? ''),
@@ -438,8 +450,12 @@ $studentTableConfig = [
                                                 </div>
                                                 <div>
                                                     <dt>Tugas Khusus</dt>
-                                                    <dd><?= htmlspecialchars($detail['tugas_khusus'] ?? 'Tidak Ada Tugas', ENT_QUOTES, 'UTF-8') ?>
-                                                    </dd>
+                                                    <?php if (!$requiresTugas): ?>
+                                                        <dd>Tidak diwajibkan</dd>
+                                                    <?php else: ?>
+                                                        <dd><?= htmlspecialchars((string) ($detail['tugas_khusus'] ?? 'Belum diisi'), ENT_QUOTES, 'UTF-8') ?>
+                                                        </dd>
+                                                    <?php endif; ?>
                                                 </div>
                                                 <div>
                                                     <dt>Surat</dt>
@@ -467,7 +483,7 @@ $studentTableConfig = [
                                                     <input type="file" name="suratPernyataan" required>
                                                     <button type="button" class="submit-btn uploadButton">Upload Surat</button>
                                                 </form>
-                                                <?php if (in_array($detail['tingkat'], ['I', 'II', 'III'], true)): ?>
+                                                <?php if ($requiresTugas): ?>
                                                     <form class="uploadForm" enctype="multipart/form-data">
                                                         <input type="hidden" name="id_detail"
                                                             value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $detail['id_detail']), ENT_QUOTES, 'UTF-8') ?>">
@@ -496,7 +512,6 @@ $studentTableConfig = [
         ?>
     </div>
 
-    <!-- untuk modal ini ada 2 pengumpulan tugas khusus dan akhir gimana caranya biar kalo tugas akhir nya ga ada, form untuk input tugas akhir nya ga ada juga?? -->
     <!-- Modal -->
     <div id="uploadModal" class="modal">
         <div class="modal-dialog">

@@ -9,6 +9,7 @@
     const jenisPelanggaranSelect = document.getElementById('jenisPelanggaran');
     const sanksiSelect = document.getElementById('sanksi');
     const deskripsiTugasContainer = document.getElementById('deskripsiTugas-container');
+    const deskripsiTugasInput = document.getElementById('deskripsiTugas');
 
     if (!tingkatSelect || !jenisPelanggaranSelect) {
         return;
@@ -61,10 +62,20 @@
             return;
         }
 
-        if (tingkat === 'I' || tingkat === 'II' || tingkat === 'III') {
+        const normalizedTingkat = String(tingkat || '').trim().toUpperCase();
+        const requiresTugasKhusus = ['I', 'II', 'III', '1', '2', '3'].includes(normalizedTingkat);
+
+        if (requiresTugasKhusus) {
             deskripsiTugasContainer.style.display = 'block';
         } else {
             deskripsiTugasContainer.style.display = 'none';
+        }
+
+        if (deskripsiTugasInput) {
+            deskripsiTugasInput.disabled = !requiresTugasKhusus;
+            if (!requiresTugasKhusus) {
+                deskripsiTugasInput.value = '';
+            }
         }
     };
 
@@ -203,6 +214,7 @@
 
     setSelectOptionsByTingkat(jenisPelanggaranSelect, allJenisOptions, tingkatSelect.value, 'Pilih Jenis Pelanggaran');
     setSelectOptionsByTingkat(sanksiSelect, allSanksiOptions, tingkatSelect.value, 'Pilih Sanksi');
+    toggleTugasKhusus(tingkatSelect.value);
     applySelectEnhancement();
 
     window.addEventListener('disciplink:select2-ready', applySelectEnhancement);
