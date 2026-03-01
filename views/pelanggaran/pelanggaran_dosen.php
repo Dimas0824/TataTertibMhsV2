@@ -23,6 +23,333 @@ $pelanggaranController = new PelanggaranController();
 $nidn = $userData['nidn'];
 $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
 $confirmSelesaiAction = app_action_url('action.pelanggaran', ['action' => 'confirm_selesai']);
+$totalLaporan = is_array($pelanggaranDetail) ? count($pelanggaranDetail) : 0;
+$pendingLaporan = 0;
+$dokumenBelumLengkap = 0;
+
+if ($totalLaporan > 0) {
+    foreach ($pelanggaranDetail as $item) {
+        $tingkatItem = strtoupper(trim((string) ($item['tingkat'] ?? '')));
+        $requiresTugasItem = in_array($tingkatItem, ['I', 'II', 'III'], true);
+        $hasSuratItem = trim((string) ($item['surat'] ?? '')) !== '';
+        $hasTugasItem = trim((string) ($item['pengumpulan_tgsKhusus'] ?? '')) !== '';
+        $dokumenLengkapItem = $hasSuratItem && (!$requiresTugasItem || $hasTugasItem);
+        $statusItem = strtolower(trim((string) ($item['status_pelanggaran'] ?? '')));
+
+        if ($statusItem !== 'selesai' && $statusItem !== 'done') {
+            $pendingLaporan++;
+        }
+
+        if (!$dokumenLengkapItem) {
+            $dokumenBelumLengkap++;
+        }
+    }
+}
+
+$escapeHtml = static function (string $value): string {
+    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+};
+
+$buildLecturerRowState = static function (array $detail): array {
+    $tingkat = strtoupper(trim((string) ($detail['tingkat'] ?? '')));
+    $requiresTugas = in_array($tingkat, ['I', 'II', 'III'], true);
+    $hasSurat = trim((string) ($detail['surat'] ?? '')) !== '';
+    $hasTugas = trim((string) ($detail['pengumpulan_tgsKhusus'] ?? '')) !== '';
+    $dokumenLengkap = $hasSurat && (!$requiresTugas || $hasTugas);
+    $statusLower = strtolower(trim((string) ($detail['status_pelanggaran'] ?? '')));
+    $isSelesai = ($statusLower === 'selesai' || $statusLower === 'done');
+    $canConfirm = $dokumenLengkap && !$isSelesai;
+    $confirmNote = 'Dokumen sudah lengkap. Laporan bisa dikonfirmasi selesai.';
+
+    if ($isSelesai) {
+        $confirmNote = 'Laporan sudah berstatus selesai.';
+    } elseif (!$hasSurat) {
+        $confirmNote = 'Menunggu upload surat pernyataan.';
+    } elseif ($requiresTugas && !$hasTugas) {
+        $confirmNote = 'Menunggu upload tugas khusus.';
+    }
+
+    $statusClass = 'status-pill';
+    if ($statusLower === 'pending') {
+        $statusClass .= ' status-pill--pending';
+    } elseif ($isSelesai) {
+        $statusClass .= ' status-pill--done';
+    } else {
+        $statusClass .= ' status-pill--progress';
+    }
+
+    $taskStatusLabel = 'Tidak diwajibkan';
+    $taskStatusClass = 'status-pill status-pill-soft';
+    if ($requiresTugas) {
+        if ($hasTugas) {
+            $taskStatusLabel = 'Sudah dikumpulkan';
+            $taskStatusClass = 'status-pill status-pill--done';
+        } else {
+            $taskStatusLabel = 'Belum dikumpulkan';
+            $taskStatusClass = 'status-pill status-pill--pending';
+        }
+    }
+
+    $tierClass = 'tier-pill';
+    if ($tingkat === 'I') {
+        $tierClass .= ' tier-pill--one';
+    } elseif ($tingkat === 'II') {
+        $tierClass .= ' tier-pill--two';
+    } elseif ($tingkat === 'III') {
+        $tierClass .= ' tier-pill--three';
+    }
+
+    $poin = (int) ($detail['poin'] ?? 0);
+    $pointClass = 'point-badge';
+    if ($poin >= 15) {
+        $pointClass .= ' point-badge--high';
+    } elseif ($poin >= 9) {
+        $pointClass .= ' point-badge--medium';
+    } else {
+        $pointClass .= ' point-badge--low';
+    }
+
+    $requiredDocCount = $requiresTugas ? 2 : 1;
+    $uploadedDocCount = ($hasSurat ? 1 : 0) + (($requiresTugas && $hasTugas) ? 1 : 0);
+    $docProgressPercent = (int) round(($uploadedDocCount / $requiredDocCount) * 100);
+
+    return [
+        'tingkat' => $tingkat,
+        'requiresTugas' => $requiresTugas,
+        'hasSurat' => $hasSurat,
+        'hasTugas' => $hasTugas,
+        'dokumenLengkap' => $dokumenLengkap,
+        'statusLower' => $statusLower,
+        'isSelesai' => $isSelesai,
+        'canConfirm' => $canConfirm,
+        'confirmNote' => $confirmNote,
+        'statusClass' => $statusClass,
+        'taskStatusLabel' => $taskStatusLabel,
+        'taskStatusClass' => $taskStatusClass,
+        'tierClass' => $tierClass,
+        'pointClass' => $pointClass,
+        'requiredDocCount' => $requiredDocCount,
+        'uploadedDocCount' => $uploadedDocCount,
+        'docProgressPercent' => $docProgressPercent,
+    ];
+};
+
+$lecturerTableColumns = [
+    [
+        'label' => 'Kasus',
+        'cellClass' => 'case-column',
+        'render' => static function (array $detail) use ($escapeHtml, $buildLecturerRowState): string {
+            $state = $buildLecturerRowState($detail);
+            ob_start();
+            ?>
+            <div class="case-main">
+                <p class="case-student"><?= $escapeHtml((string) ($detail['nama_mahasiswa'] ?? '')) ?></p>
+                <p class="case-title"><?= $escapeHtml((string) ($detail['pelanggaran'] ?? '')) ?></p>
+                <div class="case-tags">
+                    <span class="<?= $escapeHtml((string) $state['tierClass']) ?>">Tingkat
+                        <?= $escapeHtml((string) ($detail['tingkat'] ?? '')) ?></span>
+                    <span class="<?= $escapeHtml((string) $state['pointClass']) ?>">
+                        <?= $escapeHtml((string) ($detail['poin'] ?? '0')) ?> poin
+                    </span>
+                </div>
+            </div>
+            <details class="case-detail-toggle">
+                <summary>Lihat rincian</summary>
+                <dl class="case-detail-grid">
+                    <div>
+                        <dt>Dosen Pelapor</dt>
+                        <dd><?= $escapeHtml((string) ($detail['dosen_pelapor'] ?? '')) ?></dd>
+                    </div>
+                    <div>
+                        <dt>Tugas Khusus</dt>
+                        <dd><?= $escapeHtml((string) ($detail['tugas_khusus'] ?? 'Tidak Ada Tugas')) ?></dd>
+                    </div>
+                    <div>
+                        <dt>Status Tugas</dt>
+                        <dd><?= $escapeHtml((string) $state['taskStatusLabel']) ?></dd>
+                    </div>
+                </dl>
+            </details>
+            <?php
+            return (string) ob_get_clean();
+        },
+    ],
+    [
+        'label' => 'Progress',
+        'cellClass' => 'progress-column',
+        'render' => static function (array $detail) use ($escapeHtml, $buildLecturerRowState): string {
+            $state = $buildLecturerRowState($detail);
+            ob_start();
+            ?>
+            <span class="<?= $escapeHtml((string) $state['statusClass']) ?>">
+                <?= $escapeHtml((string) ($detail['status_pelanggaran'] ?? '')) ?>
+            </span>
+            <span class="<?= $escapeHtml((string) $state['taskStatusClass']) ?>">
+                <?= $escapeHtml((string) $state['taskStatusLabel']) ?>
+            </span>
+            <p class="action-note"><?= $escapeHtml((string) $state['confirmNote']) ?></p>
+            <?php
+            return (string) ob_get_clean();
+        },
+    ],
+    [
+        'label' => 'Dokumen',
+        'cellClass' => 'document-column',
+        'render' => static function (array $detail) use ($escapeHtml, $buildLecturerRowState): string {
+            $state = $buildLecturerRowState($detail);
+            ob_start();
+            ?>
+            <div class="doc-progress">
+                <span class="doc-progress__label">
+                    <?= $escapeHtml((string) $state['uploadedDocCount']) ?>/<?= $escapeHtml((string) $state['requiredDocCount']) ?>
+                    dokumen terunggah
+                </span>
+                <span class="doc-progress__track" aria-hidden="true">
+                    <span class="doc-progress__value"
+                        style="width: <?= $escapeHtml((string) $state['docProgressPercent']) ?>%;"></span>
+                </span>
+            </div>
+            <ul class="doc-checklist">
+                <li class="<?= $state['hasSurat'] ? 'is-ready' : 'is-missing' ?>">
+                    <span>Surat Pernyataan</span>
+                    <?php if ($state['hasSurat']): ?>
+                        <a class="file-link"
+                            href="<?= $escapeHtml(app_action_url('action.file_download', ['file' => (string) $detail['surat']])) ?>"
+                            target="_blank" rel="noopener noreferrer">Lihat</a>
+                    <?php else: ?>
+                        <span class="muted-text">Belum ada</span>
+                    <?php endif; ?>
+                </li>
+                <li class="<?= $state['requiresTugas'] ? ($state['hasTugas'] ? 'is-ready' : 'is-missing') : 'is-neutral' ?>">
+                    <span>Tugas Khusus</span>
+                    <?php if ($state['requiresTugas'] && $state['hasTugas']): ?>
+                        <a class="file-link"
+                            href="<?= $escapeHtml(app_action_url('action.file_download', ['file' => (string) $detail['pengumpulan_tgsKhusus']])) ?>"
+                            target="_blank" rel="noopener noreferrer">Lihat</a>
+                    <?php elseif ($state['requiresTugas']): ?>
+                        <span class="muted-text">Belum ada</span>
+                    <?php else: ?>
+                        <span class="muted-text">Tidak wajib</span>
+                    <?php endif; ?>
+                </li>
+            </ul>
+            <?php
+            return (string) ob_get_clean();
+        },
+    ],
+    [
+        'label' => 'Aksi',
+        'cellClass' => 'action-column',
+        'render' => static function (array $detail) use ($escapeHtml, $buildLecturerRowState, $confirmSelesaiAction): string {
+            $state = $buildLecturerRowState($detail);
+            ob_start();
+            ?>
+            <div class="action-stack">
+                <a class="edit-laporan"
+                    href="<?= $escapeHtml(app_page_url('page.edit_pelaporan', ['id_detail' => (int) ($detail['id_detail'] ?? 0)])) ?>"
+                    aria-label="Edit laporan">
+                    <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                    Edit
+                </a>
+                <form method="POST" class="confirm-form"
+                    action="<?= $escapeHtml($confirmSelesaiAction) ?>"
+                    onsubmit="return confirm('Konfirmasi laporan ini sebagai selesai?');">
+                    <input type="hidden" name="id_detail"
+                        value="<?= $escapeHtml(app_id_token('detail_pelanggaran', (int) ($detail['id_detail'] ?? 0))) ?>">
+                    <button type="submit" class="confirm-laporan" <?= $state['canConfirm'] ? '' : 'disabled' ?>>
+                        <?= $escapeHtml($state['isSelesai'] ? 'Selesai' : 'Konfirmasi') ?>
+                    </button>
+                </form>
+            </div>
+            <?php
+            return (string) ob_get_clean();
+        },
+    ],
+];
+
+$lecturerRowMetaBuilder = static function (array $detail) use ($buildLecturerRowState): array {
+    $state = $buildLecturerRowState($detail);
+    $statusFilter = 'proses';
+    if ((bool) $state['isSelesai']) {
+        $statusFilter = 'selesai';
+    } elseif ((string) $state['statusLower'] === 'pending') {
+        $statusFilter = 'pending';
+    }
+
+    return [
+        'search' => implode(' ', [
+            (string) ($detail['nama_mahasiswa'] ?? ''),
+            (string) ($detail['pelanggaran'] ?? ''),
+            (string) ($detail['dosen_pelapor'] ?? ''),
+            (string) ($detail['status_pelanggaran'] ?? ''),
+            (string) ($detail['status_tugas'] ?? ''),
+            (string) ($detail['tingkat'] ?? ''),
+        ]),
+        'filters' => [
+            'status' => $statusFilter,
+            'tingkat' => (string) $state['tingkat'],
+            'dokumen' => ((bool) $state['dokumenLengkap']) ? 'lengkap' : 'belum',
+        ],
+    ];
+};
+
+$lecturerTableConfig = [
+    'id' => 'lecturer-violation-table',
+    'title' => 'Kasus Pelanggaran',
+    'description' => 'Fokuskan perhatian pada progres kasus. Detail tambahan bisa dibuka per baris.',
+    'stats' => [
+        ['label' => $totalLaporan . ' kasus'],
+        ['label' => $pendingLaporan . ' aktif', 'class' => 'table-stat-chip--warning'],
+        ['label' => $dokumenBelumLengkap . ' dokumen belum lengkap'],
+    ],
+    'action' => [
+        'label' => '+ Laporkan',
+        'href' => app_page_url('page.pelaporan'),
+    ],
+    'filters' => [
+        [
+            'key' => 'status',
+            'label' => 'Status',
+            'options' => [
+                ['value' => 'pending', 'label' => 'Pending'],
+                ['value' => 'proses', 'label' => 'Proses'],
+                ['value' => 'selesai', 'label' => 'Selesai'],
+            ],
+        ],
+        [
+            'key' => 'tingkat',
+            'label' => 'Tingkat',
+            'options' => [
+                ['value' => 'I', 'label' => 'Tingkat I'],
+                ['value' => 'II', 'label' => 'Tingkat II'],
+                ['value' => 'III', 'label' => 'Tingkat III'],
+                ['value' => 'IV', 'label' => 'Tingkat IV'],
+                ['value' => 'V', 'label' => 'Tingkat V'],
+            ],
+        ],
+        [
+            'key' => 'dokumen',
+            'label' => 'Dokumen',
+            'options' => [
+                ['value' => 'belum', 'label' => 'Belum Lengkap'],
+                ['value' => 'lengkap', 'label' => 'Lengkap'],
+            ],
+        ],
+    ],
+    'search' => [
+        'enabled' => true,
+        'label' => 'Cari Kasus',
+        'placeholder' => 'Cari nama mahasiswa, pelanggaran, atau dosen pelapor',
+    ],
+    'columns' => $lecturerTableColumns,
+    'rows' => $pelanggaranDetail,
+    'rowMetaBuilder' => $lecturerRowMetaBuilder,
+    'emptyMessage' => 'Data pelanggaran tidak ditemukan.',
+    'tableCardClass' => 'table-card--desktop-only table-card--lecturer',
+    'tableContainerClass' => 'table-container--compact',
+    'tableClass' => 'violation-compact-table',
+    'tableAriaLabel' => 'Tabel pelanggaran dosen',
+];
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -91,126 +418,13 @@ $confirmSelesaiAction = app_action_url('action.pelanggaran', ['action' => 'confi
                     </article>
                     <article class="summary-item">
                         <span>Total Laporan</span>
-                        <strong><?= count($pelanggaranDetail) ?></strong>
+                        <strong><?= htmlspecialchars((string) $totalLaporan, ENT_QUOTES, 'UTF-8') ?></strong>
                     </article>
                 </div>
             </div>
 
-            <section class="table-card">
-                <div class="table-card-header table-card-header-between">
-                    <h3>Tabel Pelanggaran</h3>
-                    <button class="primary-action-btn" onclick="window.location.href='<?= htmlspecialchars(app_page_url('page.pelaporan'), ENT_QUOTES, 'UTF-8') ?>'">+
-                        Laporkan</button>
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Pelanggar</th>
-                                <th>Pelanggaran</th>
-                                <th>Tingkat</th>
-                                <th>Dosen Pelapor</th>
-                                <th>Tugas Khusus</th>
-                                <th>Dokumen</th>
-                                <th>Poin</th>
-                                <th>Status</th>
-                                <th>Status Tugas</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (!empty($pelanggaranDetail)): ?>
-                                <?php foreach ($pelanggaranDetail as $detail):
-                                    $tingkat = strtoupper(trim((string) ($detail['tingkat'] ?? '')));
-                                    $requiresTugas = in_array($tingkat, ['I', 'II', 'III'], true);
-                                    $hasSurat = trim((string) ($detail['surat'] ?? '')) !== '';
-                                    $hasTugas = trim((string) ($detail['pengumpulan_tgsKhusus'] ?? '')) !== '';
-                                    $dokumenLengkap = $hasSurat && (!$requiresTugas || $hasTugas);
-                                    $statusLower = strtolower(trim((string) ($detail['status_pelanggaran'] ?? '')));
-                                    $isSelesai = ($statusLower === 'selesai' || $statusLower === 'done');
-                                    $canConfirm = $dokumenLengkap && !$isSelesai;
-                                    $confirmNote = 'Dokumen sudah lengkap. Laporan bisa dikonfirmasi selesai.';
-                                    if ($isSelesai) {
-                                        $confirmNote = 'Laporan sudah berstatus selesai.';
-                                    } elseif (!$hasSurat) {
-                                        $confirmNote = 'Menunggu upload surat pernyataan.';
-                                    } elseif ($requiresTugas && !$hasTugas) {
-                                        $confirmNote = 'Menunggu upload tugas khusus.';
-                                    }
-                                    ?>
-                                    <tr>
-                                        <td><?= htmlspecialchars($detail['nama_mahasiswa'], ENT_QUOTES, 'UTF-8') ?></td>
-                                        <td><?= htmlspecialchars($detail['pelanggaran'], ENT_QUOTES, 'UTF-8') ?></td>
-                                        <td><span
-                                                class="tier-pill"><?= htmlspecialchars($detail['tingkat'], ENT_QUOTES, 'UTF-8') ?></span>
-                                        </td>
-                                        <td><?= htmlspecialchars($detail['dosen_pelapor'], ENT_QUOTES, 'UTF-8') ?></td>
-                                        <td><?= htmlspecialchars($detail['tugas_khusus'] ?? 'Tidak Ada Tugas', ENT_QUOTES, 'UTF-8') ?>
-                                        </td>
-                                        <td>
-                                            <div class="doc-links">
-                                                <?php if (!empty($detail['surat'])): ?>
-                                                    <a class="file-link"
-                                                        href="<?= htmlspecialchars(app_action_url('action.file_download', ['file' => (string) $detail['surat']]), ENT_QUOTES, 'UTF-8') ?>"
-                                                        target="_blank" rel="noopener noreferrer">Surat Pernyataan</a>
-                                                <?php else: ?>
-                                                    <span class="muted-text">Surat belum diunggah</span>
-                                                <?php endif; ?>
-                                                <?php if ($requiresTugas): ?>
-                                                    <?php if (!empty($detail['pengumpulan_tgsKhusus'])): ?>
-                                                        <a class="file-link"
-                                                            href="<?= htmlspecialchars(app_action_url('action.file_download', ['file' => (string) $detail['pengumpulan_tgsKhusus']]), ENT_QUOTES, 'UTF-8') ?>"
-                                                            target="_blank" rel="noopener noreferrer">Tugas Khusus</a>
-                                                    <?php else: ?>
-                                                        <span class="muted-text">Tugas belum diunggah</span>
-                                                    <?php endif; ?>
-                                                <?php else: ?>
-                                                    <span class="muted-text">Tugas khusus tidak diwajibkan</span>
-                                                <?php endif; ?>
-                                            </div>
-                                        </td>
-                                        <td><span
-                                                class="point-badge"><?= htmlspecialchars($detail['poin'], ENT_QUOTES, 'UTF-8') ?></span>
-                                        </td>
-                                        <td><span
-                                                class="status-pill"><?= htmlspecialchars($detail['status_pelanggaran'], ENT_QUOTES, 'UTF-8') ?></span>
-                                        </td>
-                                        <?php if (!$requiresTugas): ?>
-                                            <td><span class="muted-text">Tidak ada tugas</span></td>
-                                        <?php else: ?>
-                                            <td><span
-                                                    class="status-pill status-pill-soft"><?= htmlspecialchars($detail['status_tugas'], ENT_QUOTES, 'UTF-8') ?></span>
-                                            </td>
-                                        <?php endif; ?>
-                                        <td>
-                                            <div class="action-stack">
-                                                <a class="edit-laporan"
-                                                    href="<?= htmlspecialchars(app_page_url('page.edit_pelaporan', ['id_detail' => (int) $detail['id_detail']]), ENT_QUOTES, 'UTF-8') ?>"
-                                                    aria-label="Edit laporan">
-                                                    <i class="fa-solid fa-pen-to-square"></i>
-                                                </a>
-                                                <form method="POST" class="confirm-form"
-                                                    action="<?= htmlspecialchars($confirmSelesaiAction, ENT_QUOTES, 'UTF-8') ?>"
-                                                    onsubmit="return confirm('Konfirmasi laporan ini sebagai selesai?');">
-                                                    <input type="hidden" name="id_detail"
-                                                        value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $detail['id_detail']), ENT_QUOTES, 'UTF-8') ?>">
-                                                    <button type="submit" class="confirm-laporan" <?= $canConfirm ? '' : 'disabled' ?>>
-                                                        <?= htmlspecialchars($isSelesai ? 'Selesai' : 'Konfirmasi', ENT_QUOTES, 'UTF-8') ?>
-                                                    </button>
-                                                </form>
-                                                <span class="action-note"><?= htmlspecialchars($confirmNote, ENT_QUOTES, 'UTF-8') ?></span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <tr>
-                                    <td colspan="10" class="empty-cell">Data pelanggaran tidak ditemukan.</td>
-                                </tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
+            <?php render_universal_filterable_table_component($lecturerTableConfig); ?>
+            <section class="table-card table-card--mobile-only">
                 <div class="mobile-violation-list" aria-label="Daftar pelanggaran mobile">
                     <?php if (!empty($pelanggaranDetail)): ?>
                         <?php foreach ($pelanggaranDetail as $mobileIndex => $detail):
@@ -372,6 +586,8 @@ $confirmSelesaiAction = app_action_url('action.pelanggaran', ['action' => 'confi
         'context' => 'nested',
     ]);
     ?>
+    <script defer
+        src="<?= htmlspecialchars(app_seo_script_src('js/universal-table-filter.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
     <script defer
         src="<?= htmlspecialchars(app_seo_script_src('js/mobile-violation-cards.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
 </body>

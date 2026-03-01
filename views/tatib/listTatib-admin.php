@@ -50,6 +50,177 @@ if ($tatibCount > 0) {
     }
 }
 
+$escapeHtml = static function (string $value): string {
+    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+};
+
+$buildTatibAdminRowState = static function (array $tatib): array {
+    $tingkat = strtoupper(trim((string) ($tatib['tingkat'] ?? '')));
+    $tierClass = 'tier-pill';
+    if ($tingkat === 'I') {
+        $tierClass .= ' tier-pill--one';
+    } elseif ($tingkat === 'II') {
+        $tierClass .= ' tier-pill--two';
+    } elseif ($tingkat === 'III') {
+        $tierClass .= ' tier-pill--three';
+    } elseif ($tingkat === 'IV') {
+        $tierClass .= ' tier-pill--four';
+    } elseif ($tingkat === 'V') {
+        $tierClass .= ' tier-pill--five';
+    }
+
+    $point = (int) ($tatib['poin'] ?? 0);
+    $pointClass = 'point-badge';
+    if ($point >= 20) {
+        $pointClass .= ' point-badge--high';
+    } elseif ($point >= 8) {
+        $pointClass .= ' point-badge--medium';
+    } else {
+        $pointClass .= ' point-badge--low';
+    }
+
+    $adminName = trim((string) ($tatib['nama_admin'] ?? ''));
+    if ($adminName === '') {
+        $adminName = 'Admin Tidak Diketahui';
+    }
+
+    return [
+        'tingkat' => $tingkat,
+        'tierClass' => $tierClass,
+        'pointClass' => $pointClass,
+        'adminName' => $adminName,
+    ];
+};
+
+$tatibAdminColumns = [
+    [
+        'label' => 'No',
+        'render' => static function (array $tatib, int $rowIndex) use ($escapeHtml): string {
+            return $escapeHtml((string) ($rowIndex + 1));
+        },
+    ],
+    [
+        'label' => 'Admin',
+        'render' => static function (array $tatib) use ($escapeHtml, $buildTatibAdminRowState): string {
+            $state = $buildTatibAdminRowState($tatib);
+            return '<span class="admin-pill">' . $escapeHtml((string) $state['adminName']) . '</span>';
+        },
+    ],
+    [
+        'label' => 'Pelanggaran',
+        'cellClass' => 'tatib-desc-cell',
+        'render' => static function (array $tatib) use ($escapeHtml): string {
+            return '<p class="tatib-desc-text">' . $escapeHtml((string) ($tatib['deskripsi'] ?? '')) . '</p>';
+        },
+    ],
+    [
+        'label' => 'Tingkat',
+        'render' => static function (array $tatib) use ($escapeHtml, $buildTatibAdminRowState): string {
+            $state = $buildTatibAdminRowState($tatib);
+            return '<span class="' . $escapeHtml((string) $state['tierClass']) . '">' . $escapeHtml((string) ($tatib['tingkat'] ?? '')) . '</span>';
+        },
+    ],
+    [
+        'label' => 'Poin',
+        'render' => static function (array $tatib) use ($escapeHtml, $buildTatibAdminRowState): string {
+            $state = $buildTatibAdminRowState($tatib);
+            return '<span class="' . $escapeHtml((string) $state['pointClass']) . '">' . $escapeHtml((string) ($tatib['poin'] ?? '0')) . '</span>';
+        },
+    ],
+    [
+        'label' => 'Aksi',
+        'cellClass' => 'button-cell',
+        'render' => static function (array $tatib) use ($escapeHtml): string {
+            $deskripsi = (string) ($tatib['deskripsi'] ?? '');
+            ob_start();
+            ?>
+            <form action="<?= $escapeHtml(app_action_url('action.tatib')) ?>" method="post">
+                <input type="hidden" name="id_tatib"
+                    value="<?= $escapeHtml(app_id_token('tatib', (int) ($tatib['id_tata_tertib'] ?? 0))) ?>">
+                <button type="button" class="delete" id="delete" name="delete"
+                    data-admin-confirm-trigger data-admin-confirm-title="Hapus tata tertib?"
+                    data-admin-confirm-message="Data tata tertib yang dihapus tidak dapat dikembalikan. Lanjutkan penghapusan?"
+                    data-admin-confirm-label="Ya, Hapus" data-admin-confirm-action="submit-form"
+                    aria-label="Hapus tata tertib <?= $escapeHtml($deskripsi) ?>"><i class="fa-solid fa-trash"></i></button>
+            </form>
+            <?php
+            return (string) ob_get_clean();
+        },
+    ],
+];
+
+$tatibAdminRowMetaBuilder = static function (array $tatib) use ($buildTatibAdminRowState): array {
+    $state = $buildTatibAdminRowState($tatib);
+    $point = (int) ($tatib['poin'] ?? 0);
+    $pointGroup = 'rendah';
+    if ($point >= 20) {
+        $pointGroup = 'tinggi';
+    } elseif ($point >= 8) {
+        $pointGroup = 'sedang';
+    }
+
+    return [
+        'search' => implode(' ', [
+            (string) ($tatib['nama_admin'] ?? ''),
+            (string) ($tatib['deskripsi'] ?? ''),
+            (string) ($tatib['tingkat'] ?? ''),
+            (string) ($tatib['poin'] ?? ''),
+        ]),
+        'filters' => [
+            'tingkat' => (string) $state['tingkat'],
+            'poin' => $pointGroup,
+        ],
+    ];
+};
+
+$tatibAdminTableConfig = [
+    'id' => 'tatib-table',
+    'title' => 'Daftar Aturan Tata Tertib',
+    'description' => 'Rangkuman aturan aktif berdasarkan level pelanggaran.',
+    'stats' => [
+        ['label' => 'I: ' . $tingkatCounts['I'], 'class' => 'level-chip'],
+        ['label' => 'II: ' . $tingkatCounts['II'], 'class' => 'level-chip'],
+        ['label' => 'III: ' . $tingkatCounts['III'], 'class' => 'level-chip'],
+        ['label' => 'IV: ' . $tingkatCounts['IV'], 'class' => 'level-chip'],
+        ['label' => 'V: ' . $tingkatCounts['V'], 'class' => 'level-chip'],
+    ],
+    'controlsClass' => 'tatib-level-chips',
+    'filters' => [
+        [
+            'key' => 'tingkat',
+            'label' => 'Tingkat',
+            'options' => [
+                ['value' => 'I', 'label' => 'Tingkat I'],
+                ['value' => 'II', 'label' => 'Tingkat II'],
+                ['value' => 'III', 'label' => 'Tingkat III'],
+                ['value' => 'IV', 'label' => 'Tingkat IV'],
+                ['value' => 'V', 'label' => 'Tingkat V'],
+            ],
+        ],
+        [
+            'key' => 'poin',
+            'label' => 'Kategori Poin',
+            'options' => [
+                ['value' => 'tinggi', 'label' => 'Tinggi (>= 20)'],
+                ['value' => 'sedang', 'label' => 'Sedang (8-19)'],
+                ['value' => 'rendah', 'label' => 'Rendah (< 8)'],
+            ],
+        ],
+    ],
+    'search' => [
+        'enabled' => true,
+        'label' => 'Cari Aturan',
+        'placeholder' => 'Cari admin, deskripsi, tingkat, atau poin',
+    ],
+    'columns' => $tatibAdminColumns,
+    'rows' => is_array($tatibData) ? $tatibData : [],
+    'rowMetaBuilder' => $tatibAdminRowMetaBuilder,
+    'emptyMessage' => 'Data tata tertib tidak ditemukan.',
+    'tableCardClass' => 'tatib-table-card',
+    'tableHeaderClass' => 'tatib-table-head',
+    'tableAriaLabel' => 'Tabel manajemen tata tertib',
+];
+
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -114,110 +285,7 @@ if ($tatibCount > 0) {
                 <button class="add-button" id="addButton">+ Tambah Aturan</button>
             </div>
 
-            <section class="tatib-table-card">
-                <div class="tatib-table-head">
-                    <div>
-                        <h2>Daftar Aturan Tata Tertib</h2>
-                        <p>Rangkuman aturan aktif berdasarkan level pelanggaran.</p>
-                    </div>
-                    <div class="tatib-level-chips" aria-label="Ringkasan tingkat pelanggaran">
-                        <span class="level-chip">I:
-                            <?= htmlspecialchars((string) $tingkatCounts['I'], ENT_QUOTES, 'UTF-8') ?></span>
-                        <span class="level-chip">II:
-                            <?= htmlspecialchars((string) $tingkatCounts['II'], ENT_QUOTES, 'UTF-8') ?></span>
-                        <span class="level-chip">III:
-                            <?= htmlspecialchars((string) $tingkatCounts['III'], ENT_QUOTES, 'UTF-8') ?></span>
-                        <span class="level-chip">IV:
-                            <?= htmlspecialchars((string) $tingkatCounts['IV'], ENT_QUOTES, 'UTF-8') ?></span>
-                        <span class="level-chip">V:
-                            <?= htmlspecialchars((string) $tingkatCounts['V'], ENT_QUOTES, 'UTF-8') ?></span>
-                    </div>
-                </div>
-                <div class="table-container">
-                    <table id="tatib-table">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Admin</th>
-                                <th>Pelanggaran</th>
-                                <th>Tingkat</th>
-                                <th>Poin</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php $i = 1 ?>
-                            <?php if ($tatibData): ?>
-                                <?php foreach ($tatibData as $tatib):
-                                    $tingkat = strtoupper(trim((string) ($tatib['tingkat'] ?? '')));
-                                    $tierClass = 'tier-pill';
-                                    if ($tingkat === 'I') {
-                                        $tierClass .= ' tier-pill--one';
-                                    } elseif ($tingkat === 'II') {
-                                        $tierClass .= ' tier-pill--two';
-                                    } elseif ($tingkat === 'III') {
-                                        $tierClass .= ' tier-pill--three';
-                                    } elseif ($tingkat === 'IV') {
-                                        $tierClass .= ' tier-pill--four';
-                                    } elseif ($tingkat === 'V') {
-                                        $tierClass .= ' tier-pill--five';
-                                    }
-
-                                    $point = (int) ($tatib['poin'] ?? 0);
-                                    $pointClass = 'point-badge';
-                                    if ($point >= 20) {
-                                        $pointClass .= ' point-badge--high';
-                                    } elseif ($point >= 8) {
-                                        $pointClass .= ' point-badge--medium';
-                                    } else {
-                                        $pointClass .= ' point-badge--low';
-                                    }
-
-                                    $adminName = trim((string) ($tatib['nama_admin'] ?? ''));
-                                    if ($adminName === '') {
-                                        $adminName = 'Admin Tidak Diketahui';
-                                    }
-                                    ?>
-                                    <tr>
-                                        <td><?= $i ?></td>
-                                        <td><span
-                                                class="admin-pill"><?= htmlspecialchars($adminName, ENT_QUOTES, 'UTF-8') ?></span>
-                                        </td>
-                                        <td class="tatib-desc-cell">
-                                            <p class="tatib-desc-text"><?= htmlspecialchars($tatib['deskripsi']) ?></p>
-                                        </td>
-                                        <td><span
-                                                class="<?= htmlspecialchars($tierClass, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($tatib['tingkat']) ?></span>
-                                        </td>
-                                        <td><span
-                                                class="<?= htmlspecialchars($pointClass, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($tatib['poin']) ?></span>
-                                        </td>
-                                        <td class="button-cell">
-                                            <form
-                                                action="<?= htmlspecialchars(app_action_url('action.tatib'), ENT_QUOTES, 'UTF-8') ?>"
-                                                method="post">
-                                                <input type="hidden" name="id_tatib"
-                                                    value="<?= htmlspecialchars(app_id_token('tatib', (int) $tatib['id_tata_tertib']), ENT_QUOTES, 'UTF-8') ?>">
-                                                <button type="button" class="delete" id="delete" name="delete"
-                                                    data-admin-confirm-trigger data-admin-confirm-title="Hapus tata tertib?"
-                                                    data-admin-confirm-message="Data tata tertib yang dihapus tidak dapat dikembalikan. Lanjutkan penghapusan?"
-                                                    data-admin-confirm-label="Ya, Hapus" data-admin-confirm-action="submit-form"
-                                                    aria-label="Hapus tata tertib <?= htmlspecialchars($tatib['deskripsi']) ?>"><i
-                                                        class="fa-solid fa-trash"></i></button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                    <?php $i++ ?>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <tr>
-                                    <td colspan="6" class="empty-cell">Data tata tertib tidak ditemukan.</td>
-                                </tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
+            <?php render_universal_filterable_table_component($tatibAdminTableConfig); ?>
         </section>
         <!-- Modal edit -->
         <div id="editModal" class="modal">
@@ -286,6 +354,8 @@ if ($tatibCount > 0) {
         </div>
 
         <!-- javascript -->
+        <script defer
+            src="<?= htmlspecialchars(app_seo_script_src('js/universal-table-filter.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
         <script defer
             src="<?= htmlspecialchars(app_seo_script_src('js/admin-tatib.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
         <?php

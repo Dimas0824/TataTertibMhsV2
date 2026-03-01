@@ -136,6 +136,64 @@
   font-weight: 700;
 }
 
+.tatib-table-card .table-tools {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 20px;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f9fcff;
+}
+
+.tatib-table-card .table-tools__inputs {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tatib-table-card .table-tools__search,
+.tatib-table-card .table-tools__filter {
+  display: grid;
+  gap: 5px;
+  min-width: 190px;
+}
+
+.tatib-table-card .table-tools span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #607286;
+}
+
+.tatib-table-card .table-tools input,
+.tatib-table-card .table-tools select {
+  border: 1px solid #d3deeb;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1f3348;
+  font-size: 0.82rem;
+  padding: 9px 10px;
+  min-height: 38px;
+}
+
+.tatib-table-card .table-tools input:focus,
+.tatib-table-card .table-tools select:focus {
+  outline: 2px solid #bfdbfe;
+  outline-offset: 0;
+  border-color: #93c5fd;
+}
+
+.tatib-table-card .table-tools__result {
+  margin: 0;
+  color: #4b5f77;
+  font-size: 0.8rem;
+}
+
 .table-container {
   width: 100%;
   overflow-x: auto;
@@ -432,6 +490,10 @@ textarea {
   .tatib-table-head {
     padding: 12px;
     flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tatib-table-card .table-tools {
     align-items: stretch;
   }
 

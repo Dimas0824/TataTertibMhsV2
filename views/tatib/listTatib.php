@@ -22,6 +22,91 @@ if (isset($_SESSION['user_type'])) {
     $listTatibRole = $_SESSION['user_type'] === 'dosen' ? 'Dosen' : 'Mahasiswa';
 }
 
+$escapeHtml = static function (string $value): string {
+    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+};
+
+$tingkatPointMap = [
+    'I' => 32,
+    'II' => 16,
+    'III' => 8,
+    'IV' => 4,
+    'V' => 2,
+];
+
+$tatibTableColumns = [
+    [
+        'label' => 'Pelanggaran',
+        'cellClass' => 'tatib-col-desc',
+        'render' => static function (array $tatib) use ($escapeHtml): string {
+            $deskripsi = trim((string) ($tatib['deskripsi'] ?? ''));
+            return '<p class="tatib-rule-text" title="' . $escapeHtml($deskripsi) . '">' . $escapeHtml($deskripsi) . '</p>';
+        },
+    ],
+    [
+        'label' => 'Tingkat',
+        'cellClass' => 'tatib-col-level',
+        'render' => static function (array $tatib) use ($escapeHtml, $tingkatPointMap): string {
+            $tingkat = strtoupper(trim((string) ($tatib['tingkat'] ?? '')));
+            $point = (int) ($tingkatPointMap[$tingkat] ?? 0);
+            ob_start();
+            ?>
+            <span class="tingkat-badge" title="<?= $escapeHtml('Tingkat ' . $tingkat . ' (' . $point . ' poin)') ?>">
+                <span class="tingkat-badge__level">Tingkat <?= $escapeHtml($tingkat) ?></span>
+                <span class="tingkat-badge__point"><?= $escapeHtml((string) $point) ?> poin</span>
+            </span>
+            <?php
+            return (string) ob_get_clean();
+        },
+    ],
+];
+
+$tatibRowMetaBuilder = static function (array $tatib): array {
+    $tingkat = strtoupper(trim((string) ($tatib['tingkat'] ?? '')));
+    return [
+        'search' => implode(' ', [
+            (string) ($tatib['deskripsi'] ?? ''),
+            $tingkat,
+        ]),
+        'filters' => [
+            'tingkat' => $tingkat,
+        ],
+    ];
+};
+
+$tatibTableConfig = [
+    'id' => 'tatib-table',
+    'title' => 'Filter Data Tata Tertib',
+    'description' => 'Gunakan pencarian atau pilih tingkat untuk menampilkan pelanggaran yang relevan.',
+    'stats' => [
+        ['label' => (is_array($tatibData) ? count($tatibData) : 0) . ' aturan'],
+    ],
+    'filters' => [
+        [
+            'key' => 'tingkat',
+            'label' => 'Tingkat Pelanggaran',
+            'options' => [
+                ['value' => 'I', 'label' => 'Tingkat I'],
+                ['value' => 'II', 'label' => 'Tingkat II'],
+                ['value' => 'III', 'label' => 'Tingkat III'],
+                ['value' => 'IV', 'label' => 'Tingkat IV'],
+                ['value' => 'V', 'label' => 'Tingkat V'],
+            ],
+        ],
+    ],
+    'search' => [
+        'enabled' => true,
+        'label' => 'Cari Aturan',
+        'placeholder' => 'Cari deskripsi pelanggaran atau tingkat',
+    ],
+    'columns' => $tatibTableColumns,
+    'rows' => is_array($tatibData) ? $tatibData : [],
+    'rowMetaBuilder' => $tatibRowMetaBuilder,
+    'emptyMessage' => 'Data tata tertib belum tersedia.',
+    'tableCardClass' => 'tatib-table-card',
+    'tableAriaLabel' => 'Tabel tata tertib mahasiswa',
+];
+
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -44,8 +129,6 @@ if (isset($_SESSION['user_type'])) {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <script defer
-        src="<?= htmlspecialchars(app_seo_script_src('js/script.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">
@@ -96,52 +179,7 @@ if (isset($_SESSION['user_type'])) {
         </section>
 
         <section class="tatib-main-card">
-            <div class="filter-container">
-                <div class="filter-copy">
-                    <h3>Filter Data Tata Tertib</h3>
-                    <p>Pilih tingkat untuk menampilkan pelanggaran dan sanksi yang relevan.</p>
-                </div>
-                <div class="filter-field">
-                    <label for="filter-tingkat">Tingkat Pelanggaran</label>
-                    <div class="select-wrap">
-                        <select id="filter-tingkat" onchange="filterTingkat()">
-                            <option value="">Semua Tingkat</option>
-                            <option value="I">I</option>
-                            <option value="II">II</option>
-                            <option value="III">III</option>
-                            <option value="IV">IV</option>
-                            <option value="V">V</option>
-                        </select>
-                        <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="table-container">
-                <table id="tatib-table">
-                    <thead>
-                        <tr>
-                            <th>Pelanggaran</th>
-                            <th>Tingkat</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if ($tatibData): ?>
-                            <?php foreach ($tatibData as $tatib): ?>
-                                <tr data-tingkat="<?= htmlspecialchars((string) $tatib['tingkat'], ENT_QUOTES, 'UTF-8') ?>">
-                                    <td><?= htmlspecialchars((string) $tatib['deskripsi'], ENT_QUOTES, 'UTF-8') ?></td>
-                                    <td><span class="tingkat-badge">Tingkat
-                                            <?= htmlspecialchars((string) $tatib['tingkat'], ENT_QUOTES, 'UTF-8') ?></span></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="2" class="table-empty">Data tata tertib belum tersedia.</td>
-                            </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+            <?php render_universal_filterable_table_component($tatibTableConfig); ?>
 
             <div class="sanksi-section">
                 <h3>Sanksi Berdasarkan Tingkat</h3>
@@ -178,6 +216,29 @@ if (isset($_SESSION['user_type'])) {
         ]);
         ?>
     </div>
+    <script defer
+        src="<?= htmlspecialchars(app_seo_script_src('js/universal-table-filter.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
+    <script>
+        (function () {
+            const filterSelect = document.querySelector('[data-table-tools][data-table-target="tatib-table"] [data-table-filter-key="tingkat"]');
+            const sanksiItems = document.querySelectorAll('.sanksi-tingkat');
+
+            if (!(filterSelect instanceof HTMLSelectElement) || sanksiItems.length === 0) {
+                return;
+            }
+
+            const applySanksiFilter = () => {
+                const selected = String(filterSelect.value || '').trim().toLowerCase();
+                sanksiItems.forEach((item) => {
+                    const level = String(item.getAttribute('data-tingkat') || '').trim().toLowerCase();
+                    item.style.display = selected === '' || selected === level ? '' : 'none';
+                });
+            };
+
+            filterSelect.addEventListener('change', applySanksiFilter);
+            applySanksiFilter();
+        })();
+    </script>
 
 </body>
 

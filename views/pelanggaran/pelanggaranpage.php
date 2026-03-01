@@ -44,6 +44,201 @@ if ($totalPelanggaran > 0) {
         }
     }
 }
+
+$escapeHtml = static function (string $value): string {
+    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+};
+
+$buildStudentRowState = static function (array $detail): array {
+    $tingkat = strtoupper(trim((string) ($detail['tingkat'] ?? '')));
+    $tierClass = 'tier-pill';
+    if ($tingkat === 'I') {
+        $tierClass .= ' tier-pill--one';
+    } elseif ($tingkat === 'II') {
+        $tierClass .= ' tier-pill--two';
+    } elseif ($tingkat === 'III') {
+        $tierClass .= ' tier-pill--three';
+    }
+
+    $statusText = strtolower(trim((string) ($detail['status'] ?? '')));
+    $statusClass = 'status-pill';
+    if ($statusText === 'pending') {
+        $statusClass .= ' status-pill--pending';
+    } elseif ($statusText === 'selesai' || $statusText === 'done') {
+        $statusClass .= ' status-pill--done';
+    } else {
+        $statusClass .= ' status-pill--progress';
+    }
+
+    $poin = (int) ($detail['poin'] ?? 0);
+    $pointClass = 'point-badge';
+    if ($poin >= 15) {
+        $pointClass .= ' point-badge--high';
+    } elseif ($poin >= 9) {
+        $pointClass .= ' point-badge--medium';
+    } else {
+        $pointClass .= ' point-badge--low';
+    }
+
+    return [
+        'tingkat' => $tingkat,
+        'tierClass' => $tierClass,
+        'statusText' => $statusText,
+        'statusClass' => $statusClass,
+        'pointClass' => $pointClass,
+    ];
+};
+
+$studentTableColumns = [
+    [
+        'label' => 'Pelanggaran',
+        'render' => static function (array $detail) use ($escapeHtml): string {
+            return '<p class="violation-desc">' . $escapeHtml((string) ($detail['pelanggaran'] ?? '')) . '</p>';
+        },
+    ],
+    [
+        'label' => 'Tingkat',
+        'render' => static function (array $detail) use ($escapeHtml, $buildStudentRowState): string {
+            $state = $buildStudentRowState($detail);
+            return '<span class="' . $escapeHtml((string) $state['tierClass']) . '">' . $escapeHtml((string) ($detail['tingkat'] ?? '')) . '</span>';
+        },
+    ],
+    [
+        'label' => 'Sanksi',
+        'render' => static function (array $detail) use ($escapeHtml): string {
+            return '<p class="sanction-desc">' . $escapeHtml((string) ($detail['sanksi'] ?? '')) . '</p>';
+        },
+    ],
+    [
+        'label' => 'Dosen Pelapor',
+        'key' => 'nama_lengkap',
+    ],
+    [
+        'label' => 'Tugas Khusus',
+        'render' => static function (array $detail) use ($escapeHtml): string {
+            return $escapeHtml((string) ($detail['tugas_khusus'] ?? 'Tidak Ada Tugas'));
+        },
+    ],
+    [
+        'label' => 'Surat',
+        'render' => static function () use ($escapeHtml): string {
+            ob_start();
+            ?>
+            <div class="doc-links">
+                <a class="file-link"
+                    href="<?= $escapeHtml(app_action_url('action.file_download', ['file' => 'SURAT PERNYATAAN TI.pdf'])) ?>"
+                    target="_blank" rel="noopener noreferrer">Unduh Surat Pernyataan</a>
+                <span class="muted-text">Format PDF, maksimal 2 MB.</span>
+            </div>
+            <?php
+            return (string) ob_get_clean();
+        },
+    ],
+    [
+        'label' => 'Poin',
+        'render' => static function (array $detail) use ($escapeHtml, $buildStudentRowState): string {
+            $state = $buildStudentRowState($detail);
+            return '<span class="' . $escapeHtml((string) $state['pointClass']) . '">' . $escapeHtml((string) ($detail['poin'] ?? '0')) . '</span>';
+        },
+    ],
+    [
+        'label' => 'Status',
+        'render' => static function (array $detail) use ($escapeHtml, $buildStudentRowState): string {
+            $state = $buildStudentRowState($detail);
+            return '<span class="' . $escapeHtml((string) $state['statusClass']) . '">' . $escapeHtml((string) ($detail['status'] ?? '')) . '</span>';
+        },
+    ],
+    [
+        'label' => 'Pengumpulan',
+        'render' => static function (array $detail) use ($escapeHtml): string {
+            ob_start();
+            ?>
+            <form class="uploadForm" enctype="multipart/form-data">
+                <input type="hidden" name="id_detail"
+                    value="<?= $escapeHtml(app_id_token('detail_pelanggaran', (int) ($detail['id_detail'] ?? 0))) ?>">
+                <input type="file" name="suratPernyataan" required>
+                <button type="button" class="submit-btn uploadButton">Upload Surat</button>
+            </form>
+            <?php if (in_array((string) ($detail['tingkat'] ?? ''), ['I', 'II', 'III'], true)): ?>
+                <form class="uploadForm" enctype="multipart/form-data">
+                    <input type="hidden" name="id_detail"
+                        value="<?= $escapeHtml(app_id_token('detail_pelanggaran', (int) ($detail['id_detail'] ?? 0))) ?>">
+                    <input type="file" name="tugasKhusus" required>
+                    <button type="button" class="submit-btn uploadButton">Upload Tugas</button>
+                </form>
+            <?php endif; ?>
+            <?php
+            return (string) ob_get_clean();
+        },
+    ],
+];
+
+$studentRowMetaBuilder = static function (array $detail) use ($buildStudentRowState): array {
+    $state = $buildStudentRowState($detail);
+    $statusFilter = 'proses';
+    if ((string) $state['statusText'] === 'pending') {
+        $statusFilter = 'pending';
+    } elseif ((string) $state['statusText'] === 'selesai' || (string) $state['statusText'] === 'done') {
+        $statusFilter = 'selesai';
+    }
+
+    return [
+        'search' => implode(' ', [
+            (string) ($detail['pelanggaran'] ?? ''),
+            (string) ($detail['sanksi'] ?? ''),
+            (string) ($detail['nama_lengkap'] ?? ''),
+            (string) ($detail['status'] ?? ''),
+            (string) ($detail['tingkat'] ?? ''),
+            (string) ($detail['tugas_khusus'] ?? ''),
+        ]),
+        'filters' => [
+            'status' => $statusFilter,
+            'tingkat' => (string) $state['tingkat'],
+        ],
+    ];
+};
+
+$studentTableConfig = [
+    'id' => 'student-violation-table',
+    'title' => 'Tabel Pelanggaran',
+    'description' => 'Riwayat pelanggaran aktif dan status tindak lanjut Anda.',
+    'stats' => [
+        ['label' => $totalPelanggaran . ' kasus'],
+        ['label' => $pendingPelanggaran . ' pending', 'class' => 'table-stat-chip--warning'],
+    ],
+    'filters' => [
+        [
+            'key' => 'status',
+            'label' => 'Status',
+            'options' => [
+                ['value' => 'pending', 'label' => 'Pending'],
+                ['value' => 'proses', 'label' => 'Proses'],
+                ['value' => 'selesai', 'label' => 'Selesai'],
+            ],
+        ],
+        [
+            'key' => 'tingkat',
+            'label' => 'Tingkat',
+            'options' => [
+                ['value' => 'I', 'label' => 'Tingkat I'],
+                ['value' => 'II', 'label' => 'Tingkat II'],
+                ['value' => 'III', 'label' => 'Tingkat III'],
+                ['value' => 'IV', 'label' => 'Tingkat IV'],
+                ['value' => 'V', 'label' => 'Tingkat V'],
+            ],
+        ],
+    ],
+    'search' => [
+        'enabled' => true,
+        'label' => 'Cari Pelanggaran',
+        'placeholder' => 'Cari pelanggaran, sanksi, dosen pelapor, atau status',
+    ],
+    'columns' => $studentTableColumns,
+    'rows' => $pelanggaranDetail,
+    'rowMetaBuilder' => $studentRowMetaBuilder,
+    'emptyMessage' => 'Data pelanggaran tidak ditemukan.',
+    'tableCardClass' => 'table-card--desktop-only',
+];
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -120,119 +315,8 @@ if ($totalPelanggaran > 0) {
                 </div>
             </div>
 
-            <section class="table-card">
-                <div class="table-card-header">
-                    <div>
-                        <h3>Tabel Pelanggaran</h3>
-                        <p>Riwayat pelanggaran aktif dan status tindak lanjut Anda.</p>
-                    </div>
-                    <div class="table-card-stats" aria-label="Ringkasan tabel">
-                        <span
-                            class="table-stat-chip"><?= htmlspecialchars((string) $totalPelanggaran, ENT_QUOTES, 'UTF-8') ?>
-                            kasus</span>
-                        <span
-                            class="table-stat-chip table-stat-chip--warning"><?= htmlspecialchars((string) $pendingPelanggaran, ENT_QUOTES, 'UTF-8') ?>
-                            pending</span>
-                    </div>
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Pelanggaran</th>
-                                <th>Tingkat</th>
-                                <th>Sanksi</th>
-                                <th>Dosen Pelapor</th>
-                                <th>Tugas Khusus</th>
-                                <th>Surat</th>
-                                <th>Poin</th>
-                                <th>Status</th>
-                                <th>Pengumpulan</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (!empty($pelanggaranDetail)) {
-                                foreach ($pelanggaranDetail as $detail) {
-                                    $tingkat = strtoupper(trim((string) ($detail['tingkat'] ?? '')));
-                                    $tierClass = 'tier-pill';
-                                    if ($tingkat === 'I') {
-                                        $tierClass .= ' tier-pill--one';
-                                    } elseif ($tingkat === 'II') {
-                                        $tierClass .= ' tier-pill--two';
-                                    } elseif ($tingkat === 'III') {
-                                        $tierClass .= ' tier-pill--three';
-                                    }
-
-                                    $statusText = strtolower(trim((string) ($detail['status'] ?? '')));
-                                    $statusClass = 'status-pill';
-                                    if ($statusText === 'pending') {
-                                        $statusClass .= ' status-pill--pending';
-                                    } elseif ($statusText === 'selesai' || $statusText === 'done') {
-                                        $statusClass .= ' status-pill--done';
-                                    } else {
-                                        $statusClass .= ' status-pill--progress';
-                                    }
-
-                                    $poin = (int) ($detail['poin'] ?? 0);
-                                    $pointClass = 'point-badge';
-                                    if ($poin >= 15) {
-                                        $pointClass .= ' point-badge--high';
-                                    } elseif ($poin >= 9) {
-                                        $pointClass .= ' point-badge--medium';
-                                    } else {
-                                        $pointClass .= ' point-badge--low';
-                                    }
-                                    ?>
-                                    <tr>
-                                        <td>
-                                            <p class="violation-desc"><?= htmlspecialchars($detail['pelanggaran']) ?></p>
-                                        </td>
-                                        <td><span
-                                                class="<?= htmlspecialchars($tierClass, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($detail['tingkat']) ?></span>
-                                        </td>
-                                        <td>
-                                            <p class="sanction-desc"><?= htmlspecialchars($detail['sanksi']) ?></p>
-                                        </td>
-                                        <td><?= htmlspecialchars($detail['nama_lengkap']) ?></td>
-                                        <td><?= htmlspecialchars($detail['tugas_khusus'] ?? 'Tidak Ada Tugas') ?></td>
-                                        <td>
-                                            <div class="doc-links">
-                                                <a class="file-link"
-                                                    href="<?= htmlspecialchars(app_action_url('action.file_download', ['file' => 'SURAT PERNYATAAN TI.pdf']), ENT_QUOTES, 'UTF-8') ?>"
-                                                    target="_blank" rel="noopener noreferrer">Unduh Surat Pernyataan</a>
-                                                <span class="muted-text">Format PDF, maksimal 2 MB.</span>
-                                            </div>
-                                        </td>
-                                        <td><span
-                                                class="<?= htmlspecialchars($pointClass, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($detail['poin']) ?></span>
-                                        </td>
-                                        <td><span
-                                                class="<?= htmlspecialchars($statusClass, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($detail['status']) ?></span>
-                                        </td>
-                                        <td>
-                                            <form class="uploadForm" enctype="multipart/form-data">
-                                                <input type="hidden" name="id_detail"
-                                                    value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $detail['id_detail']), ENT_QUOTES, 'UTF-8') ?>">
-                                                <input type="file" name="suratPernyataan" required>
-                                                <button type="button" class="submit-btn uploadButton">Upload Surat</button>
-                                            </form>
-                                            <?php if (in_array($detail['tingkat'], ['I', 'II', 'III'])): ?>
-                                                <form class="uploadForm" enctype="multipart/form-data">
-                                                    <input type="hidden" name="id_detail"
-                                                        value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $detail['id_detail']), ENT_QUOTES, 'UTF-8') ?>">
-                                                    <input type="file" name="tugasKhusus" required>
-                                                    <button type="button" class="submit-btn uploadButton">Upload Tugas</button>
-                                                </form>
-                                            <?php endif; ?>
-                                        </td>
-                                    </tr>
-                                <?php }
-                            } else {
-                                echo "<tr><td colspan='9' class='empty-cell'>Data pelanggaran tidak ditemukan.</td></tr>";
-                            } ?>
-                        </tbody>
-                    </table>
-                </div>
+            <?php render_universal_filterable_table_component($studentTableConfig); ?>
+            <section class="table-card table-card--mobile-only">
                 <div class="mobile-violation-list" aria-label="Daftar pelanggaran mobile">
                     <?php if (!empty($pelanggaranDetail)): ?>
                         <?php foreach ($pelanggaranDetail as $mobileIndex => $detail):
@@ -392,6 +476,8 @@ if ($totalPelanggaran > 0) {
     ?>
 
     <!-- JavaScript -->
+    <script defer
+        src="<?= htmlspecialchars(app_seo_script_src('js/universal-table-filter.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
     <script defer
         src="<?= htmlspecialchars(app_seo_script_src('js/mobile-violation-cards.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
     <script defer

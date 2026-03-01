@@ -97,6 +97,107 @@
     overflow: hidden;
 }
 
+.admin-table-card .table-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 18px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fbff;
+}
+
+.admin-table-card .table-card-header h3 {
+    margin: 0;
+    font-size: 1.02rem;
+    color: #0f172a;
+}
+
+.admin-table-card .table-card-header p {
+    margin: 6px 0 0;
+    color: #607286;
+    font-size: 0.84rem;
+}
+
+.admin-table-card .table-card-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.admin-table-card .table-stat-chip {
+    border: 1px solid #d5e2f1;
+    background: #f7fbff;
+    color: #1e3a5f;
+    border-radius: 999px;
+    padding: 7px 11px;
+    font-size: 0.74rem;
+    font-weight: 700;
+}
+
+.admin-table-card .table-stat-chip--warning {
+    border-color: #f6d4a0;
+    background: #fff6e8;
+    color: #8a4b00;
+}
+
+.admin-table-card .table-tools {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 12px 18px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #fbfdff;
+}
+
+.admin-table-card .table-tools__inputs {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.admin-table-card .table-tools__search,
+.admin-table-card .table-tools__filter {
+    display: grid;
+    gap: 5px;
+    min-width: 210px;
+}
+
+.admin-table-card .table-tools span {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #607286;
+}
+
+.admin-table-card .table-tools input,
+.admin-table-card .table-tools select {
+    border: 1px solid #d3deeb;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #1f3348;
+    font-size: 0.82rem;
+    padding: 9px 10px;
+    min-height: 38px;
+}
+
+.admin-table-card .table-tools input:focus,
+.admin-table-card .table-tools select:focus {
+    outline: 2px solid #bfdbfe;
+    outline-offset: 0;
+    border-color: #93c5fd;
+}
+
+.admin-table-card .table-tools__result {
+    margin: 0;
+    color: #4b5f77;
+    font-size: 0.8rem;
+}
+
 .table-container {
     width: 100%;
     overflow-x: auto;
@@ -229,6 +330,12 @@ td.button-cell form {
 
     .admin-table-card {
         border-radius: 12px;
+    }
+
+    .admin-table-card .table-card-header,
+    .admin-table-card .table-tools {
+        flex-direction: column;
+        align-items: stretch;
     }
 
     .table-container table {
