@@ -297,6 +297,107 @@ class Pelanggaran
         }
     }
 
+    public function konfirmasiLaporanSelesaiByDosen(string $nidn, int $idDetail): array
+    {
+        $nidn = trim($nidn);
+        if ($nidn === '' || $idDetail <= 0) {
+            return [
+                'success' => false,
+                'message' => 'Data konfirmasi tidak valid.',
+            ];
+        }
+
+        try {
+            $stmt = $this->connect->prepare(
+                "SELECT
+                    dp.id_detail,
+                    dp.id_dosen,
+                    dp.id_mahasiswa,
+                    dp.status,
+                    dp.surat,
+                    dp.pengumpulan_tgsKhusus,
+                    tt.tingkat,
+                    d.nama_lengkap AS nama_dosen,
+                    m.nim
+                 FROM DETAIL_PELANGGARAN dp
+                 JOIN DOSEN d ON dp.id_dosen = d.id_dosen
+                 JOIN MAHASISWA m ON dp.id_mahasiswa = m.id_mhs
+                 JOIN TATA_TERTIB tt ON dp.id_tata_tertib = tt.id_tata_tertib
+                 WHERE dp.id_detail = ?
+                   AND d.nidn = ?
+                 LIMIT 1"
+            );
+            $stmt->execute([$idDetail, $nidn]);
+            $detail = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$detail) {
+                return [
+                    'success' => false,
+                    'message' => 'Laporan tidak ditemukan atau bukan milik Anda.',
+                ];
+            }
+
+            $status = strtolower(trim((string) ($detail['status'] ?? '')));
+            if ($status === 'selesai' || $status === 'done') {
+                return [
+                    'success' => true,
+                    'message' => 'Laporan sudah berstatus selesai.',
+                ];
+            }
+
+            $tingkat = strtoupper(trim((string) ($detail['tingkat'] ?? '')));
+            $requiresTugas = in_array($tingkat, ['I', 'II', 'III'], true);
+            $hasSurat = trim((string) ($detail['surat'] ?? '')) !== '';
+            $hasTugas = trim((string) ($detail['pengumpulan_tgsKhusus'] ?? '')) !== '';
+
+            if (!$hasSurat) {
+                return [
+                    'success' => false,
+                    'message' => 'Konfirmasi gagal: surat pernyataan belum diunggah mahasiswa.',
+                ];
+            }
+
+            if ($requiresTugas && !$hasTugas) {
+                return [
+                    'success' => false,
+                    'message' => 'Konfirmasi gagal: tugas khusus belum diunggah mahasiswa.',
+                ];
+            }
+
+            $statusTugas = $requiresTugas ? 'Sudah Dikumpulkan' : 'Tidak Ada Tugas';
+            $stmtUpdate = $this->connect->prepare(
+                "UPDATE DETAIL_PELANGGARAN
+                 SET status = 'selesai',
+                     status_tugas = :status_tugas
+                 WHERE id_detail = :id_detail"
+            );
+            $stmtUpdate->bindValue(':status_tugas', $statusTugas, PDO::PARAM_STR);
+            $stmtUpdate->bindValue(':id_detail', $idDetail, PDO::PARAM_INT);
+            $stmtUpdate->execute();
+
+            $idDosen = (int) ($detail['id_dosen'] ?? 0);
+            $idMahasiswa = (int) ($detail['id_mahasiswa'] ?? 0);
+            if ($idDosen > 0 && $idMahasiswa > 0) {
+                $pesanMahasiswa = 'Laporan pelanggaran Anda telah dikonfirmasi selesai oleh dosen.';
+                $this->kirimNotifikasi($idDosen, $idMahasiswa, $idDetail, $pesanMahasiswa, 'mahasiswa');
+
+                $pesanDosen = 'Laporan pelanggaran mahasiswa NIM ' . (string) ($detail['nim'] ?? '-') . ' telah Anda selesaikan.';
+                $this->kirimNotifikasi($idDosen, $idMahasiswa, $idDetail, $pesanDosen, 'dosen');
+            }
+
+            return [
+                'success' => true,
+                'message' => 'Laporan berhasil dikonfirmasi selesai.',
+            ];
+        } catch (Throwable $e) {
+            error_log('Error in konfirmasiLaporanSelesaiByDosen: ' . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat konfirmasi laporan.',
+            ];
+        }
+    }
+
     public function getNotifikasiMahasiswa($id)
     {
         $query = "SELECT * FROM v_NotifikasiMahasiswa WHERE nim = ?";

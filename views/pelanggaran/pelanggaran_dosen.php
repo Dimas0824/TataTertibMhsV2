@@ -22,6 +22,7 @@ $userData = $_SESSION['user_data'];
 $pelanggaranController = new PelanggaranController();
 $nidn = $userData['nidn'];
 $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
+$confirmSelesaiAction = app_action_url('action.pelanggaran', ['action' => 'confirm_selesai']);
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -114,12 +115,29 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
                                 <th>Poin</th>
                                 <th>Status</th>
                                 <th>Status Tugas</th>
-                                <th>Edit</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (!empty($pelanggaranDetail)): ?>
-                                <?php foreach ($pelanggaranDetail as $detail): ?>
+                                <?php foreach ($pelanggaranDetail as $detail):
+                                    $tingkat = strtoupper(trim((string) ($detail['tingkat'] ?? '')));
+                                    $requiresTugas = in_array($tingkat, ['I', 'II', 'III'], true);
+                                    $hasSurat = trim((string) ($detail['surat'] ?? '')) !== '';
+                                    $hasTugas = trim((string) ($detail['pengumpulan_tgsKhusus'] ?? '')) !== '';
+                                    $dokumenLengkap = $hasSurat && (!$requiresTugas || $hasTugas);
+                                    $statusLower = strtolower(trim((string) ($detail['status_pelanggaran'] ?? '')));
+                                    $isSelesai = ($statusLower === 'selesai' || $statusLower === 'done');
+                                    $canConfirm = $dokumenLengkap && !$isSelesai;
+                                    $confirmNote = 'Dokumen sudah lengkap. Laporan bisa dikonfirmasi selesai.';
+                                    if ($isSelesai) {
+                                        $confirmNote = 'Laporan sudah berstatus selesai.';
+                                    } elseif (!$hasSurat) {
+                                        $confirmNote = 'Menunggu upload surat pernyataan.';
+                                    } elseif ($requiresTugas && !$hasTugas) {
+                                        $confirmNote = 'Menunggu upload tugas khusus.';
+                                    }
+                                    ?>
                                     <tr>
                                         <td><?= htmlspecialchars($detail['nama_mahasiswa'], ENT_QUOTES, 'UTF-8') ?></td>
                                         <td><?= htmlspecialchars($detail['pelanggaran'], ENT_QUOTES, 'UTF-8') ?></td>
@@ -138,12 +156,16 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
                                                 <?php else: ?>
                                                     <span class="muted-text">Surat belum diunggah</span>
                                                 <?php endif; ?>
-                                                <?php if (!empty($detail['pengumpulan_tgsKhusus'])): ?>
-                                                    <a class="file-link"
-                                                        href="<?= htmlspecialchars(app_action_url('action.file_download', ['file' => (string) $detail['pengumpulan_tgsKhusus']]), ENT_QUOTES, 'UTF-8') ?>"
-                                                        target="_blank" rel="noopener noreferrer">Tugas Khusus</a>
+                                                <?php if ($requiresTugas): ?>
+                                                    <?php if (!empty($detail['pengumpulan_tgsKhusus'])): ?>
+                                                        <a class="file-link"
+                                                            href="<?= htmlspecialchars(app_action_url('action.file_download', ['file' => (string) $detail['pengumpulan_tgsKhusus']]), ENT_QUOTES, 'UTF-8') ?>"
+                                                            target="_blank" rel="noopener noreferrer">Tugas Khusus</a>
+                                                    <?php else: ?>
+                                                        <span class="muted-text">Tugas belum diunggah</span>
+                                                    <?php endif; ?>
                                                 <?php else: ?>
-                                                    <span class="muted-text">Tugas belum diunggah</span>
+                                                    <span class="muted-text">Tugas khusus tidak diwajibkan</span>
                                                 <?php endif; ?>
                                             </div>
                                         </td>
@@ -153,7 +175,7 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
                                         <td><span
                                                 class="status-pill"><?= htmlspecialchars($detail['status_pelanggaran'], ENT_QUOTES, 'UTF-8') ?></span>
                                         </td>
-                                        <?php if ($detail['tingkat'] === 'IV' || $detail['tingkat'] === 'V'): ?>
+                                        <?php if (!$requiresTugas): ?>
                                             <td><span class="muted-text">Tidak ada tugas</span></td>
                                         <?php else: ?>
                                             <td><span
@@ -161,11 +183,23 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
                                             </td>
                                         <?php endif; ?>
                                         <td>
-                                            <a class="edit-laporan"
-                                                href="<?= htmlspecialchars(app_page_url('page.edit_pelaporan', ['id_detail' => (int) $detail['id_detail']]), ENT_QUOTES, 'UTF-8') ?>"
-                                                aria-label="Edit laporan">
-                                                <i class="fa-solid fa-pen-to-square"></i>
-                                            </a>
+                                            <div class="action-stack">
+                                                <a class="edit-laporan"
+                                                    href="<?= htmlspecialchars(app_page_url('page.edit_pelaporan', ['id_detail' => (int) $detail['id_detail']]), ENT_QUOTES, 'UTF-8') ?>"
+                                                    aria-label="Edit laporan">
+                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                </a>
+                                                <form method="POST" class="confirm-form"
+                                                    action="<?= htmlspecialchars($confirmSelesaiAction, ENT_QUOTES, 'UTF-8') ?>"
+                                                    onsubmit="return confirm('Konfirmasi laporan ini sebagai selesai?');">
+                                                    <input type="hidden" name="id_detail"
+                                                        value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $detail['id_detail']), ENT_QUOTES, 'UTF-8') ?>">
+                                                    <button type="submit" class="confirm-laporan" <?= $canConfirm ? '' : 'disabled' ?>>
+                                                        <?= htmlspecialchars($isSelesai ? 'Selesai' : 'Konfirmasi', ENT_QUOTES, 'UTF-8') ?>
+                                                    </button>
+                                                </form>
+                                                <span class="action-note"><?= htmlspecialchars($confirmNote, ENT_QUOTES, 'UTF-8') ?></span>
+                                            </div>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -180,6 +214,22 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
                 <div class="mobile-violation-list" aria-label="Daftar pelanggaran mobile">
                     <?php if (!empty($pelanggaranDetail)): ?>
                         <?php foreach ($pelanggaranDetail as $mobileIndex => $detail):
+                            $tingkat = strtoupper(trim((string) ($detail['tingkat'] ?? '')));
+                            $requiresTugas = in_array($tingkat, ['I', 'II', 'III'], true);
+                            $hasSurat = trim((string) ($detail['surat'] ?? '')) !== '';
+                            $hasTugas = trim((string) ($detail['pengumpulan_tgsKhusus'] ?? '')) !== '';
+                            $dokumenLengkap = $hasSurat && (!$requiresTugas || $hasTugas);
+                            $statusLower = strtolower(trim((string) ($detail['status_pelanggaran'] ?? '')));
+                            $isSelesai = ($statusLower === 'selesai' || $statusLower === 'done');
+                            $canConfirm = $dokumenLengkap && !$isSelesai;
+                            $confirmNote = 'Dokumen sudah lengkap. Laporan bisa dikonfirmasi selesai.';
+                            if ($isSelesai) {
+                                $confirmNote = 'Laporan sudah berstatus selesai.';
+                            } elseif (!$hasSurat) {
+                                $confirmNote = 'Menunggu upload surat pernyataan.';
+                            } elseif ($requiresTugas && !$hasTugas) {
+                                $confirmNote = 'Menunggu upload tugas khusus.';
+                            }
                             $detailId = 'lecturer-' . (string) ((int) $mobileIndex + 1);
                             $sheetId = 'mobile-sheet-lecturer-' . $detailId;
                             $titleId = $sheetId . '-title';
@@ -243,7 +293,7 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
                                                 </div>
                                                 <div>
                                                     <dt>Status Tugas</dt>
-                                                    <?php if ($detail['tingkat'] === 'IV' || $detail['tingkat'] === 'V'): ?>
+                                                    <?php if (!$requiresTugas): ?>
                                                         <dd>Tidak ada tugas</dd>
                                                     <?php else: ?>
                                                         <dd><?= htmlspecialchars($detail['status_tugas'], ENT_QUOTES, 'UTF-8') ?></dd>
@@ -264,12 +314,16 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
                                                             <?php else: ?>
                                                                 <span class="muted-text">Surat belum diunggah</span>
                                                             <?php endif; ?>
-                                                            <?php if (!empty($detail['pengumpulan_tgsKhusus'])): ?>
-                                                                <a class="file-link"
-                                                                    href="<?= htmlspecialchars(app_action_url('action.file_download', ['file' => (string) $detail['pengumpulan_tgsKhusus']]), ENT_QUOTES, 'UTF-8') ?>"
-                                                                    target="_blank" rel="noopener noreferrer">Tugas Khusus</a>
+                                                            <?php if ($requiresTugas): ?>
+                                                                <?php if (!empty($detail['pengumpulan_tgsKhusus'])): ?>
+                                                                    <a class="file-link"
+                                                                        href="<?= htmlspecialchars(app_action_url('action.file_download', ['file' => (string) $detail['pengumpulan_tgsKhusus']]), ENT_QUOTES, 'UTF-8') ?>"
+                                                                        target="_blank" rel="noopener noreferrer">Tugas Khusus</a>
+                                                                <?php else: ?>
+                                                                    <span class="muted-text">Tugas belum diunggah</span>
+                                                                <?php endif; ?>
                                                             <?php else: ?>
-                                                                <span class="muted-text">Tugas belum diunggah</span>
+                                                                <span class="muted-text">Tugas khusus tidak diwajibkan</span>
                                                             <?php endif; ?>
                                                         </div>
                                                     </dd>
@@ -283,6 +337,16 @@ $pelanggaranDetail = $pelanggaranController->getDetailLaporanDosen($nidn);
                                                     <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
                                                     Edit Laporan
                                                 </a>
+                                                <form method="POST" class="confirm-form"
+                                                    action="<?= htmlspecialchars($confirmSelesaiAction, ENT_QUOTES, 'UTF-8') ?>"
+                                                    onsubmit="return confirm('Konfirmasi laporan ini sebagai selesai?');">
+                                                    <input type="hidden" name="id_detail"
+                                                        value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $detail['id_detail']), ENT_QUOTES, 'UTF-8') ?>">
+                                                    <button type="submit" class="confirm-laporan" <?= $canConfirm ? '' : 'disabled' ?>>
+                                                        <?= htmlspecialchars($isSelesai ? 'Selesai' : 'Konfirmasi Selesai', ENT_QUOTES, 'UTF-8') ?>
+                                                    </button>
+                                                </form>
+                                                <span class="action-note"><?= htmlspecialchars($confirmNote, ENT_QUOTES, 'UTF-8') ?></span>
                                             </div>
                                         </div>
                                     </section>

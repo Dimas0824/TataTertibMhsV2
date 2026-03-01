@@ -31,8 +31,20 @@ if (!in_array($extension, $allowedExtensions, true)) {
     exit();
 }
 
-$filePath = app_path('document/' . $fileName);
-if (!is_file($filePath)) {
+$candidatePaths = [
+    app_path('document/' . $fileName),
+    dirname(app_path()) . DIRECTORY_SEPARATOR . 'document' . DIRECTORY_SEPARATOR . $fileName, // kompatibilitas file lama
+];
+
+$filePath = '';
+foreach ($candidatePaths as $candidatePath) {
+    if (is_file($candidatePath)) {
+        $filePath = $candidatePath;
+        break;
+    }
+}
+
+if ($filePath === '') {
     http_response_code(404);
     echo 'File not found';
     exit();

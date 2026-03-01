@@ -53,6 +53,34 @@ if ($routeAction === 'lookup_mahasiswa') {
    ]);
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $routeAction === 'confirm_selesai') {
+   if (!isset($_SESSION['username'])) {
+      set_app_flash_modal('error', 'Unauthorized.');
+      app_redirect('views/auth/login.php');
+   }
+
+   if (($_SESSION['user_type'] ?? '') !== 'dosen') {
+      set_app_flash_modal('error', 'Hanya dosen yang dapat mengonfirmasi laporan.');
+      app_redirect('views/pelanggaran/pelanggaran_dosen.php');
+   }
+
+   try {
+      $resolvedDetailId = app_id_resolve((string) ($_POST['id_detail'] ?? ''), 'detail_pelanggaran');
+      if ($resolvedDetailId === null) {
+         throw new RuntimeException('Token detail pelanggaran tidak valid.');
+      }
+
+      $nidn = trim((string) ($_SESSION['user_data']['nidn'] ?? ''));
+      $result = $pelanggaranController->konfirmasiLaporanSelesai($nidn, (int) $resolvedDetailId);
+      set_app_flash_modal(($result['success'] ?? false) ? 'success' : 'error', $result['message'] ?? 'Konfirmasi laporan selesai diproses.');
+   } catch (Throwable $e) {
+      error_log('Pelanggaran Confirm Error: ' . $e->getMessage());
+      set_app_flash_modal('error', $e->getMessage());
+   }
+
+   app_redirect('views/pelanggaran/pelanggaran_dosen.php');
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    try {
       $isUpdate = isset($_POST['update']) || isset($_POST['id_detail']);

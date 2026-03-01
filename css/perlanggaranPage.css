@@ -402,6 +402,44 @@
   filter: brightness(0.96);
 }
 
+.action-stack {
+  display: grid;
+  gap: 6px;
+}
+
+.confirm-form {
+  margin: 0;
+}
+
+.confirm-laporan {
+  border: 0;
+  border-radius: 7px;
+  padding: 7px 11px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: #059669;
+  color: #ffffff;
+  transition: transform 0.15s ease, filter 0.2s ease;
+}
+
+.confirm-laporan:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(0.96);
+}
+
+.confirm-laporan:disabled {
+  cursor: not-allowed;
+  background: #cbd5e1;
+  color: #475569;
+}
+
+.action-note {
+  font-size: 0.7rem;
+  color: #64748b;
+  line-height: 1.3;
+}
+
 .mobile-violation-list {
   display: none;
 }
@@ -616,7 +654,8 @@
 }
 
 .mobile-sheet-actions .submit-btn,
-.mobile-sheet-actions .edit-laporan {
+.mobile-sheet-actions .edit-laporan,
+.mobile-sheet-actions .confirm-laporan {
   width: 100%;
 }
 

@@ -2,6 +2,7 @@
 if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
 require_once __DIR__ . '/../config.php'; // Sertakan file konfigurasi untuk mengakses koneksi database
 require_once __DIR__ . '/../helpers/token_helper.php';
+require_once __DIR__ . '/../helpers/path_helper.php';
 
 function respondJson(bool $success, string $message, int $statusCode = 200): void
 {
@@ -14,8 +15,8 @@ function respondJson(bool $success, string $message, int $statusCode = 200): voi
     exit();
 }
 
-// Check if the uploads directory exists, if not create it
-$uploadDir = '../document/';
+// Simpan dokumen upload di folder document milik aplikasi (path absolut).
+$uploadDir = app_path('document') . DIRECTORY_SEPARATOR;
 // Hard limit 2 MB
 $maxSize = 2 * 1024 * 1024;
 $allowedMimes = [
@@ -28,7 +29,9 @@ $allowedMimes = [
 $allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'];
 
 if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0777, true); // Buat direktori dengan izin akses
+    if (!mkdir($uploadDir, 0777, true) && !is_dir($uploadDir)) {
+        respondJson(false, 'Direktori upload tidak tersedia.', 500);
+    }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -40,6 +43,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($idDetail === null) {
         respondJson(false, 'ID detail tidak valid.', 422);
     }
+
+    $detailStmt = $connect->prepare(
+        "SELECT dp.id_detail, dp.surat, dp.pengumpulan_tgsKhusus, tt.tingkat
+         FROM DETAIL_PELANGGARAN dp
+         JOIN TATA_TERTIB tt ON tt.id_tata_tertib = dp.id_tata_tertib
+         WHERE dp.id_detail = :idDetail
+         LIMIT 1"
+    );
+    $detailStmt->bindValue(':idDetail', $idDetail, PDO::PARAM_INT);
+    $detailStmt->execute();
+    $detailData = $detailStmt->fetch(PDO::FETCH_ASSOC);
+    if (!$detailData) {
+        respondJson(false, 'Data pelanggaran tidak ditemukan.', 404);
+    }
+
+    $tingkat = strtoupper(trim((string) ($detailData['tingkat'] ?? '')));
+    $requiresTugas = in_array($tingkat, ['I', 'II', 'III'], true);
 
     $fileType = '';
     $filePath = ''; // Untuk menyimpan jalur file
@@ -54,6 +74,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($fileType) {
+        if ($fileType === 'tugasKhusus' && !$requiresTugas) {
+            respondJson(false, 'Pelanggaran ini tidak memerlukan pengumpulan tugas khusus.', 422);
+        }
+
         $file = $_FILES[$fileType];
         if (($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
             respondJson(false, 'Upload file gagal.', 422);
@@ -105,8 +129,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bindValue(':idDetail', $idDetail, PDO::PARAM_INT);
 
             if ($stmt->execute()) {
-                // Perbarui status ke state yang konsisten dengan rule procedure.
-                $statusUpdateStmt = $connect->prepare("UPDATE DETAIL_PELANGGARAN SET status = 'proses' WHERE id_detail = :idDetail");
+                $currentSurat = trim((string) ($detailData['surat'] ?? ''));
+                $currentTugas = trim((string) ($detailData['pengumpulan_tgsKhusus'] ?? ''));
+                if ($fileType === 'suratPernyataan') {
+                    $currentSurat = $filePath;
+                } elseif ($fileType === 'tugasKhusus') {
+                    $currentTugas = $filePath;
+                }
+
+                $statusTugas = 'Tidak Ada Tugas';
+                if ($requiresTugas) {
+                    $statusTugas = $currentTugas !== '' ? 'Sudah Dikumpulkan' : 'Belum Diberikan';
+                }
+
+                // Perbarui status proses tanpa menurunkan laporan yang sudah selesai.
+                $statusUpdateStmt = $connect->prepare(
+                    "UPDATE DETAIL_PELANGGARAN
+                     SET status = CASE WHEN LOWER(TRIM(status)) = 'selesai' THEN status ELSE 'proses' END,
+                         status_tugas = :status_tugas
+                     WHERE id_detail = :idDetail"
+                );
+                $statusUpdateStmt->bindValue(':status_tugas', $statusTugas, PDO::PARAM_STR);
                 $statusUpdateStmt->bindValue(':idDetail', $idDetail, PDO::PARAM_INT);
                 $statusUpdateStmt->execute();
 

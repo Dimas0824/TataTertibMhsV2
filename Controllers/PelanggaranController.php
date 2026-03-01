@@ -170,6 +170,18 @@ class PelanggaranController
         return $this->pelanggaranModel->getUpdatePelanggar($id);
     }
 
+    public function konfirmasiLaporanSelesai(string $nidn, int $idDetail): array
+    {
+        if (trim($nidn) === '' || $idDetail <= 0) {
+            return [
+                'success' => false,
+                'message' => 'Data konfirmasi tidak valid.',
+            ];
+        }
+
+        return $this->pelanggaranModel->konfirmasiLaporanSelesaiByDosen($nidn, $idDetail);
+    }
+
     public function getMahasiswaByNim($nim)
     {
         if (!$nim) {
