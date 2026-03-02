@@ -9,6 +9,17 @@ $requestPath = is_string($requestPath) ? $requestPath : '/';
 $requestPath = rawurldecode($requestPath);
 $requestPath = $requestPath !== '' ? $requestPath : '/';
 
+$scriptName = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? ''));
+$basePath = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
+if ($basePath === '/' || $basePath === '.') {
+    $basePath = '';
+}
+
+if ($basePath !== '' && ($requestPath === $basePath || strpos($requestPath, $basePath . '/') === 0)) {
+    $requestPath = substr($requestPath, strlen($basePath));
+    $requestPath = $requestPath !== '' ? $requestPath : '/';
+}
+
 $targetPath = $rootPath . DIRECTORY_SEPARATOR . ltrim(str_replace('/', DIRECTORY_SEPARATOR, $requestPath), DIRECTORY_SEPARATOR);
 
 require_once __DIR__ . '/helpers/path_helper.php';

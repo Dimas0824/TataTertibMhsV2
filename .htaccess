@@ -1,12 +1,15 @@
+DirectoryIndex index.php index.html
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteRule ^(views|request)(/|$) - [F,L,NC]
+
+    RewriteRule ^$ index.php [L]
 
     RewriteCond %{REQUEST_FILENAME} -f [OR]
     RewriteCond %{REQUEST_FILENAME} -d
     RewriteRule ^ - [L]
 
-    RewriteRule ^$ index.php [L]
     RewriteRule ^(p|a)/[^/]+/?$ router.php [L,QSA]
     RewriteRule ^ router.php [L,QSA]
 </IfModule>
