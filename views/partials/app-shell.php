@@ -64,7 +64,7 @@ if (!function_exists('render_app_sidebar')) {
         $context = in_array($context, ['root', 'views', 'nested'], true) ? $context : 'views';
         $active = isset($config['active']) ? (string) $config['active'] : null;
         $assetPrefix = $context === 'root' ? '' : ($context === 'nested' ? '../../' : '../');
-        $homeHref = '/';
+        $homeHref = app_page_url('page.home');
 
         $navItems = get_app_nav_items($variant, $context);
         ?>

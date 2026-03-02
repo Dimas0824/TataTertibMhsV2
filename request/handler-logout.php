@@ -14,5 +14,4 @@ if (session_status() === PHP_SESSION_ACTIVE) {
     session_destroy();
 }
 
-header('Location: /', true, 302);
-exit();
+app_redirect_page('page.home');

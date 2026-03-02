@@ -209,11 +209,12 @@ if (!function_exists('app_route_build_url')) {
         }
 
         $queryData = app_route_encode_url_data($data, $ttl);
-        if ($queryData === []) {
-            return $path;
+        $relativeUrl = $path;
+        if ($queryData !== []) {
+            $relativeUrl .= '?' . http_build_query($queryData, '', '&', PHP_QUERY_RFC3986);
         }
 
-        return $path . '?' . http_build_query($queryData, '', '&', PHP_QUERY_RFC3986);
+        return app_url($relativeUrl);
     }
 }
 
@@ -337,11 +338,13 @@ if (!function_exists('app_legacy_path_to_public_url')) {
     {
         $legacyPath = trim(str_replace('\\', '/', $legacyPath));
         if ($legacyPath === '') {
-            return '/';
+            $base = app_base_url();
+            return $base === '' ? '/' : $base . '/';
         }
 
         if ($legacyPath === 'index.php' || $legacyPath === '/index.php') {
-            return '/';
+            $base = app_base_url();
+            return $base === '' ? '/' : $base . '/';
         }
 
         if (strpos($legacyPath, '?') === 0) {

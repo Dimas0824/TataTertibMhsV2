@@ -10,7 +10,7 @@ $themeClass = (string) ($error['theme'] ?? 'slate');
 $blob1Class = (string) ($error['blob1'] ?? 'blob-slate');
 $blob2Class = (string) ($error['blob2'] ?? 'blob-gray');
 
-$homeUrl = '/';
+$homeUrl = app_page_url('page.home');
 $tatibUrl = app_page_url('page.tatib');
 $loginUrl = app_page_url('page.login');
 
@@ -108,7 +108,7 @@ if (!function_exists('app_error_icon_svg')) {
                     return;
                 }
 
-                window.location.href = '/';
+                window.location.href = <?= json_encode(app_page_url('page.home'), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
             });
         })();
     </script>
