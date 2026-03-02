@@ -73,6 +73,24 @@ php artisan serve --host=127.0.0.1 --port=8000
 1. Buka aplikasi di browser:
    <http://127.0.0.1:8000>
 
+## Troubleshooting Cepat (500/404 Saat Deploy)
+
+Saat error di server (mis. cPanel), cek dulu checklist ini:
+
+1. File konfigurasi tersedia:
+   - `config.php` ada di root project.
+   - `.env` ada dan berisi `DB_DSN`, `DB_USER`, `DB_PASS` yang valid.
+2. File key token tersedia dan permission benar:
+   - `storage/keys/app_token.key` harus bisa dibaca/ditulis oleh PHP.
+   - Jika belum ada, pastikan folder `storage/keys` writable agar key bisa dibuat otomatis.
+3. Folder runtime tersedia:
+   - `storage/uploads/` dan `storage/uploads/news/` ada.
+   - Permission folder upload mengizinkan proses `move_uploaded_file`.
+4. Aturan rewrite aktif:
+   - `.htaccess` di lokasi deploy (`public_html` dan/atau `public_html/DisciplinkV2`) sesuai skenario URL.
+   - `mod_rewrite` aktif.
+5. Jika masih gagal, cek log web server/PHP lebih dulu sebelum ubah kode.
+
 ## Akun Contoh (Data Seeder)
 
 | Role | Username | Password |
