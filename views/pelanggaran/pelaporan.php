@@ -160,12 +160,14 @@ $tatibData = $tatibController->ReadTatib();
                 <div class="form-container">
                     <form id="pelanggaranForm" method="POST"
                         action="<?= htmlspecialchars(app_action_url('action.pelanggaran'), ENT_QUOTES, 'UTF-8') ?>"
-                        data-lookup-endpoint="<?= htmlspecialchars(app_action_url('action.pelanggaran', ['action' => 'lookup_mahasiswa']), ENT_QUOTES, 'UTF-8') ?>">
+                        data-lookup-endpoint="<?= htmlspecialchars(app_action_url('action.pelanggaran', ['action' => 'lookup_mahasiswa']), ENT_QUOTES, 'UTF-8') ?>"
+                        data-search-endpoint="<?= htmlspecialchars(app_action_url('action.pelanggaran', ['action' => 'search_mahasiswa']), ENT_QUOTES, 'UTF-8') ?>">
                         <div class="form-grid">
                             <div class="form-group form-group-wide">
                                 <label for="nim">NIM Mahasiswa</label>
-                                <input type="text" id="nim" name="nim" placeholder="Contoh: 2341720001" required>
-                                <small id="nimHelpText">Isi NIM, identitas mahasiswa akan terisi otomatis.</small>
+                                <input type="text" id="nim" name="nim" list="nimSuggestions" placeholder="Cari atau ketik NIM mahasiswa" required autocomplete="off">
+                                <datalist id="nimSuggestions"></datalist>
+                                <small id="nimHelpText">Ketik minimal 2 karakter untuk mencari NIM mahasiswa.</small>
                             </div>
 
                             <div class="form-group">
@@ -249,7 +251,7 @@ $tatibData = $tatibController->ReadTatib();
         ?>
     </div>
     <script defer
-        src="<?= htmlspecialchars(app_seo_script_src('js/pelaporan-form.js', '../..') . '?v=20260301-dpa', ENT_QUOTES, 'UTF-8') ?>"></script>
+        src="<?= htmlspecialchars(app_seo_script_src('js/pelaporan-form.js', '../..') . '?v=20260302-nim-search', ENT_QUOTES, 'UTF-8') ?>"></script>
 </body>
 
 </html>

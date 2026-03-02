@@ -205,6 +205,16 @@ class PelanggaranController
         return $this->pelanggaranModel->getMahasiswaByNim((string) $nim);
     }
 
+    public function searchMahasiswa($keyword, int $limit = 12): array
+    {
+        $normalizedKeyword = trim((string) $keyword);
+        if ($normalizedKeyword === '') {
+            return [];
+        }
+
+        return $this->pelanggaranModel->searchMahasiswaByKeyword($normalizedKeyword, $limit);
+    }
+
     public function getDefaultSanksiByTingkat($tingkat)
     {
         if (!$tingkat) {

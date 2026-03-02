@@ -197,15 +197,17 @@ if ($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
                 <div class="form-container">
                     <form id="pelanggaranForm" method="POST"
                         action="<?= htmlspecialchars(app_action_url('action.pelanggaran'), ENT_QUOTES, 'UTF-8') ?>"
-                        data-lookup-endpoint="<?= htmlspecialchars(app_action_url('action.pelanggaran', ['action' => 'lookup_mahasiswa']), ENT_QUOTES, 'UTF-8') ?>">
+                        data-lookup-endpoint="<?= htmlspecialchars(app_action_url('action.pelanggaran', ['action' => 'lookup_mahasiswa']), ENT_QUOTES, 'UTF-8') ?>"
+                        data-search-endpoint="<?= htmlspecialchars(app_action_url('action.pelanggaran', ['action' => 'search_mahasiswa']), ENT_QUOTES, 'UTF-8') ?>">
                         <input type="hidden" name="id_detail" value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $id), ENT_QUOTES, 'UTF-8') ?>">
 
                         <div class="form-grid">
                             <div class="form-group form-group-wide">
                                 <label for="nim">NIM Mahasiswa</label>
-                                <input type="text" id="nim" name="nim" value="<?= htmlspecialchars($detailPelanggar['nim'] ?? '') ?>"
-                                    required>
-                                <small id="nimHelpText">Sesuaikan NIM jika data pelanggar perlu dikoreksi.</small>
+                                <input type="text" id="nim" name="nim" list="nimSuggestions" value="<?= htmlspecialchars($detailPelanggar['nim'] ?? '') ?>"
+                                    required autocomplete="off">
+                                <datalist id="nimSuggestions"></datalist>
+                                <small id="nimHelpText">Ketik minimal 2 karakter untuk mencari NIM mahasiswa.</small>
                             </div>
 
                             <div class="form-group">
@@ -301,7 +303,7 @@ if ($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
         ?>
     </div>
     <script defer
-        src="<?= htmlspecialchars(app_seo_script_src('js/pelaporan-form.js', '../..') . '?v=20260301-dpa', ENT_QUOTES, 'UTF-8') ?>"></script>
+        src="<?= htmlspecialchars(app_seo_script_src('js/pelaporan-form.js', '../..') . '?v=20260302-nim-search', ENT_QUOTES, 'UTF-8') ?>"></script>
 </body>
 
 </html>

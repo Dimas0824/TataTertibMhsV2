@@ -194,6 +194,48 @@ class Pelanggaran
         return $result !== false ? $result : null;
     }
 
+    public function searchMahasiswaByKeyword(string $keyword, int $limit = 12): array
+    {
+        $normalizedKeyword = trim($keyword);
+        if ($normalizedKeyword === '') {
+            return [];
+        }
+
+        $safeLimit = max(1, min($limit, 25));
+        $containsPattern = '%' . $normalizedKeyword . '%';
+        $prefixPattern = $normalizedKeyword . '%';
+
+        $query = "SELECT
+                    m.nim,
+                    m.nama_lengkap,
+                    m.angkatan,
+                    m.id_prodi,
+                    p.nama_prodi
+                  FROM MAHASISWA m
+                  LEFT JOIN PRODI p ON p.id_prodi = m.id_prodi
+                  WHERE m.nim LIKE ?
+                     OR m.nama_lengkap LIKE ?
+                  ORDER BY
+                    CASE
+                        WHEN m.nim LIKE ? THEN 0
+                        WHEN m.nama_lengkap LIKE ? THEN 1
+                        ELSE 2
+                    END,
+                    m.nim ASC
+                  LIMIT ?";
+
+        $stmt = $this->connect->prepare($query);
+        $stmt->bindValue(1, $containsPattern, PDO::PARAM_STR);
+        $stmt->bindValue(2, $containsPattern, PDO::PARAM_STR);
+        $stmt->bindValue(3, $prefixPattern, PDO::PARAM_STR);
+        $stmt->bindValue(4, $prefixPattern, PDO::PARAM_STR);
+        $stmt->bindValue(5, $safeLimit, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return is_array($result) ? $result : [];
+    }
+
     public function getDefaultSanksiByTingkat(string $tingkat): ?int
     {
         $stmt = $this->connect->prepare(

@@ -20,6 +20,33 @@ function respondJson(array $payload, int $statusCode = 200): void
 
 $routeAction = (string) app_route_data('action', '');
 
+if ($routeAction === 'search_mahasiswa') {
+   if (!isset($_SESSION['username'])) {
+      respondJson(['success' => false, 'message' => 'Unauthorized'], 401);
+   }
+
+   if (($_SESSION['user_type'] ?? '') !== 'dosen') {
+      respondJson(['success' => false, 'message' => 'Forbidden'], 403);
+   }
+
+   $keyword = trim((string) ($_GET['q'] ?? $_POST['q'] ?? ''));
+   $limitInput = (int) ($_GET['limit'] ?? $_POST['limit'] ?? 12);
+   $limit = max(1, min($limitInput, 25));
+
+   if (strlen($keyword) < 2) {
+      respondJson([
+         'success' => true,
+         'data' => [],
+      ]);
+   }
+
+   $mahasiswaList = $pelanggaranController->searchMahasiswa($keyword, $limit);
+   respondJson([
+      'success' => true,
+      'data' => $mahasiswaList,
+   ]);
+}
+
 if ($routeAction === 'lookup_mahasiswa') {
    if (!isset($_SESSION['username'])) {
       respondJson(['success' => false, 'message' => 'Unauthorized'], 401);
@@ -30,7 +57,7 @@ if ($routeAction === 'lookup_mahasiswa') {
    }
 
    $nim = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $rawInput = file_get_contents('php://input');
       $decodedInput = json_decode($rawInput ?? '', true);
       $input = is_array($decodedInput) ? $decodedInput : $_POST;

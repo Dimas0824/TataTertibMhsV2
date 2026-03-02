@@ -1,6 +1,7 @@
 (function () {
     const form = document.getElementById('pelanggaranForm');
     const nimInput = document.getElementById('nim');
+    const nimSuggestions = document.getElementById('nimSuggestions');
     const namaInput = document.getElementById('nama');
     const semesterInput = document.getElementById('semester');
     const prodiInput = document.getElementById('prodi');
@@ -153,9 +154,40 @@
         }
     };
 
-    let lookupRequestId = 0;
-    const lookupEndpoint = form ? String(form.getAttribute('data-lookup-endpoint') || '') : '';
+    const renderNimSuggestions = (items) => {
+        if (!nimSuggestions) {
+            return;
+        }
 
+        nimSuggestions.innerHTML = '';
+        items.forEach((item) => {
+            const nimValue = String(item && item.nim ? item.nim : '').trim();
+            if (nimValue === '') {
+                return;
+            }
+
+            const option = document.createElement('option');
+            option.value = nimValue;
+
+            const detailText = [
+                String(item && item.nama_lengkap ? item.nama_lengkap : '').trim(),
+                String(item && item.nama_prodi ? item.nama_prodi : '').trim(),
+            ].filter(Boolean).join(' - ');
+
+            if (detailText !== '') {
+                option.label = detailText;
+                option.textContent = detailText;
+            }
+
+            nimSuggestions.appendChild(option);
+        });
+    };
+
+    const lookupEndpoint = form ? String(form.getAttribute('data-lookup-endpoint') || '') : '';
+    const searchEndpoint = form ? String(form.getAttribute('data-search-endpoint') || '') : '';
+
+    let resolvedNim = '';
+    let lookupRequestId = 0;
     const lookupMahasiswa = async () => {
         if (!nimInput) {
             return;
@@ -165,12 +197,13 @@
         const currentRequestId = ++lookupRequestId;
 
         if (nim === '') {
-            clearIdentity('Isi NIM, identitas mahasiswa akan terisi otomatis.');
+            resolvedNim = '';
+            clearIdentity('Ketik minimal 2 karakter untuk mencari NIM mahasiswa.');
             return;
         }
 
         if (nimHelpText) {
-            nimHelpText.textContent = 'Mencari data mahasiswa...';
+            nimHelpText.textContent = 'Mengambil data mahasiswa...';
         }
 
         try {
@@ -193,6 +226,7 @@
             }
 
             if (!response.ok || !payload.success) {
+                resolvedNim = '';
                 clearIdentity(payload.message || 'Mahasiswa tidak ditemukan.');
                 return;
             }
@@ -202,22 +236,81 @@
             if (prodiInput) prodiInput.value = mahasiswa.nama_prodi || '';
             if (semesterInput) semesterInput.value = calculateSemester(mahasiswa.angkatan);
             if (nimHelpText) nimHelpText.textContent = 'Data mahasiswa ditemukan.';
+            resolvedNim = nim;
         } catch (_error) {
             if (currentRequestId !== lookupRequestId) {
                 return;
             }
+            resolvedNim = '';
             clearIdentity('Gagal mengambil data mahasiswa.');
         }
     };
 
-    let nimDebounceTimer = null;
+    let searchRequestId = 0;
+    const searchMahasiswa = async () => {
+        if (!nimInput || !nimSuggestions) {
+            return;
+        }
+
+        const keyword = nimInput.value.trim();
+        const currentRequestId = ++searchRequestId;
+
+        if (keyword.length < 2) {
+            renderNimSuggestions([]);
+            if (keyword === '' && nimHelpText) {
+                nimHelpText.textContent = 'Ketik minimal 2 karakter untuk mencari NIM mahasiswa.';
+            }
+            return;
+        }
+
+        try {
+            if (searchEndpoint === '') {
+                return;
+            }
+
+            const connector = searchEndpoint.includes('?') ? '&' : '?';
+            const requestUrl = searchEndpoint + connector + 'q=' + encodeURIComponent(keyword) + '&limit=12';
+            const response = await fetch(requestUrl, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                },
+            });
+            const payload = await response.json();
+
+            if (currentRequestId !== searchRequestId) {
+                return;
+            }
+
+            if (!response.ok || !payload.success || !Array.isArray(payload.data)) {
+                renderNimSuggestions([]);
+                return;
+            }
+
+            renderNimSuggestions(payload.data);
+        } catch (_error) {
+            if (currentRequestId !== searchRequestId) {
+                return;
+            }
+            renderNimSuggestions([]);
+        }
+    };
+
+    let nimSearchDebounceTimer = null;
     if (nimInput) {
         nimInput.addEventListener('input', () => {
-            if (nimDebounceTimer) {
-                clearTimeout(nimDebounceTimer);
+            if (nimInput.value.trim() !== resolvedNim) {
+                clearIdentity('Pilih NIM dari daftar atau lanjutkan mengetik NIM lengkap.');
             }
-            nimDebounceTimer = setTimeout(lookupMahasiswa, 350);
+
+            if (nimSearchDebounceTimer) {
+                clearTimeout(nimSearchDebounceTimer);
+            }
+
+            nimSearchDebounceTimer = setTimeout(searchMahasiswa, 250);
         });
+
+        nimInput.addEventListener('change', lookupMahasiswa);
         nimInput.addEventListener('blur', lookupMahasiswa);
     }
 
