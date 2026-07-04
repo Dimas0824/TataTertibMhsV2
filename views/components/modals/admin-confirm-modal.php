@@ -5,12 +5,8 @@ declare(strict_types=1);
 if (!function_exists('render_admin_confirm_modal_component')) {
     function render_admin_confirm_modal_component(array $config = []): void
     {
-        $context = (string) ($config['context'] ?? 'views');
-        $context = in_array($context, ['root', 'views', 'nested'], true) ? $context : 'views';
-        $assetPrefix = $context === 'root' ? '' : ($context === 'nested' ? '../../' : '../');
-
         ?>
-        <link rel="stylesheet" href="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>css/admin-confirm-modal.css">
+        <link rel="stylesheet" href="<?= htmlspecialchars(app_asset_url('css/admin-confirm-modal.css'), ENT_QUOTES, 'UTF-8') ?>">
         <div id="adminConfirmModal" class="admin-confirm-modal" aria-hidden="true" data-admin-confirm-modal>
             <div class="admin-confirm-modal__backdrop" data-admin-confirm-close></div>
             <section class="admin-confirm-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="adminConfirmTitle"
@@ -34,7 +30,7 @@ if (!function_exists('render_admin_confirm_modal_component')) {
             </section>
         </div>
         <script defer
-            src="<?= htmlspecialchars(app_seo_script_src('js/admin-confirm-modal.js', $assetPrefix), ENT_QUOTES, 'UTF-8') ?>"></script>
+            src="<?= htmlspecialchars(app_seo_script_src('js/admin-confirm-modal.js'), ENT_QUOTES, 'UTF-8') ?>"></script>
         <?php
     }
 }

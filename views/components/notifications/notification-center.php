@@ -5,10 +5,6 @@ declare(strict_types=1);
 if (!function_exists('render_notification_center_component')) {
     function render_notification_center_component(array $config = []): void
     {
-        $context = (string) ($config['context'] ?? 'views');
-        $context = in_array($context, ['root', 'views', 'nested'], true) ? $context : 'views';
-        $assetPrefix = $context === 'root' ? '' : ($context === 'nested' ? '../../' : '../');
-
         $escape = static fn(string $value): string => htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 
         $endpoint = (string) ($config['endpoint'] ?? app_action_url('action.notifikasi'));
@@ -33,7 +29,7 @@ if (!function_exists('render_notification_center_component')) {
             $tips = ['Gunakan filter untuk meninjau notifikasi dengan cepat.'];
         }
         ?>
-        <link rel="stylesheet" href="<?= $escape($assetPrefix) ?>css/notifikasi.css">
+        <link rel="stylesheet" href="<?= $escape(app_asset_url('css/notifikasi.css')) ?>">
 
         <section class="notif-page" data-notif-root data-endpoint="<?= $escape($endpoint) ?>">
             <section class="notif-hero" aria-label="Ringkasan notifikasi">
@@ -149,7 +145,7 @@ if (!function_exists('render_notification_center_component')) {
             </section>
         </section>
 
-        <script defer src="<?= $escape(app_seo_script_src('js/notifikasi.js', $assetPrefix)) ?>"></script>
+        <script defer src="<?= $escape(app_seo_script_src('js/notifikasi.js')) ?>"></script>
         <?php
     }
 }

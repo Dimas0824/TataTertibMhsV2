@@ -5,13 +5,10 @@ declare(strict_types=1);
 if (!function_exists('render_pelaporan_cancel_modal_component')) {
     function render_pelaporan_cancel_modal_component(array $config = []): void
     {
-        $context = (string) ($config['context'] ?? 'views');
-        $context = in_array($context, ['root', 'views', 'nested'], true) ? $context : 'views';
-        $assetPrefix = $context === 'root' ? '' : ($context === 'nested' ? '../../' : '../');
         $redirectHref = (string) ($config['redirectHref'] ?? app_page_url('page.pelanggaran_dosen'));
 
         ?>
-        <link rel="stylesheet" href="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>css/pelaporan-cancel-modal.css">
+        <link rel="stylesheet" href="<?= htmlspecialchars(app_asset_url('css/pelaporan-cancel-modal.css'), ENT_QUOTES, 'UTF-8') ?>">
         <div id="cancelPelaporanModal" class="cancel-report-modal" aria-hidden="true"
             data-cancel-report-modal data-redirect-href="<?= htmlspecialchars($redirectHref, ENT_QUOTES, 'UTF-8') ?>">
             <div class="cancel-report-modal__backdrop" data-cancel-report-close></div>
@@ -37,7 +34,7 @@ if (!function_exists('render_pelaporan_cancel_modal_component')) {
                 </div>
             </section>
         </div>
-        <script defer src="<?= htmlspecialchars(app_seo_script_src('js/pelaporan-cancel-modal.js', $assetPrefix), ENT_QUOTES, 'UTF-8') ?>"></script>
+        <script defer src="<?= htmlspecialchars(app_seo_script_src('js/pelaporan-cancel-modal.js'), ENT_QUOTES, 'UTF-8') ?>"></script>
         <?php
     }
 }

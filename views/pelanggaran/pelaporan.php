@@ -44,9 +44,9 @@ $tatibData = $tatibController->ReadTatib();
         'robots' => 'noindex, nofollow',
     ]);
     ?>
-    <?php app_seo_favicon_tags('../../'); ?>
-    <link rel="stylesheet" href="../../css/global.css">
-    <link rel="stylesheet" href="../../css/pelaporan.css">
+    <?php app_seo_favicon_tags(); ?>
+    <link rel="stylesheet" href="<?= htmlspecialchars(app_asset_url('css/global.css'), ENT_QUOTES, 'UTF-8') ?>">
+    <link rel="stylesheet" href="<?= htmlspecialchars(app_asset_url('css/pelaporan.css'), ENT_QUOTES, 'UTF-8') ?>">
     <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css"
         onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
@@ -251,7 +251,7 @@ $tatibData = $tatibController->ReadTatib();
         ?>
     </div>
     <script defer
-        src="<?= htmlspecialchars(app_seo_script_src('js/pelaporan-form.js', '../..') . '?v=20260302-nim-search', ENT_QUOTES, 'UTF-8') ?>"></script>
+        src="<?= htmlspecialchars(app_seo_script_src('js/pelaporan-form.js') . '?v=20260302-nim-search', ENT_QUOTES, 'UTF-8') ?>"></script>
 </body>
 
 </html>
