@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+require_once __DIR__ . '/path_helper.php';
 
 if (!function_exists('app_seo_load_env')) {
     function app_seo_load_env(): array
@@ -250,6 +251,10 @@ if (!function_exists('app_seo_script_src')) {
     function app_seo_script_src(string $relativePath, string $prefix = ''): string
     {
         $scriptPath = app_seo_script_path($relativePath);
+        if (function_exists('app_asset_url')) {
+            return app_asset_url($scriptPath);
+        }
+
         $prefix = rtrim($prefix, '/');
         if ($prefix === '') {
             return $scriptPath;
@@ -265,6 +270,10 @@ if (!function_exists('app_seo_favicon_tags')) {
         $assetPrefix = trim($assetPrefix);
         $resolvePath = static function (string $assetPath) use ($assetPrefix): string {
             $assetPath = ltrim($assetPath, '/');
+            if (function_exists('app_asset_url')) {
+                return app_asset_url($assetPath);
+            }
+
             if ($assetPrefix === '') {
                 if (function_exists('app_url')) {
                     return app_url($assetPath);

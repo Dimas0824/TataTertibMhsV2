@@ -31,9 +31,9 @@ if (isset($_SESSION['username'])) {
         'robots' => 'noindex, nofollow',
     ]);
     ?>
-    <?php app_seo_favicon_tags('../../'); ?>
-    <link rel="stylesheet" href="../../css/login.css">
-    <link rel="stylesheet" href="../../css/global.css">
+    <?php app_seo_favicon_tags(); ?>
+    <link rel="stylesheet" href="<?= htmlspecialchars(app_asset_url('css/login.css'), ENT_QUOTES, 'UTF-8') ?>">
+    <link rel="stylesheet" href="<?= htmlspecialchars(app_asset_url('css/global.css'), ENT_QUOTES, 'UTF-8') ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -104,7 +104,7 @@ if (isset($_SESSION['username'])) {
         ?>
     </div>
     <script defer
-        src="<?= htmlspecialchars(app_seo_script_src('js/login.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
+        src="<?= htmlspecialchars(app_seo_script_src('js/login.js'), ENT_QUOTES, 'UTF-8') ?>"></script>
 
 </body>
 

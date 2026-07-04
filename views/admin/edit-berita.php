@@ -123,15 +123,15 @@ if ($id > 0) {
         'robots' => 'noindex, nofollow',
     ]);
     ?>
-    <?php app_seo_favicon_tags('../../'); ?>
+    <?php app_seo_favicon_tags(); ?>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../../css/global.css">
-    <link rel="stylesheet" href="../../css/news-form.css">
+    <link rel="stylesheet" href="<?= htmlspecialchars(app_asset_url('css/global.css'), ENT_QUOTES, 'UTF-8') ?>">
+    <link rel="stylesheet" href="<?= htmlspecialchars(app_asset_url('css/news-form.css'), ENT_QUOTES, 'UTF-8') ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
 </head>
 
@@ -238,7 +238,7 @@ if ($id > 0) {
         ?>
     </div>
     <script defer
-        src="<?= htmlspecialchars(app_seo_script_src('js/news-form-editor.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
+        src="<?= htmlspecialchars(app_seo_script_src('js/news-form-editor.js'), ENT_QUOTES, 'UTF-8') ?>"></script>
 </body>
 
 </html>

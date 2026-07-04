@@ -30,6 +30,9 @@ $newsDetailUrl = static function (array $news): string {
     $slug = NewsController::news_build_slug($title, $newsId);
     return app_page_url('page.news_detail', ['slug' => $slug]);
 };
+$assetUrl = static function (string $path): string {
+    return htmlspecialchars(app_asset_url($path), ENT_QUOTES, 'UTF-8');
+};
 
 render_app_sidebar([
     'variant' => $homeVariant,
@@ -85,8 +88,8 @@ render_app_sidebar([
     <section class="dashboard-container reveal-up" data-delay="120">
         <div class="about-logo-wrap">
             <div class="about-brand-card">
-                <img class="logo-disciplink" src="img/logo-full.png" alt="Logo DiscipLink" width="250" height="250"
-                    loading="lazy" decoding="async" srcset="img/logo-full.png 250w"
+                <img class="logo-disciplink" src="<?= $assetUrl('img/logo-full.png') ?>" alt="Logo DiscipLink" width="250" height="250"
+                    loading="eager" fetchpriority="high" decoding="async" srcset="<?= $assetUrl('img/logo-full.png') ?> 250w"
                     sizes="(max-width: 992px) 220px, 250px">
             </div>
         </div>
@@ -187,8 +190,8 @@ render_app_sidebar([
                                 fetchpriority="<?= $index === 0 ? 'high' : 'low' ?>"
                                 sizes="(max-width: 768px) 100vw, (max-width: 992px) 48vw, <?= $index === 0 ? '100vw' : '32vw' ?>">
                         <?php else: ?>
-                            <img src="img/news.jpg" alt="Gambar berita DiscipLink" width="1200" height="675"
-                                loading="<?= $index === 0 ? 'eager' : 'lazy' ?>" decoding="async" srcset="img/news.jpg 1200w"
+                            <img src="<?= $assetUrl('img/news.jpg') ?>" alt="Gambar berita DiscipLink" width="1200" height="675"
+                                loading="<?= $index === 0 ? 'eager' : 'lazy' ?>" decoding="async" srcset="<?= $assetUrl('img/news.jpg') ?> 1200w"
                                 fetchpriority="<?= $index === 0 ? 'high' : 'low' ?>"
                                 sizes="(max-width: 768px) 100vw, (max-width: 992px) 48vw, <?= $index === 0 ? '100vw' : '32vw' ?>">
                         <?php endif; ?>

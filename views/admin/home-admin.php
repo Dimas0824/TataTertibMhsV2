@@ -47,15 +47,15 @@ $assetUrl = static function (string $path): string {
         'robots' => 'noindex, nofollow',
     ]);
     ?>
-    <?php app_seo_favicon_tags('../../'); ?>
+    <?php app_seo_favicon_tags(); ?>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../../css/global.css">
-    <link rel="stylesheet" href="../../css/homepage.css">
+    <link rel="stylesheet" href="<?= htmlspecialchars(app_asset_url('css/global.css'), ENT_QUOTES, 'UTF-8') ?>">
+    <link rel="stylesheet" href="<?= htmlspecialchars(app_asset_url('css/homepage.css'), ENT_QUOTES, 'UTF-8') ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
 </head>
 
@@ -114,8 +114,8 @@ $assetUrl = static function (string $path): string {
         <section class="dashboard-container">
             <div class="about-logo-wrap">
                 <div class="about-brand-card">
-                    <img class="logo-disciplink" src="<?= $assetUrl('img/logo-full.png') ?>" width="250" height="250" loading="lazy"
-                        decoding="async" alt="Logo DiscipLink">
+                    <img class="logo-disciplink" src="<?= $assetUrl('img/logo-full.png') ?>" width="250" height="250" loading="eager"
+                        fetchpriority="high" decoding="async" alt="Logo DiscipLink">
                     <p>Panel admin DiscipLink dirancang untuk mempercepat pengelolaan konten dan menjaga akurasi
                         informasi kedisiplinan.</p>
                 </div>
