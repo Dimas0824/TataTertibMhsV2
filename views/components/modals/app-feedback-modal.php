@@ -5,15 +5,12 @@ declare(strict_types=1);
 if (!function_exists('render_app_feedback_modal_component')) {
     function render_app_feedback_modal_component(array $config = []): void
     {
-        $assetPrefix = rtrim((string) ($config['assetPrefix'] ?? ''), '/');
-        $assetPrefix = $assetPrefix === '' ? '' : ($assetPrefix . '/');
-
         $flashModal = $config['flashModal'] ?? null;
         if (!is_array($flashModal)) {
             $flashModal = null;
         }
         ?>
-        <link rel="stylesheet" href="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>css/app-modal.css">
+        <link rel="stylesheet" href="<?= htmlspecialchars(app_asset_url('css/app-modal.css'), ENT_QUOTES, 'UTF-8') ?>">
         <div id="appFeedbackModal" class="app-modal" aria-hidden="true">
             <div class="app-modal__backdrop" data-app-modal-close></div>
             <section class="app-modal__dialog" role="alertdialog" aria-modal="true" aria-labelledby="appFeedbackModalTitle"
@@ -46,7 +43,7 @@ if (!function_exists('render_app_feedback_modal_component')) {
                 window.__APP_FLASH_MODAL = <?= json_encode($flashModal, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
             </script>
         <?php endif; ?>
-        <script defer src="<?= htmlspecialchars(app_seo_script_src('js/app-modal.js', $assetPrefix), ENT_QUOTES, 'UTF-8') ?>"></script>
+        <script defer src="<?= htmlspecialchars(app_seo_script_src('js/app-modal.js'), ENT_QUOTES, 'UTF-8') ?>"></script>
         <?php
     }
 }

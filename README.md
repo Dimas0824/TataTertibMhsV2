@@ -73,6 +73,10 @@ php artisan serve --host=127.0.0.1 --port=8000
 1. Buka aplikasi di browser:
    <http://127.0.0.1:8000>
 
+   Catatan local base path:
+   - Gunakan `APP_BASE_PATH="auto"` agar URL asset mengikuti mode server aktif (root/subfolder) secara otomatis.
+   - Untuk `php artisan serve`, akses dari root URL (tanpa suffix `/TataTertibMhsV2`).
+
 ## Troubleshooting Cepat (500/404 Saat Deploy)
 
 Saat error di server (mis. cPanel), cek dulu checklist ini:
@@ -90,6 +94,7 @@ Saat error di server (mis. cPanel), cek dulu checklist ini:
    - `.htaccess` di lokasi deploy (`public_html` dan/atau `public_html/DisciplinkV2`) sesuai skenario URL.
    - `mod_rewrite` aktif.
 5. Jika masih gagal, cek log web server/PHP lebih dulu sebelum ubah kode.
+6. Warning browser `Tracking Prevention blocked access to storage` untuk CDN (mis. `cdnjs`) adalah kebijakan privasi browser dan bersifat non-fatal.
 
 ## Akun Contoh (Data Seeder)
 

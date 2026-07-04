@@ -21,7 +21,7 @@ if (!function_exists('get_app_nav_items')) {
         $context = in_array($context, ['root', 'views', 'nested'], true) ? $context : 'views';
 
         $hrefMap = [
-            'home' => '/',
+            'home' => app_page_url('page.home'),
             'tatib' => app_page_url('page.tatib'),
             'pelanggaran' => app_page_url('page.pelanggaran'),
             'notifikasi' => app_page_url('page.notifikasi'),
@@ -63,14 +63,13 @@ if (!function_exists('render_app_sidebar')) {
         $context = (string) ($config['context'] ?? 'views');
         $context = in_array($context, ['root', 'views', 'nested'], true) ? $context : 'views';
         $active = isset($config['active']) ? (string) $config['active'] : null;
-        $assetPrefix = $context === 'root' ? '' : ($context === 'nested' ? '../../' : '../');
         $homeHref = app_page_url('page.home');
 
         $navItems = get_app_nav_items($variant, $context);
         ?>
         <aside class="sidebar" aria-label="Navigasi utama">
             <a class="sidebar-brand" href="<?= htmlspecialchars($homeHref, ENT_QUOTES, 'UTF-8') ?>" aria-label="DiscipLink Home">
-                <img class="logo" src="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/logo-icon.png" alt="DiscipLink logo" width="42" height="42" decoding="async">
+                <img class="logo" src="<?= htmlspecialchars(app_asset_url('img/logo-icon.png'), ENT_QUOTES, 'UTF-8') ?>" alt="DiscipLink logo" width="42" height="42" decoding="async">
                 <span class="brand-text">DiscipLink</span>
             </a>
             <button type="button" class="nav-toggle sidebar-rail-toggle" data-nav-toggle aria-label="Pin sidebar" aria-pressed="false">
@@ -100,7 +99,7 @@ if (!function_exists('render_app_sidebar')) {
             </ul>
         </aside>
 
-        <script defer src="<?= htmlspecialchars(app_seo_script_src('js/layout-nav.js', $assetPrefix), ENT_QUOTES, 'UTF-8') ?>"></script>
+        <script defer src="<?= htmlspecialchars(app_seo_script_src('js/layout-nav.js'), ENT_QUOTES, 'UTF-8') ?>"></script>
         <?php
     }
 }
@@ -135,10 +134,6 @@ if (!function_exists('render_app_header')) {
 if (!function_exists('render_app_footer')) {
     function render_app_footer(array $config = []): void
     {
-        $context = (string) ($config['context'] ?? 'views');
-        $context = in_array($context, ['root', 'views', 'nested'], true) ? $context : 'views';
-        $assetPrefix = $context === 'root' ? '' : ($context === 'nested' ? '../../' : '../');
-
         $address = (string) ($config['address'] ?? 'Jl. Soekarno Hatta No.9, Jatimulyo, Kec. Lowokwaru, Kota Malang, Jawa Timur 65141');
         $phoneLabel = (string) ($config['phoneLabel'] ?? '(0341) 404424');
         $phoneHref = (string) ($config['phoneHref'] ?? 'tel:+62341404424');
@@ -151,8 +146,8 @@ if (!function_exists('render_app_footer')) {
             <div class="footer-main">
                 <div class="footer-brand">
                     <div class="footer-brand-logos">
-                        <img class="footer-logo" src="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/logo-icon.png" alt="Logo DiscipLink" width="76" height="76" loading="lazy" decoding="async">
-                        <img class="footer-logo" src="<?= htmlspecialchars($assetPrefix, ENT_QUOTES, 'UTF-8') ?>img/favicon-96x96.png" alt="Favicon DiscipLink" width="76" height="76" loading="lazy" decoding="async">
+                        <img class="footer-logo" src="<?= htmlspecialchars(app_asset_url('img/logo-icon.png'), ENT_QUOTES, 'UTF-8') ?>" alt="Logo DiscipLink" width="76" height="76" loading="lazy" decoding="async">
+                        <img class="footer-logo" src="<?= htmlspecialchars(app_asset_url('img/favicon-96x96.png'), ENT_QUOTES, 'UTF-8') ?>" alt="Favicon DiscipLink" width="76" height="76" loading="lazy" decoding="async">
                     </div>
                     <p class="footer-brand-copy">DiscipLink · Platform informasi tata tertib mahasiswa.</p>
                 </div>
@@ -185,13 +180,9 @@ if (!function_exists('render_app_footer')) {
 if (!function_exists('render_app_flash_modal')) {
     function render_app_flash_modal(array $config = []): void
     {
-        $context = (string) ($config['context'] ?? 'views');
-        $context = in_array($context, ['root', 'views', 'nested'], true) ? $context : 'views';
-        $assetPrefix = $context === 'root' ? '' : ($context === 'nested' ? '../../' : '../');
         $flashModal = consume_app_flash_modal();
 
         render_app_feedback_modal_component([
-            'assetPrefix' => $assetPrefix,
             'flashModal' => $flashModal,
         ]);
     }

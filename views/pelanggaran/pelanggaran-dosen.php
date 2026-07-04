@@ -461,9 +461,9 @@ $lecturerTableConfig = [
         'robots' => 'noindex, nofollow',
     ]);
     ?>
-    <?php app_seo_favicon_tags('../../'); ?>
-    <link rel="stylesheet" href="../../css/global.css">
-    <link rel="stylesheet" href="../../css/pelanggaran-page.css">
+    <?php app_seo_favicon_tags(); ?>
+    <link rel="stylesheet" href="<?= htmlspecialchars(app_asset_url('css/global.css'), ENT_QUOTES, 'UTF-8') ?>">
+    <link rel="stylesheet" href="<?= htmlspecialchars(app_asset_url('css/pelanggaran-page.css'), ENT_QUOTES, 'UTF-8') ?>">
     <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css"
         onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
@@ -785,9 +785,9 @@ $lecturerTableConfig = [
     ]);
     ?>
     <script defer
-        src="<?= htmlspecialchars(app_seo_script_src('js/universal-table-filter.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
+        src="<?= htmlspecialchars(app_seo_script_src('js/universal-table-filter.js'), ENT_QUOTES, 'UTF-8') ?>"></script>
     <script defer
-        src="<?= htmlspecialchars(app_seo_script_src('js/mobile-violation-cards.js', '../..'), ENT_QUOTES, 'UTF-8') ?>"></script>
+        src="<?= htmlspecialchars(app_seo_script_src('js/mobile-violation-cards.js'), ENT_QUOTES, 'UTF-8') ?>"></script>
 </body>
 
 </html>
