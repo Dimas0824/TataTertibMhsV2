@@ -1,0 +1,1461 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--project=chromium"
+    ],
+    "configFile": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\playwright.config.js",
+    "rootDir": "D:/MiniProject/TataTertibMhsV2/tests/e2e/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 6
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/MiniProject/TataTertibMhsV2/tests/e2e/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 6
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "D:/MiniProject/TataTertibMhsV2/tests/e2e/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "D:/MiniProject/TataTertibMhsV2/tests/e2e/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 6
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "D:/MiniProject/TataTertibMhsV2/tests/e2e/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "D:/MiniProject/TataTertibMhsV2/tests/e2e/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 6
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "D:/MiniProject/TataTertibMhsV2/tests/e2e/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "../playwright-report"
+        }
+      ],
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "../test-results/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.1",
+    "workers": 6,
+    "webServer": {
+      "command": "php artisan serve --host=127.0.0.1 --port=8080",
+      "url": "http://127.0.0.1:8080",
+      "reuseExistingServer": true,
+      "cwd": "../../"
+    }
+  },
+  "suites": [
+    {
+      "title": "dashboard.spec.js",
+      "file": "dashboard.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Mahasiswa Dashboard",
+          "file": "dashboard.spec.js",
+          "line": 26,
+          "column": 6,
+          "specs": [
+            {
+              "title": "dashboard loads successfully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 13634,
+                      "error": {
+                        "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran**\" until \"load\"\n============================================================",
+                        "stack": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran**\" until \"load\"\n============================================================\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js:29:16",
+                        "location": {
+                          "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                          "column": 16,
+                          "line": 29
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 27 |\u001b[39m   test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 28 |\u001b[39m     \u001b[36mawait\u001b[39m loginAs(page\u001b[33m,\u001b[39m \u001b[32m'mahasiswa'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'2341238901'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'password123'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 29 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'**/pelanggaran**'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 30 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m\n \u001b[90m 32 |\u001b[39m   test(\u001b[32m'dashboard loads successfully'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                            "column": 16,
+                            "line": 29
+                          },
+                          "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran**\" until \"load\"\n============================================================\n\n  27 |   test.beforeEach(async ({ page }) => {\n  28 |     await loginAs(page, 'mahasiswa', '2341238901', 'password123');\n> 29 |     await page.waitForURL('**/pelanggaran**', { timeout: 10000 });\n     |                ^\n  30 |   });\n  31 |\n  32 |   test('dashboard loads successfully', async ({ page }) => {\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js:29:16"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-04T14:55:12.120Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Mahasiswa-Dashboard-dashboard-loads-successfully-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Mahasiswa-Dashboard-dashboard-loads-successfully-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Mahasiswa-Dashboard-dashboard-loads-successfully-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                        "column": 16,
+                        "line": 29
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a1bb41a2bd6df77ed2f7-b02b026c59a4809f828a",
+              "file": "dashboard.spec.js",
+              "line": 32,
+              "column": 3
+            },
+            {
+              "title": "shows violation list or empty state",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 13442,
+                      "error": {
+                        "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran**\" until \"load\"\n============================================================",
+                        "stack": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran**\" until \"load\"\n============================================================\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js:29:16",
+                        "location": {
+                          "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                          "column": 16,
+                          "line": 29
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 27 |\u001b[39m   test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 28 |\u001b[39m     \u001b[36mawait\u001b[39m loginAs(page\u001b[33m,\u001b[39m \u001b[32m'mahasiswa'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'2341238901'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'password123'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 29 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'**/pelanggaran**'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 30 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m\n \u001b[90m 32 |\u001b[39m   test(\u001b[32m'dashboard loads successfully'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                            "column": 16,
+                            "line": 29
+                          },
+                          "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran**\" until \"load\"\n============================================================\n\n  27 |   test.beforeEach(async ({ page }) => {\n  28 |     await loginAs(page, 'mahasiswa', '2341238901', 'password123');\n> 29 |     await page.waitForURL('**/pelanggaran**', { timeout: 10000 });\n     |                ^\n  30 |   });\n  31 |\n  32 |   test('dashboard loads successfully', async ({ page }) => {\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js:29:16"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-04T14:55:12.130Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Mahasiswa-Dashbo-e81d0-olation-list-or-empty-state-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Mahasiswa-Dashbo-e81d0-olation-list-or-empty-state-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Mahasiswa-Dashbo-e81d0-olation-list-or-empty-state-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                        "column": 16,
+                        "line": 29
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a1bb41a2bd6df77ed2f7-29c687f2080788b9b46b",
+              "file": "dashboard.spec.js",
+              "line": 36,
+              "column": 3
+            },
+            {
+              "title": "shows notification page",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 13719,
+                      "error": {
+                        "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran**\" until \"load\"\n============================================================",
+                        "stack": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran**\" until \"load\"\n============================================================\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js:29:16",
+                        "location": {
+                          "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                          "column": 16,
+                          "line": 29
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 27 |\u001b[39m   test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 28 |\u001b[39m     \u001b[36mawait\u001b[39m loginAs(page\u001b[33m,\u001b[39m \u001b[32m'mahasiswa'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'2341238901'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'password123'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 29 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'**/pelanggaran**'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 30 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m\n \u001b[90m 32 |\u001b[39m   test(\u001b[32m'dashboard loads successfully'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                            "column": 16,
+                            "line": 29
+                          },
+                          "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran**\" until \"load\"\n============================================================\n\n  27 |   test.beforeEach(async ({ page }) => {\n  28 |     await loginAs(page, 'mahasiswa', '2341238901', 'password123');\n> 29 |     await page.waitForURL('**/pelanggaran**', { timeout: 10000 });\n     |                ^\n  30 |   });\n  31 |\n  32 |   test('dashboard loads successfully', async ({ page }) => {\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js:29:16"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-04T14:55:12.188Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Mahasiswa-Dashboard-shows-notification-page-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Mahasiswa-Dashboard-shows-notification-page-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Mahasiswa-Dashboard-shows-notification-page-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                        "column": 16,
+                        "line": 29
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a1bb41a2bd6df77ed2f7-8ce304e420bf0e9ec643",
+              "file": "dashboard.spec.js",
+              "line": 43,
+              "column": 3
+            },
+            {
+              "title": "can view tatib list",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 13121,
+                      "error": {
+                        "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran**\" until \"load\"\n============================================================",
+                        "stack": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran**\" until \"load\"\n============================================================\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js:29:16",
+                        "location": {
+                          "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                          "column": 16,
+                          "line": 29
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 27 |\u001b[39m   test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 28 |\u001b[39m     \u001b[36mawait\u001b[39m loginAs(page\u001b[33m,\u001b[39m \u001b[32m'mahasiswa'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'2341238901'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'password123'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 29 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'**/pelanggaran**'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 30 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m\n \u001b[90m 32 |\u001b[39m   test(\u001b[32m'dashboard loads successfully'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                            "column": 16,
+                            "line": 29
+                          },
+                          "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran**\" until \"load\"\n============================================================\n\n  27 |   test.beforeEach(async ({ page }) => {\n  28 |     await loginAs(page, 'mahasiswa', '2341238901', 'password123');\n> 29 |     await page.waitForURL('**/pelanggaran**', { timeout: 10000 });\n     |                ^\n  30 |   });\n  31 |\n  32 |   test('dashboard loads successfully', async ({ page }) => {\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js:29:16"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-04T14:55:12.171Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Mahasiswa-Dashboard-can-view-tatib-list-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Mahasiswa-Dashboard-can-view-tatib-list-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Mahasiswa-Dashboard-can-view-tatib-list-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                        "column": 16,
+                        "line": 29
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a1bb41a2bd6df77ed2f7-7175e0786deb48fb117f",
+              "file": "dashboard.spec.js",
+              "line": 48,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "Dosen Dashboard",
+          "file": "dashboard.spec.js",
+          "line": 54,
+          "column": 6,
+          "specs": [
+            {
+              "title": "dosen dashboard loads successfully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 13940,
+                      "error": {
+                        "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran/dosen**\" until \"load\"\n============================================================",
+                        "stack": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran/dosen**\" until \"load\"\n============================================================\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js:57:16",
+                        "location": {
+                          "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                          "column": 16,
+                          "line": 57
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 55 |\u001b[39m   test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 56 |\u001b[39m     \u001b[36mawait\u001b[39m loginAs(page\u001b[33m,\u001b[39m \u001b[32m'dosen'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'1234567890'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'password123'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 57 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'**/pelanggaran/dosen**'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 58 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 59 |\u001b[39m\n \u001b[90m 60 |\u001b[39m   test(\u001b[32m'dosen dashboard loads successfully'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                            "column": 16,
+                            "line": 57
+                          },
+                          "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran/dosen**\" until \"load\"\n============================================================\n\n  55 |   test.beforeEach(async ({ page }) => {\n  56 |     await loginAs(page, 'dosen', '1234567890', 'password123');\n> 57 |     await page.waitForURL('**/pelanggaran/dosen**', { timeout: 10000 });\n     |                ^\n  58 |   });\n  59 |\n  60 |   test('dosen dashboard loads successfully', async ({ page }) => {\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js:57:16"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-04T14:55:12.169Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Dosen-Dashboard-dosen-dashboard-loads-successfully-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Dosen-Dashboard-dosen-dashboard-loads-successfully-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Dosen-Dashboard-dosen-dashboard-loads-successfully-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                        "column": 16,
+                        "line": 57
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a1bb41a2bd6df77ed2f7-8dbafbcf6b7818d293a5",
+              "file": "dashboard.spec.js",
+              "line": 60,
+              "column": 3
+            },
+            {
+              "title": "shows laporan list or empty state",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "failed",
+                      "duration": 13624,
+                      "error": {
+                        "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran/dosen**\" until \"load\"\n============================================================",
+                        "stack": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran/dosen**\" until \"load\"\n============================================================\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js:57:16",
+                        "location": {
+                          "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                          "column": 16,
+                          "line": 57
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 55 |\u001b[39m   test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 56 |\u001b[39m     \u001b[36mawait\u001b[39m loginAs(page\u001b[33m,\u001b[39m \u001b[32m'dosen'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'1234567890'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'password123'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 57 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'**/pelanggaran/dosen**'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 58 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 59 |\u001b[39m\n \u001b[90m 60 |\u001b[39m   test(\u001b[32m'dosen dashboard loads successfully'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                            "column": 16,
+                            "line": 57
+                          },
+                          "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran/dosen**\" until \"load\"\n============================================================\n\n  55 |   test.beforeEach(async ({ page }) => {\n  56 |     await loginAs(page, 'dosen', '1234567890', 'password123');\n> 57 |     await page.waitForURL('**/pelanggaran/dosen**', { timeout: 10000 });\n     |                ^\n  58 |   });\n  59 |\n  60 |   test('dosen dashboard loads successfully', async ({ page }) => {\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js:57:16"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-04T14:55:12.188Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Dosen-Dashboard-shows-laporan-list-or-empty-state-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Dosen-Dashboard-shows-laporan-list-or-empty-state-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Dosen-Dashboard-shows-laporan-list-or-empty-state-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                        "column": 16,
+                        "line": 57
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a1bb41a2bd6df77ed2f7-4c49c2b1bc58cdc22fc5",
+              "file": "dashboard.spec.js",
+              "line": 64,
+              "column": 3
+            },
+            {
+              "title": "can access pelaporan page",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 12333,
+                      "error": {
+                        "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran/dosen**\" until \"load\"\n============================================================",
+                        "stack": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran/dosen**\" until \"load\"\n============================================================\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js:57:16",
+                        "location": {
+                          "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                          "column": 16,
+                          "line": 57
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 55 |\u001b[39m   test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 56 |\u001b[39m     \u001b[36mawait\u001b[39m loginAs(page\u001b[33m,\u001b[39m \u001b[32m'dosen'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'1234567890'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'password123'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 57 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'**/pelanggaran/dosen**'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 58 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 59 |\u001b[39m\n \u001b[90m 60 |\u001b[39m   test(\u001b[32m'dosen dashboard loads successfully'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                            "column": 16,
+                            "line": 57
+                          },
+                          "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran/dosen**\" until \"load\"\n============================================================\n\n  55 |   test.beforeEach(async ({ page }) => {\n  56 |     await loginAs(page, 'dosen', '1234567890', 'password123');\n> 57 |     await page.waitForURL('**/pelanggaran/dosen**', { timeout: 10000 });\n     |                ^\n  58 |   });\n  59 |\n  60 |   test('dosen dashboard loads successfully', async ({ page }) => {\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js:57:16"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-04T14:55:26.721Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Dosen-Dashboard-can-access-pelaporan-page-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Dosen-Dashboard-can-access-pelaporan-page-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Dosen-Dashboard-can-access-pelaporan-page-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                        "column": 16,
+                        "line": 57
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a1bb41a2bd6df77ed2f7-9be219c77850f915838e",
+              "file": "dashboard.spec.js",
+              "line": 69,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "Admin Dashboard",
+          "file": "dashboard.spec.js",
+          "line": 75,
+          "column": 6,
+          "specs": [
+            {
+              "title": "admin dashboard loads successfully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 13964,
+                      "error": {
+                        "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/admin**\" until \"load\"\n============================================================",
+                        "stack": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/admin**\" until \"load\"\n============================================================\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js:78:16",
+                        "location": {
+                          "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                          "column": 16,
+                          "line": 78
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 76 |\u001b[39m   test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 77 |\u001b[39m     \u001b[36mawait\u001b[39m loginAs(page\u001b[33m,\u001b[39m \u001b[32m'admin'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'ADMIN001'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'admin123'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 78 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'**/admin**'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 79 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 80 |\u001b[39m\n \u001b[90m 81 |\u001b[39m   test(\u001b[32m'admin dashboard loads successfully'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                            "column": 16,
+                            "line": 78
+                          },
+                          "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/admin**\" until \"load\"\n============================================================\n\n  76 |   test.beforeEach(async ({ page }) => {\n  77 |     await loginAs(page, 'admin', 'ADMIN001', 'admin123');\n> 78 |     await page.waitForURL('**/admin**', { timeout: 10000 });\n     |                ^\n  79 |   });\n  80 |\n  81 |   test('admin dashboard loads successfully', async ({ page }) => {\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js:78:16"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-04T14:55:26.860Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Admin-Dashboard-admin-dashboard-loads-successfully-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Admin-Dashboard-admin-dashboard-loads-successfully-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Admin-Dashboard-admin-dashboard-loads-successfully-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                        "column": 16,
+                        "line": 78
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a1bb41a2bd6df77ed2f7-fafa3e282f7fc6525e63",
+              "file": "dashboard.spec.js",
+              "line": 81,
+              "column": 3
+            },
+            {
+              "title": "can access tatib management",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 12398,
+                      "error": {
+                        "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/admin**\" until \"load\"\n============================================================",
+                        "stack": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/admin**\" until \"load\"\n============================================================\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js:78:16",
+                        "location": {
+                          "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                          "column": 16,
+                          "line": 78
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 76 |\u001b[39m   test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 77 |\u001b[39m     \u001b[36mawait\u001b[39m loginAs(page\u001b[33m,\u001b[39m \u001b[32m'admin'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'ADMIN001'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'admin123'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 78 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'**/admin**'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 79 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 80 |\u001b[39m\n \u001b[90m 81 |\u001b[39m   test(\u001b[32m'admin dashboard loads successfully'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                            "column": 16,
+                            "line": 78
+                          },
+                          "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/admin**\" until \"load\"\n============================================================\n\n  76 |   test.beforeEach(async ({ page }) => {\n  77 |     await loginAs(page, 'admin', 'ADMIN001', 'admin123');\n> 78 |     await page.waitForURL('**/admin**', { timeout: 10000 });\n     |                ^\n  79 |   });\n  80 |\n  81 |   test('admin dashboard loads successfully', async ({ page }) => {\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js:78:16"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-04T14:55:27.059Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Admin-Dashboard-can-access-tatib-management-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Admin-Dashboard-can-access-tatib-management-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Admin-Dashboard-can-access-tatib-management-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                        "column": 16,
+                        "line": 78
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a1bb41a2bd6df77ed2f7-714e6c530496170078fc",
+              "file": "dashboard.spec.js",
+              "line": 85,
+              "column": 3
+            },
+            {
+              "title": "can access news management",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 5,
+                      "status": "failed",
+                      "duration": 14250,
+                      "error": {
+                        "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/admin**\" until \"load\"\n============================================================",
+                        "stack": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/admin**\" until \"load\"\n============================================================\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js:78:16",
+                        "location": {
+                          "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                          "column": 16,
+                          "line": 78
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 76 |\u001b[39m   test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 77 |\u001b[39m     \u001b[36mawait\u001b[39m loginAs(page\u001b[33m,\u001b[39m \u001b[32m'admin'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'ADMIN001'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'admin123'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 78 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'**/admin**'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 79 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 80 |\u001b[39m\n \u001b[90m 81 |\u001b[39m   test(\u001b[32m'admin dashboard loads successfully'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                            "column": 16,
+                            "line": 78
+                          },
+                          "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/admin**\" until \"load\"\n============================================================\n\n  76 |   test.beforeEach(async ({ page }) => {\n  77 |     await loginAs(page, 'admin', 'ADMIN001', 'admin123');\n> 78 |     await page.waitForURL('**/admin**', { timeout: 10000 });\n     |                ^\n  79 |   });\n  80 |\n  81 |   test('admin dashboard loads successfully', async ({ page }) => {\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js:78:16"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-04T14:55:27.410Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Admin-Dashboard-can-access-news-management-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Admin-Dashboard-can-access-news-management-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Admin-Dashboard-can-access-news-management-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                        "column": 16,
+                        "line": 78
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a1bb41a2bd6df77ed2f7-bc516a4cb3eda6834b9c",
+              "file": "dashboard.spec.js",
+              "line": 90,
+              "column": 3
+            },
+            {
+              "title": "can access tambah berita page",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 12466,
+                      "error": {
+                        "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/admin**\" until \"load\"\n============================================================",
+                        "stack": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/admin**\" until \"load\"\n============================================================\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js:78:16",
+                        "location": {
+                          "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                          "column": 16,
+                          "line": 78
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 76 |\u001b[39m   test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 77 |\u001b[39m     \u001b[36mawait\u001b[39m loginAs(page\u001b[33m,\u001b[39m \u001b[32m'admin'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'ADMIN001'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'admin123'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 78 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'**/admin**'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 79 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 80 |\u001b[39m\n \u001b[90m 81 |\u001b[39m   test(\u001b[32m'admin dashboard loads successfully'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                            "column": 16,
+                            "line": 78
+                          },
+                          "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/admin**\" until \"load\"\n============================================================\n\n  76 |   test.beforeEach(async ({ page }) => {\n  77 |     await loginAs(page, 'admin', 'ADMIN001', 'admin123');\n> 78 |     await page.waitForURL('**/admin**', { timeout: 10000 });\n     |                ^\n  79 |   });\n  80 |\n  81 |   test('admin dashboard loads successfully', async ({ page }) => {\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js:78:16"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-04T14:55:27.514Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Admin-Dashboard-can-access-tambah-berita-page-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Admin-Dashboard-can-access-tambah-berita-page-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\dashboard-Admin-Dashboard-can-access-tambah-berita-page-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\dashboard.spec.js",
+                        "column": 16,
+                        "line": 78
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a1bb41a2bd6df77ed2f7-035fd8a503d1faf3b80e",
+              "file": "dashboard.spec.js",
+              "line": 95,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "public.spec.js",
+      "file": "public.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Public Pages",
+          "file": "public.spec.js",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "homepage loads successfully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 2536,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-04T14:55:27.848Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b8b11f548eaaa68a87b0-e1c25b78a712d8ddd5fa",
+              "file": "public.spec.js",
+              "line": 5,
+              "column": 3
+            },
+            {
+              "title": "login page loads successfully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 8202,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-04T14:55:30.579Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b8b11f548eaaa68a87b0-e04959d7177d70a54cab",
+              "file": "public.spec.js",
+              "line": 10,
+              "column": 3
+            },
+            {
+              "title": "tatib page loads successfully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 2728,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-04T14:55:38.807Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b8b11f548eaaa68a87b0-82ea6fd7d2683df351ec",
+              "file": "public.spec.js",
+              "line": 18,
+              "column": 3
+            },
+            {
+              "title": "404 page for invalid route",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 864,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-04T14:55:40.261Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b8b11f548eaaa68a87b0-47ca12366e87b4f17c91",
+              "file": "public.spec.js",
+              "line": 23,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "Authentication",
+          "file": "public.spec.js",
+          "line": 29,
+          "column": 6,
+          "specs": [
+            {
+              "title": "login with invalid credentials shows error",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2387,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-04T14:55:40.867Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b8b11f548eaaa68a87b0-1570bf0b9bf4ccb45dbe",
+              "file": "public.spec.js",
+              "line": 30,
+              "column": 3
+            },
+            {
+              "title": "login with empty credentials shows validation error",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 2394,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-04T14:55:41.350Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b8b11f548eaaa68a87b0-46ccdefb3bf83708405b",
+              "file": "public.spec.js",
+              "line": 42,
+              "column": 3
+            },
+            {
+              "title": "mahasiswa login with valid credentials",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 15,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 12324,
+                      "error": {
+                        "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran**\" until \"load\"\n============================================================",
+                        "stack": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran**\" until \"load\"\n============================================================\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\public.spec.js:62:16",
+                        "location": {
+                          "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\public.spec.js",
+                          "column": 16,
+                          "line": 62
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 60 |\u001b[39m     \n \u001b[90m 61 |\u001b[39m     \u001b[90m// Should redirect to pelanggaran page\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 62 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'**/pelanggaran**'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 63 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 64 |\u001b[39m\n \u001b[90m 65 |\u001b[39m   test(\u001b[32m'dosen login with valid credentials'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\public.spec.js",
+                            "column": 16,
+                            "line": 62
+                          },
+                          "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran**\" until \"load\"\n============================================================\n\n  60 |     \n  61 |     // Should redirect to pelanggaran page\n> 62 |     await page.waitForURL('**/pelanggaran**', { timeout: 10000 });\n     |                ^\n  63 |   });\n  64 |\n  65 |   test('dosen login with valid credentials', async ({ page }) => {\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\public.spec.js:62:16"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-04T14:55:42.251Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\public-Authentication-mahasiswa-login-with-valid-credentials-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\public-Authentication-mahasiswa-login-with-valid-credentials-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\public-Authentication-mahasiswa-login-with-valid-credentials-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\public.spec.js",
+                        "column": 16,
+                        "line": 62
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b8b11f548eaaa68a87b0-12e9b553066c5d30e85f",
+              "file": "public.spec.js",
+              "line": 53,
+              "column": 3
+            },
+            {
+              "title": "dosen login with valid credentials",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 13145,
+                      "error": {
+                        "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran/dosen**\" until \"load\"\n============================================================",
+                        "stack": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran/dosen**\" until \"load\"\n============================================================\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\public.spec.js:77:16",
+                        "location": {
+                          "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\public.spec.js",
+                          "column": 16,
+                          "line": 77
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 75 |\u001b[39m     \n \u001b[90m 76 |\u001b[39m     \u001b[90m// Should redirect to dosen pelanggaran page\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 77 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'**/pelanggaran/dosen**'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 78 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 79 |\u001b[39m\n \u001b[90m 80 |\u001b[39m   test(\u001b[32m'admin login with valid credentials'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\public.spec.js",
+                            "column": 16,
+                            "line": 77
+                          },
+                          "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/pelanggaran/dosen**\" until \"load\"\n============================================================\n\n  75 |     \n  76 |     // Should redirect to dosen pelanggaran page\n> 77 |     await page.waitForURL('**/pelanggaran/dosen**', { timeout: 10000 });\n     |                ^\n  78 |   });\n  79 |\n  80 |   test('admin login with valid credentials', async ({ page }) => {\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\public.spec.js:77:16"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-04T14:55:41.392Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\public-Authentication-dosen-login-with-valid-credentials-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\public-Authentication-dosen-login-with-valid-credentials-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\public-Authentication-dosen-login-with-valid-credentials-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\public.spec.js",
+                        "column": 16,
+                        "line": 77
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b8b11f548eaaa68a87b0-72d903a97f0f8fcc5386",
+              "file": "public.spec.js",
+              "line": 65,
+              "column": 3
+            },
+            {
+              "title": "admin login with valid credentials",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 12544,
+                      "error": {
+                        "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/admin**\" until \"load\"\n============================================================",
+                        "stack": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/admin**\" until \"load\"\n============================================================\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\public.spec.js:92:16",
+                        "location": {
+                          "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\public.spec.js",
+                          "column": 16,
+                          "line": 92
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 90 |\u001b[39m     \n \u001b[90m 91 |\u001b[39m     \u001b[90m// Should redirect to admin page\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 92 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'**/admin**'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 93 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 94 |\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m 95 |\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\public.spec.js",
+                            "column": 16,
+                            "line": 92
+                          },
+                          "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/admin**\" until \"load\"\n============================================================\n\n  90 |     \n  91 |     // Should redirect to admin page\n> 92 |     await page.waitForURL('**/admin**', { timeout: 10000 });\n     |                ^\n  93 |   });\n  94 | });\n  95 |\n    at D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\public.spec.js:92:16"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-04T14:55:41.590Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\public-Authentication-admin-login-with-valid-credentials-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\public-Authentication-admin-login-with-valid-credentials-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\test-results\\public-Authentication-admin-login-with-valid-credentials-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "D:\\MiniProject\\TataTertibMhsV2\\tests\\e2e\\tests\\public.spec.js",
+                        "column": 16,
+                        "line": 92
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b8b11f548eaaa68a87b0-4cfe28c1def87f68c86b",
+              "file": "public.spec.js",
+              "line": 80,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "Session Management",
+          "file": "public.spec.js",
+          "line": 96,
+          "column": 6,
+          "specs": [
+            {
+              "title": "unauthenticated access redirects to login",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 16,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 3774,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-04T14:55:42.841Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b8b11f548eaaa68a87b0-5f6b8d4523e305b9a49d",
+              "file": "public.spec.js",
+              "line": 97,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-04T14:55:11.224Z",
+    "duration": 43633.909,
+    "expected": 7,
+    "skipped": 0,
+    "unexpected": 14,
+    "flaky": 0
+  }
+}
