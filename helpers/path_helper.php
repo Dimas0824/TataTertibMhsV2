@@ -31,6 +31,51 @@ if (!function_exists('app_require')) {
 }
 
 if (!function_exists('app_base_url')) {
+    function app_env_value(string $targetKey): ?string
+    {
+        $envPath = app_path('.env');
+        if (!is_file($envPath)) {
+            return null;
+        }
+
+        $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        if ($lines === false) {
+            return null;
+        }
+
+        foreach ($lines as $line) {
+            $line = trim((string) $line);
+            if ($line === '' || strpos($line, '#') === 0) {
+                continue;
+            }
+
+            $separatorPos = strpos($line, '=');
+            if ($separatorPos === false) {
+                continue;
+            }
+
+            $key = trim(substr($line, 0, $separatorPos));
+            if ($key !== $targetKey) {
+                continue;
+            }
+
+            $raw = trim(substr($line, $separatorPos + 1));
+            if ($raw === '') {
+                return '';
+            }
+
+            $first = substr($raw, 0, 1);
+            $last = substr($raw, -1);
+            if (($first === '"' && $last === '"') || ($first === "'" && $last === "'")) {
+                $raw = substr($raw, 1, -1);
+            }
+
+            return trim((string) $raw);
+        }
+
+        return null;
+    }
+
     function app_base_path_override(): ?string
     {
         static $cached = null;
@@ -38,43 +83,12 @@ if (!function_exists('app_base_url')) {
             return $cached;
         }
 
-        $raw = getenv('APP_BASE_PATH');
+        $raw = app_env_value('APP_BASE_PATH');
         if (!is_string($raw) || trim($raw) === '') {
-            $envPath = app_path('.env');
-            if (is_file($envPath)) {
-                $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-                if ($lines !== false) {
-                    foreach ($lines as $line) {
-                        $line = trim((string) $line);
-                        if ($line === '' || strpos($line, '#') === 0) {
-                            continue;
-                        }
-
-                        $separatorPos = strpos($line, '=');
-                        if ($separatorPos === false) {
-                            continue;
-                        }
-
-                        $key = trim(substr($line, 0, $separatorPos));
-                        if ($key !== 'APP_BASE_PATH') {
-                            continue;
-                        }
-
-                        $raw = trim(substr($line, $separatorPos + 1));
-                        if ($raw !== '') {
-                            $first = substr($raw, 0, 1);
-                            $last = substr($raw, -1);
-                            if (($first === '"' && $last === '"') || ($first === "'" && $last === "'")) {
-                                $raw = substr($raw, 1, -1);
-                            }
-                        }
-                        break;
-                    }
-                }
-            }
+            $raw = getenv('APP_BASE_PATH');
         }
 
-        if (!is_string($raw) || trim($raw) === '' || trim($raw) === '/') {
+        if (!is_string($raw) || trim($raw) === '' || trim($raw) === '/' || strcasecmp(trim($raw), 'auto') === 0) {
             $cached = '';
             return $cached;
         }
@@ -84,12 +98,40 @@ if (!function_exists('app_base_url')) {
         return $cached;
     }
 
-    function app_base_url(): string
+    function app_detect_base_url_from_server(): string
     {
-        $override = app_base_path_override();
-        if ($override !== '') {
-            return $override;
-        }
+        $isLocalEnv = static function (): bool {
+            $appEnvRaw = app_env_value('APP_ENV');
+            if (!is_string($appEnvRaw) || trim($appEnvRaw) === '') {
+                $appEnvRaw = getenv('APP_ENV') ?: 'local';
+            }
+
+            $appEnv = strtolower(trim((string) $appEnvRaw));
+            return in_array($appEnv, ['local', 'development', 'dev'], true);
+        };
+
+        $localProjectBaseFromRequest = static function (string $requestPath) use ($isLocalEnv): string {
+            if (!$isLocalEnv()) {
+                return '';
+            }
+
+            $projectDirName = basename(APP_ROOT_PATH);
+            $trimmedPath = trim($requestPath, '/');
+            if ($trimmedPath === '') {
+                return '';
+            }
+
+            $firstSegment = strtok($trimmedPath, '/');
+            if (!is_string($firstSegment) || $firstSegment === '') {
+                return '';
+            }
+
+            if (strcasecmp($firstSegment, $projectDirName) !== 0) {
+                return '';
+            }
+
+            return '/' . $firstSegment;
+        };
 
         $scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
         if ($scriptName === '') {
@@ -105,23 +147,57 @@ if (!function_exists('app_base_url')) {
             }
         }
 
+        $requestUri = (string) ($_SERVER['REQUEST_URI'] ?? '/');
+        $requestPath = parse_url($requestUri, PHP_URL_PATH);
+        $requestPath = is_string($requestPath) && $requestPath !== '' ? $requestPath : '/';
+
         $dir = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
         $base = $dir === '/' ? '' : $dir;
         if ($base === '') {
-            return '';
+            return $localProjectBaseFromRequest($requestPath);
+        }
+
+        $isPrefixedRequest = ($requestPath === $base || strpos($requestPath, $base . '/') === 0);
+        if (!$isPrefixedRequest) {
+            // Pada local stack tertentu, REQUEST_URI bisa tampil sebagai "/"
+            // meski aplikasi berjalan di subfolder. Dalam mode local, pakai
+            // base dari SCRIPT_NAME agar URL aset tetap valid.
+            if ($isLocalEnv()) {
+                return $base;
+            }
+
+            return $localProjectBaseFromRequest($requestPath);
+        }
+
+        return $base;
+    }
+
+    function app_base_url(): string
+    {
+        $override = app_base_path_override();
+        $detected = app_detect_base_url_from_server();
+
+        if ($override === '') {
+            return $detected;
+        }
+
+        if ($detected === '') {
+            return $override;
         }
 
         $requestUri = (string) ($_SERVER['REQUEST_URI'] ?? '/');
         $requestPath = parse_url($requestUri, PHP_URL_PATH);
         $requestPath = is_string($requestPath) && $requestPath !== '' ? $requestPath : '/';
 
-        $isPrefixedRequest = ($requestPath === $base || strpos($requestPath, $base . '/') === 0);
-        if (!$isPrefixedRequest) {
-            // App sits in subfolder but is served behind clean URL rewrite at domain root.
-            return '';
+        $isOverridePrefixed = ($requestPath === $override || strpos($requestPath, $override . '/') === 0);
+        $isDetectedPrefixed = ($requestPath === $detected || strpos($requestPath, $detected . '/') === 0);
+
+        if ($isOverridePrefixed || !$isDetectedPrefixed) {
+            return $override;
         }
 
-        return $base;
+        // Override dari env tidak cocok dengan path request saat ini, gunakan hasil deteksi.
+        return $detected;
     }
 }
 
@@ -147,6 +223,13 @@ if (!function_exists('app_url')) {
         }
 
         return $base . '/' . $relativePath;
+    }
+}
+
+if (!function_exists('app_asset_url')) {
+    function app_asset_url(string $relativePath): string
+    {
+        return app_url(ltrim($relativePath, '/'));
     }
 }
 
