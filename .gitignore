@@ -1,5 +1,15 @@
+# Dependencies
+node_modules/
+tests/e2e/node_modules/
+
+# Test artifacts
+tests/e2e/test-results/
+tests/e2e/playwright-report/
+tests/test-results/
+tests/playwright-report/
+
+# Environment
 .env
-.env.*
 !.env.example
 
 # Keep storage tracked, but exclude sensitive runtime keys.
