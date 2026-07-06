@@ -2,6 +2,7 @@
 if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
 require_once __DIR__ . '/../helpers/path_helper.php';
 require_once __DIR__ . '/../helpers/route_helper.php';
+require_once __DIR__ . '/../helpers/token_helper.php';
 app_require('config.php');
 app_require('controllers/PelanggaranController.php');
 app_require('controllers/TatibController.php');
@@ -58,6 +59,7 @@ if ($routeAction === 'lookup_mahasiswa') {
 
    $nim = '';
    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      app_verify_csrf();
       $rawInput = file_get_contents('php://input');
       $decodedInput = json_decode($rawInput ?? '', true);
       $input = is_array($decodedInput) ? $decodedInput : $_POST;
@@ -81,6 +83,7 @@ if ($routeAction === 'lookup_mahasiswa') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $routeAction === 'confirm_selesai') {
+   app_verify_csrf();
    if (!isset($_SESSION['username'])) {
       set_app_flash_modal('error', 'Unauthorized.');
       app_redirect('views/auth/login.php');
@@ -109,6 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $routeAction === 'confirm_selesai')
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $routeAction === 'delete') {
+   app_verify_csrf();
    if (!isset($_SESSION['username'])) {
       set_app_flash_modal('error', 'Unauthorized.');
       app_redirect('views/auth/login.php');

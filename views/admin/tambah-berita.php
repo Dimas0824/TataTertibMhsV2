@@ -99,6 +99,7 @@ $newsData = $newsController->AdminNews($id_admin);
                 <form id="insertBeritaForm" method="POST"
                     action="<?= htmlspecialchars(app_action_url('action.news'), ENT_QUOTES, 'UTF-8') ?>"
                     enctype="multipart/form-data">
+                    <?= app_csrf_field() ?>
                     <label for="insertPenulisNama">Penulis:</label>
                     <input type="text" id="insertPenulisNama" name="penulis_nama"
                         value="<?= htmlspecialchars($userData['nama_admin']) ?>" required readonly>

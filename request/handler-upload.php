@@ -37,6 +37,8 @@ if (!is_dir($uploadDir)) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    app_require_login();
+    app_verify_csrf();
     if (!isset($connect) || !($connect instanceof PDO)) {
         respondJson(false, 'Koneksi database tidak tersedia.', 500);
     }
@@ -46,14 +48,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         respondJson(false, 'ID detail tidak valid.', 422);
     }
 
+    $role = (string) ($_SESSION['user_type'] ?? '');
+    $sessionData = is_array($_SESSION['user_data'] ?? null) ? $_SESSION['user_data'] : [];
+
     $detailStmt = $connect->prepare(
         "SELECT dp.id_detail, dp.surat, dp.pengumpulan_tgsKhusus, dp.delegasi_tugas_ke_dpa, tt.tingkat
          FROM DETAIL_PELANGGARAN dp
          JOIN TATA_TERTIB tt ON tt.id_tata_tertib = dp.id_tata_tertib
+         JOIN MAHASISWA m ON m.id_mhs = dp.id_mahasiswa
+         JOIN DOSEN pelapor ON pelapor.id_dosen = dp.id_dosen
+         LEFT JOIN DOSEN penanggung ON penanggung.id_dosen = dp.id_dosen_penanggung_jawab
          WHERE dp.id_detail = :idDetail
+           AND (
+                (:role = 'mahasiswa' AND m.nim = :nim)
+             OR (:role = 'dosen' AND (pelapor.nidn = :nidn OR penanggung.nidn = :nidn))
+           )
          LIMIT 1"
     );
     $detailStmt->bindValue(':idDetail', $idDetail, PDO::PARAM_INT);
+    $detailStmt->bindValue(':role', $role, PDO::PARAM_STR);
+    $detailStmt->bindValue(':nim', (string) ($sessionData['nim'] ?? ''), PDO::PARAM_STR);
+    $detailStmt->bindValue(':nidn', (string) ($sessionData['nidn'] ?? ''), PDO::PARAM_STR);
     $detailStmt->execute();
     $detailData = $detailStmt->fetch(PDO::FETCH_ASSOC);
     if (!$detailData) {
@@ -111,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             respondJson(false, 'Ekstensi file tidak diizinkan.', 422);
         }
 
-        $customFileName = $idDetail . '_' . $fileType . '_' . uniqid() . '.' . $extension;
+        $customFileName = $idDetail . '_' . $fileType . '_' . bin2hex(random_bytes(12)) . '.' . $extension;
         $targetFilePath = $uploadDir . $customFileName;
 
         // Pindahkan file yang diunggah ke direktori uploads

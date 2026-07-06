@@ -330,6 +330,7 @@ $lecturerTableColumns = [
                 <form method="POST" class="confirm-form"
                     action="<?= $escapeHtml($confirmSelesaiAction) ?>"
                     >
+                    <?= app_csrf_field() ?>
                     <input type="hidden" name="id_detail"
                         value="<?= $escapeHtml(app_id_token('detail_pelanggaran', (int) ($detail['id_detail'] ?? 0))) ?>">
                     <button type="button" class="confirm-laporan" <?= $state['canConfirm'] ? '' : 'disabled' ?>
@@ -342,6 +343,7 @@ $lecturerTableColumns = [
                 </form>
                 <form method="POST" class="delete-form"
                     action="<?= $escapeHtml($deleteLaporanAction) ?>">
+                    <?= app_csrf_field() ?>
                     <input type="hidden" name="id_detail"
                         value="<?= $escapeHtml(app_id_token('detail_pelanggaran', (int) ($detail['id_detail'] ?? 0))) ?>">
                     <button type="button" class="delete-laporan" <?= $state['canDelete'] ? '' : 'disabled' ?> data-admin-confirm-trigger
@@ -727,6 +729,7 @@ $lecturerTableConfig = [
                                                 <form method="POST" class="confirm-form"
                                                     action="<?= htmlspecialchars($confirmSelesaiAction, ENT_QUOTES, 'UTF-8') ?>"
                                                     >
+                                                    <?= app_csrf_field() ?>
                                                     <input type="hidden" name="id_detail"
                                                         value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $detail['id_detail']), ENT_QUOTES, 'UTF-8') ?>">
                                                     <button type="button" class="confirm-laporan" <?= $canConfirm ? '' : 'disabled' ?>
@@ -740,6 +743,7 @@ $lecturerTableConfig = [
                                                 <form method="POST" class="delete-form"
                                                     action="<?= htmlspecialchars($deleteLaporanAction, ENT_QUOTES, 'UTF-8') ?>"
                                                     >
+                                                    <?= app_csrf_field() ?>
                                                     <input type="hidden" name="id_detail"
                                                         value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $detail['id_detail']), ENT_QUOTES, 'UTF-8') ?>">
                                                     <button type="button" class="delete-laporan" <?= $canDelete ? '' : 'disabled' ?> data-admin-confirm-trigger

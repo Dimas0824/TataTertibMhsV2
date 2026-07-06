@@ -117,20 +117,25 @@ class NewsController
                 throw new Exception("Direktori upload gambar tidak tersedia.");
             }
 
-            $sanitizedName = (string) preg_replace('/[^a-zA-Z0-9._-]/', '_', basename((string) $gambar['name']));
-            $sanitizedName = trim($sanitizedName, '._');
-            if ($sanitizedName === '') {
-                $sanitizedName = 'news_image';
+            $detectedMime = '';
+            if (function_exists('finfo_open')) {
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                if ($finfo) {
+                    $detectedMime = (string) finfo_file($finfo, $gambar['tmp_name']);
+                    finfo_close($finfo);
+                }
             }
 
-            $fileName = time() . '_' . $sanitizedName;
-            $uploadFile = $uploadDir . DIRECTORY_SEPARATOR . $fileName;
-
-            // Cek tipe file
-            $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-            if (!in_array((string) ($gambar['type'] ?? ''), $allowedTypes, true)) {
+            $allowedTypes = [
+                'image/jpeg' => 'jpg',
+                'image/png' => 'png',
+            ];
+            if (!isset($allowedTypes[$detectedMime])) {
                 throw new Exception("Format gambar tidak didukung.");
             }
+
+            $fileName = bin2hex(random_bytes(16)) . '.' . $allowedTypes[$detectedMime];
+            $uploadFile = $uploadDir . DIRECTORY_SEPARATOR . $fileName;
 
             // Pindahkan file yang diunggah
             if (!move_uploaded_file($gambar['tmp_name'], $uploadFile)) {

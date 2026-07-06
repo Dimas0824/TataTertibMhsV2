@@ -2,6 +2,7 @@
 if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
 require_once __DIR__ . '/../helpers/path_helper.php';
 require_once __DIR__ . '/../helpers/route_helper.php';
+require_once __DIR__ . '/../helpers/token_helper.php';
 app_require('config.php');
 app_require('controllers/UserController.php');
 app_require('helpers/flash_modal.php');
@@ -9,6 +10,7 @@ app_require('helpers/flash_modal.php');
 $user = new UserController();
 try {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        app_verify_csrf();
         $userType = $_POST['user_type'] ?? null;
         $username = trim((string) ($_POST['username'] ?? ''));
         $password = (string) ($_POST['password'] ?? '');

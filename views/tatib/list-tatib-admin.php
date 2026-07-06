@@ -135,6 +135,7 @@ $tatibAdminColumns = [
             ob_start();
             ?>
             <form action="<?= $escapeHtml(app_action_url('action.tatib')) ?>" method="post">
+                    <?= app_csrf_field() ?>
                 <input type="hidden" name="id_tatib"
                     value="<?= $escapeHtml(app_id_token('tatib', (int) ($tatib['id_tata_tertib'] ?? 0))) ?>">
                 <button type="button" class="delete" id="delete" name="delete"
@@ -328,6 +329,7 @@ $tatibAdminTableConfig = [
                 <h2>Tambah Pelanggaran</h2>
                 <form id="insertForm" method="POST"
                     action="<?= htmlspecialchars(app_action_url('action.tatib'), ENT_QUOTES, 'UTF-8') ?>">
+                    <?= app_csrf_field() ?>
                     <label for="insertAdmin">Id Admin:</label>
                     <input type="text" id="admin" name="admin" value="<?= $userData['id_admin'] ?>" required readonly>
 

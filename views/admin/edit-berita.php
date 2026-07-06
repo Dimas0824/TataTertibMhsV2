@@ -169,6 +169,7 @@ if ($id > 0) {
                 </aside>
 
                 <form id="editBeritaForm" method="POST" enctype="multipart/form-data">
+                    <?= app_csrf_field() ?>
                     <input type="hidden" id="editNewsId" name="news_id"
                         value="<?= htmlspecialchars(app_id_token('news', (int) $id), ENT_QUOTES, 'UTF-8') ?>" required>
 
