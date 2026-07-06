@@ -75,6 +75,7 @@ if (isset($_SESSION['username'])) {
 
             <section class="login-panel">
                 <form class="login-form" method="POST" action="<?= htmlspecialchars(app_action_url('action.login'), ENT_QUOTES, 'UTF-8') ?>">
+                    <?= app_csrf_field() ?>
                     <h3>Selamat Datang</h3>
                     <p class="login-subtitle">Masuk ke akun DiscipLink kamu</p>
                     <input type="hidden" id="user-type" name="user_type" value="nim">

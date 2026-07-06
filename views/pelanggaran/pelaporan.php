@@ -161,7 +161,9 @@ $tatibData = $tatibController->ReadTatib();
                     <form id="pelanggaranForm" method="POST"
                         action="<?= htmlspecialchars(app_action_url('action.pelanggaran'), ENT_QUOTES, 'UTF-8') ?>"
                         data-lookup-endpoint="<?= htmlspecialchars(app_action_url('action.pelanggaran', ['action' => 'lookup_mahasiswa']), ENT_QUOTES, 'UTF-8') ?>"
-                        data-search-endpoint="<?= htmlspecialchars(app_action_url('action.pelanggaran', ['action' => 'search_mahasiswa']), ENT_QUOTES, 'UTF-8') ?>">
+                        data-search-endpoint="<?= htmlspecialchars(app_action_url('action.pelanggaran', ['action' => 'search_mahasiswa']), ENT_QUOTES, 'UTF-8') ?>"
+                        data-csrf-token="<?= htmlspecialchars(app_csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
+                        <?= app_csrf_field() ?>
                         <div class="form-grid">
                             <div class="form-group form-group-wide">
                                 <label for="nim">NIM Mahasiswa</label>

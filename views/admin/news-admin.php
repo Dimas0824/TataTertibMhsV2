@@ -105,6 +105,7 @@ $newsAdminColumns = [
         <i class="fa-solid fa-pen-to-square"></i>
     </a>
     <form action="<?= $escapeHtml(app_action_url('action.news')) ?>" method="post">
+                    <?= app_csrf_field() ?>
         <input type="hidden" name="news_id" value="<?= $escapeHtml(app_id_token('news', (int) ($news['id_news'] ?? 0))) ?>">
         <button type="button" class="delete" id="delete" name="delete" data-admin-confirm-trigger
             data-admin-confirm-title="Hapus berita?"

@@ -56,6 +56,7 @@ class UserController
                     if (session_status() !== PHP_SESSION_ACTIVE) {
                         session_start();
                     }
+                    session_regenerate_id(true);
                     $_SESSION['username'] = $username;
                     $_SESSION['user_type'] = $role;
                     $_SESSION['user_data'] = $user;
@@ -77,7 +78,12 @@ class UserController
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
         }
+        $_SESSION = [];
         session_destroy();
+        if (ini_get('session.use_cookies')) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000, $params['path'], $params['domain'], (bool) $params['secure'], (bool) $params['httponly']);
+        }
         app_redirect('index.php');
     }
 

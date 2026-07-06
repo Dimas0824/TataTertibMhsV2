@@ -172,6 +172,7 @@ $studentTableColumns = [
             ob_start();
             ?>
     <form class="uploadForm" enctype="multipart/form-data">
+        <?= app_csrf_field() ?>
         <input type="hidden" name="id_detail"
             value="<?= $escapeHtml(app_id_token('detail_pelanggaran', (int) ($detail['id_detail'] ?? 0))) ?>">
         <input type="file" name="suratPernyataan" required>
@@ -179,6 +180,7 @@ $studentTableColumns = [
     </form>
     <?php if ($requiresTugas): ?>
         <form class="uploadForm" enctype="multipart/form-data">
+            <?= app_csrf_field() ?>
             <input type="hidden" name="id_detail"
                 value="<?= $escapeHtml(app_id_token('detail_pelanggaran', (int) ($detail['id_detail'] ?? 0))) ?>">
             <input type="file" name="tugasKhusus" required>
@@ -482,6 +484,7 @@ $studentTableConfig = [
 
                                             <div class="mobile-sheet-actions">
                                                 <form class="uploadForm" enctype="multipart/form-data">
+                                                    <?= app_csrf_field() ?>
                                                     <input type="hidden" name="id_detail"
                                                         value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $detail['id_detail']), ENT_QUOTES, 'UTF-8') ?>">
                                                     <input type="file" name="suratPernyataan" required>
@@ -489,6 +492,7 @@ $studentTableConfig = [
                                                 </form>
                                                 <?php if ($requiresTugas): ?>
                                                     <form class="uploadForm" enctype="multipart/form-data">
+                                                        <?= app_csrf_field() ?>
                                                         <input type="hidden" name="id_detail"
                                                             value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $detail['id_detail']), ENT_QUOTES, 'UTF-8') ?>">
                                                         <input type="file" name="tugasKhusus" required>

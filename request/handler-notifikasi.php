@@ -15,6 +15,8 @@ function respond_json(int $statusCode, array $payload): void
     exit();
 }
 
+app_verify_csrf();
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     respond_json(405, [
         'success' => false,

@@ -4,12 +4,15 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 require_once __DIR__ . '/../helpers/path_helper.php';
 require_once __DIR__ . '/../helpers/route_helper.php';
+require_once __DIR__ . '/../helpers/token_helper.php';
 app_require('config.php');
 app_require('controllers/NewsController.php');
 app_require('helpers/flash_modal.php');
 
 // Instansiasi controller
 $newsController = new NewsController();
+app_require_role('admin');
+app_verify_csrf();
 
 try {
     // Validasi jika tombol "store" diklik
@@ -76,19 +79,25 @@ try {
                 throw new Exception("Direktori upload gambar tidak tersedia.");
             }
 
-            $sanitizedName = (string) preg_replace('/[^a-zA-Z0-9._-]/', '_', basename((string) $gambar['name']));
-            $sanitizedName = trim($sanitizedName, '._');
-            if ($sanitizedName === '') {
-                $sanitizedName = 'news_image';
+            $detectedMime = '';
+            if (function_exists('finfo_open')) {
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                if ($finfo) {
+                    $detectedMime = (string) finfo_file($finfo, $gambar['tmp_name']);
+                    finfo_close($finfo);
+                }
             }
 
-            $fileName = time() . '_' . $sanitizedName;
-            $uploadFile = $uploadDir . DIRECTORY_SEPARATOR . $fileName;
-            $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-
-            if (!in_array((string) ($gambar['type'] ?? ''), $allowedTypes, true)) {
+            $allowedTypes = [
+                'image/jpeg' => 'jpg',
+                'image/png' => 'png',
+            ];
+            if (!isset($allowedTypes[$detectedMime])) {
                 throw new Exception("Format gambar tidak didukung.");
             }
+
+            $fileName = bin2hex(random_bytes(16)) . '.' . $allowedTypes[$detectedMime];
+            $uploadFile = $uploadDir . DIRECTORY_SEPARATOR . $fileName;
 
             if (!move_uploaded_file($gambar['tmp_name'], $uploadFile)) {
                 throw new Exception("Gagal mengunggah gambar.");
@@ -124,7 +133,8 @@ try {
     }
 } catch (Exception $e) {
     // Tangkap semua error
-    set_app_flash_modal('error', 'Error: ' . $e->getMessage());
+    error_log('News Handler Error: ' . $e->getMessage());
+    set_app_flash_modal('error', 'Terjadi kesalahan. Silakan coba lagi.');
 }
 
 app_redirect('views/admin/news-admin.php');

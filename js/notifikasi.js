@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const endpoint = root.dataset.endpoint || '';
+  const csrfToken = root.dataset.csrfToken || '';
   const searchInput = document.getElementById('notifSearchInput');
   const filterButtons = Array.from(root.querySelectorAll('.notif-filter-btn'));
   const markAllButton = root.querySelector('[data-action="mark-all-read"]');
@@ -102,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({ ...payload, csrf_token: csrfToken })
     });
 
     let data = null;

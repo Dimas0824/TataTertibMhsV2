@@ -31,7 +31,7 @@ if (!function_exists('render_notification_center_component')) {
         ?>
         <link rel="stylesheet" href="<?= $escape(app_asset_url('css/notifikasi.css')) ?>">
 
-        <section class="notif-page" data-notif-root data-endpoint="<?= $escape($endpoint) ?>">
+        <section class="notif-page" data-notif-root data-endpoint="<?= $escape($endpoint) ?>" data-csrf-token="<?= $escape(app_csrf_token()) ?>">
             <section class="notif-hero" aria-label="Ringkasan notifikasi">
                 <div class="notif-hero-copy">
                     <span class="notif-kicker"><?= $escape($kicker) ?></span>

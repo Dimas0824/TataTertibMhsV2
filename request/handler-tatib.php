@@ -2,12 +2,15 @@
 if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
 require_once __DIR__ . '/../helpers/path_helper.php';
 require_once __DIR__ . '/../helpers/route_helper.php';
+require_once __DIR__ . '/../helpers/token_helper.php';
 app_require('config.php');
 app_require('controllers/TatibController.php');
 app_require('helpers/flash_modal.php');
 
 
 $tatibController = new TatibController();
+app_require_role('admin');
+app_verify_csrf();
 
 
 

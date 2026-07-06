@@ -198,7 +198,9 @@ if ($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
                     <form id="pelanggaranForm" method="POST"
                         action="<?= htmlspecialchars(app_action_url('action.pelanggaran'), ENT_QUOTES, 'UTF-8') ?>"
                         data-lookup-endpoint="<?= htmlspecialchars(app_action_url('action.pelanggaran', ['action' => 'lookup_mahasiswa']), ENT_QUOTES, 'UTF-8') ?>"
-                        data-search-endpoint="<?= htmlspecialchars(app_action_url('action.pelanggaran', ['action' => 'search_mahasiswa']), ENT_QUOTES, 'UTF-8') ?>">
+                        data-search-endpoint="<?= htmlspecialchars(app_action_url('action.pelanggaran', ['action' => 'search_mahasiswa']), ENT_QUOTES, 'UTF-8') ?>"
+                        data-csrf-token="<?= htmlspecialchars(app_csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
+                        <?= app_csrf_field() ?>
                         <input type="hidden" name="id_detail" value="<?= htmlspecialchars(app_id_token('detail_pelanggaran', (int) $id), ENT_QUOTES, 'UTF-8') ?>">
 
                         <div class="form-grid">
