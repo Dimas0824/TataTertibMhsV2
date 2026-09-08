@@ -1,7 +1,6 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-}
+require_once dirname(__DIR__, 2) . '/helpers/token_helper.php';
+app_session_start_if_needed();
 require_once dirname(__DIR__, 2) . '/config.php';
 
 require_once dirname(__DIR__, 2) . '/controllers/TatibController.php';
@@ -16,15 +15,13 @@ if (isset($_SESSION['username'])) {
     } else if ($_SESSION['user_type'] === 'dosen') {
         app_redirect_page('page.pelanggaran_dosen');
     }
+    if (($_SESSION['user_type'] ?? '') !== 'admin') {
+        app_redirect_page('page.home'); // deny-by-default
+    }
 } else {
     app_redirect_page('page.login');
 }
 
-if (isset($_GET['logout'])) {
-    $userController = new UserController();
-    $userController->logout();
-    exit();
-}
 
 // Ambil data user dari session
 $userData = $_SESSION['user_data'];
@@ -331,7 +328,7 @@ $tatibAdminTableConfig = [
                     action="<?= htmlspecialchars(app_action_url('action.tatib'), ENT_QUOTES, 'UTF-8') ?>">
                     <?= app_csrf_field() ?>
                     <label for="insertAdmin">Id Admin:</label>
-                    <input type="text" id="admin" name="admin" value="<?= $userData['id_admin'] ?>" required readonly>
+                    <input type="text" id="admin" name="admin" value="<?= htmlspecialchars((string) $userData['id_admin'], ENT_QUOTES, 'UTF-8') ?>" required readonly>
 
                     <label for="insertDeskripsi">Pelanggaran:</label>
                     <textarea id="insertDeskripsi" name="deskripsi" rows="4" required></textarea>

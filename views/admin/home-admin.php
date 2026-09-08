@@ -1,7 +1,6 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-}
+require_once dirname(__DIR__, 2) . '/helpers/token_helper.php';
+app_session_start_if_needed();
 
 require_once dirname(__DIR__, 2) . '/controllers/UserController.php';
 require_once dirname(__DIR__, 2) . '/controllers/NewsController.php';
@@ -14,16 +13,14 @@ if (isset($_SESSION['username'])) {
     } else if ($_SESSION['user_type'] === 'dosen') {
         app_redirect_page('page.pelanggaran_dosen');
     }
+    if (($_SESSION['user_type'] ?? '') !== 'admin') {
+        app_redirect_page('page.home'); // deny-by-default: role apa pun selain admin/known dipulang
+    }
 }
 if (!isset($_SESSION['username'])) {
     app_redirect_page('page.login');
 }
 
-if (isset($_GET['logout'])) {
-    $userController = new UserController();
-    $userController->logout();
-    exit();
-}
 $newsController = new NewsController();
 $newsData = $newsController->ReadNews();
 

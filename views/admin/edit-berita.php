@@ -1,13 +1,26 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-}
+require_once dirname(__DIR__, 2) . '/helpers/token_helper.php';
+app_session_start_if_needed();
 require_once dirname(__DIR__, 2) . '/config.php';
 require_once dirname(__DIR__, 2) . '/controllers/NewsController.php';
 require_once dirname(__DIR__, 2) . '/controllers/UserController.php';
 require_once dirname(__DIR__) . '/partials/app-shell.php';
 require_once dirname(__DIR__) . '/components/modals/admin-confirm-modal.php';
 require_once dirname(__DIR__, 2) . '/helpers/flash_modal.php';
+
+// Strict role gate BEFORE any data access (deny-by-default, fail toward login).
+if (($_SESSION['user_type'] ?? '') !== 'admin') {
+    if (!isset($_SESSION['username'])) {
+        app_redirect_page('page.login');
+    }
+    if (($_SESSION['user_type'] ?? '') === 'mahasiswa') {
+        app_redirect_page('page.pelanggaran');
+    }
+    if (($_SESSION['user_type'] ?? '') === 'dosen') {
+        app_redirect_page('page.pelanggaran_dosen');
+    }
+    app_redirect_page('page.home');
+}
 
 // Ambil ID berita dari route token
 $id = (int) app_route_data('id_news', 0);
@@ -20,21 +33,7 @@ if ($id > 0) {
     }
 
     // Ambil nama penulis
-    if (isset($_SESSION['username'])) {
-        if ($_SESSION['user_type'] === 'mahasiswa') {
-            app_redirect_page('page.pelanggaran');
-        } elseif ($_SESSION['user_type'] === 'dosen') {
-            app_redirect_page('page.pelanggaran_dosen');
-        }
-    } else {
-        app_redirect_page('page.login');
-    }
-
-    if (isset($_GET['logout'])) {
-        $userController = new UserController();
-        $userController->logout();
-        exit();
-    }
+    // (role gate sudah diterapkan di awal file)
 
     // Ambil data user dari session
     $userData = $_SESSION['user_data'] ?? null;
@@ -45,6 +44,7 @@ if ($id > 0) {
 
     // Jika form disubmit
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        app_verify_csrf();
         $judul = $_POST['judul'] ?? '';
         $konten = $_POST['konten'] ?? '';
         $gambar = $_FILES['gambar'] ?? null;
@@ -64,7 +64,7 @@ if ($id > 0) {
         // Proses unggah gambar baru
         if (isset($gambar) && $gambar['error'] === UPLOAD_ERR_OK) {
             $uploadDir = app_path('storage/uploads/news');
-            if (!is_dir($uploadDir) && !mkdir($uploadDir, 0777, true) && !is_dir($uploadDir)) {
+            if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
                 set_app_flash_modal('error', 'Direktori upload gambar tidak tersedia.');
                 app_redirect_page('page.admin_news');
             }
