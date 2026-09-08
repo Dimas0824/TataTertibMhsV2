@@ -371,6 +371,38 @@ if (!function_exists('app_id_resolve')) {
     }
 }
 
+if (!function_exists('app_file_token')) {
+    function app_file_token(string $fileName, int $ttl = 1800): string
+    {
+        $fileName = basename(trim($fileName));
+        if ($fileName === '') {
+            throw new InvalidArgumentException('File name is required.');
+        }
+
+        return app_token_issue('id', 'file', ['name' => $fileName], $ttl);
+    }
+}
+
+if (!function_exists('app_file_resolve')) {
+    function app_file_resolve(string $token): ?string
+    {
+        $payload = app_token_decode($token, 'id', 'file');
+        if (!is_array($payload)) {
+            return null;
+        }
+
+        $data = $payload['data'] ?? null;
+        if (!is_array($data) || !isset($data['name']) || !is_string($data['name'])) {
+            return null;
+        }
+
+        // Session-bound capability token (AEAD + sid hash + exp) proves the link was issued
+        // to THIS user's render; basename() again as belt-and-braces.
+        $fileName = basename(trim($data['name']));
+        return $fileName !== '' ? $fileName : null;
+    }
+}
+
 if (!function_exists('app_abort_forbidden')) {
     function app_abort_forbidden(): void
     {
