@@ -2,6 +2,10 @@
 
 Sistem informasi tata tertib mahasiswa — mengelola aturan, pelanggaran, notifikasi, dan berita kedisiplinan dalam satu platform terpusat.
 
+![CI](https://github.com/Dimas0824/TataTertibMhsV2/actions/workflows/ci.yml/badge.svg)
+![PHP](https://img.shields.io/badge/PHP-8.3-777bb3?logo=php&logoColor=white)
+![Security](https://img.shields.io/badge/security-audited%20%C2%B7%20regression%20tested-brightgreen)
+
 ---
 
 ## Quick Start

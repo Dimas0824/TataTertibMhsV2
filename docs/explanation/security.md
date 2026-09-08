@@ -183,31 +183,27 @@ error_log($e->getMessage()); // "PDOException: SQLSTATE[42S02]..."
 
 ---
 
-## Yang Tidak Dilindungi (Known Limitations)
+## Batasan yang Tersisa (ponytail: sadar, terdokumentasi, ada jalur upgrade)
 
-### Download File Authorization
+### Download File Authorization — ✅ diselesaikan 2026-09
 
-Saat ini, file download (`handler-download.php`) hanya mengecek user sudah login, bukan ownership. User login bisa download file jika tahu namafilenya.
+Parameter `?file=` dulunya plain filename (siapa pun yang tahu nama file bisa unduh). Sekarang nama file adalah **capability token terenkripsi dan terikat sesi** (`app_file_token`, AEAD + hash `session_id` + kadaluarsa). Replay lintas sesi secara kriptografis mustahil; nama mentah ditolak di level router dengan 403. Regression test: `tests/security/HttpMatrixSuite.php` (upload→download→cross-session replay).
 
-**Severity:** Medium — file upload berisi dokumen sensitif mahasiswa.
+### Rate limiting login bersifat per-sesi
 
-**Jika ini concern untuk deployment:** Tambahkan ownership check di handler download.
+Login kini punya **5 percobaan gagal → lockout 15 menit** (per sesi; otomatis mati bersama idle-expiry) plus dummy-verify agar timing "user tidak ada" identik dengan "password salah". Yang masih terbuka: attacker dengan sesi baru mendapat budget baru — untuk exposure internet publik, upgrade ke store berbasis IP.
+
+### CSP memakai `'unsafe-inline'`
+
+Header CSP aktif (frame-ancestors 'none', object-src 'none', form-action 'self', dll), namun inline script view masih dibutuhkan → `'unsafe-inline'` sementara. Jalur upgrade: nonce per-request lalu hapus unsafe-inline.
 
 ### Multiple Tab Session
 
 CSRF token di-generate per session, bukan per request. Ini berarti:
 - User bisa buka multiple tabs dengan satu token
-- Jika satu tab invalidasi token, tabs lain tetap jalan
+- Token dirotasi saat login (privilege change)
 
 Ini acceptable untuk use case kampus dengan user single-browser.
-
-### No Rate Limiting
-
-Tidak ada rate limiting pada endpoint login atau action. Serangan brute-force pada login dimitigasi oleh:
-- Cost factor bcrypt di password hashing
-- Max login attempts dari database constraint
-
-Untuk deployment dengan exposure tinggi, tambahkan rate limiting middleware.
 
 ---
 
