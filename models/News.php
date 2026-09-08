@@ -41,7 +41,7 @@ class News
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             // Log or display the error
-            echo "Error: " . $e->getMessage();
+            error_log('News DB Error: ' . $e->getMessage());
             return null;
         }
     }
@@ -58,7 +58,7 @@ class News
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
+            error_log('News DB Error: ' . $e->getMessage());
             return false;
         }
     }

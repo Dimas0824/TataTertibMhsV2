@@ -113,7 +113,7 @@ class NewsController
             }
 
             $uploadDir = app_path('storage/uploads/news');
-            if (!is_dir($uploadDir) && !mkdir($uploadDir, 0777, true) && !is_dir($uploadDir)) {
+            if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
                 throw new Exception("Direktori upload gambar tidak tersedia.");
             }
 
@@ -155,7 +155,8 @@ class NewsController
 
             return ['status' => 'success', 'message' => 'Berita berhasil disimpan.'];
         } catch (Throwable $e) {
-            return ['status' => 'error', 'message' => $e->getMessage()];
+            error_log('NewsController error: ' . $e->getMessage());
+            return ['status' => 'error', 'message' => 'Terjadi kesalahan pada server.'];
         }
     }
 
@@ -195,7 +196,8 @@ class NewsController
 
             return ['status' => 'success', 'message' => 'Berita berhasil diperbarui.'];
         } catch (Throwable $e) {
-            return ['status' => 'error', 'message' => $e->getMessage()];
+            error_log('NewsController error: ' . $e->getMessage());
+            return ['status' => 'error', 'message' => 'Terjadi kesalahan pada server.'];
         }
     }
 
@@ -210,8 +212,8 @@ class NewsController
         $clean = strip_tags($html, $allowedTags);
 
         $clean = (string) preg_replace('/<\/?(h1|h2|h4|h5|h6)>/i', '', $clean);
-        $clean = (string) preg_replace('/\s+on[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $clean);
-        $clean = (string) preg_replace('/\sstyle\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $clean);
+        $clean = (string) preg_replace('/[\s\/]on[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $clean);
+        $clean = (string) preg_replace('/[\s\/]style\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $clean);
         $clean = (string) preg_replace_callback('/\sclass\s*=\s*("([^"]*)"|\'([^\']*)\')/i', static function (array $matches): string {
             $rawClasses = trim((string) (($matches[2] ?? '') !== '' ? $matches[2] : ($matches[3] ?? '')));
             if ($rawClasses === '') {
@@ -266,7 +268,8 @@ class NewsController
 
             return ['status' => 'success', 'message' => 'Berita berhasil dihapus.'];
         } catch (Throwable $e) {
-            return ['status' => 'error', 'message' => $e->getMessage()];
+            error_log('NewsController error: ' . $e->getMessage());
+            return ['status' => 'error', 'message' => 'Terjadi kesalahan pada server.'];
         }
     }
 }

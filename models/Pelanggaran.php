@@ -202,8 +202,10 @@ class Pelanggaran
         }
 
         $safeLimit = max(1, min($limit, 25));
-        $containsPattern = '%' . $normalizedKeyword . '%';
-        $prefixPattern = $normalizedKeyword . '%';
+        // escape LIKE wildcards so a search for '%'/'_' does not match everything
+        $escapedKeyword = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $normalizedKeyword);
+        $containsPattern = '%' . $escapedKeyword . '%';
+        $prefixPattern = $escapedKeyword . '%';
 
         $query = "SELECT
                     m.nim,
@@ -385,7 +387,7 @@ class Pelanggaran
             error_log('Error in simpanDetailPelanggaran: ' . $e->getMessage());
             return [
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Gagal menyimpan data pelanggaran.',
             ];
         }
     }
@@ -506,7 +508,7 @@ class Pelanggaran
             error_log('Error in updateDetailPelanggaran: ' . $e->getMessage());
             return [
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Gagal mengupdate data pelanggaran.',
             ];
         }
     }
