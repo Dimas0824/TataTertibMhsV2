@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../helpers/path_helper.php';
 require_once __DIR__ . '/../helpers/route_helper.php';
+require_once __DIR__ . '/../helpers/token_helper.php';
 
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    if (session_status() !== PHP_SESSION_ACTIVE) {
-        session_start();
-    }
-}
+app_session_start_if_needed();
 
 if (!isset($_SESSION['username'])) {
     http_response_code(401);
