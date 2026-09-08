@@ -15,3 +15,7 @@ tests/playwright-report/
 # Keep storage tracked, but exclude sensitive runtime keys.
 storage/keys/app.key
 storage/keys/app_token.key
+
+# Agent / tool scratch directories
+.omo/
+.codegraph/
