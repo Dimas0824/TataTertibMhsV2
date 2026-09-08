@@ -56,6 +56,16 @@ Lihat **[docs/README.md](docs/README.md)** untuk navigasi lengkap.
 
 ---
 
+## Catatan Keamanan (Deploy)
+
+- `php artisan db:seed` otomatis mem-hash password plaintext di seed → bcrypt (cost 12). Login **hanya** menerima hash bcrypt; untuk import `.sql` lama secara manual, jalankan `php database/cli/hash-plaintext-passwords.php` sekali.
+- Deploy di docroot: `.htaccess` menolak `.env`, `storage/keys/`, `*.key/*.sql/*.md/dotfile`, directory app (`controllers/`, `models/`, `helpers/`, `database/`, `docs/`, `tests/`), dan `php -l` friendly pass-through. `router.php` menerapkan guard yang sama untuk `php artisan serve`.
+- PHP `php.ini` produksi: `expose_php = Off`, `display_errors = Off` (app sudah set fail-closed; `APP_DEBUG=true` di `.env` hanya untuk dev lokal).
+- Semua request dinamis lewat `router.php` (session cookie HttpOnly/SameSite=Lax/Secure-on-HTTPS, 30-min idle expiry, security headers CSP/XFO/nosniff).
+- Laporan audit & status hardening: `docs/intern/PENTEST-REPORT-2026-09-08.md`.
+
+---
+
 ## Sumber
 
 Refactor dari: [TataTertibMhs (VarizkyNaldiba)](https://github.com/VarizkyNaldiba)
