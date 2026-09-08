@@ -1,5 +1,6 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+require_once dirname(__DIR__) . '/helpers/token_helper.php';
+app_session_start_if_needed();
 require_once __DIR__ . '/../helpers/path_helper.php';
 require_once __DIR__ . '/../helpers/route_helper.php';
 require_once __DIR__ . '/../helpers/token_helper.php';
@@ -105,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $routeAction === 'confirm_selesai')
       set_app_flash_modal(($result['success'] ?? false) ? 'success' : 'error', $result['message'] ?? 'Konfirmasi laporan selesai diproses.');
    } catch (Throwable $e) {
       error_log('Pelanggaran Confirm Error: ' . $e->getMessage());
-      set_app_flash_modal('error', $e->getMessage());
+      set_app_flash_modal('error', ($e instanceof RuntimeException && !($e instanceof PDOException)) ? $e->getMessage() : 'Terjadi kesalahan. Silakan coba lagi.');
    }
 
    app_redirect('views/pelanggaran/pelanggaran-dosen.php');
@@ -134,13 +135,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $routeAction === 'delete') {
       set_app_flash_modal(($result['success'] ?? false) ? 'success' : 'error', $result['message'] ?? 'Penghapusan laporan diproses.');
    } catch (Throwable $e) {
       error_log('Pelanggaran Delete Error: ' . $e->getMessage());
-      set_app_flash_modal('error', $e->getMessage());
+      set_app_flash_modal('error', ($e instanceof RuntimeException && !($e instanceof PDOException)) ? $e->getMessage() : 'Terjadi kesalahan. Silakan coba lagi.');
    }
 
    app_redirect('views/pelanggaran/pelanggaran-dosen.php');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+   app_verify_csrf();
    try {
       if (!isset($_SESSION['username'])) {
          throw new RuntimeException('Unauthorized.');
@@ -259,7 +261,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
    } catch (Throwable $e) {
       error_log('Pelanggaran Save/Update Error: ' . $e->getMessage());
-      set_app_flash_modal('error', $e->getMessage());
+      set_app_flash_modal('error', ($e instanceof RuntimeException && !($e instanceof PDOException)) ? $e->getMessage() : 'Terjadi kesalahan. Silakan coba lagi.');
    }
 }
 

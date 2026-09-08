@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+require_once dirname(__DIR__) . '/helpers/token_helper.php';
+app_session_start_if_needed();
+
 header('Content-Type: application/json; charset=UTF-8');
 
 require_once dirname(__DIR__) . '/controllers/PelanggaranController.php';
