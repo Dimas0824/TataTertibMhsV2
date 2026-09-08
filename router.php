@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+// Fail-closed defaults before any code can throw; config.php may re-enable display via APP_DEBUG.
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+error_reporting(E_ALL);
+
 $rootPath = __DIR__;
 $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
 $requestPath = parse_url((string) $requestUri, PHP_URL_PATH);
@@ -11,7 +16,10 @@ $requestPath = $requestPath !== '' ? $requestPath : '/';
 
 $scriptName = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? ''));
 $basePath = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
-if ($basePath === '/' || $basePath === '.') {
+
+// Skip on cli-server: `php -S host:port router.php` sets SCRIPT_NAME to the REQUESTED
+// path (verified), so dirname() there would wrongly strip a real path prefix ("/css").
+if ($basePath === '/' || $basePath === '.' || PHP_SAPI === 'cli-server') {
     $basePath = '';
 }
 
@@ -89,7 +97,32 @@ if (preg_match('#^/(views|request)(/|$)#i', $requestPath) === 1) {
     return true;
 }
 
-if (PHP_SAPI === 'cli-server' && is_file($targetPath)) {
+// Mirror of the .htaccess deny rules: the PHP built-in server ignores .htaccess,
+// so dev (`php artisan serve`) must block the same sensitive paths fail-closed.
+$isSensitiveStatic = static function (string $path): bool {
+    $normalized = strtolower(str_replace('\\', '/', $path));
+    if (preg_match('#^/storage/uploads/news/#', $normalized) === 1) {
+        return false; // news images are referenced by published <img> tags
+    }
+    if (preg_match('#(^|/)\.(?!well-known(/|$))#', $normalized) === 1) {
+        return true; // dotfiles: .env, .git, ...
+    }
+    if (preg_match('#\.(env|key|pem|crt|p12|sql|log|ini|bak|old|save|swp|dist|lock|zip|tar|tgz|gz|bz2|7z|rar|sh|bash|ps1|bat|cmd|py|pl|rb|md)$#', $normalized) === 1) {
+        return true;
+    }
+    if (in_array($normalized, ['/config.php', '/artisan'], true)) {
+        return true;
+    }
+    return preg_match('#^/(controllers|models|helpers|database|docs|document|tests|storage)(/|$)#', $normalized) === 1;
+};
+
+if ($isSensitiveStatic($requestPath)) {
+    $renderPageError(403);
+    return true;
+}
+
+// ponytail: /index.php must run through this router (hardened session start + headers), never as a static passthrough.
+if (PHP_SAPI === 'cli-server' && $requestPath !== '/index.php' && is_file($targetPath)) {
     return false;
 }
 
