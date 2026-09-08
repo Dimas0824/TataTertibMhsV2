@@ -1,7 +1,6 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-}
+require_once dirname(__DIR__, 2) . '/helpers/token_helper.php';
+app_session_start_if_needed();
 
 require_once dirname(__DIR__, 2) . '/config.php';
 require_once dirname(__DIR__, 2) . '/controllers/NewsController.php';
@@ -64,8 +63,8 @@ $rawContent = (string) ($news['konten'] ?? '');
 $containsHtml = $rawContent !== strip_tags($rawContent);
 $allowedContentTags = '<div><p><br><strong><em><ul><ol><li><h3><blockquote>';
 $safeHtmlContent = strip_tags($rawContent, $allowedContentTags);
-$safeHtmlContent = (string) preg_replace('/\s+on[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $safeHtmlContent);
-$safeHtmlContent = (string) preg_replace('/\sstyle\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $safeHtmlContent);
+$safeHtmlContent = (string) preg_replace('/[\s\/]on[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $safeHtmlContent);
+$safeHtmlContent = (string) preg_replace('/[\s\/]style\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $safeHtmlContent);
 $safeHtmlContent = (string) preg_replace_callback('/\sclass\s*=\s*("([^"]*)"|\'([^\']*)\')/i', static function (array $matches): string {
     $rawClasses = trim((string) (($matches[2] ?? '') !== '' ? $matches[2] : ($matches[3] ?? '')));
     if ($rawClasses === '') {

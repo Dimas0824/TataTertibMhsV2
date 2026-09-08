@@ -1,7 +1,6 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-}
+require_once dirname(__DIR__) . '/helpers/token_helper.php';
+app_session_start_if_needed();
 require_once __DIR__ . '/../config.php'; // Sertakan file konfigurasi untuk mengakses koneksi database
 require_once __DIR__ . '/../helpers/token_helper.php';
 require_once __DIR__ . '/../helpers/path_helper.php';
@@ -31,7 +30,7 @@ $allowedMimes = [
 $allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'];
 
 if (!is_dir($uploadDir)) {
-    if (!mkdir($uploadDir, 0777, true) && !is_dir($uploadDir)) {
+    if (!mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
         respondJson(false, 'Direktori upload tidak tersedia.', 500);
     }
 }
@@ -112,11 +111,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        if ($detectedMime === '' && isset($file['type'])) {
-            $detectedMime = (string) $file['type'];
-        }
-
-        if (!in_array($detectedMime, $allowedMimes, true)) {
+        if ($detectedMime === '' || !in_array($detectedMime, $allowedMimes, true)) {
+            // fail closed: no fileinfo => no client-declared MIME is trusted (handler-news does the same)
             respondJson(false, 'Tipe file tidak diizinkan.', 422);
         }
 

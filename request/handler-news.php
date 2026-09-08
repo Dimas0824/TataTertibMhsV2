@@ -1,7 +1,6 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-}
+require_once dirname(__DIR__) . '/helpers/token_helper.php';
+app_session_start_if_needed();
 require_once __DIR__ . '/../helpers/path_helper.php';
 require_once __DIR__ . '/../helpers/route_helper.php';
 require_once __DIR__ . '/../helpers/token_helper.php';
@@ -75,7 +74,7 @@ try {
         $gambarPath = null;
         if (!empty($gambar['name']) && ($gambar['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK) {
             $uploadDir = app_path('storage/uploads/news');
-            if (!is_dir($uploadDir) && !mkdir($uploadDir, 0777, true) && !is_dir($uploadDir)) {
+            if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
                 throw new Exception("Direktori upload gambar tidak tersedia.");
             }
 
