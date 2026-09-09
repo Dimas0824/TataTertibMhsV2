@@ -170,6 +170,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $statusUpdateStmt->bindValue(':idDetail', $idDetail, PDO::PARAM_INT);
                 $statusUpdateStmt->execute();
 
+                app_audit_log('upload_ok', [
+                    'actor_type' => $role,
+                    'actor_id' => (string) ($_SESSION['username'] ?? ''),
+                    'detail' => 'detail=' . $idDetail . ' type=' . $fileType,
+                ]);
                 respondJson(true, 'File berhasil diunggah.');
             } else {
                 respondJson(false, 'Gagal menyimpan path file di database.', 500);

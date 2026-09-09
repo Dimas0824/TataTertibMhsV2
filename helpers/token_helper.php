@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/path_helper.php';
+require_once __DIR__ . '/audit_helper.php';
 
 if (!function_exists('app_session_start_if_needed')) {
     function app_session_start_if_needed(): void
@@ -25,6 +26,9 @@ if (!function_exists('app_require_login')) {
     {
         app_session_start_if_needed();
         if (!isset($_SESSION['username'], $_SESSION['user_type'])) {
+            if (function_exists('app_audit_log')) {
+                app_audit_log('authz_fail', ['detail' => 'unauthenticated ' . substr((string) ($_SERVER['REQUEST_URI'] ?? ''), 0, 180)]);
+            }
             http_response_code(401);
             exit('Unauthorized');
         }
@@ -36,6 +40,13 @@ if (!function_exists('app_require_role')) {
     {
         app_require_login();
         if (($_SESSION['user_type'] ?? '') !== $role) {
+            if (function_exists('app_audit_log')) {
+                app_audit_log('authz_fail', [
+                    'actor_type' => (string) ($_SESSION['user_type'] ?? ''),
+                    'actor_id' => (string) ($_SESSION['username'] ?? ''),
+                    'detail' => 'role != ' . $role . ' on ' . substr((string) ($_SERVER['REQUEST_URI'] ?? ''), 0, 160),
+                ]);
+            }
             http_response_code(403);
             exit('Forbidden');
         }
@@ -74,6 +85,13 @@ if (!function_exists('app_verify_csrf')) {
             }
         }
         if ($sessionToken === '' || $requestToken === '' || !hash_equals($sessionToken, $requestToken)) {
+            if (function_exists('app_audit_log')) {
+                app_audit_log('csrf_fail', [
+                    'actor_type' => (string) ($_SESSION['user_type'] ?? ''),
+                    'actor_id' => (string) ($_SESSION['username'] ?? ''),
+                    'detail' => substr((string) ($_SERVER['REQUEST_URI'] ?? ''), 0, 200),
+                ]);
+            }
             http_response_code(419);
             exit('Invalid CSRF token');
         }

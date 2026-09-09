@@ -35,6 +35,7 @@ require_once __DIR__ . '/helpers/token_helper.php';
 require_once __DIR__ . '/helpers/route_helper.php';
 require_once __DIR__ . '/helpers/seo_helper.php';
 require_once __DIR__ . '/helpers/error_page_helper.php';
+require_once __DIR__ . '/helpers/audit_helper.php';
 
 app_seo_enforce_canonical_host();
 app_seo_apply_security_headers();
@@ -159,6 +160,10 @@ $actionRouteName = app_route_find_by_path($requestPath, 'action');
 if (is_string($actionRouteName) && $actionRouteName !== '') {
     if (app_route_dispatch_by_name($actionRouteName, 'action', $queryData, true)) {
         return true;
+    }
+
+    if ($actionRouteName === 'action.file_download') {
+        app_audit_log('download_denied', ['detail' => 'token invalid/expired/foreign']);
     }
 
     http_response_code(403);

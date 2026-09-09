@@ -28,6 +28,7 @@ if (!function_exists('app_route_registry')) {
             'page.admin_news' => ['kind' => 'page', 'path' => '/admin/news', 'target' => 'views/admin/news-admin.php', 'methods' => ['GET']],
             'page.admin_news_tambah' => ['kind' => 'page', 'path' => '/admin/news/tambah', 'target' => 'views/admin/tambah-berita.php', 'methods' => ['GET']],
             'page.admin_news_edit' => ['kind' => 'page', 'path' => '/admin/news/edit', 'target' => 'views/admin/edit-berita.php', 'methods' => ['GET', 'POST']],
+            'page.admin_audit' => ['kind' => 'page', 'path' => '/admin/audit', 'target' => 'views/admin/audit-log.php', 'methods' => ['GET']],
 
             'action.login' => ['kind' => 'action', 'path' => '/action/login', 'target' => 'request/handler-login.php', 'methods' => ['POST']],
             'action.pelanggaran' => ['kind' => 'action', 'path' => '/action/pelanggaran', 'target' => 'request/handler-pelanggaran.php', 'methods' => ['GET', 'POST']],

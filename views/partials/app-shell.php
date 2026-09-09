@@ -27,6 +27,7 @@ if (!function_exists('get_app_nav_items')) {
             'notifikasi' => app_page_url('page.notifikasi'),
             'logout' => app_action_url('action.logout'),
             'news' => app_page_url('page.admin_news'),
+            'audit' => app_page_url('page.admin_audit'),
             'admin_home' => app_page_url('page.admin_home'),
             'admin_tatib' => app_page_url('page.admin_tatib'),
         ];
