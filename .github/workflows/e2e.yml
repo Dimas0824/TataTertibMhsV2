@@ -10,8 +10,6 @@ jobs:
   e2e:
     name: chromium user flows
     runs-on: ubuntu-latest
-    # Spec masih era pra-hardening; flip ke blocking setelah disinkronkan (pekerjaan #5 follow-up).
-    continue-on-error: true
     timeout-minutes: 20
     services:
       mysql:
