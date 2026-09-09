@@ -17,6 +17,10 @@ $testFiles = [
     __DIR__ . '/unit/HelpersTest.php',
     __DIR__ . '/unit/ModelsTest.php',
     __DIR__ . '/integration/DatabaseTest.php',
+    __DIR__ . '/security/SourceScanSuite.php',
+    __DIR__ . '/security/TokenSuite.php',
+    // HTTP matrix boots its own `php -S` harness; longest-running, last:
+    __DIR__ . '/security/HttpMatrixSuite.php',
 ];
 
 foreach ($testFiles as $testFile) {

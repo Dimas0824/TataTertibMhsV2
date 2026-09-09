@@ -34,10 +34,18 @@ class MigrationService
         $pending = [];
 
         foreach ($files as $name => $fullPath) {
-            $checksum = hash_file('sha256', $fullPath);
+            $checksum = $this->migrationChecksum($fullPath);
 
             if (isset($applied[$name])) {
                 if ($applied[$name] !== $checksum) {
+                    // Self-heal autocrlf-era ledgers: a record made from CRLF bytes must still
+                    // match once checkouts are LF (and vice versa). Real content edits still drift.
+                    $variants = $this->migrationChecksumVariants($fullPath);
+                    if (in_array($applied[$name], $variants, true) && $applied[$name] !== $checksum) {
+                        $this->updateMigrationChecksum($name, $checksum);
+                        echo "[migrate] Checksum dinormalisasi (EOL) untuk {$name}" . PHP_EOL;
+                        continue;
+                    }
                     throw new RuntimeException("Drift terdeteksi pada migrasi '{$name}'. Checksum file berubah setelah pernah dijalankan.");
                 }
                 continue;
@@ -64,6 +72,41 @@ class MigrationService
 
         echo "[migrate] Selesai. Batch {$batch}, total " . count($pending) . " migrasi." . PHP_EOL;
         return 0;
+    }
+
+    /**
+     * Canonical checksum: content with LF endings (matches CI/Lint checkouts & .gitattributes).
+     */
+    private function migrationChecksum($fullPath)
+    {
+        return $this->migrationHashWithEol($fullPath, "\n");
+    }
+
+    private function migrationChecksumVariants($fullPath)
+    {
+        return [
+            $this->migrationHashWithEol($fullPath, "\n"),
+            (string) hash_file('sha256', $fullPath),
+            $this->migrationHashWithEol($fullPath, "\r\n"),
+        ];
+    }
+
+    private function migrationHashWithEol($fullPath, $eol)
+    {
+        $content = (string) file_get_contents($fullPath);
+        $normalized = str_replace(array("\r\n", "\r"), "\n", $content);
+        if ($eol === "\r\n") {
+            $normalized = str_replace("\n", "\r\n", $normalized);
+        }
+        return hash('sha256', $normalized);
+    }
+
+    private function updateMigrationChecksum($migration, $checksum)
+    {
+        $stmt = $this->pdo->prepare('UPDATE schema_migrations SET checksum = :checksum WHERE migration = :migration');
+        $stmt->bindValue(':checksum', $checksum);
+        $stmt->bindValue(':migration', $migration);
+        $stmt->execute();
     }
 
     private function guardProduction($force, $commandName)
