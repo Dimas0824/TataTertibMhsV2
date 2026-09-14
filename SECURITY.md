@@ -1,6 +1,11 @@
 # Security Policy
 
-DiscipLink V2 adalah proyek portofolio non-komersial yang dikembangkan secara aktif.
+DiscipLink V2 adalah proyek portofolio non-komersial yang dikembangkan secara aktif — dan
+sebagian sebagai sarana belajar. Dokumen ini menjelaskan posture keamanan, cara melaporkan
+temuan, dan cara berkontribusi.
+
+> *DiscipLink V2 is a non-commercial portfolio/learning project. This document describes its
+> security posture, how to report findings, and how to contribute.*
 
 ## Supported Versions
 
@@ -9,22 +14,58 @@ DiscipLink V2 adalah proyek portofolio non-komersial yang dikembangkan secara ak
 | `main` / aktif  | ✅ |
 | lama dari itu   | ❌                 |
 
-## Melaporkan Kerentanan
+## Posture Keamanan (Klaim yang Jujur)
 
-Jangan buka issue publik untuk masalah keamanan.
+Aplikasi ini telah melalui **hardening** dan **beberapa gelombang pengujian keamanan**:
 
-- Email / DM GitHub: **@Dimas0824**
-- Subjek: `[security] <ringkasan>`
-- Sertakan: langkah reproduksi, versi PHP/DB, dan dampaknya.
+- **Hardening (2026-09)** — bcrypt + throttle login (5 gagal/15 menit) + dummy-verify anti
+  timing-leak, session regeneration saat privilege change, capability token terenkripsi terikat
+  sesi untuk ID & file (anti-IDOR), CSRF pada semua state-changing request, security headers
+  (CSP/XFO/nosniff/Referrer-Policy), error fail-closed, output-encoding & sanitizer.
+- **Audit code-level (2026-09-08)** — auth/session, injection, file handling, XSS, server config
+  (lihat `docs/intern/PENTEST-REPORT-2026-09-08.md`).
+- **Pentest otomatis dengan agen AI Strix (2026-09-14)** — dua fase (lihat `docs/intern/pentest-strix/`):
+  - **Quick (blackbox)**: enumerasi endpoint, header analysis, SQLi (error/boolean/timing),
+    reflected XSS, open-redirect, CSRF, auth gating.
+  - **Deep (authenticated, 3 role mahasiswa/dosen/admin)**: broken access control & IDOR /
+    privilege escalation, object-level authorization pada endpoint ber-token, stored XSS,
+    CSRF pada semua POST ber-state, upload handling — fokus OWASP Top 10:2021 A01.
 
-Respon awal target ≤ 72 jam. Fix akan didahului test regression di `tests/security/`
-(yang me-replay payload pelaporan sebagai bukti hole tertutup permanen).
+**Hasil:** dari pentest tersebut, **tidak ditemukan vulnerability yang dapat dieksploitasi**.
+Kontrol otorisasi server-side terbukti kuat (0 vulnerability pada fase deep).
+
+### Disclaimer
+
+> **Klaim di atas TIDAK berarti web ini 100% aman di production.**
+> Pengujian tidak pernah exhaustive — bisa ada jalur, endpoint, atau kondisi yang belum tercakup.
+> Proyek ini dikembangkan sebagai sarana **belajar**; pengembangnya terus belajar dan memperbaiki.
+> *A clean pentest result is not a guarantee of absolute security — it reflects the methods and
+> scope tested. This is a learning project under active improvement.*
+
+## Melaporkan Kerentanan / Bug
+
+Kami menyambut laporan dari siapa pun — auditor, pengguna, atau kontributor.
+
+**Untuk temuan keamanan maupun bug fungsional, kamu boleh membuka:**
+
+- **GitHub Issue** — label `security` (kerentanan) atau `bug` (fungsional). Sertakan:
+  langkah reproduksi, versi PHP/DB, endpoint/parameter, dan dampak yang teramati.
+- **Pull Request** — kalau kamu sudah punya perbaikan. Untuk temuan keamanan yang sensitif
+  (belum ada fix), mohon koordinasikan lewat issue/DM dulu agar tidak mengekspos celah sebelum
+  diperbaiki.
+
+**Kontak privat (opsional, untuk isu sensitif):** Email / DM GitHub **@Dimas0824**, subjek
+`[security] <ringkasan>`.
+
+Respon awal target ≤ 72 jam. Perbaikan keamanan didahului **test regression** di `tests/security/`
+(yang me-replay payload pelaporan sebagai bukti celah tertutup permanen), lalu lolos CI.
 
 ## Space yang Sudah Diaudit
 
-Audit code-level dilakukan pada 2026-09-08 (auth/session/CSRF, injection & file
-handling, XSS, server config; lihat `docs/intern/` untuk detail internal). Temuan
-berlabel medium/ke atas ditutup + distabilkan lewat regression suite dan CI.
+Audit code-level 2026-09-08 + pentest otomatis 2026-09-14; detail internal di `docs/intern/`.
+Temuan berlabel medium/ke atas ditutup dan distabilkan lewat regression suite + CI.
+Temuan fungsional terbuka (mis. `/action/upload` 500) didokumentasikan di
+`docs/intern/UPLOAD-500-INVESTIGATION.md`.
 
 ## Hardening Default yang Perlu Diketahui Auditor Baru
 

@@ -3,8 +3,11 @@
 Sistem informasi tata tertib mahasiswa — mengelola aturan, pelanggaran, notifikasi, dan berita kedisiplinan dalam satu platform terpusat.
 
 ![CI](https://github.com/Dimas0824/TataTertibMhsV2/actions/workflows/ci.yml/badge.svg)
+![E2E](https://github.com/Dimas0824/TataTertibMhsV2/actions/workflows/e2e.yml/badge.svg)
 ![PHP](https://img.shields.io/badge/PHP-8.3-777bb3?logo=php&logoColor=white)
 ![Security](https://img.shields.io/badge/security-audited%20%C2%B7%20regression%20tested-brightgreen)
+![Tests](https://img.shields.io/badge/e2e-21%2F21%20chromium-brightgreen)
+![License](https://img.shields.io/badge/license-MIT-blue)
 
 ---
 
@@ -26,7 +29,7 @@ Buka [http://127.0.0.1:8000](http://127.0.0.1:8000)
 ## Akun Contoh
 
 | Role | Username | Password |
-|------|----------|---------|
+| ------ | ---------- | --------- |
 | Mahasiswa | `2341238901` | `password123` |
 | Dosen | `1234567890` | `password123` |
 | Admin | `ADMIN001` | `admin123` |
@@ -36,7 +39,7 @@ Buka [http://127.0.0.1:8000](http://127.0.0.1:8000)
 ## Fitur per Role
 
 | Role | Akses |
-|------|-------|
+| ------ | ------- |
 | **Mahasiswa** | Dashboard pelanggaran, poin, upload dokumen (surat/tugas), notifikasi |
 | **Dosen** | Pelaporan pelanggaran, rekap & konfirmasi laporan mahasiswa |
 | **Admin** | CRUD tata tertib, CRUD berita, manajemen konten |
@@ -45,18 +48,67 @@ Buka [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 ## Dokumentasi
 
-Lihat **[docs/README.md](docs/README.md)** untuk navigasi lengkap.
+Lihat **[docs/README.md](docs/README.md)** untuk navigasi lengkap (Diataxis: tutorial, how-to, reference, explanation).
+
+- **Keamanan & hasil audit/pentest:** [docs/intern/](docs/intern/pentest-strix/README.md)
+- **Kebijakan keamanan & pelaporan kerentanan:** [SECURITY.md](SECURITY.md)
+- **Panduan kontribusi:** [CONTRIBUTING.md](CONTRIBUTING.md)
+- **Bug tracking (historis):** [docs/intern/BUG_REPORT.md](docs/intern/BUG_REPORT.md)
 
 ---
 
 ## Ringkasan Teknis
 
 | | |
-|---|---|
+| --- | --- |
 | **Stack** | PHP native · PDO · MySQL |
 | **Arsitektur** | MVC + Request Handler + Central Router |
 | **Auth** | Role-based (Mahasiswa, Dosen, Admin) |
 | **CLI** | Custom `artisan` untuk migrate/seed/serve |
+| **Testing** | Unit + Integration + Security regression + E2E (Playwright) |
+
+---
+
+## Security Testing
+
+Proyek ini menjalani dua lapis pengujian keamanan:
+
+**1. Regression suite (otomatis, in-repo)** — `tests/security/**`
+Red-team yang me-replay payload dari pentest code-level dan memastikan setiap celah tetap tertutup:
+
+| Suite | Fokus |
+| ------- | ------- |
+| `TokenSuite` | Capability token (file/ID): tamper → fail-closed, entity-scoped, CSRF 64-hex |
+| `SourceScanSuite` | Guardrail statis: error disclosure, bare `session_start`, `0777`, dynamic-exec, deny rules |
+| `HttpMatrixSuite` | Blackbox vs `php -S`: deny matrix, headers, CSRF, IDOR, upload, brute-force, XSS pipeline |
+
+```bash
+php tests/run.php          # unit + integration + security (butuh DB; ~3-6 mnt)
+```
+
+**2. Pentest (audit terarah)** — lihat [`docs/intern/PENTEST-REPORT-2026-09-08.md`](docs/intern/PENTEST-REPORT-2026-09-08.md)
+Audit code-level yang memetakan & menutup temuan (auth/session, injection, file handling, XSS, server config).
+
+**3. Pentest otomatis dengan agen AI (Strix)** — lihat [`docs/intern/pentest-strix/`](docs/intern/pentest-strix/)
+Dijalankan dalam dua fase: **quick** (blackbox, menemukan robots.txt MEDIUM) dan **deep**
+(authenticated 3 role — 0 vulnerability terkonfirmasi, otorisasi server-side terbukti kuat).
+
+**Kontrol yang aktif (terverifikasi):** bcrypt + throttle login (5 gagal/15 mnt) + dummy-verify anti
+timing-leak · session regeneration saat privilege change · file/ID token terenkripsi terikat sesi (IDOR) ·
+CSRF pada semua state-changing request (419 tanpa token) · CSP + `X-Frame-Options: DENY` + `nosniff` +
+`Referrer-Policy` · error fail-closed · JSON embed hex-escaped (anti `</script>` breakout).
+
+**Hasil & klaim (jujur):** setelah hardening dan pentest di atas (termasuk fase **deep authenticated
+3 role** dengan uji IDOR / privilege escalation / XSS / SQLi / CSRF), **tidak ditemukan vulnerability
+yang dapat dieksploitasi**. Kontrol otorisasi server-side terbukti kuat.
+
+> ⚠️ **Disclaimer:** hasil pentest yang bersih **bukan** jaminan aplikasi 100% aman di production.
+> Pengujian tidak pernah exhaustive dan proyek ini adalah sarana **belajar** yang terus diperbaiki.
+> *A clean pentest is not a guarantee of absolute security.*
+
+**Menemukan bug atau kerentanan?** Kami menyambut kontribusi — buka **GitHub Issue** (label
+`security`/`bug`) atau kirim **Pull Request**. Lihat [CONTRIBUTING.md](CONTRIBUTING.md) dan
+[SECURITY.md](SECURITY.md).
 
 ---
 
@@ -79,4 +131,4 @@ UI/UX Design: [Figma](https://www.figma.com/design/yRxgSGu5uvuoKQznRxPCNg/UI%2FU
 
 ## Lisensi
 
-MIT
+[MIT](LICENSE) © 2026 Dimas0824
