@@ -19,6 +19,8 @@ $testFiles = [
     __DIR__ . '/integration/DatabaseTest.php',
     __DIR__ . '/security/SourceScanSuite.php',
     __DIR__ . '/security/TokenSuite.php',
+    // Upload ownership suite uses the HTTP harness too:
+    __DIR__ . '/security/UploadOwnershipSuite.php',
     // HTTP matrix boots its own `php -S` harness; longest-running, last:
     __DIR__ . '/security/HttpMatrixSuite.php',
 ];
