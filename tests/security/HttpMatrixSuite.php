@@ -436,7 +436,7 @@ $runner->addTest('http: admin-created stored XSS payload is neutralized at rest 
 
     // `news` has no `slug` column — the slug is derived on the fly from judul + id_news
     // (see NewsController::news_build_slug). Read the stored columns only.
-    $row = $connect->prepare('SELECT id_news, konten, judul FROM news WHERE judul = ? LIMIT 1');
+    $row = $connect->prepare('SELECT id_news, konten, judul FROM NEWS WHERE judul = ? LIMIT 1');
     $row->execute([$judul]);
     $saved = $row->fetch(PDO::FETCH_ASSOC);
     try {
@@ -464,7 +464,7 @@ $runner->addTest('http: admin-created stored XSS payload is neutralized at rest 
         }
     } finally {
         if (is_array($saved)) {
-            $del = $connect->prepare('DELETE FROM news WHERE judul = ?');
+            $del = $connect->prepare('DELETE FROM NEWS WHERE judul = ?');
             $del->execute([$judul]);
         }
     }

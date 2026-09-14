@@ -69,7 +69,7 @@ $runner->addTest('news: store + read + update + delete round-trip (cleanup guara
         $store = $ctrl->store('', $marker, '<p>konten uji</p>', $idAdmin);
         assertEquals('success', $store['status'] ?? null, 'store must succeed: ' . ($store['message'] ?? ''));
 
-        $row = $c->prepare('SELECT id_news FROM news WHERE judul = ? LIMIT 1');
+        $row = $c->prepare('SELECT id_news FROM NEWS WHERE judul = ? LIMIT 1');
         $row->execute([$marker]);
         $createdId = (int) $row->fetchColumn();
         assertTrue($createdId > 0, 'row must exist');
@@ -92,10 +92,10 @@ $runner->addTest('news: store + read + update + delete round-trip (cleanup guara
         $createdId = 0; // deleted already
     } finally {
         if ($createdId > 0) {
-            $c->prepare('DELETE FROM news WHERE id_news = ?')->execute([$createdId]);
+            $c->prepare('DELETE FROM NEWS WHERE id_news = ?')->execute([$createdId]);
         }
-        $c->prepare('DELETE FROM news WHERE judul = ?')->execute([$marker]);
-        $c->prepare('DELETE FROM news WHERE judul = ?')->execute([$marker . '-u']);
+        $c->prepare('DELETE FROM NEWS WHERE judul = ?')->execute([$marker]);
+        $c->prepare('DELETE FROM NEWS WHERE judul = ?')->execute([$marker . '-u']);
     }
 });
 
@@ -131,7 +131,7 @@ $runner->addTest('news: store sanitizes dangerous HTML in content', function () 
     try {
         $store = $ctrl->store('', $marker, $payload, $idAdmin);
         assertEquals('success', $store['status'] ?? null, 'store must succeed');
-        $row = $c->prepare('SELECT id_news, konten FROM news WHERE judul = ? LIMIT 1');
+        $row = $c->prepare('SELECT id_news, konten FROM NEWS WHERE judul = ? LIMIT 1');
         $row->execute([$marker]);
         $saved = $row->fetch(PDO::FETCH_ASSOC);
         $createdId = (int) ($saved['id_news'] ?? 0);
@@ -142,8 +142,8 @@ $runner->addTest('news: store sanitizes dangerous HTML in content', function () 
         }
     } finally {
         if ($createdId > 0) {
-            $c->prepare('DELETE FROM news WHERE id_news = ?')->execute([$createdId]);
+            $c->prepare('DELETE FROM NEWS WHERE id_news = ?')->execute([$createdId]);
         }
-        $c->prepare('DELETE FROM news WHERE judul = ?')->execute([$marker]);
+        $c->prepare('DELETE FROM NEWS WHERE judul = ?')->execute([$marker]);
     }
 });

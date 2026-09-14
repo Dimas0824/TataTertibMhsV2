@@ -73,7 +73,7 @@ $runner->addTest('news-handler: store missing fields -> redirect error, no row',
         return;
     }
 
-    $before = (int) $c->query('SELECT COUNT(*) FROM news')->fetchColumn();
+    $before = (int) $c->query('SELECT COUNT(*) FROM NEWS')->fetchColumn();
     $r = SecurityClient::request('POST', '/action/news', ['jar' => $jar, 'form' => [
         'csrf_token' => $csrf,
         'store' => '1',
@@ -82,7 +82,7 @@ $runner->addTest('news-handler: store missing fields -> redirect error, no row',
         'konten' => '',
     ]]);
     assertEquals(302, $r['status'], 'empty fields -> redirect');
-    $after = (int) $c->query('SELECT COUNT(*) FROM news')->fetchColumn();
+    $after = (int) $c->query('SELECT COUNT(*) FROM NEWS')->fetchColumn();
     assertEquals($before, $after, 'no row must be created on invalid input');
 });
 
@@ -102,7 +102,7 @@ $runner->addTest('news-handler: store non-numeric penulis -> redirect error, no 
         echo "\n       (skipped: no csrf)";
         return;
     }
-    $before = (int) $c->query('SELECT COUNT(*) FROM news')->fetchColumn();
+    $before = (int) $c->query('SELECT COUNT(*) FROM NEWS')->fetchColumn();
     $r = SecurityClient::request('POST', '/action/news', ['jar' => $jar, 'form' => [
         'csrf_token' => $csrf,
         'store' => '1',
@@ -111,7 +111,7 @@ $runner->addTest('news-handler: store non-numeric penulis -> redirect error, no 
         'konten' => '<p>x</p>',
     ]]);
     assertEquals(302, $r['status']);
-    $after = (int) $c->query('SELECT COUNT(*) FROM news')->fetchColumn();
+    $after = (int) $c->query('SELECT COUNT(*) FROM NEWS')->fetchColumn();
     assertEquals($before, $after, 'non-numeric penulis must not create a row');
 });
 
@@ -148,15 +148,15 @@ $runner->addTest('news-handler: store valid creates a row (cleaned up)', functio
             'konten' => '<p>isi</p>',
         ]]);
         assertEquals(302, $r['status'], 'valid store redirects');
-        $row = $c->prepare('SELECT id_news FROM news WHERE judul = ? LIMIT 1');
+        $row = $c->prepare('SELECT id_news FROM NEWS WHERE judul = ? LIMIT 1');
         $row->execute([$marker]);
         $createdId = (int) $row->fetchColumn();
         assertTrue($createdId > 0, 'row must be created');
     } finally {
         if ($createdId > 0) {
-            $c->prepare('DELETE FROM news WHERE id_news = ?')->execute([$createdId]);
+            $c->prepare('DELETE FROM NEWS WHERE id_news = ?')->execute([$createdId]);
         }
-        $c->prepare('DELETE FROM news WHERE judul = ?')->execute([$marker]);
+        $c->prepare('DELETE FROM NEWS WHERE judul = ?')->execute([$marker]);
     }
 });
 
@@ -206,7 +206,7 @@ $runner->addTest('news-handler: update valid round-trip (cleaned up)', function 
 
     $marker = 'ZZNEWSUPD' . bin2hex(random_bytes(4));
     // Create a row directly, then fetch its edit page to obtain a real news_id token.
-    $c->prepare("INSERT INTO news (gambar, judul, konten, penulis_id) VALUES (NULL, ?, '<p>old</p>', ?)")->execute([$marker, $idAdmin]);
+    $c->prepare("INSERT INTO NEWS (gambar, judul, konten, penulis_id) VALUES (NULL, ?, '<p>old</p>', ?)")->execute([$marker, $idAdmin]);
     $id = (int) $c->lastInsertId();
     try {
         $list = SecurityClient::request('GET', '/admin/news', ['jar' => $jar]);
@@ -232,12 +232,12 @@ $runner->addTest('news-handler: update valid round-trip (cleaned up)', function 
             'penulis' => (string) $idAdmin,
         ]]);
         assertEquals(302, $r['status'], 'valid update redirects');
-        $judul = (string) $c->query('SELECT judul FROM news WHERE id_news = ' . $id)->fetchColumn();
+        $judul = (string) $c->query('SELECT judul FROM NEWS WHERE id_news = ' . $id)->fetchColumn();
         assertEquals($marker . '-u', $judul, 'row must be updated');
     } finally {
-        $c->prepare('DELETE FROM news WHERE id_news = ?')->execute([$id]);
-        $c->prepare('DELETE FROM news WHERE judul = ?')->execute([$marker]);
-        $c->prepare('DELETE FROM news WHERE judul = ?')->execute([$marker . '-u']);
+        $c->prepare('DELETE FROM NEWS WHERE id_news = ?')->execute([$id]);
+        $c->prepare('DELETE FROM NEWS WHERE judul = ?')->execute([$marker]);
+        $c->prepare('DELETE FROM NEWS WHERE judul = ?')->execute([$marker . '-u']);
     }
 });
 
