@@ -1,5 +1,12 @@
 # Security Audit — TataTertibMhsV2
 
+> **⚠️ Snapshot historis (audit 2026-07-07).** Dokumen ini mencatat temuan **saat kondisi sebelum
+> hardening**. **Seluruh temuan di bawah sudah diperbaiki** pada gelombang hardening 2026-09
+> (authorization server-side, CSRF, session regeneration, upload `finfo_file`+random name,
+> untrack artifact, generic error). Status remediasi & bukti runtime ada di
+> [`PENTEST-REPORT-2026-09-08.md`](./PENTEST-REPORT-2026-09-08.md) dan
+> [`pentest-strix/`](./pentest-strix/README.md). Bagian di bawah dipertahankan sebagai jejak audit.
+
 Tanggal audit: 2026-07-07
 Scope: PHP security syntax baseline dari `~/.agents/skills/php-security-syntax` berdasarkan PHP Manual Security (`php.net/manual/en/security.php`) + audit aplikasi PHP native di `D:\MiniProject\TataTertibMhsV2`.
 
