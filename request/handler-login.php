@@ -29,10 +29,12 @@ try {
         }
 
         if (!$user->login($username, $password, $userType)) {
+            app_audit_log('login_fail', ['actor_id' => substr($username, 0, 32)]);
             $_SESSION['__login_fails'] = (int) ($_SESSION['__login_fails'] ?? 0) + 1;
             if ($_SESSION['__login_fails'] >= 5) {
                 $_SESSION['__login_until'] = time() + 900;
                 unset($_SESSION['__login_fails']);
+                app_audit_log('login_locked', ['actor_id' => substr($username, 0, 32)]);
             }
             set_app_flash_modal('error', 'Invalid username or password.');
             app_redirect('views/auth/login.php');

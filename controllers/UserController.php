@@ -60,6 +60,7 @@ class UserController
                     $_SESSION['username'] = $username;
                     $_SESSION['user_type'] = $role;
                     $_SESSION['user_data'] = $user;
+                    app_audit_log('login_ok', ['actor_type' => $role, 'actor_id' => $username]);
                     set_app_flash_modal('success', 'Login berhasil.');
                     app_redirect($authFlows[$role]['redirect']);
                 }

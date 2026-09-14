@@ -9,6 +9,11 @@ require_once __DIR__ . '/../helpers/token_helper.php';
 app_session_start_if_needed();
 app_verify_csrf();
 
+app_audit_log('logout', [
+    'actor_type' => (string) ($_SESSION['user_type'] ?? ''),
+    'actor_id' => (string) ($_SESSION['username'] ?? ''),
+]);
+
 $_SESSION = [];
 if (session_status() === PHP_SESSION_ACTIVE) {
     session_destroy();

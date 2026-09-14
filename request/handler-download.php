@@ -9,6 +9,7 @@ require_once __DIR__ . '/../helpers/token_helper.php';
 app_session_start_if_needed();
 
 if (!isset($_SESSION['username'])) {
+    app_audit_log('download_denied', ['detail' => 'unauthenticated', 'actor_id' => '', 'actor_type' => '']);
     http_response_code(401);
     echo 'Unauthorized';
     exit();
@@ -25,6 +26,11 @@ $fileName = basename($fileName);
 $extension = strtolower((string) pathinfo($fileName, PATHINFO_EXTENSION));
 $allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'];
 if (!in_array($extension, $allowedExtensions, true)) {
+    app_audit_log('download_denied', [
+        'actor_type' => (string) ($_SESSION['user_type'] ?? ''),
+        'actor_id' => (string) ($_SESSION['username'] ?? ''),
+        'detail' => 'extension not allowed',
+    ]);
     http_response_code(403);
     echo 'Forbidden';
     exit();
@@ -49,6 +55,12 @@ if ($filePath === '') {
     echo 'File not found';
     exit();
 }
+
+app_audit_log('download_ok', [
+    'actor_type' => (string) ($_SESSION['user_type'] ?? ''),
+    'actor_id' => (string) ($_SESSION['username'] ?? ''),
+    'detail' => 'ext=' . $extension,
+]);
 
 $mime = 'application/octet-stream';
 if (function_exists('finfo_open')) {
