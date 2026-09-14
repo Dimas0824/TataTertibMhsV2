@@ -50,6 +50,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $role = (string) ($_SESSION['user_type'] ?? '');
     $sessionData = is_array($_SESSION['user_data'] ?? null) ? $_SESSION['user_data'] : [];
 
+    // NOTE: PDO with ATTR_EMULATE_PREPARES=false (native prepares) forbids reusing the
+    // same named placeholder. Every occurrence needs its own unique placeholder name,
+    // otherwise execute() throws SQLSTATE[HY093] Invalid parameter number.
     $detailStmt = $connect->prepare(
         "SELECT dp.id_detail, dp.surat, dp.pengumpulan_tgsKhusus, dp.delegasi_tugas_ke_dpa, tt.tingkat
          FROM DETAIL_PELANGGARAN dp
@@ -59,15 +62,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          LEFT JOIN DOSEN penanggung ON penanggung.id_dosen = dp.id_dosen_penanggung_jawab
          WHERE dp.id_detail = :idDetail
            AND (
-                (:role = 'mahasiswa' AND m.nim = :nim)
-             OR (:role = 'dosen' AND (pelapor.nidn = :nidn OR penanggung.nidn = :nidn))
+                (:roleMahasiswa = 'mahasiswa' AND m.nim = :nim)
+             OR (:roleDosen = 'dosen' AND (pelapor.nidn = :nidn OR penanggung.nidn = :nidnPenanggung))
            )
          LIMIT 1"
     );
     $detailStmt->bindValue(':idDetail', $idDetail, PDO::PARAM_INT);
-    $detailStmt->bindValue(':role', $role, PDO::PARAM_STR);
+    $detailStmt->bindValue(':roleMahasiswa', $role, PDO::PARAM_STR);
+    $detailStmt->bindValue(':roleDosen', $role, PDO::PARAM_STR);
     $detailStmt->bindValue(':nim', (string) ($sessionData['nim'] ?? ''), PDO::PARAM_STR);
     $detailStmt->bindValue(':nidn', (string) ($sessionData['nidn'] ?? ''), PDO::PARAM_STR);
+    $detailStmt->bindValue(':nidnPenanggung', (string) ($sessionData['nidn'] ?? ''), PDO::PARAM_STR);
     $detailStmt->execute();
     $detailData = $detailStmt->fetch(PDO::FETCH_ASSOC);
     if (!$detailData) {
@@ -183,4 +188,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     respondJson(false, 'Request tidak valid.', 405);
 }
-?>
