@@ -1,4 +1,5 @@
 <?php
+
 /**
  * TokenSuite — white-box attack tests for the capability-token layer
  * (file tokens, id tokens, CSRF helper, sanitizer regex).
@@ -28,8 +29,10 @@ $runner->addTest('security: tampered / garbage file tokens are rejected', functi
 
 $runner->addTest('security: route url data encodes file param as token', function () {
     $enc = app_route_encode_url_data(['file' => 'bukti khusus.pdf'], 1800);
-    assertTrue(isset($enc['file']) && preg_match('/^(s1|o1)\./', (string) $enc['file']) === 1,
-        'generated links must embed a token, never the raw filename');
+    assertTrue(
+        isset($enc['file']) && preg_match('/^(s1|o1)\./', (string) $enc['file']) === 1,
+        'generated links must embed a token, never the raw filename'
+    );
     $dec = app_route_decode_url_data($enc);
     assertEquals('bukti khusus.pdf', $dec['file'] ?? null);
 });
@@ -64,4 +67,56 @@ $runner->addTest('security: news sanitizer kills slash-prefixed handlers and scr
     }
     assertStringContains('Halo', $clean);
     assertStringContains('dunia', $clean);
+});
+
+/* ------------------------------------------------------------------ */
+/* token_helper edge branches                                          */
+/* ------------------------------------------------------------------ */
+
+$runner->addTest('security: app_token_decrypt_payload rejects malformed tokens', function () {
+    assertNull(app_token_decrypt_payload(''), 'empty -> null');
+    assertNull(app_token_decrypt_payload('no-dot-separator'), 'no algorithm prefix -> null');
+    assertNull(app_token_decrypt_payload('zz.bm90LXJlYWw'), 'unknown algorithm -> null');
+    assertNull(app_token_decrypt_payload('s1.!!!!not-base64!!!!'), 'bad base64 -> null');
+    // valid prefix but truncated ciphertext -> null (too short)
+    assertNull(app_token_decrypt_payload('s1.' . app_token_base64url_encode('short')), 'too short -> null');
+});
+
+$runner->addTest('security: app_token_decode rejects empty / tampered / expired-looking payloads', function () {
+    assertNull(app_token_decode(''), 'empty -> null');
+    assertNull(app_token_decode('   '), 'blank -> null');
+    assertNull(app_token_decode('garbage-token'), 'unparseable -> null');
+});
+
+$runner->addTest('security: app_token_issue validates type and subject', function () {
+    assertThrows(InvalidArgumentException::class, static function () {
+        app_token_issue('bogus', 'x');
+    }, 'bad type must throw');
+    assertThrows(InvalidArgumentException::class, static function () {
+        app_token_issue('route', '   ');
+    }, 'blank subject must throw');
+    assertThrows(InvalidArgumentException::class, static function () {
+        app_id_token('news', 0);
+    }, 'non-positive id must throw');
+});
+
+$runner->addTest('security: app_token_issue/decode round-trips both route and id types', function () {
+    $routeTok = app_token_issue('route', 'page.home', ['k' => 'v'], 60);
+    $decoded = app_token_decode($routeTok, 'route', 'page.home');
+    assertTrue(is_array($decoded), 'route token decodes');
+    assertEquals('route', $decoded['typ']);
+    assertEquals('page.home', $decoded['sub']);
+    assertEquals(['k' => 'v'], $decoded['data']);
+
+    // wrong expected type / subject rejected
+    assertNull(app_token_decode($routeTok, 'id'), 'type mismatch -> null');
+    assertNull(app_token_decode($routeTok, 'route', 'other.subject'), 'subject mismatch -> null');
+});
+
+$runner->addTest('security: base64url encode/decode are inverse and reject bad input', function () {
+    $raw = random_bytes(32);
+    $enc = app_token_base64url_encode($raw);
+    assertTrue(strpos($enc, '+') === false && strpos($enc, '/') === false && strpos($enc, '=') === false, 'url-safe alphabet');
+    assertEquals($raw, app_token_base64url_decode($enc), 'roundtrip');
+    assertNull(app_token_base64url_decode('!!!!'), 'invalid base64 -> null');
 });

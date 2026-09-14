@@ -49,15 +49,26 @@ tests/
 ├── phpunit.xml.dist        # PHPUnit config (untuk masa depan)
 ├── unit/
 │   ├── HelpersTest.php     # Test helper functions
-│   └── ModelsTest.php      # Test model classes
+│   ├── ModelsTest.php      # Test model classes
+│   ├── PelanggaranModelTest.php      # Model behaviour: simpan/update/konfirmasi/hapus, search, notif (DB-backed)
+│   ├── PelanggaranControllerTest.php # Controller pass-through + mark-notif validation
+│   ├── NewsControllerTest.php        # News slug helpers + CRUD + sanitizer
+│   ├── ModelCrudTest.php             # News & Tatib model CRUD
+│   ├── SeoHelperTest.php             # SEO helpers (origin/canonical/json-ld/meta tags)
+│   └── ControllerCoverageTest.php    # Tatib/User controller wrappers
 ├── integration/
 │   └── DatabaseTest.php    # Test database connectivity
 ├── security/
 │   ├── SecurityClient.php      # Harness: boot `php -S` + curl blackbox client
 │   ├── SourceScanSuite.php     # Static scan (deny rules, echo-leak, dsb.)
-│   ├── TokenSuite.php          # Unit: file/id token, CSRF, sanitizer
+│   ├── TokenSuite.php          # Unit: file/id token, CSRF, sanitizer, token edge cases
 │   ├── UploadOwnershipSuite.php # Regresi upload: owner-success, cross-user, CSRF-less
+│   ├── HandlerCoverageSuite.php # HTTP: handler-notifikasi + handler-tatib + handler-pelanggaran actions
+│   ├── NewsHandlerSuite.php    # HTTP: handler-news store/update/delete branches
+│   ├── PelanggaranFormSuite.php # HTTP: /pelaporan form POST (store/update)
 │   └── HttpMatrixSuite.php     # Blackbox red-team matrix (auth, IDOR, XSS, upload)
+├── cover.php               # Coverage runner (Xdebug): tests/cover.php
+└── cov_router.php          # Router wrapper used by cover.php for server-side coverage
 └── e2e/
     ├── package.json        # Playwright dependencies
     ├── playwright.config.js # Playwright configuration
@@ -66,21 +77,37 @@ tests/
         └── dashboard.spec.js # Test role-based dashboards
 ```
 
-## Menjalankan Security Suite dengan DB Lokal
+## Coverage (Xdebug)
 
-Suite `security/*` butuh database ter-seed. `bootstrap.php` membaca `.env.testing`
-(default DB `DiscipLink_test`). Untuk menjalankannya terhadap DB dev `disciplink`
-tanpa membuat `.env.testing`, export dulu key `.env` ke environment:
+`tests/cover.php` mengukur **line coverage** memakai Xdebug (CLI + HTTP server digabung).
+Xdebug tidak di-bundle dengan project; arahkan `PHP_INI_SCAN_DIR` ke folder berisi
+`xdebug.ini` (`zend_extension=...` + `xdebug.mode=coverage`):
 
-```powershell
-# PowerShell: set env dari .env lalu jalankan
-$envs = Get-Content .env | Where-Object { $_ -match '^\s*(DB_|APP_)' }
-foreach ($e in $envs) { $k, $v = $e -split '=', 2; [Environment]::SetEnvironmentVariable($k.Trim(), $v.Trim().Trim('"')) }
+```bash
+XDEBUG_MODE=coverage php tests/cover.php
+```
+
+Prinsipnya **kualitas, bukan angka**: fungsi-fungsi inti (auth, token, otorisasi,
+upload, model pelanggaran) sudah >80% dan teruji lewat regresi bermakna. Baris yang
+sengaja dibiarkan belum ter-cover umumnya adalah cabang error defensif / catch-block
+yang sulit dipicu tanpa memaksa kegagalan buatan.
+
+## Menjalankan Suite dengan DB Lokal
+
+Suite `security/*` butuh database ter-seed. Urutan sumber kredensial: **`.env.testing`**
+(jika ada) → **`.env`** (root project). Jadi secara default test memakai DB yang sama
+dengan aplikasi — cukup pastikan `.env` valid dan DB ter-seed:
+
+```bash
+php artisan migrate:fresh --seed --force
 php tests/run.php
 ```
 
-`HttpMatrixSuite` + `UploadOwnershipSuite` men-boot `php -S` mereka sendiri di port
-8123-8140, jadi tidak perlu server dev berjalan.
+Kalau ingin DB test terpisah, salin `tests/.env.testing.example` → `tests/.env.testing`
+dan sesuaikan (tanpa mengubah `.env` aplikasi).
+
+`HttpMatrixSuite` + `UploadOwnershipSuite` + `HandlerCoverageSuite` men-boot `php -S` mereka
+sendiri di port 8123-8140, jadi tidak perlu server dev berjalan.
 
 ## Test Credentials
 
@@ -132,16 +159,42 @@ test('test description', async ({ page }) => {
 
 ## Database Testing
 
-Integration tests memerlukan database terpisah:
+Suite memakai kredensial DB dari (berurutan): **`.env.testing`** → **`.env`** (root project) →
+default lokal. Jadi secara default test memakai DB yang sama dengan aplikasi.
+
+Untuk isolasi penuh, siapkan DB test terpisah:
 
 ```sql
-CREATE DATABASE DiscipLink_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE disciplink_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
-Lalu jalankan migration:
+Arahkan test ke DB itu dengan membuat `tests/.env.testing` (lihat
+[`tests/.env.testing.example`](./.env.testing.example)) — atau cukup salin `.env` project
+dan ganti `dbname`. Lalu jalankan migration/seed ke DB tersebut:
 
 ```bash
 php artisan migrate:fresh --seed --force
+```
+
+> **Catatan:** beberapa test HTTP/XSS memerlukan tabel nyata (mis. `news`). Kalau DB yang
+> dipakai test belum di-migrate, test tersebut gagal dengan `Table '...news' doesn't exist` —
+> itu gejala DB belum di-seed, bukan bug kode.
+
+## Troubleshooting
+
+**`Access denied for user 'root'@'<ip>'`** — test dijalankan dari lingkungan yang berbeda
+dengan MySQL (mis. shell di dalam WSL/container). MySQL di host tidak ter-reach lewat `127.0.0.1`
+dari dalam WSL/container. Solusi: jalankan test dari host, atau set `DB_DSN` di `.env`/env var
+ke host yang benar (`host.docker.internal` untuk container, atau IP host untuk WSL).
+
+**`Warning: Cannot connect to test database`** (lama) — sudah ditangani: bootstrap kini
+fallback ke `.env` bila `.env.testing` tidak ada.
+
+**Semua test HTTP gagal serentak (`got 0`)** — biasanya ada proses `php -S` zombie menempati
+port **8123–8140**. Cek & bersihkan:
+
+```powershell
+Get-NetTCPConnection -LocalPort 8123,8124 -State Listen
 ```
 
 ## CI/CD Integration

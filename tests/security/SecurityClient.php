@@ -47,7 +47,7 @@ if (!class_exists('SecurityClient')) {
         private static function boot(): void
         {
             $root = dirname(__DIR__, 2);
-            $php = escapeshellarg(PHP_BINARY);
+            $php = PHP_BINARY;
             $port = 0;
             for ($p = 8123; $p <= 8140; $p++) {
                 $sock = @fsockopen('127.0.0.1', $p, $errno, $errstr, 0.15);
@@ -61,13 +61,25 @@ if (!class_exists('SecurityClient')) {
                 throw new RuntimeException('no free test port in 8123..8140');
             }
 
-            $cmd = $php . ' -S 127.0.0.1:' . $port . ' -t ' . escapeshellarg($root) . ' router.php';
+            // Array-form command (no shell) to avoid Windows escapeshellarg pitfalls.
+            // Optional coverage instrumentation (opt-in): SEC_COV_PREPEND sets a router
+            // wrapper that starts Xdebug coverage per request; default router otherwise.
+            $prepend = (string) (getenv('SEC_COV_PREPEND') ?: '');
+            $router = $prepend !== '' ? $prepend : $root . DIRECTORY_SEPARATOR . 'router.php';
+            $cmd = [$php];
+            $cmd[] = '-S';
+            $cmd[] = '127.0.0.1:' . $port;
+            $cmd[] = '-t';
+            $cmd[] = $root;
+            $cmd[] = $router;
             $devNull = PHP_OS_FAMILY === 'Windows' ? 'NUL' : '/dev/null';
+            // Pass the parent environment through so the child sees COV/XDEBUG vars.
+            $childEnv = getenv();
             $proc = @proc_open($cmd, [
                 0 => ['file', $devNull, 'r'],
                 1 => ['file', $devNull, 'w'],
                 2 => ['file', $devNull, 'w'],
-            ], $pipes, $root);
+            ], $pipes, $root, is_array($childEnv) ? $childEnv : null, ['bypass_shell' => true]);
             if (!is_resource($proc)) {
                 throw new RuntimeException('failed to start php -S');
             }
