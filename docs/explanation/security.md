@@ -183,7 +183,7 @@ error_log($e->getMessage()); // "PDOException: SQLSTATE[42S02]..."
 
 ---
 
-## Batasan yang Tersisa (ponytail: sadar, terdokumentasi, ada jalur upgrade)
+## Batasan yang Tersisa
 
 ### Download File Authorization — diselesaikan 2026-09
 
