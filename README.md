@@ -51,6 +51,7 @@ Buka [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 Lihat **[docs/README.md](docs/README.md)** untuk navigasi lengkap (Diataxis: tutorial, how-to, reference, explanation).
 
+- **Case study (proses & keputusan desain):** [CASE_STUDY.md](CASE_STUDY.md)
 - **Keamanan & hasil audit/pentest:** [docs/intern/](docs/intern/README.md)
 - **Kebijakan keamanan & pelaporan kerentanan:** [SECURITY.md](SECURITY.md)
 - **Panduan kontribusi:** [CONTRIBUTING.md](CONTRIBUTING.md)
