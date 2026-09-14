@@ -113,7 +113,7 @@ CSRF pada semua state-changing request (419 tanpa token) · CSP + `X-Frame-Optio
 3 role** dengan uji IDOR / privilege escalation / XSS / SQLi / CSRF), **tidak ditemukan vulnerability
 yang dapat dieksploitasi**. Kontrol otorisasi server-side terbukti kuat.
 
-> ⚠️ **Disclaimer:** hasil pentest yang bersih **bukan** jaminan aplikasi 100% aman di production.
+> **Disclaimer:** hasil pentest yang bersih **bukan** jaminan aplikasi 100% aman di production.
 > Pengujian tidak pernah exhaustive dan proyek ini adalah sarana **belajar** yang terus diperbaiki.
 > *A clean pentest is not a guarantee of absolute security.*
 

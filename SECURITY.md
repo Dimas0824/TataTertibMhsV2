@@ -11,8 +11,8 @@ temuan, dan cara berkontribusi.
 
 | Version | Supported          |
 |---------|--------------------|
-| `main` / aktif  | ✅ |
-| lama dari itu   | ❌                 |
+| `main` / aktif  | Ya |
+| lama dari itu   | Tidak              |
 
 ## Posture Keamanan (Klaim yang Jujur)
 

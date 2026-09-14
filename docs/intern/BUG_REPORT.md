@@ -39,7 +39,7 @@ Dokumen ini berisi daftar bug yang ditemukan melalui automated testing dan explo
 
 - **Severity**: Critical
 - **Category**: Backend / Database
-- **Status**: ✅ FIXED / VERIFIED (2026-09)
+- **Status**: FIXED / VERIFIED (2026-09)
 - **Ditemukan oleh**: E2E Test (Playwright)
 - **Tanggal**: 2026-07-04
 - **Resolved**: 2026-09 — akar masalah bukan "login rusak", melainkan (a) environment test tanpa DB dan
@@ -94,7 +94,7 @@ waiting for navigation to "**/pelanggaran**" until "load"
 
 - **Severity**: High
 - **Category**: UI/UX / Functional
-- **Status**: ✅ FIXED / VERIFIED (2026-09)
+- **Status**: FIXED / VERIFIED (2026-09)
 - **Ditemukan oleh**: E2E Test (Playwright)
 - **Tanggal**: 2026-07-04
 - **Resolved**: 2026-09 — form login kini menyediakan cara memilih role (bukan lagi manual
@@ -135,7 +135,7 @@ Hidden input dengan value `nim` (mahasiswa) sebagai default. Dosen dan admin tid
 
 - **Severity**: High
 - **Category**: UI/UX / Frontend
-- **Status**: ✅ FIXED / VERIFIED (2026-09)
+- **Status**: FIXED / VERIFIED (2026-09)
 - **Ditemukan oleh**: E2E Test (Playwright)
 - **Tanggal**: 2026-07-04
 - **Resolved**: 2026-09 — kegagalan login sekarang menampilkan pesan generik
@@ -174,7 +174,7 @@ Page redirect kembali ke `/login` tanpa error message.
 
 - **Severity**: Medium
 - **Category**: Testing / Infrastructure
-- **Status**: ✅ FIXED / VERIFIED (2026-09)
+- **Status**: FIXED / VERIFIED (2026-09)
 - **Ditemukan oleh**: Unit Test (PHP TestRunner)
 - **Tanggal**: 2026-07-04
 - **Resolved**: 2026-09 — DB test terpisah `disciplink_test` (15 tabel, seeded) dipakai untuk
@@ -213,19 +213,19 @@ Integration tests di-skip, hanya unit tests yang berjalan.
 
 | Test Suite | Tanggal | Hasil | Catatan |
 | ----------- | --------- | ------- | --------- |
-| Unit Tests (Helpers) | 2026-07-04 | ✅ 12/12 PASS | Semua helper functions bekerja |
-| Unit Tests (Models) | 2026-07-04 | ✅ 9/9 PASS | Semua model classes valid |
+| Unit Tests (Helpers) | 2026-07-04 | 12/12 PASS | Semua helper functions bekerja |
+| Unit Tests (Models) | 2026-07-04 | 9/9 PASS | Semua model classes valid |
 | Integration Tests (DB) | 2026-07-04 | ⏭️ SKIPPED | Database belum tersedia |
-| E2E Tests (Playwright) | 2026-07-04 | ❌ 7/21 PASS | 14 tests gagal, mostly login issues |
+| E2E Tests (Playwright) | 2026-07-04 | X 7/21 PASS | 14 tests gagal, mostly login issues |
 
 ### Kondisi Terkini (2026-09)
 
 | Test Suite | Hasil | Catatan |
 | ----------- | ------- | --------- |
-| Unit Tests (Helpers + Models) | ✅ 21/21 PASS | Stabil |
-| Security Regression (token/scan/http-matrix) | ✅ 39 test | Suite red-team `tests/security/**`; replay payload pentest, target `failed 0` |
-| Integration Tests (DB) | ✅ berjalan | DB terpisah `disciplink_test` |
-| E2E Tests (Playwright, chromium) | ✅ 21/21 PASS | Job e2e di CI dipromosikan jadi **blocking** (`c011b5e`) |
+| Unit Tests (Helpers + Models) | 21/21 PASS | Stabil |
+| Security Regression (token/scan/http-matrix) | 39 test | Suite red-team `tests/security/**`; replay payload pentest, target `failed 0` |
+| Integration Tests (DB) | berjalan | DB terpisah `disciplink_test` |
+| E2E Tests (Playwright, chromium) | 21/21 PASS | Job e2e di CI dipromosikan jadi **blocking** (`c011b5e`) |
 
 **Catatan lokal (Windows):** saat menjalankan `php tests/run.php` di mesin Windows, sebagian test
 HTTP-matrix bisa gagal dengan `curl: (3) URL rejected` — ini artefak escaping argumen `curl.exe`
@@ -236,18 +236,18 @@ pastikan `curl` di PATH sesuai platform.
 
 **Passing Tests (7):**
 
-- ✅ Homepage loads successfully
-- ✅ Login page loads successfully
-- ✅ Tatib page loads successfully
-- ✅ 404 page for invalid route
-- ✅ Login with invalid credentials shows error (redirects back)
-- ✅ Login with empty credentials shows validation error
-- ✅ Unauthenticated access redirects to login
+-  Homepage loads successfully
+-  Login page loads successfully
+-  Tatib page loads successfully
+-  404 page for invalid route
+-  Login with invalid credentials shows error (redirects back)
+-  Login with empty credentials shows validation error
+-  Unauthenticated access redirects to login
 
 **Failing Tests (14):**
 
-- ❌ All authentication tests (mahasiswa/dosen/admin login)
-- ❌ All dashboard tests (require successful login)
+- X All authentication tests (mahasiswa/dosen/admin login)
+- X All dashboard tests (require successful login)
 
 **Root Cause (saat itu):** BUG-001 (Login tidak berfungsi) dan BUG-002 (Hidden input user_type) — keduanya kini **FIXED/VERIFIED**.
 
