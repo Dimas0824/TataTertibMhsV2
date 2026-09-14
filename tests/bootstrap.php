@@ -17,9 +17,14 @@ ini_set('display_errors', '1');
 $projectRoot = dirname(__DIR__);
 define('PROJECT_ROOT', $projectRoot);
 
-// Load konfigurasi test
-// Note: Untuk test, kita bisa override .env dengan .env.testing
+// Load konfigurasi test.
+// Prioritas: .env.testing (jika ada) → fallback ke .env (root project).
+// Tanpa fallback ini, suite jatuh ke default hardcoded yang bisa salah DB/host.
 $envFile = $projectRoot . '/.env.testing';
+if (!file_exists($envFile)) {
+    // Fallback: pakai .env project agar test memakai DB/host yang sama dengan aplikasi.
+    $envFile = $projectRoot . '/.env';
+}
 if (file_exists($envFile)) {
     $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
@@ -81,9 +86,11 @@ if (!function_exists('test_db_connect')) {
         }
         
         try {
-            $dsn = $_ENV['DB_DSN'] ?? 'mysql:host=127.0.0.1;port=3306;dbname=DiscipLink_test;charset=utf8mb4';
-            $user = $_ENV['DB_USER'] ?? 'root';
-            $pass = $_ENV['DB_PASS'] ?? '';
+            // Utamakan kredensial dari .env/.env.testing (di-load di atas ke $_ENV).
+            // Fallback terakhir baru pakai default lokal.
+            $dsn = $_ENV['DB_DSN'] ?? getenv('DB_DSN') ?: 'mysql:host=127.0.0.1;port=3306;dbname=disciplink_test;charset=utf8mb4';
+            $user = $_ENV['DB_USER'] ?? getenv('DB_USER') ?: 'root';
+            $pass = $_ENV['DB_PASS'] ?? getenv('DB_PASS') ?: '';
             
             $pdo = new PDO($dsn, $user, $pass, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,

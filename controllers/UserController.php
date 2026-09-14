@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../helpers/path_helper.php';
+require_once __DIR__ . '/../helpers/token_helper.php';
 app_require('config.php');
 app_require('models/User.php');
 app_require('helpers/flash_modal.php');
@@ -53,13 +54,13 @@ class UserController
             foreach ($sequence as $role) {
                 $user = ($authFlows[$role]['auth'])();
                 if ($user) {
-                    if (session_status() !== PHP_SESSION_ACTIVE) {
-                        session_start();
-                    }
+                    app_session_start_if_needed();
                     session_regenerate_id(true);
+                    unset($_SESSION['csrf_token'], $_SESSION['__login_fails'], $_SESSION['__login_until']);
                     $_SESSION['username'] = $username;
                     $_SESSION['user_type'] = $role;
                     $_SESSION['user_data'] = $user;
+                    app_audit_log('login_ok', ['actor_type' => $role, 'actor_id' => $username]);
                     set_app_flash_modal('success', 'Login berhasil.');
                     app_redirect($authFlows[$role]['redirect']);
                 }
@@ -68,16 +69,14 @@ class UserController
             return false;
 
         } catch (Exception $e) {
-            echo "Error: " . $e->getMessage();
+            error_log('Login failed: ' . $e->getMessage());
             return false;
         }
     }
 
     public function logout()
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
+        app_session_start_if_needed();
         $_SESSION = [];
         session_destroy();
         if (ini_get('session.use_cookies')) {
@@ -92,7 +91,7 @@ class UserController
         try {
             return $this->userModel->getAllMahasiswa();
         } catch (Exception $e) {
-            echo "Error: " . $e->getMessage();
+            error_log('getAllMahasiswa failed: ' . $e->getMessage());
             return false;
         }
     }
@@ -102,7 +101,7 @@ class UserController
         try {
             return $this->userModel->getAdminName($id_admin);
         } catch (Exception $e) {
-            echo "Error: " . $e->getMessage();
+            error_log('getAdminName failed: ' . $e->getMessage());
             return null;
         }
     }

@@ -40,7 +40,7 @@ if (!function_exists('render_app_feedback_modal_component')) {
         </div>
         <?php if ($flashModal !== null): ?>
             <script>
-                window.__APP_FLASH_MODAL = <?= json_encode($flashModal, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+                window.__APP_FLASH_MODAL = <?= json_encode($flashModal, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
             </script>
         <?php endif; ?>
         <script defer src="<?= htmlspecialchars(app_seo_script_src('js/app-modal.js'), ENT_QUOTES, 'UTF-8') ?>"></script>

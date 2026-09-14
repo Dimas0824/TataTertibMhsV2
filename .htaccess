@@ -1,10 +1,27 @@
 DirectoryIndex index.php index.html
 
+Options -Indexes
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteRule ^(views|request)(/|$) - [F,L,NC]
 
-    RewriteRule ^$ index.php [L]
+    # --- hardening: deny code/data/config paths outright ---
+    # public news images must stay reachable (rendered via <img>) — allow BEFORE storage deny:
+    RewriteRule ^storage/uploads/news/ - [L]
+    RewriteRule ^(views|request|controllers|models|helpers|database|docs|document|tests|storage)(/|$) - [F,L,NC]
+
+    # dotfiles (.env, .git, ...) — except .well-known (TLS-ALPN/ACME):
+    RewriteRule (^|/)\.(?!well-known(/|$)) - [F]
+
+    # sensitive extensions served raw would leak creds/keys/schema/docs:
+    RewriteRule \.(env|key|pem|crt|p12|sql|log|ini|bak|old|save|swp|dist|lock|zip|tar|tgz|gz|bz2|7z|rar|sh|bash|ps1|bat|cmd|py|pl|rb|md)$ - [F,L,NC]
+
+    # never execute config/bootstrap files directly — every request goes through router.php:
+    RewriteRule ^config\.php$ - [F,L]
+    RewriteRule ^artisan$ - [F,L]
+    RewriteRule ^index\.php$ router.php [L,QSA]
+
+    RewriteRule ^$ router.php [L]
 
     RewriteCond %{REQUEST_FILENAME} -f [OR]
     RewriteCond %{REQUEST_FILENAME} -d
@@ -23,6 +40,12 @@ ErrorDocument 503 errors/503.php
 
 <IfModule mod_headers.c>
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" "expr=%{HTTPS} == 'on'"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+    Header unset X-Powered-By
+    Header unset X-Server
     <FilesMatch "\.(ico|jpg|jpeg|png|webp|svg|css|js|woff2?)$">
         Header set Cache-Control "public, max-age=31536000, immutable"
     </FilesMatch>

@@ -1,7 +1,6 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-}
+require_once __DIR__ . '/helpers/token_helper.php';
+app_session_start_if_needed();
 // echo realpath(__DIR__ . '/controllers/UserController.php');
 require_once __DIR__ . '/controllers/UserController.php';
 require_once __DIR__ . '/controllers/NewsController.php';
@@ -10,11 +9,6 @@ require_once __DIR__ . '/helpers/seo_helper.php';
 app_seo_enforce_canonical_host();
 app_seo_apply_security_headers();
 
-if (isset($_GET['logout'])) {
-    $userController = new UserController();
-    $userController->logout();
-    exit();
-}
 $newsController = new NewsController();
 $newsData = $newsController->ReadNews();
 ?>

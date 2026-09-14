@@ -186,10 +186,34 @@ if (!function_exists('app_seo_apply_security_headers')) {
             return;
         }
 
+        header_remove('X-Powered-By');
+
+        header('X-Content-Type-Options: nosniff');
+        header('X-Frame-Options: DENY');
+        header('Referrer-Policy: strict-origin-when-cross-origin');
+        header('Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()');
+
+        // 'unsafe-inline' script/style karena view memakai inline <script> + CDN css on-the-fly;
+        // upgrade path: nonce per-tag lalu hapus 'unsafe-inline'.
+        $csp = implode('; ', [
+            "default-src 'self'",
+            "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.googletagmanager.com",
+            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com",
+            "font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
+            "img-src 'self' data: https:",
+            "connect-src 'self' https://cdn.jsdelivr.net https://www.googletagmanager.com https://*.google-analytics.com",
+            "frame-src 'self' https://www.googletagmanager.com",
+            "frame-ancestors 'none'",
+            "object-src 'none'",
+            "base-uri 'self'",
+            "form-action 'self'",
+        ]);
+        header('Content-Security-Policy: ' . $csp);
+
         $httpHost = (string) ($_SERVER['HTTP_HOST'] ?? '');
         $currentHost = strtolower((string) preg_replace('/:\d+$/', '', $httpHost));
         if ($currentHost !== '' && app_seo_is_local_host($currentHost)) {
-            return;
+            return; // HSTS only makes sense (and is only accepted) on real HTTPS hosts
         }
 
         $isHttps = (

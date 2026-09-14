@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/path_helper.php';
+require_once __DIR__ . '/audit_helper.php';
 
 if (!function_exists('app_session_start_if_needed')) {
     function app_session_start_if_needed(): void
@@ -25,6 +26,9 @@ if (!function_exists('app_require_login')) {
     {
         app_session_start_if_needed();
         if (!isset($_SESSION['username'], $_SESSION['user_type'])) {
+            if (function_exists('app_audit_log')) {
+                app_audit_log('authz_fail', ['detail' => 'unauthenticated ' . substr((string) ($_SERVER['REQUEST_URI'] ?? ''), 0, 180)]);
+            }
             http_response_code(401);
             exit('Unauthorized');
         }
@@ -36,6 +40,13 @@ if (!function_exists('app_require_role')) {
     {
         app_require_login();
         if (($_SESSION['user_type'] ?? '') !== $role) {
+            if (function_exists('app_audit_log')) {
+                app_audit_log('authz_fail', [
+                    'actor_type' => (string) ($_SESSION['user_type'] ?? ''),
+                    'actor_id' => (string) ($_SESSION['username'] ?? ''),
+                    'detail' => 'role != ' . $role . ' on ' . substr((string) ($_SERVER['REQUEST_URI'] ?? ''), 0, 160),
+                ]);
+            }
             http_response_code(403);
             exit('Forbidden');
         }
@@ -74,6 +85,13 @@ if (!function_exists('app_verify_csrf')) {
             }
         }
         if ($sessionToken === '' || $requestToken === '' || !hash_equals($sessionToken, $requestToken)) {
+            if (function_exists('app_audit_log')) {
+                app_audit_log('csrf_fail', [
+                    'actor_type' => (string) ($_SESSION['user_type'] ?? ''),
+                    'actor_id' => (string) ($_SESSION['username'] ?? ''),
+                    'detail' => substr((string) ($_SERVER['REQUEST_URI'] ?? ''), 0, 200),
+                ]);
+            }
             http_response_code(419);
             exit('Invalid CSRF token');
         }
@@ -368,6 +386,38 @@ if (!function_exists('app_id_resolve')) {
 
         $id = (int) $data['id'];
         return $id > 0 ? $id : null;
+    }
+}
+
+if (!function_exists('app_file_token')) {
+    function app_file_token(string $fileName, int $ttl = 1800): string
+    {
+        $fileName = basename(trim($fileName));
+        if ($fileName === '') {
+            throw new InvalidArgumentException('File name is required.');
+        }
+
+        return app_token_issue('id', 'file', ['name' => $fileName], $ttl);
+    }
+}
+
+if (!function_exists('app_file_resolve')) {
+    function app_file_resolve(string $token): ?string
+    {
+        $payload = app_token_decode($token, 'id', 'file');
+        if (!is_array($payload)) {
+            return null;
+        }
+
+        $data = $payload['data'] ?? null;
+        if (!is_array($data) || !isset($data['name']) || !is_string($data['name'])) {
+            return null;
+        }
+
+        // Session-bound capability token (AEAD + sid hash + exp) proves the link was issued
+        // to THIS user's render; basename() again as belt-and-braces.
+        $fileName = basename(trim($data['name']));
+        return $fileName !== '' ? $fileName : null;
     }
 }
 

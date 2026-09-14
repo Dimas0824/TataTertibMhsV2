@@ -28,6 +28,7 @@ if (!function_exists('app_route_registry')) {
             'page.admin_news' => ['kind' => 'page', 'path' => '/admin/news', 'target' => 'views/admin/news-admin.php', 'methods' => ['GET']],
             'page.admin_news_tambah' => ['kind' => 'page', 'path' => '/admin/news/tambah', 'target' => 'views/admin/tambah-berita.php', 'methods' => ['GET']],
             'page.admin_news_edit' => ['kind' => 'page', 'path' => '/admin/news/edit', 'target' => 'views/admin/edit-berita.php', 'methods' => ['GET', 'POST']],
+            'page.admin_audit' => ['kind' => 'page', 'path' => '/admin/audit', 'target' => 'views/admin/audit-log.php', 'methods' => ['GET']],
 
             'action.login' => ['kind' => 'action', 'path' => '/action/login', 'target' => 'request/handler-login.php', 'methods' => ['POST']],
             'action.pelanggaran' => ['kind' => 'action', 'path' => '/action/pelanggaran', 'target' => 'request/handler-pelanggaran.php', 'methods' => ['GET', 'POST']],
@@ -35,7 +36,7 @@ if (!function_exists('app_route_registry')) {
             'action.news' => ['kind' => 'action', 'path' => '/action/news', 'target' => 'request/handler-news.php', 'methods' => ['POST']],
             'action.tatib' => ['kind' => 'action', 'path' => '/action/tatib', 'target' => 'request/handler-tatib.php', 'methods' => ['POST']],
             'action.upload' => ['kind' => 'action', 'path' => '/action/upload', 'target' => 'request/handler-upload.php', 'methods' => ['POST']],
-            'action.logout' => ['kind' => 'action', 'path' => '/action/logout', 'target' => 'request/handler-logout.php', 'methods' => ['GET', 'POST']],
+            'action.logout' => ['kind' => 'action', 'path' => '/action/logout', 'target' => 'request/handler-logout.php', 'methods' => ['POST']],
             'action.file_download' => ['kind' => 'action', 'path' => '/action/download', 'target' => 'request/handler-download.php', 'methods' => ['GET']],
         ];
 
@@ -109,6 +110,7 @@ if (!function_exists('app_route_id_entity_map')) {
             'id_tatib' => 'tatib',
             'id_sanksi' => 'sanksi',
             'sanksi_id' => 'sanksi',
+            'file' => 'file',
         ];
     }
 }
@@ -152,6 +154,11 @@ if (!function_exists('app_route_encode_url_data')) {
                     continue;
                 }
 
+                if ($entity === 'file' && is_string($value) && trim($value) !== '') {
+                    $encoded[$key] = app_file_token($value, $ttl);
+                    continue;
+                }
+
                 $encoded[$key] = (string) $value;
                 continue;
             }
@@ -179,6 +186,16 @@ if (!function_exists('app_route_decode_url_data')) {
 
             $entity = app_route_id_entity_for_key($key);
             if ($entity !== null) {
+                if ($entity === 'file') {
+                    $fileName = app_file_resolve((string) $value);
+                    if ($fileName === null) {
+                        return null;
+                    }
+
+                    $decoded[$key] = $fileName;
+                    continue;
+                }
+
                 $resolved = app_id_resolve((string) $value, $entity);
                 if ($resolved === null) {
                     return null;

@@ -1,0 +1,58 @@
+name: E2E (Playwright)
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  e2e:
+    name: chromium user flows
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ciroot
+          MYSQL_DATABASE: DiscipLink
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -pciroot"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pdo_mysql, mbstring, fileinfo
+      - name: Write CI .env
+        run: |
+          {
+            echo 'APP_CANONICAL_URL="http://127.0.0.1:8080"'
+            echo 'APP_BASE_PATH="auto"'
+            echo 'APP_DEBUG=false'
+            echo 'DB_DSN="mysql:host=127.0.0.1;port=3306;dbname=DiscipLink;charset=utf8mb4"'
+            echo 'DB_USER="root"'
+            echo 'DB_PASS="ciroot"'
+          } > .env
+      - name: Migrate + seed
+        run: php artisan migrate:fresh --seed --force
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Playwright
+        working-directory: tests/e2e
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Run E2E (chromium)
+        working-directory: tests/e2e
+        run: npx playwright test --project=chromium --reporter=list
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: tests/playwright-report/
+          retention-days: 7

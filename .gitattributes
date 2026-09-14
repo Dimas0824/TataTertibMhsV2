@@ -1,0 +1,34 @@
+# Normalize repo-wide: LF in objects AND working tree (kills autocrlf drift
+# between checkouts/worktrees that corrupted hash_file checksums).
+* text=auto eol=lf
+
+# Binary — never convert
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.svg text eol=lf
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.zip binary
+*.pdf binary
+
+# Explicit text classes that may live in mixed .gitconfig worlds
+*.php text eol=lf
+*.js text eol=lf
+*.mjs text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.md text eol=lf
+*.sql text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.txt text eol=lf
+*.xml text eol=lf
+*.webmanifest text eol=lf
+.htaccess text eol=lf
+.gitignore text eol=lf

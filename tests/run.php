@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Test Entry Point
  * 
@@ -16,7 +17,27 @@ $runner = new TestRunner();
 $testFiles = [
     __DIR__ . '/unit/HelpersTest.php',
     __DIR__ . '/unit/ModelsTest.php',
+    // Model/controller behaviour tests (DB-backed): raise coverage of
+    // models/Pelanggaran.php and controllers/NewsController.php
+    __DIR__ . '/unit/PelanggaranModelTest.php',
+    __DIR__ . '/unit/PelanggaranControllerTest.php',
+    __DIR__ . '/unit/NewsControllerTest.php',
+    __DIR__ . '/unit/ModelCrudTest.php',
+    __DIR__ . '/unit/SeoHelperTest.php',
+    __DIR__ . '/unit/ControllerCoverageTest.php',
     __DIR__ . '/integration/DatabaseTest.php',
+    __DIR__ . '/security/SourceScanSuite.php',
+    __DIR__ . '/security/TokenSuite.php',
+    // Upload ownership suite uses the HTTP harness too:
+    __DIR__ . '/security/UploadOwnershipSuite.php',
+    // Handler coverage (notifikasi/tatib) also uses the HTTP harness:
+    __DIR__ . '/security/HandlerCoverageSuite.php',
+    // News handler coverage (admin CRUD):
+    __DIR__ . '/security/NewsHandlerSuite.php',
+    // Pelanggaran report form (POST store/update):
+    __DIR__ . '/security/PelanggaranFormSuite.php',
+    // HTTP matrix boots its own `php -S` harness; longest-running, last:
+    __DIR__ . '/security/HttpMatrixSuite.php',
 ];
 
 foreach ($testFiles as $testFile) {

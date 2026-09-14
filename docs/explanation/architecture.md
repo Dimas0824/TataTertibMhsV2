@@ -14,7 +14,7 @@ Project ini berevolusi dari codebase PHP legacy yang sudah ada. Menggunakan fram
 
 Kami memilih PHP native dengan pattern MVC terstruktur karena:
 
-- **Minimal dependencies** — hanya butuh PHP 8.1+ dan MySQL. Tidak ada Composer autoload, tidak ada framework overhead.
+- **Minimal dependencies** — hanya butuh PHP 8.3+ dan MySQL. Tidak ada Composer autoload, tidak ada framework overhead.
 - **Full control** — setiap baris kode bisa ditrace tanpa membaca dokumentasi framework.
 - **Lightweight deployment** — bisa jalan di shared hosting minimal.
 - **Learning curve rendah** — developer baru cukup tahu PHP standar, tidak perlu belajar idioms framework.
@@ -62,19 +62,21 @@ Kami pakai array PHP sebagai registry route, bukan regex pattern matching:
 
 ```php
 'page.slug' => [
-    'path' => '/url-path',
-    'file' => 'views/kategori/file.php',
-    'title' => 'Judul Halaman',
-    'roles' => ['mahasiswa', 'dosen', 'admin'],
+    'kind'    => 'page',
+    'path'    => '/url-path',
+    'target'  => 'views/kategori/file.php',
+    'methods' => ['GET'],
 ],
 ```
 
 **Keuntungan:**
+
 - Declarative, mudah dibaca dan di-audit.
 - Tidak ada regex complexity.
-- Role-based access control langsung di registry.
+- Role-based access control dijalankan di view/handler (`app_require_role()`), sehingga bisa bergantung pada data sesi, bukan hanya nama role statis.
 
 **Kekurangan:**
+
 - Tidak mendukung wildcard/parameterized routes secara natural.
 - Semua parameter harus di-encode sebagai encrypted token ID.
 
@@ -102,11 +104,13 @@ app_id_token('detail_pelanggaran', 42)
 ```
 
 Token berisi:
+
 - Tabel origin (`detail_pelanggaran`)
 - ID numerik (`42`)
 - Signature dengan secret key (`storage/keys/app_token.key`)
 
 **Security property:**
+
 - User tidak bisa menebak ID record lain.
 - Token tidak bisa di-forge tanpa secret key.
 - Server bisa verifikasi token valid dan berasal dari tabel yang diharapkan.
@@ -142,7 +146,7 @@ Data user di-`user_data` di-fetch per-request dari database, tidak di-cache lama
 ### Session Security
 
 | Pengaturan | Alasan |
-|---|---|
+| --- | --- |
 | `session_regenerate_id(true)` setelah login | Mencegah session fixation |
 | `HttpOnly` cookie | Mencegah JavaScript access (XSS) |
 | `SameSite=Lax` | CSRF mitigation tanpa breaking navigation |
@@ -186,29 +190,36 @@ Kami mengimplement CSRF protection secara manual, bukan pakai library, karena:
 ### Three-Layer Validation
 
 **Layer 1: MIME Detection (Server-side)**
+
 ```php
 $finfo = finfo_open(FILEINFO_MIME_TYPE);
 $detectedMime = finfo_file($finfo, $file['tmp_name']);
 finfo_close($finfo);
 ```
+
 Client MIME (`$_FILES['type']`) TIDAK dipercaya — bisa di-spoof.
 
 **Layer 2: Extension Allowlist**
+
 ```php
 $allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png'];
 $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 ```
+
 Ekstension dicek setelah MIME detection.
 
 **Layer 3: Random Filename**
+
 ```php
 $filename = bin2hex(random_bytes(12)) . '.' . $extension;
 ```
+
 Filename asli tidak dipakai — mencegah path traversal dan filename collision.
 
 ### Storage Outside Web Root
 
 Upload disimpan di `storage/uploads/` (outside `public/`). File hanya bisa diakses melalui `handler-download.php` yang menerapkan:
+
 - Ownership check
 - MIME verification
 - Authorization guard
@@ -222,7 +233,7 @@ Upload disimpan di `storage/uploads/` (outside `public/`). File hanya bisa diaks
 Tiga role dengan akses berbeda:
 
 | Kapabilitas | Mahasiswa | Dosen | Admin |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Lihat pelanggaran sendiri | Ya | - | Ya |
 | Buat pelaporan | Tidak | Ya | Ya |
 | Upload dokumen pelanggaran | Ya | Ya | Tidak |
@@ -251,6 +262,7 @@ if (!$record) { /* 403 */ }
 PHP native tanpa framework = tidak ada middleware pipeline. Kami pilih check di handler untuk visibility langsung dan simplicity.
 
 Trade-off: setiap handler harus copy-paste authorization check. Ini accepted karena:
+
 - Authorization logic sederhana (3 role + optional ownership).
 - Easy to audit — semua logic ada di satu file.
 
@@ -261,10 +273,12 @@ Trade-off: setiap handler harus copy-paste authorization check. Ini accepted kar
 ### Two Environment Modes
 
 **.env: `APP_ENV=local`**
+
 - Errors ditampilkan di browser (development)
 - Stack trace tersedia
 
 **.env: `APP_ENV=production`**
+
 - Errors logged ke server log
 - User melihat generic message
 
@@ -279,6 +293,7 @@ set_app_flash_modal('error', 'Error: ' . $e->getMessage());
 ```
 
 **Prinsip:** User tidak pernah melihat:
+
 - SQL query atau database error
 - File path atau struktur aplikasi
 - Exception stack trace
@@ -295,6 +310,7 @@ Semua detail di-log ke `error_log` untuk developer debugging.
 Aplikasi menggunakan single PDO connection (`$connect`) yang di-include di setiap file yang butuh database. Tidak ada connection pooling atau persistent connection.
 
 **Alasan:**
+
 - Sederhana, predictable.
 - Cocok untuk aplikasi dengan user count terbatas (kampus).
 - Tidak perlu manage connection lifecycle.
@@ -325,13 +341,14 @@ Pertanyaan yang sering muncul: "Kenapa tidak pakai Laravel/React/Vue?"
 Kebutuhan project tidak memerlukan complexity tersebut. Setiap technology choice punya cost:
 
 | Technology | Cost |
-|---|---|
+| --- | --- |
 | Laravel | PHP 8.2+, Composer, deployment complexity, learning curve |
 | React SPA | JavaScript bundler, API layer, state management, CORS |
 | Vue SPA | Sama dengan React |
 | PostgreSQL | Hosting complexity, migration effort |
 
 DiscipLink V2 adalah internal campus tool dengan:
+
 - ~500 concurrent users max
 - Simple CRUD operations
 - No real-time requirements

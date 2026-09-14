@@ -5,6 +5,9 @@ class User
 {
     private $connect;
     private const BCRYPT_COST = 12;
+    // Fixed bcrypt(cost-12) hash of a random throwaway string — used only to equalize
+    // response time between "user not found" and "wrong password" (kills timing enumeration).
+    private const DUMMY_PASSWORD_HASH = '$2y$12$vV55GxE6aRjijhPFpkROSey1DdGgATDMuoSOtRHoK6B400Ao0YSRy';
 
     public function __construct()
     {
@@ -35,24 +38,25 @@ class User
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$user || !isset($user['password'])) {
+                password_verify($plainPassword, self::DUMMY_PASSWORD_HASH);
                 return false;
             }
 
-            $storedPassword = $user['password'];
-            $isLegacyPlaintext = $storedPassword === $plainPassword;
-            $isValid = password_verify($plainPassword, $storedPassword) || $isLegacyPlaintext;
+            $storedPassword = (string) $user['password'];
+
+            // Hashed credentials only; legacy plaintext rows are rejected here and must be
+            // migrated once via: php database/cli/hash-plaintext-passwords.php
+            $isValid = str_starts_with($storedPassword, '$2') && password_verify($plainPassword, $storedPassword);
 
             if (!$isValid) {
                 return false;
             }
 
-            $needsRehash = $isLegacyPlaintext || password_needs_rehash(
+            if (password_needs_rehash(
                 $storedPassword,
                 PASSWORD_BCRYPT,
                 ['cost' => self::BCRYPT_COST]
-            );
-
-            if ($needsRehash) {
+            )) {
                 $newHash = password_hash($plainPassword, PASSWORD_BCRYPT, ['cost' => self::BCRYPT_COST]);
                 $updateStmt = $this->connect->prepare("UPDATE {$table} SET password = ? WHERE {$identifierColumn} = ?");
                 $updateStmt->execute([$newHash, $username]);

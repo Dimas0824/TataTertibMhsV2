@@ -27,6 +27,7 @@ if (!function_exists('get_app_nav_items')) {
             'notifikasi' => app_page_url('page.notifikasi'),
             'logout' => app_action_url('action.logout'),
             'news' => app_page_url('page.admin_news'),
+            'audit' => app_page_url('page.admin_audit'),
             'admin_home' => app_page_url('page.admin_home'),
             'admin_tatib' => app_page_url('page.admin_tatib'),
         ];
@@ -90,7 +91,8 @@ if (!function_exists('render_app_sidebar')) {
                     <li class="<?= implode(' ', $itemClasses) ?>">
                         <a href="<?= htmlspecialchars($item['href'], ENT_QUOTES, 'UTF-8') ?>"
                            aria-label="<?= htmlspecialchars($item['label'], ENT_QUOTES, 'UTF-8') ?>"
-                           <?= $isActive ? 'aria-current="page"' : '' ?>>
+                           <?= $isActive ? 'aria-current="page"' : '' ?>
+                           <?= !empty($item['logout']) ? 'data-logout-post="' . htmlspecialchars($item['href'], ENT_QUOTES, 'UTF-8') . '" data-csrf="' . htmlspecialchars(app_csrf_token(), ENT_QUOTES, 'UTF-8') . '"' : '' ?>>
                             <span class="nav-icon" aria-hidden="true"><i class="<?= htmlspecialchars($item['icon'], ENT_QUOTES, 'UTF-8') ?>"></i></span>
                             <span class="nav-label"><?= htmlspecialchars($item['label'], ENT_QUOTES, 'UTF-8') ?></span>
                         </a>
@@ -98,6 +100,25 @@ if (!function_exists('render_app_sidebar')) {
                 <?php endforeach; ?>
             </ul>
         </aside>
+
+        <script>
+        // Logout is POST-only + CSRF now; render the nav link as a silent POST form on click.
+        document.addEventListener('click', function (e) {
+            var a = e.target && e.target.closest ? e.target.closest('a[data-logout-post]') : null;
+            if (!a) return;
+            e.preventDefault();
+            var f = document.createElement('form');
+            f.method = 'post';
+            f.action = a.getAttribute('data-logout-post');
+            var i = document.createElement('input');
+            i.type = 'hidden';
+            i.name = 'csrf_token';
+            i.value = a.getAttribute('data-csrf');
+            f.appendChild(i);
+            document.body.appendChild(f);
+            f.submit();
+        });
+        </script>
 
         <script defer src="<?= htmlspecialchars(app_seo_script_src('js/layout-nav.js'), ENT_QUOTES, 'UTF-8') ?>"></script>
         <?php

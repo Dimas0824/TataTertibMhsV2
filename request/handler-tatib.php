@@ -1,5 +1,6 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+require_once dirname(__DIR__) . '/helpers/token_helper.php';
+app_session_start_if_needed();
 require_once __DIR__ . '/../helpers/path_helper.php';
 require_once __DIR__ . '/../helpers/route_helper.php';
 require_once __DIR__ . '/../helpers/token_helper.php';

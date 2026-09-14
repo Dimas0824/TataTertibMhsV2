@@ -3,7 +3,7 @@
 Panduan ini membawa kamu dari nol sampai bisa menjalankan dan memahami alur dasar aplikasi.
 
 **Target:** developer baru yang ingin memahami atau mengembangkan DiscipLink V2.
-**Prasyarat:** PHP 8.1+, MySQL/MariaDB, Git.
+**Prasyarat:** PHP 8.3+, MySQL/MariaDB, Git.
 
 ---
 
@@ -25,7 +25,7 @@ cd TataTertibMhsV2
 Pastikan PHP dan MySQL tersedia:
 
 ```bash
-php --version    # minimal 8.1
+php --version    # minimal 8.3
 mysql --version
 ```
 
@@ -36,7 +36,7 @@ mysql --version
 ### Buat database
 
 ```bash
-mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS DiscipLink CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS disciplink CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 ```
 
 ### Buat file environment
@@ -48,7 +48,7 @@ cp .env.example .env
 Edit `.env`:
 
 ```dotenv
-DB_DSN="mysql:host=127.0.0.1;port=3306;dbname=DiscipLink;charset=utf8mb4"
+DB_DSN="mysql:host=127.0.0.1;port=3306;dbname=disciplink;charset=utf8mb4"
 DB_USER="root"
 DB_PASS="your_password_here"
 ```
@@ -96,12 +96,13 @@ Buka [http://127.0.0.1:8000](http://127.0.0.1:8000) di browser.
 Gunakan akun contoh:
 
 | Role | Username | Password |
-|------|----------|---------|
+| ------ | ---------- | --------- |
 | Mahasiswa | `2341238901` | `password123` |
 | Dosen | `1234567890` | `password123` |
 | Admin | `ADMIN001` | `admin123` |
 
 Coba alur ini:
+
 1. Login sebagai **Admin** — buat satu berita baru
 2. Login sebagai **Dosen** — buat satu pelaporan pelanggaran
 3. Login sebagai **Mahasiswa** — cek notifikasi dan upload dokumen
@@ -123,12 +124,14 @@ Browser
 ```
 
 **Contoh konkret — login:**
+
 1. Form POST ke `/action/login`
 2. `request/handler-login.php` menangkap
-3. `UserController::login()` cek kredensial via `User::findByUsername()`
+3. `UserController::login()` cek kredensial via `User::getMahasiswaLogin()` / `getDosenLogin()` / `getAdminLogin()`
 4. Session diset → redirect ke `/pelanggaran`
 
 **Contoh konkret — upload surat:**
+
 1. AJAX POST ke `/action/upload` dengan `FormData`
 2. `request/handler-upload.php` menangkap
 3. Validasi MIME via `finfo_file()`
@@ -139,14 +142,14 @@ Browser
 
 ## Langkah 6: Ubah Sesuatu
 
-Sebagai latihan, ubah teks "DiscipLink" di `helpers/seo_helper.php`:
+Sebagai latihan, ubah judul default di `helpers/seo_helper.php`:
 
 ```php
-// Cari baris ini:
-'app_name' => 'DiscipLink V2',
+// Cari baris ini (di dalam app_seo_meta_tags):
+$title = (string) ($config['title'] ?? 'DiscipLink - Tata Tertib Mahasiswa Polinema');
 
-// Ganti jadi:
-'app_name' => 'Sistem Tata Tertibku',
+// Ganti default-nya jadi:
+$title = (string) ($config['title'] ?? 'Sistem Tata Tertibku');
 ```
 
 Refresh browser — title halaman berubah.

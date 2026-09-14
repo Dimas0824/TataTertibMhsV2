@@ -1,16 +1,9 @@
+# robots.txt - DiscipLink V2
+# Hanya menyebut URL publik. Direktori internal (controllers/, models/, database/,
+# helpers/, request/, views/, storage/) TIDAK didaftarkan di sini: pemblokiran akses
+# ditangani oleh .htaccess + router.php (deny-list server-side), bukan lewat obscurity.
+
 User-agent: *
 Allow: /
-Disallow: /controllers/
-Disallow: /models/
-Disallow: /database/
-Disallow: /request/
-Disallow: /helpers/
-Disallow: /storage/uploads/
-Disallow: /document/
-Disallow: /views/admin/
-Disallow: /views/pelanggaran/
-Disallow: /views/auth/
-Disallow: /p/
-Disallow: /a/
 
 Sitemap: https://dimspersonal.my.id/sitemap.xml

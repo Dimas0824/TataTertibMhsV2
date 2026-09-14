@@ -48,6 +48,12 @@ if (is_file($envPath)) {
     }
 }
 
+// Production-safe error defaults: never render internals to the client unless APP_DEBUG=true is set in .env.
+$appDebug = strtolower(trim((string) ($env['APP_DEBUG'] ?? (getenv('APP_DEBUG') ?: '')))) === 'true';
+ini_set('display_errors', $appDebug ? '1' : '0');
+ini_set('log_errors', '1');
+error_reporting(E_ALL);
+
 $dsn = $env['DB_DSN'] ?? getenv('DB_DSN') ?: '';
 $user = $env['DB_USER'] ?? getenv('DB_USER') ?: null;
 $pass = $env['DB_PASS'] ?? getenv('DB_PASS') ?: null;

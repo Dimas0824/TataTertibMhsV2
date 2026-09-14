@@ -1,6 +1,7 @@
 <!-- edit pelaporan -->
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+require_once dirname(__DIR__, 2) . '/helpers/token_helper.php';
+app_session_start_if_needed();
 
 require_once dirname(__DIR__, 2) . '/controllers/TatibController.php';
 require_once dirname(__DIR__, 2) . '/controllers/UserController.php';
@@ -10,11 +11,6 @@ require_once dirname(__DIR__) . '/components/modals/pelaporan-cancel-modal.php';
 
 if (!isset($_SESSION['username'])) {
     app_redirect_page('page.login');
-}
-if (isset($_GET['logout'])) {
-    $userController = new UserController();
-    $userController->logout();
-    exit();
 }
 if ($_SESSION['user_type'] === 'mahasiswa') {
     app_redirect_page('page.pelanggaran');
@@ -241,9 +237,9 @@ if ($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
                                 <select id="sanksi" name="sanksi" required>
                                     <option value="">Pilih Sanksi</option>
                                     <?php foreach ($sanksiData as $sanksi): ?>
-                                        <option value="<?= htmlspecialchars(app_id_token('sanksi', (int) $sanksi['id_sanksi']), ENT_QUOTES, 'UTF-8') ?>" data-tingkat="<?= $sanksi['tingkat'] ?>"
+                                        <option value="<?= htmlspecialchars(app_id_token('sanksi', (int) $sanksi['id_sanksi']), ENT_QUOTES, 'UTF-8') ?>" data-tingkat="<?= htmlspecialchars((string) $sanksi['tingkat'], ENT_QUOTES, 'UTF-8') ?>"
                                             <?= ((string) ($detailPelanggar['id_sanksi'] ?? '') === (string) $sanksi['id_sanksi']) ? 'selected' : '' ?>>
-                                            <?= $sanksi['deskripsi'] ?>
+                                            <?= htmlspecialchars((string) $sanksi['deskripsi'], ENT_QUOTES, 'UTF-8') ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
@@ -254,9 +250,9 @@ if ($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus
                                 <select id="jenisPelanggaran" name="jenisPelanggaran" required>
                                     <option value="" readonly>Pilih Jenis Pelanggaran</option>
                                     <?php foreach ($tatibData as $tatib): ?>
-                                        <option value="<?= htmlspecialchars(app_id_token('tatib', (int) $tatib['id_tata_tertib']), ENT_QUOTES, 'UTF-8') ?>" data-tingkat="<?= $tatib['tingkat'] ?>"
+                                        <option value="<?= htmlspecialchars(app_id_token('tatib', (int) $tatib['id_tata_tertib']), ENT_QUOTES, 'UTF-8') ?>" data-tingkat="<?= htmlspecialchars((string) $tatib['tingkat'], ENT_QUOTES, 'UTF-8') ?>"
                                             <?= ((string) ($detailPelanggar['id_tata_tertib'] ?? '') === (string) $tatib['id_tata_tertib']) ? 'selected' : '' ?>>
-                                            <?= $tatib['deskripsi'] ?>
+                                            <?= htmlspecialchars((string) $tatib['deskripsi'], ENT_QUOTES, 'UTF-8') ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>

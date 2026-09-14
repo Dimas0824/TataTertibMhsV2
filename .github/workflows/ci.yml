@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main, 'fix/**', 'feat/**']
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: PHP lint (all files)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+      - name: php -l every file
+        run: |
+          found=0
+          while IFS= read -r f; do
+            out=$(php -l "$f" 2>&1) || { echo "$out"; found=1; }
+          done < <(find . -name '*.php' -not -path './node_modules/*' -not -path './tests/e2e/*' -not -path './.git/*')
+          exit $found
+
+  tests:
+    name: Unit + integration + security regression
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ciroot
+          MYSQL_DATABASE: DiscipLink
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -pciroot"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pdo_mysql, mbstring, fileinfo, openssl
+      - name: Write CI .env
+        run: |
+          {
+            echo 'APP_CANONICAL_URL="http://127.0.0.1:8123"'
+            echo 'APP_BASE_PATH="auto"'
+            echo 'APP_DEBUG=false'
+            echo 'DB_DSN="mysql:host=127.0.0.1;port=3306;dbname=DiscipLink;charset=utf8mb4"'
+            echo 'DB_USER="root"'
+            echo 'DB_PASS="ciroot"'
+          } > .env
+      - name: Migrate + seed
+        run: php artisan migrate:fresh --seed --force
+      - name: Test suite (incl. security regression + source scan)
+        run: php tests/run.php

@@ -18,7 +18,7 @@ class Sanksi
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
+            error_log('getAllSanksi DB Error: ' . $e->getMessage());
             return false;
         }
     }
