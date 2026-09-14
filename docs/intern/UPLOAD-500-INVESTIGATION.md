@@ -2,7 +2,7 @@
 
 **Tanggal:** 2026-09-14
 **Ditemukan oleh:** Deep pentest Strix (authenticated, mode `deep`, 3 role) — run `192-168-1-15-8001_fe19`
-**Status:** ✅ RESOLVED — akar masalah dikonfirmasi & diperbaiki (`request/handler-upload.php`)
+**Status:** RESOLVED — akar masalah dikonfirmasi & diperbaiki (`request/handler-upload.php`)
 **Severity:** Medium — bug fungsional (blocker workflow), **bukan** temuan keamanan
 **Klasifikasi:** Functional / Backend — bukan vulnerability
 
@@ -166,7 +166,7 @@ nama placeholder berulang. Bug ini terisolasi hanya di `request/handler-upload.p
 - [x] **Regresi otomatis** — **SELESAI**: `tests/security/UploadOwnershipSuite.php` terdaftar di
       `tests/run.php`. Bukti runtime: `php tests/run.php` → **160/160 PASS, 0 failed** (2026-09-14).
 
-**Status akhir: ✅ CLOSED** — bug fungsional diperbaiki, gap otorisasi objek ditutup, regresi terpasang.
+**Status akhir: CLOSED** — bug fungsional diperbaiki, gap otorisasi objek ditutup, regresi terpasang.
 
 ---
 
@@ -174,7 +174,7 @@ nama placeholder berulang. Bug ini terisolasi hanya di `request/handler-upload.p
 
 1. **`move_uploaded_file()` gagal** → tidak terbukti (error muncul sebelum tahap move).
 2. **`UPDATE … SET $updateColumn = :filePath`** dengan `$updateColumn` tak ter-set → tidak terbukti.
-3. **`PDO::ATTR_EMULATE_PREPARES = false` + placeholder berulang / bind tak cocok** → ✅ **TERKONFIRMASI** (ini akarnya).
+3. **`PDO::ATTR_EMULATE_PREPARES = false` + placeholder berulang / bind tak cocok** →  **TERKONFIRMASI** (ini akarnya).
 4. Warning minor yang di-throw oleh error handler global → tidak terbukti sebagai akar.
 
 ---

@@ -183,9 +183,9 @@ error_log($e->getMessage()); // "PDOException: SQLSTATE[42S02]..."
 
 ---
 
-## Batasan yang Tersisa (ponytail: sadar, terdokumentasi, ada jalur upgrade)
+## Batasan yang Tersisa
 
-### Download File Authorization — ✅ diselesaikan 2026-09
+### Download File Authorization — diselesaikan 2026-09
 
 Parameter `?file=` dulunya plain filename (siapa pun yang tahu nama file bisa unduh). Sekarang nama file adalah **capability token terenkripsi dan terikat sesi** (`app_file_token`, AEAD + hash `session_id` + kadaluarsa). Replay lintas sesi secara kriptografis mustahil; nama mentah ditolak di level router dengan 403. Regression test: `tests/security/HttpMatrixSuite.php` (upload→download→cross-session replay).
 

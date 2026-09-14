@@ -1,6 +1,6 @@
 # Security Audit — TataTertibMhsV2
 
-> **⚠️ Snapshot historis (audit 2026-07-07).** Dokumen ini mencatat temuan **saat kondisi sebelum
+> **Snapshot historis (audit 2026-07-07).** Dokumen ini mencatat temuan **saat kondisi sebelum
 > hardening**. **Seluruh temuan di bawah sudah diperbaiki** pada gelombang hardening 2026-09
 > (authorization server-side, CSRF, session regeneration, upload `finfo_file`+random name,
 > untrack artifact, generic error). Status remediasi & bukti runtime ada di
