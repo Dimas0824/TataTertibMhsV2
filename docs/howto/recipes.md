@@ -9,7 +9,7 @@ Tidak perlu membaca semua docs — cari task, ikuti langkah, selesai.
 
 Format setiap entry:
 
-```
+```markdown
 ## [TASK]
 Penjelasan singkat kapan perlu ini.
 
@@ -27,19 +27,21 @@ Penjelasan singkat kapan perlu ini.
 
 ### Langkah
 
-1. **Daftarkan route** di `helpers/route_helper.php`:
+1. **Daftarkan route** di `helpers/route_helper.php` (dalam array `app_route_registry()`):
 
 ```php
-// Di blok $pageRoutes:
 'page.nama_baru' => [
-    'path' => '/nama-url',
-    'file' => 'views/kategori/nama-file.php',
-    'title' => 'Judul Halaman',
-    'roles' => ['mahasiswa', 'dosen', 'admin'],
+    'kind'    => 'page',
+    'path'    => '/nama-url',
+    'target'  => 'views/kategori/nama-file.php',
+    'methods' => ['GET'],
 ],
 ```
 
-2. **Buat view** di `views/kategori/nama-file.php`:
+> Otorisasi role **tidak** ditaruh di registri; lakukan di dalam view/handler lewat
+> `app_require_role('admin')` (atau `app_require_login()`).
+
+1. **Buat view** di `views/kategori/nama-file.php`:
 
 ```php
 <?php
@@ -53,6 +55,7 @@ render_app_footer();
 ```
 
 ### File yang Berubah
+
 - `helpers/route_helper.php`
 - `views/kategori/nama-file.php` (new)
 
@@ -62,40 +65,44 @@ render_app_footer();
 
 ### Langkah
 
-1. **Daftarkan action** di `helpers/route_helper.php`:
+1. **Daftarkan action** di `helpers/route_helper.php` (dalam `app_route_registry()`):
 
 ```php
 'action.nama_action' => [
-    'path' => '/action/nama',
-    'file' => 'request/handler-nama.php',
+    'kind'    => 'action',
+    'path'    => '/action/nama',
+    'target'  => 'request/handler-nama.php',
+    'methods' => ['POST'],
 ],
 ```
 
-2. **Buat handler** di `request/handler-nama.php`:
+1. **Buat handler** di `request/handler-nama.php`:
 
 ```php
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
-require_once __DIR__ . '/../helpers/route_helper.php';
 require_once __DIR__ . '/../helpers/token_helper.php';
+app_session_start_if_needed();
+require_once __DIR__ . '/../helpers/route_helper.php';
 app_verify_csrf();
 
 // auth guard
-if (!isset($_SESSION['username'])) {
-    http_response_code(401);
-    exit('Unauthorized');
-}
+app_require_login();
 
 try {
     // ... logic ...
     respondJson(true, 'Berhasil.');
-} catch (Exception $e) {
+} catch (Throwable $e) {
     error_log($e->getMessage());
     respondJson(false, 'Terjadi kesalahan.', 500);
 }
 ```
 
+> Jangan panggil `session_start()` langsung — pakai `app_session_start_if_needed()`
+> agar cookie params (HttpOnly/SameSite) tetap terpasang. Guardrail statis menolak
+> `session_start()` mentah di luar `token_helper.php`.
+
 ### File yang Berubah
+
 - `helpers/route_helper.php`
 - `request/handler-nama.php` (new)
 
@@ -132,6 +139,7 @@ body: JSON.stringify({ ...data, csrf_token: csrfToken })
 ```
 
 ### File yang Berubah
+
 - `views/.../form.php` (tambah CSRF field)
 - `request/handler-xxx.php` (tambah `app_verify_csrf()`)
 
@@ -171,6 +179,7 @@ if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
 ```
 
 ### File yang Berubah
+
 - `views/.../xxx.php`
 - `request/handler-upload-xxx.php`
 
@@ -191,13 +200,13 @@ ALTER TABLE NAMA_TABEL
     ADD COLUMN nama_kolom VARCHAR(255) NULL AFTER kolom_existing;
 ```
 
-2. **Jalankan migrasi:**
+1. **Jalankan migrasi:**
 
 ```bash
 php artisan migrate --force
 ```
 
-3. **Update model** di `models/NamaModel.php`:
+1. **Update model** di `models/NamaModel.php`:
 
 ```php
 public function getNamaKolom(): string
@@ -206,9 +215,10 @@ public function getNamaKolom(): string
 }
 ```
 
-4. **Update form view** untuk menampilkan/menerima field baru.
+1. **Update form view** untuk menampilkan/menerima field baru.
 
 ### File yang Berubah
+
 - `database/migrations/YYYYMMDD_HHMMSS_nama_migration.sql`
 - `models/NamaModel.php`
 - `views/.../form.php`
@@ -271,9 +281,11 @@ echo $e->getMessage();
 ### Cek route yang terdaftar
 
 ```php
-// Tambahkan temporarily di router.php sebelum dispatch:
-var_dump(array_keys($pageRoutes));
-var_dump(array_keys($actionRoutes));
+// Cek route yang terdaftar via helper (tanpa edit router):
+var_dump(array_keys(app_route_registry()));
+
+// Atau lihat path: dari token:
+app_route_path('page.home');
 ```
 
 ### Cek session saat ini

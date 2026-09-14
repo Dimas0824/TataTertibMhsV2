@@ -23,7 +23,7 @@ teknis internal — berguna untuk auditor baru maupun sebagai jejak portofolio.
 3. **2026-09-14** — Pentest otomatis Strix: **quick** (menemukan robots.txt MEDIUM) + **deep**
    (authenticated, 0 vulnerability), plus menemukan bug fungsional `/action/upload` 500.
    **Semua temuan (robots.txt + upload 500 + gap IDOR upload) sudah diperbaiki dan diverifikasi**
-   (`php tests/run.php` → 63/63 PASS).
+   (`php tests/run.php` → 160/160 PASS; line coverage inti >80%).
 
 ## Kebijakan keamanan
 

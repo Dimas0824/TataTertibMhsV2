@@ -9,7 +9,7 @@ Bukan tutorial — langsung ke fakta.
 
 | Komponen | Nilai |
 |---|---|
-| Bahasa | PHP 8.1+ (native, tanpa framework) |
+| Bahasa | PHP 8.3 (native, tanpa framework) |
 | Database | MySQL/MariaDB via PDO |
 | Frontend | HTML5, CSS3, Vanilla JS (ES6+) |
 | Routing | Custom central router (router.php) |
@@ -34,39 +34,37 @@ router.php (dispatch berdasarkan PATH_INFO)
 
 ## Routing Registry
 
-Lokasi: `helpers/route_helper.php`
+Lokasi: `helpers/route_helper.php` → `app_route_registry()`
 
-### Page Routes
-
-Format:
+### Format Registri
 
 ```php
+// Page route
 'page.slug' => [
-    'path' => '/url-path',
-    'file' => 'views/kategori/file.php',
-    'title' => 'Judul Halaman',
-    'roles' => ['mahasiswa', 'dosen', 'admin'],  // opsional, empty = guest
+    'kind'    => 'page',
+    'path'    => '/url-path',
+    'target'  => 'views/kategori/file.php',
+    'methods' => ['GET'],
 ],
-```
 
-### Action Routes
-
-Format:
-
-```php
+// Action route
 'action.slug' => [
-    'path' => '/action/nama',
-    'file' => 'request/handler-nama.php',
+    'kind'    => 'action',
+    'path'    => '/action/nama',
+    'target'  => 'request/handler-nama.php',
+    'methods' => ['POST'],
 ],
 ```
 
-### Helper URL
+Akses role dialakukan di dalam handler/view (`app_require_role()`), bukan di registri.
+
+### Helper URL & Token
 
 ```php
-app_page_url('page.slug')                   // → string URL
-app_action_url('action.slug')              // → string URL
-app_id_token('nama_tabel', (int) $id)      // → encrypted token string
-app_id_resolve((string) $token, 'nama_tabel') // → int|null
+app_page_url('page.slug')                        // → string URL halaman
+app_action_url('action.slug')                    // → string URL action
+app_id_token('detail_pelanggaran', (int) $id)    // → encrypted token string
+app_id_resolve((string) $token, 'detail_pelanggaran') // → int|null
 ```
 
 ---
@@ -75,19 +73,21 @@ app_id_resolve((string) $token, 'nama_tabel') // → int|null
 
 | File | Responsibility |
 |---|---|
-| `UserController.php` | Login, logout, session, role redirect |
-| `PelanggaranController.php` | CRUD pelanggaran, konfirmasi, delete |
+| `UserController.php` | Login (multi-role), logout, ambil data mahasiswa/admin |
+| `PelanggaranController.php` | CRUD pelanggaran, konfirmasi selesai, hapus, mark notifikasi |
 | `TatibController.php` | CRUD tata tertib |
-| `NewsController.php` | CRUD berita, upload gambar |
+| `NewsController.php` | CRUD berita, upload gambar, slug helper |
 
-### Auth Methods (UserController)
+### Auth (UserController)
 
 ```php
-UserController::login(string $username, string $password, string $userType): array
-// Return: ['status' => 'success'|'error', 'message' => string, 'role' => string]
+UserController::login($username, $password, $userType)
+// Coba role sesuai userType (alias: nim/nidn/nip), fallback ke urutan
+// mahasiswa → dosen → admin. Sukses → set session, regenerate id,
+// redirect per role. Gagal → return false.
 
-UserController::logout(): void
-// Destroys session, clears cookies, redirects
+UserController::logout()
+// Hancurkan session, hapus cookie, redirect ke index
 ```
 
 ---
@@ -96,11 +96,11 @@ UserController::logout(): void
 
 | File | Tabel | Key Methods |
 |---|---|---|
-| `User.php` | `MAHASISWA`, `DOSEN`, `ADMIN` | `findByUsername()`, `findById()` |
-| `Pelanggaran.php` | `DETAIL_PELANGGARAN`, `PELANGGARAN` | `findByMahasiswa()`, `create()`, `update()` |
-| `Tatib.php` | `TATA_TERTIB` | `all()`, `find()`, `create()`, `update()`, `delete()` |
-| `News.php` | `BERITA` | `all()`, `find()`, `create()`, `update()`, `delete()` |
-| `Sanksi.php` | `SANKSI` | `findByPelanggaran()` |
+| `User.php` | `mahasiswa`, `dosen`, `admin` | `getMahasiswaLogin()`, `getDosenLogin()`, `getAdminLogin()`, `getAllMahasiswa()`, `getAdminName()` |
+| `Pelanggaran.php` | `detail_pelanggaran` | `simpanDetailPelanggaran()`, `updateDetailPelanggaran()`, `konfirmasiLaporanSelesaiByDosen()`, `hapusDetailPelanggaranByDosen()`, `searchMahasiswaByKeyword()`, `markNotifikasiAsRead*()` |
+| `Tatib.php` | `tata_tertib` | `getAllTatib()`, `getTatibById()`, `insertTatib()`, `updateTatib()`, `deleteTatib()` |
+| `News.php` | `news` | `getAllNews()`, `getNewsById()`, `insertNews()`, `updateNews()`, `deleteNews()` |
+| `Sanksi.php` | `sanksi` | `getAllSanksi()` |
 
 ### Query Pattern
 
@@ -136,12 +136,13 @@ app_verify_csrf()  // void — verify POST/JSON token, exit(419) if invalid
 ### Token ID Helpers
 
 ```php
-// Enkripsi ID untuk mencegah IDOR
+// Enkripsi ID untuk mencegah IDOR (AEAD: sodium secretbox / AES-256-GCM)
+// Token terikat sesi (sid hash) + expiry.
 app_id_token('detail_pelanggaran', 42)
-// → "eyJ..." (base64url encoded + HMAC)
+// → "s1.xxxx" (algo-prefixed, base64url)
 
 // Dekripsi kembali ke integer
-app_id_resolve("eyJ...", 'detail_pelanggaran')
+app_id_resolve("s1.xxxx", 'detail_pelanggaran')
 // → 42 atau null
 ```
 
@@ -192,8 +193,7 @@ function respondJson(bool $success, string $message, int $code = 200): void {
 
 ```php
 app_redirect('views/page/tujuan.php');
-// atau
-app_redirect_page('page.slug');
+// Redirect ke path relatif (301/302)
 ```
 
 ### Flash Feedback

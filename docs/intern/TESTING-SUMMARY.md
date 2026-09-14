@@ -40,9 +40,10 @@ php tests/run.php
 - ✅ All model classes validated
 - ⏭️ Database tests skipped (requires DB setup)
 
-> **Kemudian (2026-09):** suite diperluas dengan **regresi keamanan** (`tests/security/**`:
-> `TokenSuite`, `SourceScanSuite`, `HttpMatrixSuite` — 39 test red-team). Total suite kini ~59 test,
-> mencakup unit + integration (DB `disciplink_test`) + security. DB test tidak lagi di-skip.
+> **Kemudian (2026-09):** suite diperluas dengan **regresi keamanan** (`tests/security/**`)
+> dan **unit/behavior** (model & controller) — total suite kini **160 test, semua PASS**.
+> Mencakup unit + integration (DB) + security + HTTP handler coverage. Line coverage diukur
+> dengan Xdebug (`tests/cover.php`); fungsi inti >80%. Lihat [`../../tests/README.md`](../../tests/README.md).
 
 ---
 

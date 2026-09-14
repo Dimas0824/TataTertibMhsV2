@@ -7,10 +7,13 @@ tests/e2e/test-results/
 tests/e2e/playwright-report/
 tests/test-results/
 tests/playwright-report/
+tests/.cov-server.json
 
 # Environment
 .env
+.env.testing
 !.env.example
+!tests/.env.testing.example
 
 # Keep storage tracked, but exclude sensitive runtime keys.
 storage/keys/app.key

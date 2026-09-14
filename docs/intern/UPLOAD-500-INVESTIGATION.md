@@ -164,7 +164,7 @@ nama placeholder berulang. Bug ini terisolasi hanya di `request/handler-upload.p
 - [x] **Retest otorisasi objek** (cross-user upload) — **SELESAI**: `tests/security/UploadOwnershipSuite.php`
       mencakup owner sukses (mahasiswa & dosen), cross-user ditolak, anon/CSRF-less tidak sampai jalur tulis.
 - [x] **Regresi otomatis** — **SELESAI**: `tests/security/UploadOwnershipSuite.php` terdaftar di
-      `tests/run.php`. Bukti runtime: `php tests/run.php` → **63/63 PASS, 0 failed** (2026-09-14).
+      `tests/run.php`. Bukti runtime: `php tests/run.php` → **160/160 PASS, 0 failed** (2026-09-14).
 
 **Status akhir: ✅ CLOSED** — bug fungsional diperbaiki, gap otorisasi objek ditutup, regresi terpasang.
 

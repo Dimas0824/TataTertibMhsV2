@@ -95,6 +95,7 @@ docs/
 │   ├── architecture.md     ← Explanation: keputusan arsitektur
 │   └── security.md         ← Explanation: keamanan
 └── intern/
+    ├── README.md                      ← Index laporan internal
     ├── PENTEST-REPORT-2026-09-08.md   ← Audit code-level
     ├── pentest-strix/                 ← Pentest otomatis (Strix)
     ├── SECURITY_AUDIT.md              ← Audit baseline

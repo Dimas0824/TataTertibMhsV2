@@ -6,7 +6,7 @@ Sistem informasi tata tertib mahasiswa — mengelola aturan, pelanggaran, notifi
 ![E2E](https://github.com/Dimas0824/TataTertibMhsV2/actions/workflows/e2e.yml/badge.svg)
 ![PHP](https://img.shields.io/badge/PHP-8.3-777bb3?logo=php&logoColor=white)
 ![Security](https://img.shields.io/badge/security-audited%20%C2%B7%20regression%20tested-brightgreen)
-![Tests](https://img.shields.io/badge/e2e-21%2F21%20chromium-brightgreen)
+![Tests](https://img.shields.io/badge/tests-160%2F160-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
 ---
@@ -31,6 +31,7 @@ Buka [http://127.0.0.1:8000](http://127.0.0.1:8000)
 | Role | Username | Password |
 | ------ | ---------- | --------- |
 | Mahasiswa | `2341238901` | `password123` |
+| Mahasiswa (2) | `2341238902` | `password456` |
 | Dosen | `1234567890` | `password123` |
 | Admin | `ADMIN001` | `admin123` |
 
@@ -50,9 +51,10 @@ Buka [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 Lihat **[docs/README.md](docs/README.md)** untuk navigasi lengkap (Diataxis: tutorial, how-to, reference, explanation).
 
-- **Keamanan & hasil audit/pentest:** [docs/intern/](docs/intern/pentest-strix/README.md)
+- **Keamanan & hasil audit/pentest:** [docs/intern/](docs/intern/README.md)
 - **Kebijakan keamanan & pelaporan kerentanan:** [SECURITY.md](SECURITY.md)
 - **Panduan kontribusi:** [CONTRIBUTING.md](CONTRIBUTING.md)
+- **Panduan testing (cara jalan, struktur, coverage):** [tests/README.md](tests/README.md)
 - **Bug tracking (historis):** [docs/intern/BUG_REPORT.md](docs/intern/BUG_REPORT.md)
 
 ---
@@ -65,7 +67,8 @@ Lihat **[docs/README.md](docs/README.md)** untuk navigasi lengkap (Diataxis: tut
 | **Arsitektur** | MVC + Request Handler + Central Router |
 | **Auth** | Role-based (Mahasiswa, Dosen, Admin) |
 | **CLI** | Custom `artisan` untuk migrate/seed/serve |
-| **Testing** | Unit + Integration + Security regression + E2E (Playwright) |
+| **Testing** | Unit + Integration + Security regression + E2E (Playwright) — **160/160** hijau |
+| **Coverage** | Line coverage via Xdebug (`tests/cover.php`); fungsi inti >80% |
 
 ---
 
@@ -78,13 +81,21 @@ Red-team yang me-replay payload dari pentest code-level dan memastikan setiap ce
 
 | Suite | Fokus |
 | ------- | ------- |
-| `TokenSuite` | Capability token (file/ID): tamper → fail-closed, entity-scoped, CSRF 64-hex |
+| `TokenSuite` | Capability token (file/ID): tamper → fail-closed, entity-scoped, CSRF 64-hex, edge-case token |
 | `SourceScanSuite` | Guardrail statis: error disclosure, bare `session_start`, `0777`, dynamic-exec, deny rules |
+| `UploadOwnershipSuite` | Upload dokumen: regresi bug 500 (placeholder PDO), otorisasi objek cross-user, guard CSRF |
+| `HandlerCoverageSuite` | Handler action: notifikasi, tatib (admin), pelanggaran (lookup/confirm/delete) |
+| `NewsHandlerSuite` | Handler berita: store/update/delete + validasi token & role |
+| `PelanggaranFormSuite` | Form `/pelaporan`: store/update laporan dosen + validasi token tatib |
 | `HttpMatrixSuite` | Blackbox vs `php -S`: deny matrix, headers, CSRF, IDOR, upload, brute-force, XSS pipeline |
 
 ```bash
 php tests/run.php          # unit + integration + security (butuh DB; ~3-6 mnt)
 ```
+
+**Menjalankan test dengan DB lokal:** salin `tests/.env.testing.example` → `tests/.env.testing`
+(atau biarkan kosong → fallback ke `.env` root). Suite HTTP men-boot `php -S` sendiri di
+port 8123-8140, jadi server dev tidak perlu berjalan.
 
 **2. Pentest (audit terarah)** — lihat [`docs/intern/PENTEST-REPORT-2026-09-08.md`](docs/intern/PENTEST-REPORT-2026-09-08.md)
 Audit code-level yang memetakan & menutup temuan (auth/session, injection, file handling, XSS, server config).
@@ -109,6 +120,21 @@ yang dapat dieksploitasi**. Kontrol otorisasi server-side terbukti kuat.
 **Menemukan bug atau kerentanan?** Kami menyambut kontribusi — buka **GitHub Issue** (label
 `security`/`bug`) atau kirim **Pull Request**. Lihat [CONTRIBUTING.md](CONTRIBUTING.md) dan
 [SECURITY.md](SECURITY.md).
+
+---
+
+## Coverage
+
+Line coverage diukur dengan Xdebug (CLI + HTTP server digabung):
+
+```bash
+XDEBUG_MODE=coverage php tests/cover.php    # butuh Xdebug terpasang (lihat tests/README.md)
+```
+
+**Prinsip: kualitas, bukan angka.** Fungsi-fungsi inti (auth, capability token, otorisasi objek,
+upload, model pelanggaran) sudah **>80%** dan teruji lewat regresi yang bermakna. Baris yang
+sengaja dibiarkan belum ter-cover umumnya adalah cabang error defensif / catch-block yang hanya
+bisa dipicu dengan memaksa kegagalan buatan.
 
 ---
 
