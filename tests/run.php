@@ -40,6 +40,8 @@ $testFiles = [
     __DIR__ . '/security/PelanggaranFormSuite.php',
     // Login brute-force + NUL-truncation regression (HTTP):
     __DIR__ . '/security/LoginBruteForceSuite.php',
+    // Session cookie + lifecycle regression (HTTP + white-box):
+    __DIR__ . '/security/SessionLifecycleSuite.php',
     // HTTP matrix boots its own `php -S` harness; longest-running, last:
     __DIR__ . '/security/HttpMatrixSuite.php',
 ];

@@ -11,7 +11,7 @@ if (!function_exists('app_session_start_if_needed')) {
         if (session_status() !== PHP_SESSION_ACTIVE) {
             if (PHP_SAPI !== 'cli' && !headers_sent()) {
                 session_set_cookie_params([
-                    'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
+                    'secure'   => app_request_is_https(),
                     'httponly' => true,
                     'samesite' => 'Lax',
                 ]);
@@ -98,13 +98,37 @@ if (!function_exists('app_verify_csrf')) {
     }
 }
 
+if (!defined('APP_SESSION_ABSOLUTE_TTL')) {
+    // Absolute session lifetime (12h) independent of activity: a session is
+    // invalid past this age even if it was used continuously (CWE-613).
+    define('APP_SESSION_ABSOLUTE_TTL', 43200);
+}
+
 if (!function_exists('app_session_touch_or_expire')) {
-    function app_session_touch_or_expire(int $idleTtl = 1800): bool
+    function app_session_touch_or_expire(int $idleTtl = 1800, int $absoluteTtl = APP_SESSION_ABSOLUTE_TTL): bool
     {
         app_session_start_if_needed();
 
         $now = time();
         $lastActivity = isset($_SESSION['__last_activity']) ? (int) $_SESSION['__last_activity'] : 0;
+
+        // Stamp the creation time once; sessions predating this field are
+        // upgraded in place rather than logged out.
+        if (!isset($_SESSION['__created_at'])) {
+            $_SESSION['__created_at'] = $now;
+        }
+        $createdAt = (int) $_SESSION['__created_at'];
+
+        if (($now - $createdAt) > $absoluteTtl) {
+            $_SESSION = [];
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                session_destroy();
+            }
+            @session_start();
+            $_SESSION['__last_activity'] = $now;
+            $_SESSION['__created_at'] = $now;
+            return false;
+        }
 
         if ($lastActivity > 0 && ($now - $lastActivity) > $idleTtl) {
             $_SESSION = [];
@@ -113,6 +137,7 @@ if (!function_exists('app_session_touch_or_expire')) {
             }
             @session_start();
             $_SESSION['__last_activity'] = $now;
+            $_SESSION['__created_at'] = $now;
             return false;
         }
 
