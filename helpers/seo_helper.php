@@ -3,6 +3,48 @@
 declare(strict_types=1);
 require_once __DIR__ . '/path_helper.php';
 
+if (!function_exists('app_csp_nonce')) {
+    /**
+     * Per-request CSP nonce. Generated once and cached for the whole request so the
+     * value written into the Content-Security-Policy header always matches the value
+     * written into every <script nonce="..."> attribute, regardless of which of the
+     * (multiple) call-sites invokes apply_security_headers() first.
+     */
+    function app_csp_nonce(): string
+    {
+        static $nonce = null;
+        if (is_string($nonce) && $nonce !== '') {
+            return $nonce;
+        }
+
+        try {
+            $bytes = random_bytes(16); // 128 bits
+        } catch (\Throwable $e) {
+            // Extremely unlikely; fail closed to a process-unique value rather than
+            // emitting a predictable constant.
+            $bytes = substr(hash('sha256', uniqid((string) getmypid(), true), true), 0, 16);
+        }
+
+        $nonce = base64_encode($bytes);
+        return $nonce;
+    }
+}
+
+if (!function_exists('app_csp_nonce_attr')) {
+    /**
+     * Ready-to-print HTML attribute: nonce="...". Returns '' under CLI (no HTTP
+     * response, nothing to protect) so view code can always call it unconditionally.
+     */
+    function app_csp_nonce_attr(): string
+    {
+        if (PHP_SAPI === 'cli') {
+            return '';
+        }
+
+        return 'nonce="' . htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8') . '"';
+    }
+}
+
 if (!function_exists('app_seo_load_env')) {
     function app_seo_load_env(): array
     {
@@ -193,11 +235,16 @@ if (!function_exists('app_seo_apply_security_headers')) {
         header('Referrer-Policy: strict-origin-when-cross-origin');
         header('Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()');
 
-        // 'unsafe-inline' script/style karena view memakai inline <script> + CDN css on-the-fly;
-        // upgrade path: nonce per-tag lalu hapus 'unsafe-inline'.
+        // script-src uses a per-request nonce instead of 'unsafe-inline': every inline
+        // <script> carries nonce="..." matching the header. Inline event handler
+        // attributes (onload=, onclick=) are disallowed outright via script-src-attr
+        // 'none'; the preload handlers were migrated to plain stylesheets. style-src
+        // keeps 'unsafe-inline' (out of scope for this change).
+        $nonce = app_csp_nonce();
         $csp = implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.googletagmanager.com",
+            "script-src 'self' 'nonce-" . $nonce . "' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.googletagmanager.com",
+            "script-src-attr 'none'",
             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com",
             "font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
             "img-src 'self' data: https:",
@@ -437,7 +484,7 @@ if (!function_exists('app_seo_analytics_tags')) {
         $escapedId = htmlspecialchars($measurementId, ENT_QUOTES, 'UTF-8');
         ?>
         <script async src="https://www.googletagmanager.com/gtag/js?id=<?= $escapedId ?>"></script>
-        <script>
+        <script <?= app_csp_nonce_attr() ?>>
             window.dataLayer = window.dataLayer || [];
             function gtag() {
                 dataLayer.push(arguments);

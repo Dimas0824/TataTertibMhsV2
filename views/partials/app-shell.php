@@ -101,7 +101,7 @@ if (!function_exists('render_app_sidebar')) {
             </ul>
         </aside>
 
-        <script>
+        <script <?= app_csp_nonce_attr() ?>>
         // Logout is POST-only + CSRF now; render the nav link as a silent POST form on click.
         document.addEventListener('click', function (e) {
             var a = e.target && e.target.closest ? e.target.closest('a[data-logout-post]') : null;

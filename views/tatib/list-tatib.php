@@ -221,7 +221,7 @@ $tatibTableConfig = [
     </div>
     <script defer
         src="<?= htmlspecialchars(app_seo_script_src('js/universal-table-filter.js'), ENT_QUOTES, 'UTF-8') ?>"></script>
-    <script>
+    <script <?= app_csp_nonce_attr() ?>>
         (function () {
             const tableRoot = document.getElementById('tatib-table');
             const sanksiItems = document.querySelectorAll('.sanksi-tingkat');

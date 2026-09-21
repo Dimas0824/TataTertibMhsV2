@@ -275,11 +275,7 @@ $studentTableConfig = [
     <link rel="stylesheet" href="<?= htmlspecialchars(app_asset_url('css/pelanggaran-page.css'), ENT_QUOTES, 'UTF-8') ?>">
     <link rel="stylesheet" href="<?= htmlspecialchars(app_asset_url('css/modal.css'), ENT_QUOTES, 'UTF-8') ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css"
-        onload="this.onload=null;this.rel='stylesheet'">
-    <noscript>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
-    </noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
@@ -540,7 +536,7 @@ $studentTableConfig = [
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal()">Batal</button>
+                <button type="button" class="btn btn-secondary" data-modal-close="uploadModal">Batal</button>
                 <button type="submit" class="btn btn-primary" form="formSuratPernyataan">Simpan</button>
             </div>
         </div>
@@ -559,7 +555,7 @@ $studentTableConfig = [
         src="<?= htmlspecialchars(app_seo_script_src('js/mobile-violation-cards.js'), ENT_QUOTES, 'UTF-8') ?>"></script>
     <script defer
         src="<?= htmlspecialchars(app_seo_script_src('js/pelanggaran-dashboard.js'), ENT_QUOTES, 'UTF-8') ?>"></script>
-    <script>
+    <script <?= app_csp_nonce_attr() ?>>
         const showUploadFeedback = (payload) => {
             if (window.AppModal && typeof window.AppModal.show === 'function') {
                 window.AppModal.show(payload);

@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const modal = document.getElementById("uploadModal");
-    const closeModalBtn = document.querySelector(".btn-secondary"); // Tombol Batal
+    const closeModalBtn = document.querySelector('[data-modal-close="uploadModal"]'); // Tombol Batal
     const saveBtn = document.querySelector(".btn-primary"); // Tombol Simpan
 
     // Fungsi untuk membuka modal
