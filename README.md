@@ -1,4 +1,4 @@
-# DiscipLink V2
+﻿# DiscipLink V2
 
 Sistem informasi tata tertib mahasiswa - mengelola aturan, pelanggaran, notifikasi, dan berita kedisiplinan dalam satu platform terpusat.
 
@@ -166,7 +166,10 @@ lookup keduanya case-insensitive. Analisis + skrip buktinya ada di
 cd docs/intern/strix-runs/strix-2026-09-21/area1-login/after && bash reproduce.sh http://127.0.0.1:8123
 ```
 
-Struktur & konvensi folder: **[`docs/intern/strix-runs/README.md`](docs/intern/strix-runs/README.md)**
+Struktur & konvensi folder: **[`docs/intern/strix-runs/README.md`](docs/intern/strix-runs/README.md)** 
+dokumen itu memuat **kontrak struktur + aturan dokumentasi** (dipatuhi setiap run, tiap
+tanggal: `areaN/before/` = temuan mentah, `areaN/after/` = bukti fix, plus `instructions/`
+dan `README.md` di tiap level) supaya dokumentasi tetap **seragam dan persisten** antar run.
 
 Setiap temuan punya **regression test** yang mengunci perbaikannya (`LoginThrottleHelperTest`,
 `LoginBruteForceSuite`, `SessionLifecycleSuite`, `SessionFixationSuite`, `Area3AccessSuite`,

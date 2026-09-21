@@ -58,23 +58,31 @@ Detail lengkap: [`verification-analysis/README.md`](verification-analysis/README
 
 ## Struktur folder
 
+Mengikuti [kontrak struktur & dokumentasi](../README.md#struktur-wajib--sama-untuk-setiap-tanggal):
+
 ```
 strix-2026-09-22/
 ├── README.md                    (dokumen ini)
+├── instructions/                instruksi area yang dijalankan (identik dgn run 21-09)
 ├── verification-analysis/       analisis + skrip bukti false positive
-├── area1-login/                 findings.sarif, vulnerabilities/, run.json, strix.log, .state/
-├── area2-session-csrf/
+├── area1-login/
+│   ├── README.md                indeks area
+│   ├── before/                  findings.sarif, vulnerabilities/, run.json, strix.log, .state/
+│   └── after/README.md          bukti perbaikan temuan BARU area ini (bila ada)
+├── area2-session-csrf/          (before/ + after/README.md)
 ├── area3-upload-idor/
 ├── area4-pelanggaran/
 └── area5-news-xss/
 ```
 
-Setiap `areaN/` berisi artefak verbatim run re-scan (SARIF 2.1.0 tool=Strix,
+Setiap `areaN/before/` berisi artefak verbatim run re-scan (SARIF 2.1.0 tool=Strix,
 PoC di `vulnerabilities/`, laporan, log, database percakapan agent).
 
 ## Catatan
 
-- Belum ada `after/` di folder ini — perbaikan temuan 2026-09-22 **belum
-  diverifikasi ulang dengan re-scan ketiga**. Verifikasi berbasis test ada di
-  `tests/security/**` (suite regression per temuan).
-- Instruksi scan: sama dengan [`../strix-2026-09-21/instructions/`](../strix-2026-09-21/instructions/)
+- `after/` di sini memuat perbaikan **temuan BARU 2026-09-22** (4 valid, sudah
+  difix; area 1 tidak punya temuan valid). Perbaikan ini dikunci **regression test**,
+  tetapi **belum diverifikasi re-scan Strix ketiga** - atribut ini dinyatakan jujur
+  di tiap `areaN/after/README.md`.
+- Instruksi scan: [`instructions/`](instructions/) (sama dengan
+  [`../strix-2026-09-21/instructions/`](../strix-2026-09-21/instructions/)).
