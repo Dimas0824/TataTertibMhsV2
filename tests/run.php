@@ -33,6 +33,8 @@ $testFiles = [
     __DIR__ . '/unit/Area4WorkflowSuite.php',
     // AREA 5 news sanitizer (stored XSS):
     __DIR__ . '/unit/Area5XssSuite.php',
+    // AREA 5 JSON-LD title break-out (found in re-run verification):
+    __DIR__ . '/unit/Area5JsonLdSuite.php',
     __DIR__ . '/integration/DatabaseTest.php',
     __DIR__ . '/security/SourceScanSuite.php',
     __DIR__ . '/security/TokenSuite.php',
