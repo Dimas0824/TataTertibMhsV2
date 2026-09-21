@@ -253,6 +253,19 @@ class Pelanggaran
         return (int) $result['id_sanksi'];
     }
 
+    public function getSanksiTingkatById(int $idSanksi): ?string
+    {
+        $stmt = $this->connect->prepare("SELECT tingkat FROM SANKSI WHERE id_sanksi = ? LIMIT 1");
+        $stmt->execute([$idSanksi]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$result || !isset($result['tingkat'])) {
+            return null;
+        }
+
+        return (string) $result['tingkat'];
+    }
+
     public function simpanDetailPelanggaran($nidn_dosen, $id_tata_tertib, $nim_mahasiswa, $id_sanksi, $detail_pelanggaran, $tugas_khusus, $surat, $status, $status_tugas, $delegasi_tugas_ke_dpa = false)
     {
         $idTatib = (int) $id_tata_tertib;
@@ -296,10 +309,20 @@ class Pelanggaran
                 throw new RuntimeException('Jenis pelanggaran tidak valid.');
             }
 
-            $stmtSanksi = $this->connect->prepare("SELECT id_sanksi FROM SANKSI WHERE id_sanksi = ? LIMIT 1");
+            $stmtSanksi = $this->connect->prepare("SELECT id_sanksi, tingkat FROM SANKSI WHERE id_sanksi = ? LIMIT 1");
             $stmtSanksi->execute([$idSanksi]);
-            if (!$stmtSanksi->fetch(PDO::FETCH_ASSOC)) {
+            $sanksi = $stmtSanksi->fetch(PDO::FETCH_ASSOC);
+            if (!$sanksi) {
                 throw new RuntimeException('Sanksi tidak valid.');
+            }
+
+            // The sanction tier must match the violation tier: the sanction comes
+            // from the client, so without this a lecturer could attach a Tier I
+            // (expulsion) sanction to a trivial Tier V violation (CWE-20).
+            $sanksiTingkat = strtoupper(trim((string) ($sanksi['tingkat'] ?? '')));
+            $tingkat = strtoupper(trim((string) ($tatib['tingkat'] ?? '')));
+            if ($sanksiTingkat !== '' && $tingkat !== '' && $sanksiTingkat !== $tingkat) {
+                throw new RuntimeException('Sanksi tidak sesuai dengan tingkat pelanggaran.');
             }
 
             $idDosen = (int) $dosen['id_dosen'];
@@ -444,10 +467,20 @@ class Pelanggaran
                 throw new RuntimeException('Jenis pelanggaran tidak valid.');
             }
 
-            $stmtSanksi = $this->connect->prepare("SELECT id_sanksi FROM SANKSI WHERE id_sanksi = ? LIMIT 1");
+            $stmtSanksi = $this->connect->prepare("SELECT id_sanksi, tingkat FROM SANKSI WHERE id_sanksi = ? LIMIT 1");
             $stmtSanksi->execute([$idSanksi]);
-            if (!$stmtSanksi->fetch(PDO::FETCH_ASSOC)) {
+            $sanksi = $stmtSanksi->fetch(PDO::FETCH_ASSOC);
+            if (!$sanksi) {
                 throw new RuntimeException('Sanksi tidak valid.');
+            }
+
+            // The sanction tier must match the violation tier: the sanction comes
+            // from the client, so without this a lecturer could attach a Tier I
+            // (expulsion) sanction to a trivial Tier V violation (CWE-20).
+            $sanksiTingkat = strtoupper(trim((string) ($sanksi['tingkat'] ?? '')));
+            $tingkat = strtoupper(trim((string) ($tatib['tingkat'] ?? '')));
+            if ($sanksiTingkat !== '' && $tingkat !== '' && $sanksiTingkat !== $tingkat) {
+                throw new RuntimeException('Sanksi tidak sesuai dengan tingkat pelanggaran.');
             }
 
             $idDosenPelapor = (int) ($currentDetail['id_dosen'] ?? 0);

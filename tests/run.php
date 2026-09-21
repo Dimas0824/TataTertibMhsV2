@@ -27,6 +27,8 @@ $testFiles = [
     __DIR__ . '/unit/ControllerCoverageTest.php',
     // Login hardening helpers (NUL/length guard + durable throttle):
     __DIR__ . '/unit/LoginThrottleHelperTest.php',
+    // AREA 4 sanction-tier validation:
+    __DIR__ . '/unit/Area4SanctionSuite.php',
     __DIR__ . '/integration/DatabaseTest.php',
     __DIR__ . '/security/SourceScanSuite.php',
     __DIR__ . '/security/TokenSuite.php',
