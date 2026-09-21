@@ -38,6 +38,7 @@ if (!is_dir($uploadDir)) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     app_require_login();
     app_verify_csrf();
+    $connect = $GLOBALS['connect'] ?? null;
     if (!isset($connect) || !($connect instanceof PDO)) {
         respondJson(false, 'Koneksi database tidak tersedia.', 500);
     }

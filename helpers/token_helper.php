@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/path_helper.php';
 require_once __DIR__ . '/audit_helper.php';
+require_once __DIR__ . '/session_inventory_helper.php';
 
 if (!function_exists('app_session_start_if_needed')) {
     function app_session_start_if_needed(): void
@@ -131,6 +132,22 @@ if (!function_exists('app_session_touch_or_expire')) {
         }
 
         if ($lastActivity > 0 && ($now - $lastActivity) > $idleTtl) {
+            $_SESSION = [];
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                session_destroy();
+            }
+            @session_start();
+            $_SESSION['__last_activity'] = $now;
+            $_SESSION['__created_at'] = $now;
+            return false;
+        }
+
+        // Revoked-session check: if a newer login replaced this session's
+        // inventory row, tear this one down (CWE-613). Fail-soft when no store.
+        if (isset($_SESSION['username'], $_SESSION['user_type'])
+            && function_exists('app_session_inventory_is_current')
+            && !app_session_inventory_is_current((string) $_SESSION['user_type'], (string) $_SESSION['username'])
+        ) {
             $_SESSION = [];
             if (session_status() === PHP_SESSION_ACTIVE) {
                 session_destroy();

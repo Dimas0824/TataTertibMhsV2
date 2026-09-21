@@ -40,6 +40,11 @@ require_once __DIR__ . '/helpers/audit_helper.php';
 app_seo_enforce_canonical_host();
 app_seo_apply_security_headers();
 
+// Load the DB handle before the session check: the revoked-session guard in
+// app_session_touch_or_expire() needs $GLOBALS['connect'], and without it the
+// guard fail-softs to "not revoked" and silently does nothing.
+require_once __DIR__ . '/config.php';
+
 app_session_start_if_needed();
 $sessionAlive = app_session_touch_or_expire(1800);
 

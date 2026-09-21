@@ -101,7 +101,7 @@ $runner->addTest('session: an aged session is rejected beyond the absolute lifet
 
 $runner->addTest('session: a legacy session without __created_at is upgraded, not rejected (CWE-613)', function () {
     app_session_start_if_needed();
-    $savedSession = $_SESSION;
+    $savedSession = $GLOBALS['_SESSION'] ?? $_SESSION ?? [];
 
     try {
         $_SESSION = ['__last_activity' => time(), 'username' => 'zz-sess-probe'];
@@ -123,8 +123,17 @@ $runner->addTest('session: a second login for the same account revokes the first
         return;
     }
 
+    // The white-box session tests above write $_SESSION directly; restart the
+    // in-process session so this HTTP test starts from a clean state (otherwise
+    // the stale session makes GET /login redirect and the CSRF token mismatch).
+    $_SESSION = [];
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_destroy();
+    }
+
     $cleanup = static function () use ($c) {
         $c->prepare("DELETE FROM USER_SESSION WHERE actor_id IN ('2341238901','2341238902')")->execute();
+        $c->prepare("DELETE FROM SECURITY_AUDIT_LOG WHERE event IN ('login_fail','login_locked','login_reject_input') AND actor_id IN ('2341238901','2341238902')")->execute();
     };
     $cleanup();
 
@@ -153,6 +162,11 @@ $runner->addTest('session: re-login of one account does not revoke a different a
     if ($c === null || !$slTableExists($c, 'USER_SESSION')) {
         echo "\n       (skipped: USER_SESSION table unavailable)";
         return;
+    }
+
+    $_SESSION = [];
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_destroy();
     }
 
     $cleanup = static function () use ($c) {

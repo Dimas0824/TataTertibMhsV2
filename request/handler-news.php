@@ -59,6 +59,7 @@ try {
         }
 
         // Cek ID admin di database (opsional untuk validasi tambahan)
+        $connect = $GLOBALS['connect'] ?? null;
         if (!isset($connect) || !($connect instanceof PDO)) {
             throw new Exception("Koneksi database tidak tersedia.");
         }

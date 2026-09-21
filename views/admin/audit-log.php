@@ -26,7 +26,8 @@ $auditRows = [];
 $knownEvents = [];
 $pdoMessage = '';
 
-if ($connect instanceof PDO) {
+if (($GLOBALS['connect'] ?? null) instanceof PDO) {
+    $connect = $GLOBALS['connect'];
     try {
         $stmt = $connect->query(
             'SELECT event, actor_type, actor_id, sid, ip, detail, created_at

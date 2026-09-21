@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../helpers/path_helper.php';
 require_once __DIR__ . '/../helpers/token_helper.php';
+require_once __DIR__ . '/../helpers/session_inventory_helper.php';
 app_require('config.php');
 app_require('models/User.php');
 app_require('helpers/flash_modal.php');
@@ -60,6 +61,7 @@ class UserController
                     $_SESSION['username'] = $username;
                     $_SESSION['user_type'] = $role;
                     $_SESSION['user_data'] = $user;
+                    app_session_inventory_register($role, (string) $username);
                     app_audit_log('login_ok', ['actor_type' => $role, 'actor_id' => $username]);
                     set_app_flash_modal('success', 'Login berhasil.');
                     app_redirect($authFlows[$role]['redirect']);
@@ -77,6 +79,7 @@ class UserController
     public function logout()
     {
         app_session_start_if_needed();
+        app_session_inventory_forget();
         $_SESSION = [];
         session_destroy();
         if (ini_get('session.use_cookies')) {

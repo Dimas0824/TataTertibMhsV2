@@ -25,7 +25,7 @@ if (($_SESSION['user_type'] ?? '') !== 'admin') {
 // Ambil ID berita dari route token
 $id = (int) app_route_data('id_news', 0);
 if ($id > 0) {
-    $newsController = new NewsController($connect);
+    $newsController = new NewsController($GLOBALS['connect'] ?? null);
     $news = $newsController->getNewsById($id);
 
     if (!$news) {

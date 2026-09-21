@@ -13,7 +13,7 @@ if ($normalizedSlug === '') {
     return;
 }
 
-$newsController = new NewsController($connect ?? null);
+$newsController = new NewsController($GLOBALS['connect'] ?? null);
 $newsId = NewsController::news_extract_id_from_slug($normalizedSlug);
 if ($newsId === null) {
     app_render_error_page(404);
