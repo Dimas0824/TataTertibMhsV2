@@ -161,19 +161,29 @@ $runner->addTest('http: 5 failures lock the session even for the correct passwor
     $jar = SecurityClient::newJar();
     $page = SecurityClient::request('GET', '/login', ['jar' => $jar]);
     $csrf = SecurityClient::csrfFrom($page['body']);
-    for ($i = 0; $i < 5; $i++) {
-        SecurityClient::request('POST', '/action/login', [
+    try {
+        for ($i = 0; $i < 5; $i++) {
+            SecurityClient::request('POST', '/action/login', [
+                'jar' => $jar,
+                'form' => ['csrf_token' => $csrf, 'user_type' => 'nim', 'username' => '2341238901', 'password' => 'bogus' . $i],
+            ]);
+        }
+        $locked = SecurityClient::request('POST', '/action/login', [
             'jar' => $jar,
-            'form' => ['csrf_token' => $csrf, 'user_type' => 'nim', 'username' => '2341238901', 'password' => 'bogus' . $i],
+            'form' => ['csrf_token' => $csrf, 'user_type' => 'nim', 'username' => '2341238901', 'password' => 'password123'],
         ]);
+        assertEquals('/login', $locked['headers']['location'] ?? '', 'locked session must not authenticate');
+        $view = SecurityClient::request('GET', '/login', ['jar' => $jar]);
+        assertStringContains('Terlalu banyak', $view['body'], 'lockout notice missing');
+    } finally {
+        // The lockout is now durable (audit-log keyed), so clear the failures this
+        // test generated or every later suite logging in as this account is blocked.
+        $cleanup = $GLOBALS['connect'] ?? null;
+        if ($cleanup instanceof PDO) {
+            $cleanup->prepare("DELETE FROM SECURITY_AUDIT_LOG WHERE event IN ('login_fail','login_reject_input') AND actor_id = ?")
+                    ->execute(['2341238901']);
+        }
     }
-    $locked = SecurityClient::request('POST', '/action/login', [
-        'jar' => $jar,
-        'form' => ['csrf_token' => $csrf, 'user_type' => 'nim', 'username' => '2341238901', 'password' => 'password123'],
-    ]);
-    assertEquals('/login', $locked['headers']['location'] ?? '', 'locked session must not authenticate');
-    $view = SecurityClient::request('GET', '/login', ['jar' => $jar]);
-    assertStringContains('Terlalu banyak', $view['body'], 'lockout notice missing');
 });
 
 /* ------------------------------------------------------------------ */
