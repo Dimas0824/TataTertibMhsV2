@@ -13,6 +13,14 @@ if ($_SESSION['user_type'] === 'dosen') {
     app_redirect_page('page.pelanggaran_dosen');
 }
 
+// Student-only page: any other role (e.g. admin) is refused with 403 instead of
+// reaching the code below, which dereferences student-only session fields
+// (angkatan, nim) and would 500 for a role that has none (CWE-754).
+if ($_SESSION['user_type'] !== 'mahasiswa') {
+    app_render_error_page(403);
+    return;
+}
+
 // Ambil data user dari session
 $userData = $_SESSION['user_data'];
 
