@@ -143,6 +143,11 @@ Strix dijalankan **white-box per area** (target live + source di-mount), satu ar
 **Re-scan 2026-09-22 membuktikan** bahwa seluruh 6 temuan di atas **sudah tidak ada** pada kode
 saat ini - sekaligus menemukan **4 celah baru** yang juga sudah diperbaiki:
 
+> **Di mana membaca apa?**
+> - Bukti bahwa temuan **2026-09-21 sudah SELESAI** (matriks penutupan per temuan) ->
+>   [`strix-2026-09-21/README.md`](docs/intern/strix-runs/strix-2026-09-21/README.md) (section *Verifikasi penutupan*).
+> - **Celah keamanan BARU** yang ditemukan re-scan 2026-09-22 -> [`strix-2026-09-22/README.md`](docs/intern/strix-runs/strix-2026-09-22/README.md) + [`strix-2026-09-22/areaN/README.md`](docs/intern/strix-runs/strix-2026-09-22/).
+
 | # | Area | Temuan baru (2026-09-22) | Severity | Status |
 | --- | ---- | ------------------------ | -------- | ------ |
 | 2 | SESSION/CSRF | `session.use_strict_mode` nonaktif (session fixation) | MEDIUM (CVSS 4.2) | FIXED |

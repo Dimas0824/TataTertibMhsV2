@@ -1,7 +1,12 @@
-# DiscipLink - Strix Automated Penetration Test (Area-Breakdown)
+﻿# DiscipLink - Strix Automated Penetration Test (Run 2026-09-21)
 
-> **Ini run PERTAMA (2026-09-21).** Temuan di bawah sudah **diperbaiki dan
-> diverifikasi ulang** oleh re-scan 2026-09-22 - lihat [`../strix-2026-09-22/`](../strix-2026-09-22/).
+> **Status: SELESAI (CLOSED).** Seluruh **6 temuan** di bawah sudah **diperbaiki**
+> dan **terbukti hilang** saat diuji ulang oleh re-scan 2026-09-22 dengan
+> instruksi + parameter **identik** (MD5 instruksi diverifikasi sama). Lihat
+> [Verifikasi penutupan](#verifikasi-penutupan--re-scan-2026-09-22) di bawah.
+>
+> **Celah keamanan BARU** (bukan temuan run ini) ditemukan re-scan 2026-09-22 -
+> arahkan ke [`../strix-2026-09-22/`](../strix-2026-09-22/) untuk daftar lengkapnya.
 >
 > Hierarki folder: [`../strix-runs/README.md`](../README.md) - panduan repro: [`CARA-REPRODUKSI.md`](CARA-REPRODUKSI.md)
 
@@ -46,12 +51,41 @@ Severity is as reported by Strix; CVSS and CWE are taken from each `vuln-*.md`.
 
 | ID | Area | Severity | CVSS | CWE | Finding | Endpoint | Evidence |
 | ---- | ------ | ---------- | ------ | ----- | --------- | ---------- | ---------- |
-| **A1-vuln-0002** | Login | -- **CRITICAL** | 9.1 | CWE-307 | Brute-force lockout is **per-session only** - discarding the session cookie resets the counter, so the 5-failure/15-min lock is bypassed indefinitely | `POST /action/login` | [vuln](area1-login/vulnerabilities/vuln-0002.md) |
-| **A1-vuln-0001** | Login | -- **HIGH** | 7.4 | CWE-230 | **NUL-byte truncation** in password verification - `password123%00INJECTED` authenticates because bcrypt is NUL-terminated | `POST /action/login` | [vuln](area1-login/vulnerabilities/vuln-0001.md) |
-| **A2-vuln-0001** | Session | -- MEDIUM | 5.9 | CWE-614 | Session cookie issued **without `Secure`** on HTTPS-terminated (proxy) requests | `Set-Cookie` | [vuln](area2-session-csrf/vulnerabilities/vuln-0001.md) |
-| **A2-vuln-0002** | Session | -- LOW | 3.7 | CWE-613 | No **absolute session lifetime**; concurrent sessions are never invalidated | session lifecycle | [vuln](area2-session-csrf/vulnerabilities/vuln-0002.md) |
-| **A4-vuln-0001** | Violation | -- MEDIUM | 6.5 | CWE-20 | **Sanction tier not validated** against the violation tier - a lecturer can attach the most severe sanction (Tier I) to a trivial Tier V violation; client-selectable `sanksi` | `POST /action/pelanggaran` | [vuln](area4-pelanggaran/vulnerabilities/vuln-0001.md) |
-| **A5-vuln-0001** | News | -- MEDIUM | 5.4 | CWE-79 | **Stored XSS** on the public article page - event-handler sanitizer bypassed via a quote boundary (`<div title="x"onmouseover=alert(1)>`); confirmed executing in a headless browser | `GET /berita?slug=-` | [vuln](area5-news-xss/vulnerabilities/vuln-0001.md) |
+| **A1-vuln-0002** | Login | -- **CRITICAL** | 9.1 | CWE-307 | Brute-force lockout is **per-session only** - discarding the session cookie resets the counter, so the 5-failure/15-min lock is bypassed indefinitely | `POST /action/login` | [vuln](area1-login/before/vulnerabilities/vuln-0002.md) |
+| **A1-vuln-0001** | Login | -- **HIGH** | 7.4 | CWE-230 | **NUL-byte truncation** in password verification - `password123%00INJECTED` authenticates because bcrypt is NUL-terminated | `POST /action/login` | [vuln](area1-login/before/vulnerabilities/vuln-0001.md) |
+| **A2-vuln-0001** | Session | -- MEDIUM | 5.9 | CWE-614 | Session cookie issued **without `Secure`** on HTTPS-terminated (proxy) requests | `Set-Cookie` | [vuln](area2-session-csrf/before/vulnerabilities/vuln-0001.md) |
+| **A2-vuln-0002** | Session | -- LOW | 3.7 | CWE-613 | No **absolute session lifetime**; concurrent sessions are never invalidated | session lifecycle | [vuln](area2-session-csrf/before/vulnerabilities/vuln-0002.md) |
+| **A4-vuln-0001** | Violation | -- MEDIUM | 6.5 | CWE-20 | **Sanction tier not validated** against the violation tier - a lecturer can attach the most severe sanction (Tier I) to a trivial Tier V violation; client-selectable `sanksi` | `POST /action/pelanggaran` | [vuln](area4-pelanggaran/before/vulnerabilities/vuln-0001.md) |
+| **A5-vuln-0001** | News | -- MEDIUM | 5.4 | CWE-79 | **Stored XSS** on the public article page - event-handler sanitizer bypassed via a quote boundary (`<div title="x"onmouseover=alert(1)>`); confirmed executing in a headless browser | `GET /berita?slug=-` | [vuln](area5-news-xss/before/vulnerabilities/vuln-0001.md) |
+
+---
+
+## Verifikasi penutupan - re-scan 2026-09-22
+
+Setelah semua temuan diperbaiki, **area-area yang sama diuji ulang** dengan Strix
+(instruksi + guardrail identik, target = kode yang sudah dipatch; verifikasi MD5
+instruksi ada di [`../strix-2026-09-22/`](../strix-2026-09-22/)). Hasilnya:
+**keenam temuan hilang** - tidak satu pun muncul kembali.
+
+| ID | Temuan 2026-09-21 | Fix | Hasil re-scan 2026-09-22 |
+| ---- | ----------------- | --- | ------------------------ |
+| **A1-vuln-0001** | NUL-byte truncation in password verification (CWE-230) | reject raw NUL before hashing | **HILANG** |
+| **A1-vuln-0002** | Brute-force lockout per-session only (CWE-307) | input `trim`/NUL-reject + throttle durable (akun 5 / IP 15 / 15 mnt, tabel `SECURITY_AUDIT_LOG`) | **HILANG** |
+| **A2-vuln-0001** | Session cookie without `Secure` (CWE-614) | `app_session_start_if_needed()` set `Secure` (HTTPS/`X-Forwarded-Proto`) | **HILANG** |
+| **A2-vuln-0002** | No absolute session lifetime (CWE-613) | `APP_SESSION_ABSOLUTE_TTL` + `app_session_touch_or_expire()` | **HILANG** |
+| **A4-vuln-0001** | Sanction tier not validated (CWE-20) | server memvalidasi tier sanksi terhadap tier pelanggaran | **HILANG** |
+| **A5-vuln-0001** | Stored XSS via quote boundary (CWE-79) | quote-aware attribute sanitizer | **HILANG** |
+
+**Cara membaca bukti:** setiap area re-scan tersimpan di
+[`../strix-2026-09-22/areaN/`](../strix-2026-09-22/) sebagai artefak verbatim
+(`findings.sarif`, `vulnerabilities/`, `run.json`, `strix.log`). Per-area README
+di sana menyatakan temuan mana yang hilang dan mana yang baru.
+
+> **Re-scan 2026-09-22 juga menemukan celah BARU** yang tidak ada di run ini
+> (4 valid + 1 false positive, semuanya sudah diklasifikasi & difix).
+> **Daftar lengkap ada di**
+> [`strix-2026-09-22/README.md`](../strix-2026-09-22/README.md) ->
+> [`strix-2026-09-22/areaN/README.md`](../strix-2026-09-22/).
 
 ---
 

@@ -7,6 +7,12 @@ run pertama (2026-09-21). Instruksi + parameter **identik** dengan run pertama
 **Tujuan:** membuktikan secara independen bahwa temuan 2026-09-21 sudah tertutup,
 dan menemukan celah baru yang muncul setelah perbaikan.
 
+> **Halaman ini = daftar celah keamanan BARU hasil re-scan.** Kalau kamu
+> datang untuk memeriksa *"apakah temuan 2026-09-21 sudah selesai?"* - jawabannya
+> ada di [`../strix-2026-09-21/README.md`](../strix-2026-09-21/README.md)
+> (section *Verifikasi penutupan*). Kalau kamu datang untuk *"apa celah baru
+> setelah fix?"* - kamu ada di halaman yang tepat (tabel di bawah + `areaN/README.md`).
+
 > Folder run pertama: [`../strix-2026-09-21/`](../strix-2026-09-21/)
 
 ---
