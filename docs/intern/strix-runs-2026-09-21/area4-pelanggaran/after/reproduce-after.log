@@ -1,0 +1,10 @@
+==================================================================
+ Reproduce AFTER fix - sanction tier validation (area4-pelanggaran)
+==================================================================
+Error in simpanDetailPelanggaran: Sanksi tidak sesuai dengan tingkat pelanggaran.
+  [PASS] mismatched sanction rejected          -> success=false
+  [PASS] no violation row written              -> before=23 after=23
+
+==================================================================
+ RESULT: 2 passed, 0 failed
+==================================================================
