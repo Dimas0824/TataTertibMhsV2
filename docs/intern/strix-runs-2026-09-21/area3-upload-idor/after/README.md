@@ -5,7 +5,7 @@ every offensive attempt was blocked by server-side controls. This `after/` recor
 that result and the one non-security defect that was fixed.
 
 | | |
-|---|---|
+| --- | --- |
 | **Findings** | **0** (Strix: "no exploitable weakness was identified") |
 | **Fix commit** | `78cdf02` (non-security defect: 403 instead of 500) |
 | **Regression test** | `tests/security/Area3AccessSuite.php` (2 tests) |
@@ -19,7 +19,7 @@ There is no vulnerability to "fix" here; the value is the evidence that these cl
 were tested and **failed to break through**:
 
 | Attack class | Attempted | Outcome |
-|---|---|---|
+| --- | --- | --- |
 | Unrestricted file type (`.php`, PHP-in-image, mismatched Content-Type) | server-side `finfo` MIME + extension allowlist | **Blocked** |
 | Path traversal in filename (`../`, `..%2f`, null byte, absolute path) | server-generated filename; client name never used | **Blocked** |
 | Download token tamper / cross-session replay / cross-entity | sealed session-bound capability token | **Blocked** (403) |
@@ -44,7 +44,7 @@ were tested and **failed to break through**:
 ## Before vs After (only the defect we fixed)
 
 | Skenario | BEFORE | AFTER |
-|---|---|---|
+| --- | --- | --- |
 | Admin `GET /pelanggaran/dosen` | **500** `{"Koneksi database tidak tersedia."}`/`nidn` undefined ❌ | **403** ✅ |
 | Dosen `GET /pelanggaran/dosen` | 200 | 200 ✅ (tidak berubah) |
 

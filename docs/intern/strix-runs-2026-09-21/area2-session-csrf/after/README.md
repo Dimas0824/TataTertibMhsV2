@@ -3,7 +3,7 @@
 Bukti bahwa dua temuan pada run SESSION & CSRF **sudah diperbaiki dan terbukti tertutup**.
 
 | | |
-|---|---|
+| --- | --- |
 | **Findings** | `vuln-0001` CWE-614 MEDIUM · `vuln-0002` CWE-613 LOW |
 | **Fix commits** | `20bef78` (helper) · `9f55f2a` (CWE-614 + 613a) · `f1503bb` (migrasi) · `484bb67` (CWE-613b + fix regresi) |
 | **Regression test** | `tests/security/SessionLifecycleSuite.php` (6 test) |
@@ -16,7 +16,7 @@ Bukti bahwa dua temuan pada run SESSION & CSRF **sudah diperbaiki dan terbukti t
 `before/` = artefak Strix asli (kondisi rentan). `after/` = hasil reproduksi ulang setelah perbaikan.
 
 | # | Skenario | BEFORE (rentan) | AFTER (terbukti aman) |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | 1 | `GET /login` dengan `X-Forwarded-Proto: https` | HSTS ada, cookie **tanpa** `Secure` ❌ | Cookie **`Secure`** ✅ (dan HSTS) |
 | 2 | `GET /login` plain HTTP localhost | tanpa `Secure` | tanpa `Secure` ✅ (tetap bisa login lab) |
 | 3 | Login ke-2 akun yang sama | kedua sesi hidup (200 & 200) ❌ | sesi pertama **302 (dicabut)**, kedua 200 ✅ |
@@ -54,6 +54,7 @@ bash reproduce.sh http://127.0.0.1:8123 > reproduce-after.log 2>&1
 - **Regression test otomatis** (`SessionLifecycleSuite`, 6/6) mengunci perilaku ini; suite penuh 182/182.
 
 Perbaikan kode:
+
 - `helpers/path_helper.php` — `app_request_is_https()` (satu sumber kebenaran skema HTTPS; dipakai cookie + HSTS).
 - `helpers/token_helper.php` — cookie `Secure` dari helper itu; `__created_at` + `APP_SESSION_ABSOLUTE_TTL`
   (12 jam); guard pencabutan sesi di `app_session_touch_or_expire`.
