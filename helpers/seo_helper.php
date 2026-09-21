@@ -3,6 +3,48 @@
 declare(strict_types=1);
 require_once __DIR__ . '/path_helper.php';
 
+if (!function_exists('app_csp_nonce')) {
+    /**
+     * Per-request CSP nonce. Generated once and cached for the whole request so the
+     * value written into the Content-Security-Policy header always matches the value
+     * written into every <script nonce="..."> attribute, regardless of which of the
+     * (multiple) call-sites invokes apply_security_headers() first.
+     */
+    function app_csp_nonce(): string
+    {
+        static $nonce = null;
+        if (is_string($nonce) && $nonce !== '') {
+            return $nonce;
+        }
+
+        try {
+            $bytes = random_bytes(16); // 128 bits
+        } catch (\Throwable $e) {
+            // Extremely unlikely; fail closed to a process-unique value rather than
+            // emitting a predictable constant.
+            $bytes = substr(hash('sha256', uniqid((string) getmypid(), true), true), 0, 16);
+        }
+
+        $nonce = base64_encode($bytes);
+        return $nonce;
+    }
+}
+
+if (!function_exists('app_csp_nonce_attr')) {
+    /**
+     * Ready-to-print HTML attribute: nonce="...". Returns '' under CLI (no HTTP
+     * response, nothing to protect) so view code can always call it unconditionally.
+     */
+    function app_csp_nonce_attr(): string
+    {
+        if (PHP_SAPI === 'cli') {
+            return '';
+        }
+
+        return 'nonce="' . htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8') . '"';
+    }
+}
+
 if (!function_exists('app_seo_load_env')) {
     function app_seo_load_env(): array
     {
