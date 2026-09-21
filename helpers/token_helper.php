@@ -10,6 +10,12 @@ if (!function_exists('app_session_start_if_needed')) {
     function app_session_start_if_needed(): void
     {
         if (session_status() !== PHP_SESSION_ACTIVE) {
+            // Reject an unknown client-supplied session id and issue a fresh one,
+            // so an attacker cannot pre-plant a PHPSESSID the victim will adopt
+            // (CWE-384 session fixation).
+            if (PHP_SAPI !== 'cli') {
+                ini_set('session.use_strict_mode', '1');
+            }
             if (PHP_SAPI !== 'cli' && !headers_sent()) {
                 session_set_cookie_params([
                     'secure'   => app_request_is_https(),

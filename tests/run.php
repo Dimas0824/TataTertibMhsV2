@@ -50,6 +50,8 @@ $testFiles = [
     __DIR__ . '/security/LoginBruteForceSuite.php',
     // Session cookie + lifecycle regression (HTTP + white-box):
     __DIR__ . '/security/SessionLifecycleSuite.php',
+    // Session fixation: strict mode replaces an unknown PHPSESSID:
+    __DIR__ . '/security/SessionFixationSuite.php',
     // AREA 3 access-control regression (lecturer-only page):
     __DIR__ . '/security/Area3AccessSuite.php',
     // HTTP matrix boots its own `php -S` harness; longest-running, last:
