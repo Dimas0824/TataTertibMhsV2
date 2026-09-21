@@ -3,7 +3,7 @@
 Bukti bahwa dua temuan pada run LOGIN **sudah diperbaiki dan terbukti tertutup**.
 
 | | |
-|---|---|
+| --- | --- |
 | **Findings** | `vuln-0001` CWE-230 HIGH · `vuln-0002` CWE-307 CRITICAL |
 | **Fix commit** | `ba4e8d1` (fix) · `6e3f3b1` (regression tests) · `ffdaa26` (docs) |
 | **Regression test** | `tests/security/LoginBruteForceSuite.php` |
@@ -17,7 +17,7 @@ Bukti bahwa dua temuan pada run LOGIN **sudah diperbaiki dan terbukti tertutup**
 setelah perbaikan.
 
 | # | Skenario | BEFORE (rentan) | AFTER (terbukti aman) |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | 1 | Login `password123` + `%00` + junk | `302 → /pelanggaran` ❌ **masuk** | `302 → /login` ✅ **ditolak** |
 | 2 | Login `password123` (sah, kontrol) | `302 → /pelanggaran` | `302 → /pelanggaran` ✅ tetap jalan |
 | 3 | 5 gagal, lalu **sesi BARU** min + password benar | `302 → /pelanggaran` ❌ **lockout terlewati** | `302 → /login` ✅ **terkunci** |
@@ -55,6 +55,7 @@ bash reproduce.sh http://127.0.0.1:8123 > reproduce-after.log 2>&1
   mengunci perilaku ini agar tidak terbuka lagi; suite penuh 176/176 PASS.
 
 Perbaikan kode:
+
 - `helpers/login_throttle_helper.php` — `app_login_input_invalid()` (tolak NUL,
   batasi 72 byte) dan `app_login_throttle_status()` (lockout berbasis audit-log:
   akun 5 / IP 15 per 15 menit, fail-soft).
