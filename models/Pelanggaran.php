@@ -678,7 +678,7 @@ class Pelanggaran
             $this->connect->beginTransaction();
 
             $stmt = $this->connect->prepare(
-                "SELECT dp.id_detail
+                "SELECT dp.id_detail, dp.status, dp.status_tugas
                  FROM DETAIL_PELANGGARAN dp
                  JOIN DOSEN d ON dp.id_dosen = d.id_dosen
                  WHERE dp.id_detail = ?
@@ -692,6 +692,19 @@ class Pelanggaran
                 return [
                     'success' => false,
                     'message' => 'Laporan tidak ditemukan atau bukan milik Anda.',
+                ];
+            }
+
+            // A finalized violation is immutable: the edit path refuses it and the
+            // UI disables delete, so delete must refuse it too — otherwise the
+            // adjudicated record (and its sanction history) can be erased (CWE-863).
+            $status = strtolower(trim((string) ($detail['status'] ?? '')));
+            $statusTugas = strtolower(trim((string) ($detail['status_tugas'] ?? '')));
+            if (in_array($status, ['selesai', 'done'], true) || in_array($statusTugas, ['sudah dikumpulkan', 'selesai', 'done'], true)) {
+                $this->connect->rollBack();
+                return [
+                    'success' => false,
+                    'message' => 'Laporan tidak dapat dihapus karena sudah selesai.',
                 ];
             }
 
