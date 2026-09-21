@@ -484,7 +484,7 @@ if (!function_exists('app_seo_analytics_tags')) {
         $escapedId = htmlspecialchars($measurementId, ENT_QUOTES, 'UTF-8');
         ?>
         <script async src="https://www.googletagmanager.com/gtag/js?id=<?= $escapedId ?>"></script>
-        <script>
+        <script <?= app_csp_nonce_attr() ?>>
             window.dataLayer = window.dataLayer || [];
             function gtag() {
                 dataLayer.push(arguments);
