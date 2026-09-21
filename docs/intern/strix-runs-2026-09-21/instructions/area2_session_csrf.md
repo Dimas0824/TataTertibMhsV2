@@ -1,17 +1,19 @@
 # AREA 2 — SESSION MANAGEMENT & CSRF (offensive, focused, single area)
 
 Authorized penetration test against a LOCAL, SELF-OWNED instance of DiscipLink
-(PHP 8.3 native). Target: http://172.17.112.1:8001
+(PHP 8.3 native). Target: <http://172.17.112.1:8001>
 Also mounted: the source repo (whitebox). Trace:
   helpers/token_helper.php (session + CSRF + authz), helpers/route_helper.php,
   request/handler-login.php, config.php, .htaccess.
 
 ## CONTEXT (already found in AREA 1 — do NOT re-report, build on it)
+
 - vuln-0001 HIGH: NUL-byte truncation in password verification.
 - vuln-0002 CRITICAL: login lockout is per-session only; discard cookie to bypass.
 AREA 2 is about the SESSION LIFECYCLE and CSRF, not the password check.
 
-## SCOPE: SESSION MANAGEMENT + CSRF ONLY.
+## SCOPE: SESSION MANAGEMENT + CSRF ONLY
+
 Do not re-test SQLi/password-byte issues. Exhaust this surface.
 
 ## Attack classes to attempt (produce a PoC or a documented negative result)
@@ -39,6 +41,7 @@ Do not re-test SQLi/password-byte issues. Exhaust this surface.
    pages (/admin/*, /pelanggaran) still serve? Verify server-side, not just UI.
 
 ## Rules of engagement
+
 - Authorized local lab; attack ONLY the given target.
 - Attach the exact request and response for every finding.
 - Record defenses that HELD (payload tried, why it failed) — negative results
@@ -46,6 +49,7 @@ Do not re-test SQLi/password-byte issues. Exhaust this surface.
 - Severity justified by exploitability (Impact + Likelihood + CVSS).
 
 ## Known test accounts
+
 - mahasiswa: 2341238901 / password123
 - dosen: 1234567890 / password123
 - admin: ADMIN001 / admin123

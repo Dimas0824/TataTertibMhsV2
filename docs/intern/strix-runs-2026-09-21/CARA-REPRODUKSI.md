@@ -10,7 +10,7 @@ Diuji pada: 2026-09-21, Windows + WSL Ubuntu.
 ## 0. Ringkasan resep yang terbukti
 
 | Komponen | Nilai | Alasan |
-|---|---|---|
+| --- | --- | --- |
 | **Runtime** | **WSL Ubuntu** (bukan Windows `strix.exe`) | Docker hanya ada di WSL (via snap) |
 | **Strix** | `/home/dimas/.strix/bin/strix` (v1.4.1) | Instalasi WSL |
 | **Docker CLI** | `/snap/bin/docker` | Muncul hanya di *login shell* (`bash -lc`) |
@@ -170,7 +170,7 @@ Token ada di keluaran `strix view`; setiap kali viewer di-restart token berubah.
 Hasil tiap run ada di `strix_runs/<RUN_NAME>/`:
 
 | File | Isi |
-|---|---|
+| --- | --- |
 | `findings.sarif` | SARIF 2.1.0 (`tool.driver.name = "Strix"`) — buka di SARIF viewer |
 | `vulnerabilities/vuln-*.md` | Detail per temuan + PoC request/response |
 | `vulnerabilities.csv` / `.json` | Indeks temuan |
@@ -195,7 +195,7 @@ docs/intern/strix-runs/
 ## 8. Troubleshooting (dari pengalaman nyata)
 
 | Gejala | Sebab | Solusi |
-|---|---|---|
+| --- | --- | --- |
 | `strix: command not found` | PATH tidak memuat `~/.strix/bin` | export PATH di script (langkah 3) |
 | `docker: command not found` | `/snap/bin` tidak di PATH non-login | pakai `bash -lc`, export `/snap/bin` |
 | `failed to connect to docker API ... /var/run/docker.sock` | dockerd belum siap saat tmux start | loop tunggu docker (langkah 3) |

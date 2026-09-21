@@ -20,7 +20,7 @@ stay inside the LLM gateway's RPM ceiling. All testing was **authorized, local, 
 ## Run summary
 
 | # | Area | Scope tested | Runs | LLM reqs | Tokens | Status | Findings |
-|---|------|--------------|------|----------|--------|--------|----------|
+| --- | ------ | -------------- | ------ | ---------- | -------- | -------- | ---------- |
 | 1 | **Login / Authentication** | SQLi, auth bypass, enumeration, brute-force, session, CSRF, open redirect | 1 | 70 | 3.99M | completed | **1 CRITICAL, 1 HIGH** |
 | 2 | **Session & CSRF** | session fixation, cookie flags, lifecycle, CSRF coverage | 1 | 38 | 2.56M | completed | **1 MEDIUM, 1 LOW** |
 | 3 | **Upload / Download / IDOR** | unrestricted upload, traversal, token sealing, IDOR/BOLA, RBAC | 1 | 69 | 6.07M | completed | **0** (all defenses held) |
@@ -40,7 +40,7 @@ one-area-per-run strategy kept the agent under the gateway ceiling.
 Severity is as reported by Strix; CVSS and CWE are taken from each `vuln-*.md`.
 
 | ID | Area | Severity | CVSS | CWE | Finding | Endpoint | Evidence |
-|----|------|----------|------|-----|---------|----------|----------|
+| ---- | ------ | ---------- | ------ | ----- | --------- | ---------- | ---------- |
 | **A1-vuln-0002** | Login | 🔴 **CRITICAL** | 9.1 | CWE-307 | Brute-force lockout is **per-session only** — discarding the session cookie resets the counter, so the 5-failure/15-min lock is bypassed indefinitely | `POST /action/login` | [vuln](area1-login/vulnerabilities/vuln-0002.md) |
 | **A1-vuln-0001** | Login | 🟠 **HIGH** | 7.4 | CWE-230 | **NUL-byte truncation** in password verification — `password123%00INJECTED` authenticates because bcrypt is NUL-terminated | `POST /action/login` | [vuln](area1-login/vulnerabilities/vuln-0001.md) |
 | **A2-vuln-0001** | Session | 🟡 MEDIUM | 5.9 | CWE-614 | Session cookie issued **without `Secure`** on HTTPS-terminated (proxy) requests | `Set-Cookie` | [vuln](area2-session-csrf/vulnerabilities/vuln-0001.md) |
@@ -56,7 +56,7 @@ Area 3 returned **no findings**, but the evidence of what was tested and *held* 
 security evidence. Reproduced from that run's report:
 
 | Attack class | Attempted | Outcome |
-|--------------|-----------|---------|
+| -------------- | ----------- | --------- |
 | Unrestricted file type (`.php`, `.phtml`, PHP-in-image, mismatched Content-Type) | server-side `finfo` MIME + extension allowlist | **Blocked** — rejected "Tipe file tidak diizinkan" |
 | Path traversal in filename (`../`, `..%2f`, `....//`, null byte, absolute path) | server-generated `<id>_<type>_<24-hex>.<ext>` name; client name never used | **Blocked** — all landed inside `storage/uploads/` |
 | Overwrite / collision | 12-byte random suffix | **Blocked** — same-named uploads produce distinct files |
