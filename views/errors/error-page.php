@@ -95,7 +95,7 @@ if (!function_exists('app_error_icon_svg')) {
         </main>
     </div>
 
-    <script>
+    <script <?= app_csp_nonce_attr() ?>>
         (function () {
             var backButton = document.getElementById('errorBackButton');
             if (!backButton) {

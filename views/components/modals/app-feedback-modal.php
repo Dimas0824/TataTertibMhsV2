@@ -39,7 +39,7 @@ if (!function_exists('render_app_feedback_modal_component')) {
             </section>
         </div>
         <?php if ($flashModal !== null): ?>
-            <script>
+            <script <?= app_csp_nonce_attr() ?>>
                 window.__APP_FLASH_MODAL = <?= json_encode($flashModal, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
             </script>
         <?php endif; ?>
