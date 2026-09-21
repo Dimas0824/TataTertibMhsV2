@@ -1,0 +1,1224 @@
+2026-09-22 06:16:11.512 INFO    172-17-112-1-8001_c4bc - strix.core.runner: Starting Strix scan 172-17-112-1-8001_c4bc (image=ghcr.io/usestrix/strix-sandbox:1.2.0, max_turns=120, interactive=False, run_dir=/home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc)
+2026-09-22 06:16:11.513 INFO    172-17-112-1-8001_c4bc - strix.core.runner: LLM model resolved: dailyDriver
+2026-09-22 06:16:11.513 INFO    172-17-112-1-8001_c4bc - strix.core.runner: Bringing up sandbox session for scan 172-17-112-1-8001_c4bc
+2026-09-22 06:16:11.517 DEBUG   172-17-112-1-8001_c4bc - strix.runtime.backends: Selected sandbox backend: docker
+2026-09-22 06:16:11.517 INFO    172-17-112-1-8001_c4bc - strix.runtime.session_manager: Creating sandbox session for scan 172-17-112-1-8001_c4bc (backend=docker, image=ghcr.io/usestrix/strix-sandbox:1.2.0)
+2026-09-22 06:16:11.548 DEBUG   172-17-112-1-8001_c4bc - strix.runtime.docker_client: Creating sandbox container: image=ghcr.io/usestrix/strix-sandbox:1.2.0 caps=['NET_ADMIN', 'NET_RAW'] exposed_ports=[48080]
+2026-09-22 06:16:11.778 INFO    172-17-112-1-8001_c4bc - strix.runtime.docker_client: Sandbox container created: id=ee991aa4b6b4 image=ghcr.io/usestrix/strix-sandbox:1.2.0
+2026-09-22 06:16:12.789 DEBUG   172-17-112-1-8001_c4bc - strix.runtime.session_manager: Caido host endpoint resolved: http://127.0.0.1:32772
+2026-09-22 06:16:12.789 INFO    172-17-112-1-8001_c4bc - strix.runtime.caido_bootstrap: Bootstrapping Caido client (host=http://127.0.0.1:32772, container=http://127.0.0.1:48080)
+2026-09-22 06:16:13.287 INFO    172-17-112-1-8001_c4bc - strix.runtime.caido_bootstrap: Caido project selected: 8bcc942a-e65c-4e81-a0f4-b3d89ef9d5e9
+2026-09-22 06:16:13.287 INFO    172-17-112-1-8001_c4bc - strix.runtime.session_manager: Sandbox session for scan 172-17-112-1-8001_c4bc ready and cached
+2026-09-22 06:16:13.287 INFO    172-17-112-1-8001_c4bc - strix.core.runner: Sandbox ready for scan 172-17-112-1-8001_c4bc
+2026-09-22 06:16:13.288 DEBUG   172-17-112-1-8001_c4bc - strix.skills: Loaded skill: scan_modes/deep -> deep
+2026-09-22 06:16:13.290 DEBUG   172-17-112-1-8001_c4bc - strix.skills: Loaded skill: tooling/agent_browser -> agent_browser
+2026-09-22 06:16:13.293 DEBUG   172-17-112-1-8001_c4bc - strix.skills: Loaded skill: tooling/python -> python
+2026-09-22 06:16:13.295 DEBUG   172-17-112-1-8001_c4bc - strix.skills: Loaded skill: coordination/root_agent -> root_agent
+2026-09-22 06:16:13.300 DEBUG   172-17-112-1-8001_c4bc - strix.skills: Loaded skill: coordination/source_aware_whitebox -> source_aware_whitebox
+2026-09-22 06:16:13.302 DEBUG   172-17-112-1-8001_c4bc - strix.skills: Loaded skill: custom/source_aware_sast -> source_aware_sast
+2026-09-22 06:16:13.304 DEBUG   172-17-112-1-8001_c4bc - strix.skills: load_skills: 6 skill(s) resolved
+2026-09-22 06:16:13.321 DEBUG   172-17-112-1-8001_c4bc - strix.agents.prompt: render_system_prompt: scan_mode=deep root=True whitebox=True skills=6 prompt_len=74778
+2026-09-22 06:16:13.321 INFO    172-17-112-1-8001_c4bc - strix.agents.factory: Built root agent 'Strix' (skills=0, tools=30, scan_mode=deep, whitebox=True)
+2026-09-22 06:16:13.321 INFO    172-17-112-1-8001_c4bc - strix.core.agents: agent.register efa2a60d (Strix) parent=-
+2026-09-22 06:16:13.366 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating trace Agent workflow
+2026-09-22 06:16:13.367 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Setting current trace: no-op
+2026-09-22 06:16:13.367 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TaskSpanData object at 0x748f9d270780>
+2026-09-22 06:16:13.374 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.AgentSpanData object at 0x748f9d1f7710>
+2026-09-22 06:16:13.374 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 1, current_agent=Strix
+2026-09-22 06:16:13.374 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d2732f0>
+2026-09-22 06:16:13.405 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:16:13.405 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f7650>
+2026-09-22 06:16:13.406 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:16:14.052 DEBUG   - - strix.telemetry.posthog: posthog event sent: skill_loaded
+2026-09-22 06:16:14.056 DEBUG   - - strix.telemetry.posthog: posthog event sent: skill_loaded
+2026-09-22 06:16:14.063 DEBUG   - - strix.telemetry.posthog: posthog event sent: skill_loaded
+2026-09-22 06:16:14.077 DEBUG   - - strix.telemetry.posthog: posthog event sent: skill_loaded
+2026-09-22 06:16:14.081 DEBUG   - - strix.telemetry.posthog: posthog event sent: skill_loaded
+2026-09-22 06:16:14.094 DEBUG   - - strix.telemetry.posthog: posthog event sent: skill_loaded
+2026-09-22 06:16:14.730 DEBUG   - - strix.telemetry.scarf: scarf event sent: skill_loaded
+2026-09-22 06:16:14.734 DEBUG   - - strix.telemetry.scarf: scarf event sent: skill_loaded
+2026-09-22 06:16:14.735 DEBUG   - - strix.telemetry.scarf: scarf event sent: skill_loaded
+2026-09-22 06:16:14.748 DEBUG   - - strix.telemetry.scarf: scarf event sent: skill_loaded
+2026-09-22 06:16:14.769 DEBUG   - - strix.telemetry.scarf: scarf event sent: skill_loaded
+2026-09-22 06:16:14.775 DEBUG   - - strix.telemetry.scarf: scarf event sent: skill_loaded
+2026-09-22 06:16:16.298 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:16:16.299 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:16:16.299 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:16:16.300 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:16:16.300 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:16:16.300 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:16:16.300 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9d2719f0>
+2026-09-22 06:16:16.301 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9d249ae0>
+2026-09-22 06:16:16.301 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Invoking tool create_todo
+2026-09-22 06:16:16.302 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tool create_todo completed.
+2026-09-22 06:16:16.560 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 1 complete, next_step type=NextStepRunAgain
+2026-09-22 06:16:16.567 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 2, current_agent=Strix
+2026-09-22 06:16:16.567 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d273340>
+2026-09-22 06:16:16.568 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:16:16.568 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f65d0>
+2026-09-22 06:16:16.570 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:16:18.803 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:16:18.804 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:16:18.804 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:16:18.805 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:16:18.805 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:16:18.805 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:16:18.806 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ff3da40>
+2026-09-22 06:16:18.806 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9d270e10>
+2026-09-22 06:16:18.807 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Invoking tool create_todo
+2026-09-22 06:16:18.808 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tool create_todo failed
+2026-09-22 06:16:18.968 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 2 complete, next_step type=NextStepRunAgain
+2026-09-22 06:16:18.977 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 3, current_agent=Strix
+2026-09-22 06:16:18.977 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9e46a2b0>
+2026-09-22 06:16:18.978 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:16:18.978 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d244710>
+2026-09-22 06:16:18.979 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:16:21.289 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:16:21.291 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:16:21.292 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:16:21.292 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:16:21.292 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:16:21.292 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:16:21.293 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffdef80>
+2026-09-22 06:16:21.293 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffde620>
+2026-09-22 06:16:21.294 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Invoking tool create_todo
+2026-09-22 06:16:21.295 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tool create_todo completed.
+2026-09-22 06:16:21.420 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 3 complete, next_step type=NextStepRunAgain
+2026-09-22 06:16:21.429 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 4, current_agent=Strix
+2026-09-22 06:16:21.429 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8ff3f7a0>
+2026-09-22 06:16:21.430 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:16:21.430 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f7230>
+2026-09-22 06:16:21.431 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:16:23.630 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:16:23.632 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:16:23.633 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:16:23.633 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:16:23.633 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:16:23.634 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9d273340>
+2026-09-22 06:16:23.775 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 4 complete, next_step type=NextStepRunAgain
+2026-09-22 06:16:23.784 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 5, current_agent=Strix
+2026-09-22 06:16:23.785 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d22f340>
+2026-09-22 06:16:23.786 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:16:23.787 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633a750>
+2026-09-22 06:16:23.788 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:16:25.881 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:16:25.882 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:16:25.883 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:16:25.883 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:16:25.884 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:16:25.884 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9d273340>
+2026-09-22 06:16:26.011 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 5 complete, next_step type=NextStepRunAgain
+2026-09-22 06:16:26.019 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 6, current_agent=Strix
+2026-09-22 06:16:26.019 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d22cc80>
+2026-09-22 06:16:26.020 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:16:26.020 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633ae70>
+2026-09-22 06:16:26.021 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:16:27.946 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:16:27.947 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:16:27.948 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:16:27.949 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:16:27.949 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:16:27.950 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffdf570>
+2026-09-22 06:16:28.085 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 6 complete, next_step type=NextStepRunAgain
+2026-09-22 06:16:28.094 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 7, current_agent=Strix
+2026-09-22 06:16:28.094 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748fa6371540>
+2026-09-22 06:16:28.095 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:16:28.095 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f72f0>
+2026-09-22 06:16:28.096 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:16:30.066 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:16:30.067 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:16:30.068 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:16:30.068 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:16:30.068 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:16:30.069 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9e46a300>
+2026-09-22 06:16:30.214 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 7 complete, next_step type=NextStepRunAgain
+2026-09-22 06:16:30.225 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 8, current_agent=Strix
+2026-09-22 06:16:30.225 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748fa63730c0>
+2026-09-22 06:16:30.226 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:16:30.227 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633bc50>
+2026-09-22 06:16:30.228 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:16:32.528 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:16:32.529 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:16:32.530 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:16:32.530 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:16:32.531 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:16:32.531 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9d2072a0>
+2026-09-22 06:16:32.655 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 8 complete, next_step type=NextStepRunAgain
+2026-09-22 06:16:32.663 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 9, current_agent=Strix
+2026-09-22 06:16:32.663 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9e468f50>
+2026-09-22 06:16:32.664 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:16:32.664 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633bfb0>
+2026-09-22 06:16:32.665 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:16:34.779 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:16:34.781 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:16:34.782 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:16:34.782 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:16:34.782 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:16:34.783 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9d22e170>
+2026-09-22 06:16:34.922 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 9 complete, next_step type=NextStepRunAgain
+2026-09-22 06:16:34.930 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 10, current_agent=Strix
+2026-09-22 06:16:34.930 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748fa6374aa0>
+2026-09-22 06:16:34.932 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:16:34.932 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa637e210>
+2026-09-22 06:16:34.933 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:16:37.348 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:16:37.350 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:16:37.351 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:16:37.351 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:16:37.351 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:16:37.351 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:16:37.352 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9d2063a0>
+2026-09-22 06:16:37.352 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748fa63715e0>
+2026-09-22 06:16:37.643 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 10 complete, next_step type=NextStepRunAgain
+2026-09-22 06:16:37.651 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 11, current_agent=Strix
+2026-09-22 06:16:37.651 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d22d950>
+2026-09-22 06:16:37.652 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:16:37.653 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f71d0>
+2026-09-22 06:16:37.654 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:16:41.763 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:16:41.765 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:16:41.765 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:16:41.766 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:16:41.766 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:16:41.767 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffdead0>
+2026-09-22 06:16:41.894 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 11 complete, next_step type=NextStepRunAgain
+2026-09-22 06:16:41.901 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 12, current_agent=Strix
+2026-09-22 06:16:41.901 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d2072a0>
+2026-09-22 06:16:41.902 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:16:41.903 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f6090>
+2026-09-22 06:16:41.904 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:16:43.813 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:16:43.814 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:16:43.815 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:16:43.815 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:16:43.815 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:16:43.816 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9d2b0730>
+2026-09-22 06:16:43.939 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 12 complete, next_step type=NextStepRunAgain
+2026-09-22 06:16:43.947 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 13, current_agent=Strix
+2026-09-22 06:16:43.947 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748fa6371630>
+2026-09-22 06:16:43.948 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:16:43.948 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f6cf0>
+2026-09-22 06:16:43.950 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:16:45.902 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:16:45.904 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:16:45.904 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:16:45.905 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:16:45.905 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:16:45.906 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748fa448ca00>
+2026-09-22 06:16:46.025 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 13 complete, next_step type=NextStepRunAgain
+2026-09-22 06:16:46.033 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 14, current_agent=Strix
+2026-09-22 06:16:46.033 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8ffee7b0>
+2026-09-22 06:16:46.034 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:16:46.034 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f6990>
+2026-09-22 06:16:46.035 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:16:48.448 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:16:48.449 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:16:48.450 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:16:48.451 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:16:48.451 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:16:48.451 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9d22e1c0>
+2026-09-22 06:16:48.607 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 14 complete, next_step type=NextStepRunAgain
+2026-09-22 06:16:48.614 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 15, current_agent=Strix
+2026-09-22 06:16:48.614 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748fa6373250>
+2026-09-22 06:16:48.615 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:16:48.615 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f7f50>
+2026-09-22 06:16:48.616 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:16:50.838 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:16:50.840 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:16:50.841 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:16:50.842 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:16:50.842 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:16:50.842 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748fa63732a0>
+2026-09-22 06:16:50.959 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 15 complete, next_step type=NextStepRunAgain
+2026-09-22 06:16:50.967 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 16, current_agent=Strix
+2026-09-22 06:16:50.967 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d206850>
+2026-09-22 06:16:50.968 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:16:50.968 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f7d10>
+2026-09-22 06:16:50.969 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:16:53.334 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:16:53.335 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:16:53.336 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:16:53.337 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:16:53.337 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:16:53.338 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffecb90>
+2026-09-22 06:16:53.732 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 16 complete, next_step type=NextStepRunAgain
+2026-09-22 06:16:53.740 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 17, current_agent=Strix
+2026-09-22 06:16:53.741 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748fa6336260>
+2026-09-22 06:16:53.742 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:16:53.742 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f65d0>
+2026-09-22 06:16:53.744 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:16:56.745 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:16:56.747 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:16:56.748 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:16:56.749 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:16:56.749 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:16:56.749 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffedd10>
+2026-09-22 06:16:56.984 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 17 complete, next_step type=NextStepRunAgain
+2026-09-22 06:16:56.992 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 18, current_agent=Strix
+2026-09-22 06:16:56.992 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d249ae0>
+2026-09-22 06:16:56.994 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:16:56.994 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d2449b0>
+2026-09-22 06:16:56.995 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:16:59.701 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:16:59.703 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:16:59.704 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:16:59.705 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:16:59.705 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:16:59.706 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffec5a0>
+2026-09-22 06:16:59.980 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 18 complete, next_step type=NextStepRunAgain
+2026-09-22 06:16:59.994 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 19, current_agent=Strix
+2026-09-22 06:16:59.994 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d207e80>
+2026-09-22 06:16:59.995 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:16:59.995 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d244710>
+2026-09-22 06:16:59.997 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:17:02.726 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:17:02.728 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:17:02.729 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:17:02.730 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:17:02.730 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:17:02.731 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748fa6371540>
+2026-09-22 06:17:02.877 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 19 complete, next_step type=NextStepRunAgain
+2026-09-22 06:17:02.886 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 20, current_agent=Strix
+2026-09-22 06:17:02.886 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d22d1d0>
+2026-09-22 06:17:02.887 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:17:02.888 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d246750>
+2026-09-22 06:17:02.890 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:17:06.470 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:17:06.472 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:17:06.473 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:17:06.474 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:17:06.474 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:17:06.474 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9e469180>
+2026-09-22 06:17:07.096 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 20 complete, next_step type=NextStepRunAgain
+2026-09-22 06:17:07.104 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 21, current_agent=Strix
+2026-09-22 06:17:07.104 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d22e490>
+2026-09-22 06:17:07.105 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:17:07.105 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d245370>
+2026-09-22 06:17:07.108 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:17:11.294 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:17:11.296 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:17:11.298 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:17:11.299 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:17:11.299 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:17:11.300 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9d207110>
+2026-09-22 06:17:11.559 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 21 complete, next_step type=NextStepRunAgain
+2026-09-22 06:17:11.568 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 22, current_agent=Strix
+2026-09-22 06:17:11.568 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8ffef660>
+2026-09-22 06:17:11.570 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:17:11.570 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633b230>
+2026-09-22 06:17:11.572 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:17:15.718 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:17:15.719 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:17:15.720 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:17:15.721 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:17:15.721 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:17:15.721 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffdfca0>
+2026-09-22 06:17:15.873 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 22 complete, next_step type=NextStepRunAgain
+2026-09-22 06:17:15.880 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 23, current_agent=Strix
+2026-09-22 06:17:15.880 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d206a30>
+2026-09-22 06:17:15.882 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:17:15.882 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633b890>
+2026-09-22 06:17:15.884 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:17:18.706 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:17:18.708 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:17:18.709 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:17:18.709 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:17:18.710 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:17:18.710 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748fa63731b0>
+2026-09-22 06:17:18.839 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 23 complete, next_step type=NextStepRunAgain
+2026-09-22 06:17:18.847 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 24, current_agent=Strix
+2026-09-22 06:17:18.847 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8ffdedf0>
+2026-09-22 06:17:18.849 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:17:18.849 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa637c170>
+2026-09-22 06:17:18.851 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:17:21.032 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:17:21.033 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:17:21.034 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:17:21.035 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:17:21.035 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:17:21.036 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffef700>
+2026-09-22 06:17:21.156 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 24 complete, next_step type=NextStepRunAgain
+2026-09-22 06:17:21.163 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 25, current_agent=Strix
+2026-09-22 06:17:21.163 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8ffde6c0>
+2026-09-22 06:17:21.165 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:17:21.165 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa447c290>
+2026-09-22 06:17:21.167 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:17:23.371 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:17:23.372 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:17:23.374 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:17:23.375 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:17:23.375 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:17:23.375 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9d207750>
+2026-09-22 06:17:23.503 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 25 complete, next_step type=NextStepRunAgain
+2026-09-22 06:17:23.514 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 26, current_agent=Strix
+2026-09-22 06:17:23.514 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d22d400>
+2026-09-22 06:17:23.516 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:17:23.516 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9e43d670>
+2026-09-22 06:17:23.518 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:17:27.395 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:17:27.396 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:17:27.397 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:17:27.398 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:17:27.398 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:17:27.398 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffde800>
+2026-09-22 06:17:27.608 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 26 complete, next_step type=NextStepRunAgain
+2026-09-22 06:17:27.616 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 27, current_agent=Strix
+2026-09-22 06:17:27.616 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d207d90>
+2026-09-22 06:17:27.618 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:17:27.619 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633a870>
+2026-09-22 06:17:27.621 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:17:30.245 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:17:30.247 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:17:30.248 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:17:30.249 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:17:30.249 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:17:30.249 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9d22ca00>
+2026-09-22 06:17:30.427 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 27 complete, next_step type=NextStepRunAgain
+2026-09-22 06:17:30.439 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 28, current_agent=Strix
+2026-09-22 06:17:30.439 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe1dea0>
+2026-09-22 06:17:30.441 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:17:30.441 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f6b10>
+2026-09-22 06:17:30.443 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:17:32.873 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:17:32.876 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:17:32.878 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:17:32.880 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:17:32.880 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:17:32.882 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9e469180>
+2026-09-22 06:17:33.079 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 28 complete, next_step type=NextStepRunAgain
+2026-09-22 06:17:33.091 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 29, current_agent=Strix
+2026-09-22 06:17:33.091 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8ffee210>
+2026-09-22 06:17:33.093 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:17:33.093 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f6cf0>
+2026-09-22 06:17:33.096 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:17:38.100 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:17:38.101 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:17:38.103 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:17:38.103 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:17:38.103 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:17:38.104 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9d22f340>
+2026-09-22 06:17:38.245 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 29 complete, next_step type=NextStepRunAgain
+2026-09-22 06:17:38.255 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 30, current_agent=Strix
+2026-09-22 06:17:38.255 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d22ddb0>
+2026-09-22 06:17:38.257 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:17:38.257 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f5fd0>
+2026-09-22 06:17:38.259 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:17:41.422 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:17:41.423 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:17:41.425 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:17:41.425 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:17:41.426 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:17:41.426 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffd3fc0>
+2026-09-22 06:17:43.086 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 30 complete, next_step type=NextStepRunAgain
+2026-09-22 06:17:43.093 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 31, current_agent=Strix
+2026-09-22 06:17:43.093 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8ffee530>
+2026-09-22 06:17:43.095 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:17:43.095 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f7f50>
+2026-09-22 06:17:43.097 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:17:46.377 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:17:46.379 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:17:46.380 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:17:46.381 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:17:46.381 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:17:46.381 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9d22e120>
+2026-09-22 06:17:46.580 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 31 complete, next_step type=NextStepRunAgain
+2026-09-22 06:17:46.588 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 32, current_agent=Strix
+2026-09-22 06:17:46.588 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe1c730>
+2026-09-22 06:17:46.590 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:17:46.590 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f7d10>
+2026-09-22 06:17:46.593 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:17:50.595 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:17:50.596 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:17:50.598 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:17:50.598 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:17:50.598 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:17:50.599 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffdfca0>
+2026-09-22 06:17:50.724 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 32 complete, next_step type=NextStepRunAgain
+2026-09-22 06:17:50.730 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 33, current_agent=Strix
+2026-09-22 06:17:50.731 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d22c0a0>
+2026-09-22 06:17:50.732 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:17:50.732 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d244530>
+2026-09-22 06:17:50.734 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:17:55.199 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:17:55.200 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:17:55.202 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:17:55.203 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:17:55.203 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:17:55.204 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffef4d0>
+2026-09-22 06:17:59.639 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 33 complete, next_step type=NextStepRunAgain
+2026-09-22 06:17:59.648 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 34, current_agent=Strix
+2026-09-22 06:17:59.648 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe1cff0>
+2026-09-22 06:17:59.651 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:17:59.652 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f6930>
+2026-09-22 06:17:59.654 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:18:03.033 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:18:03.036 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:18:03.039 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:18:03.040 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:18:03.041 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:18:03.045 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe1ea30>
+2026-09-22 06:18:03.591 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 34 complete, next_step type=NextStepRunAgain
+2026-09-22 06:18:03.599 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 35, current_agent=Strix
+2026-09-22 06:18:03.600 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d206440>
+2026-09-22 06:18:03.601 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:18:03.602 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f7350>
+2026-09-22 06:18:03.604 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:18:07.260 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:18:07.262 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:18:07.263 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:18:07.264 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:18:07.264 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:18:07.265 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffdfca0>
+2026-09-22 06:18:08.022 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 35 complete, next_step type=NextStepRunAgain
+2026-09-22 06:18:08.031 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 36, current_agent=Strix
+2026-09-22 06:18:08.031 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8ffee8f0>
+2026-09-22 06:18:08.033 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:18:08.033 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633adb0>
+2026-09-22 06:18:08.035 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:18:11.364 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:18:11.365 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:18:11.367 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:18:11.368 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:18:11.368 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:18:11.369 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9d207570>
+2026-09-22 06:18:12.079 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 36 complete, next_step type=NextStepRunAgain
+2026-09-22 06:18:12.087 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 37, current_agent=Strix
+2026-09-22 06:18:12.087 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8ffde6c0>
+2026-09-22 06:18:12.089 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:18:12.089 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633ac30>
+2026-09-22 06:18:12.091 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:18:17.140 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:18:17.141 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:18:17.143 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:18:17.144 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:18:17.144 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:18:17.145 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffedcc0>
+2026-09-22 06:18:23.422 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 37 complete, next_step type=NextStepRunAgain
+2026-09-22 06:18:23.433 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 38, current_agent=Strix
+2026-09-22 06:18:23.433 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe1ef30>
+2026-09-22 06:18:23.434 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:18:23.435 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f7d70>
+2026-09-22 06:18:23.437 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:18:27.907 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:18:27.909 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:18:27.911 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:18:27.912 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:18:27.912 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:18:27.913 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffef3e0>
+2026-09-22 06:18:28.942 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 38 complete, next_step type=NextStepRunAgain
+2026-09-22 06:18:28.950 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 39, current_agent=Strix
+2026-09-22 06:18:28.950 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8ffdf4d0>
+2026-09-22 06:18:28.952 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:18:28.952 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa637c0b0>
+2026-09-22 06:18:28.955 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:18:34.633 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:18:34.635 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:18:34.637 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:18:34.638 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:18:34.638 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:18:34.639 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe1da40>
+2026-09-22 06:18:35.439 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 39 complete, next_step type=NextStepRunAgain
+2026-09-22 06:18:35.448 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 40, current_agent=Strix
+2026-09-22 06:18:35.448 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8ffecf50>
+2026-09-22 06:18:35.450 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:18:35.450 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633aa50>
+2026-09-22 06:18:35.453 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:18:40.950 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:18:40.952 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:18:40.953 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:18:40.954 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:18:40.954 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:18:40.955 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffedae0>
+2026-09-22 06:18:41.746 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 40 complete, next_step type=NextStepRunAgain
+2026-09-22 06:18:41.756 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 41, current_agent=Strix
+2026-09-22 06:18:41.756 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9e469400>
+2026-09-22 06:18:41.758 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:18:41.759 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f75f0>
+2026-09-22 06:18:41.762 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:18:44.884 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:18:44.886 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:18:44.888 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:18:44.889 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:18:44.889 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:18:44.890 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffef700>
+2026-09-22 06:18:45.078 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 41 complete, next_step type=NextStepRunAgain
+2026-09-22 06:18:45.087 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 42, current_agent=Strix
+2026-09-22 06:18:45.087 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9e468c30>
+2026-09-22 06:18:45.090 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:18:45.090 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633bc50>
+2026-09-22 06:18:45.093 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:18:49.158 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:18:49.160 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:18:49.162 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:18:49.163 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:18:49.163 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:18:49.163 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe1f610>
+2026-09-22 06:18:51.840 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 42 complete, next_step type=NextStepRunAgain
+2026-09-22 06:18:51.848 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 43, current_agent=Strix
+2026-09-22 06:18:51.849 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d22edf0>
+2026-09-22 06:18:51.851 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:18:51.851 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633b5f0>
+2026-09-22 06:18:51.854 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:18:56.946 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:18:56.948 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:18:56.950 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:18:56.951 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:18:56.951 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:18:56.952 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe1e210>
+2026-09-22 06:18:59.251 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 43 complete, next_step type=NextStepRunAgain
+2026-09-22 06:18:59.260 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 44, current_agent=Strix
+2026-09-22 06:18:59.260 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d270d20>
+2026-09-22 06:18:59.262 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:18:59.263 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa637e390>
+2026-09-22 06:18:59.266 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:19:02.816 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:19:02.818 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:19:02.819 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:19:02.820 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:19:02.820 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:19:02.821 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9d207570>
+2026-09-22 06:19:03.512 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 44 complete, next_step type=NextStepRunAgain
+2026-09-22 06:19:03.520 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 45, current_agent=Strix
+2026-09-22 06:19:03.520 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe02850>
+2026-09-22 06:19:03.522 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:19:03.522 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f6210>
+2026-09-22 06:19:03.524 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:19:07.514 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:19:07.516 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:19:07.518 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:19:07.519 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:19:07.519 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:19:07.520 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe1c780>
+2026-09-22 06:19:08.806 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 45 complete, next_step type=NextStepRunAgain
+2026-09-22 06:19:08.814 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 46, current_agent=Strix
+2026-09-22 06:19:08.815 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe00370>
+2026-09-22 06:19:08.817 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:19:08.817 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f6f90>
+2026-09-22 06:19:08.820 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:19:20.903 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:19:20.905 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:19:20.908 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:19:20.909 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:19:20.910 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:19:20.911 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffefc00>
+2026-09-22 06:19:26.231 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 46 complete, next_step type=NextStepRunAgain
+2026-09-22 06:19:26.242 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 47, current_agent=Strix
+2026-09-22 06:19:26.242 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe1fe80>
+2026-09-22 06:19:26.245 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:19:26.245 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa6338dd0>
+2026-09-22 06:19:26.248 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:19:31.343 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:19:31.344 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:19:31.346 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:19:31.347 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:19:31.348 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:19:31.348 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9d22e620>
+2026-09-22 06:19:32.503 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 47 complete, next_step type=NextStepRunAgain
+2026-09-22 06:19:32.515 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 48, current_agent=Strix
+2026-09-22 06:19:32.515 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe03480>
+2026-09-22 06:19:32.518 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:19:32.518 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f6c30>
+2026-09-22 06:19:32.520 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:19:36.937 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:19:36.939 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:19:36.941 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:19:36.942 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:19:36.942 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:19:36.943 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffef200>
+2026-09-22 06:19:38.360 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 48 complete, next_step type=NextStepRunAgain
+2026-09-22 06:19:38.369 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 49, current_agent=Strix
+2026-09-22 06:19:38.369 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8ffef340>
+2026-09-22 06:19:38.371 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:19:38.371 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f6390>
+2026-09-22 06:19:38.373 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:19:44.550 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:19:44.552 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:19:44.555 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:19:44.556 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:19:44.556 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:19:44.557 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe1cff0>
+2026-09-22 06:19:46.695 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 49 complete, next_step type=NextStepRunAgain
+2026-09-22 06:19:46.704 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 50, current_agent=Strix
+2026-09-22 06:19:46.704 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe785f0>
+2026-09-22 06:19:46.706 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:19:46.707 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f6bd0>
+2026-09-22 06:19:46.709 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:19:50.862 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:19:50.864 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:19:50.866 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:19:50.867 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:19:50.867 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:19:50.867 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9d22e620>
+2026-09-22 06:19:52.714 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 50 complete, next_step type=NextStepRunAgain
+2026-09-22 06:19:52.724 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 51, current_agent=Strix
+2026-09-22 06:19:52.724 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe01180>
+2026-09-22 06:19:52.727 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:19:52.727 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f7650>
+2026-09-22 06:19:52.731 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:19:58.222 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:19:58.226 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:19:58.229 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:19:58.230 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:19:58.230 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:19:58.231 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe03a20>
+2026-09-22 06:20:00.931 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 51 complete, next_step type=NextStepRunAgain
+2026-09-22 06:20:00.940 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 52, current_agent=Strix
+2026-09-22 06:20:00.940 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe79b80>
+2026-09-22 06:20:00.942 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:20:00.943 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f6990>
+2026-09-22 06:20:00.945 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:20:06.037 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:20:06.039 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:20:06.041 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:20:06.042 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:20:06.042 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:20:06.043 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe1ddb0>
+2026-09-22 06:20:15.254 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 52 complete, next_step type=NextStepRunAgain
+2026-09-22 06:20:15.264 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 53, current_agent=Strix
+2026-09-22 06:20:15.264 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe1cb40>
+2026-09-22 06:20:15.266 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:20:15.266 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633b230>
+2026-09-22 06:20:15.268 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:20:20.855 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:20:20.857 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:20:20.860 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:20:20.861 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:20:20.861 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:20:20.861 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe1e030>
+2026-09-22 06:20:21.506 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 53 complete, next_step type=NextStepRunAgain
+2026-09-22 06:20:21.517 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 54, current_agent=Strix
+2026-09-22 06:20:21.517 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe79180>
+2026-09-22 06:20:21.520 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:20:21.520 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633b890>
+2026-09-22 06:20:21.523 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:20:29.007 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:20:29.009 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:20:29.011 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:20:29.011 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:20:29.011 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:20:29.013 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe1c780>
+2026-09-22 06:20:29.166 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 54 complete, next_step type=NextStepRunAgain
+2026-09-22 06:20:29.177 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 55, current_agent=Strix
+2026-09-22 06:20:29.177 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe02120>
+2026-09-22 06:20:29.181 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:20:29.181 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa637c170>
+2026-09-22 06:20:29.184 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:20:32.138 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:20:32.140 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:20:32.142 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:20:32.143 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:20:32.143 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:20:32.145 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe01ea0>
+2026-09-22 06:20:32.300 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 55 complete, next_step type=NextStepRunAgain
+2026-09-22 06:20:32.310 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 56, current_agent=Strix
+2026-09-22 06:20:32.310 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe02530>
+2026-09-22 06:20:32.312 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:20:32.313 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa447c290>
+2026-09-22 06:20:32.315 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:20:38.182 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:20:38.185 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:20:38.186 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:20:38.187 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:20:38.187 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:20:38.189 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffefb60>
+2026-09-22 06:20:39.232 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 56 complete, next_step type=NextStepRunAgain
+2026-09-22 06:20:39.241 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 57, current_agent=Strix
+2026-09-22 06:20:39.241 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8ffee8f0>
+2026-09-22 06:20:39.244 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:20:39.244 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f6150>
+2026-09-22 06:20:39.246 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:20:43.592 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:20:43.594 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:20:43.596 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:20:43.597 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:20:43.597 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:20:43.598 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe79b30>
+2026-09-22 06:20:43.813 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 57 complete, next_step type=NextStepRunAgain
+2026-09-22 06:20:43.822 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 58, current_agent=Strix
+2026-09-22 06:20:43.822 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8ffece10>
+2026-09-22 06:20:43.825 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:20:43.825 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633a870>
+2026-09-22 06:20:43.828 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:20:48.601 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:20:48.602 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:20:48.605 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:20:48.606 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:20:48.606 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:20:48.607 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe1e490>
+2026-09-22 06:20:48.839 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 58 complete, next_step type=NextStepRunAgain
+2026-09-22 06:20:48.847 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 59, current_agent=Strix
+2026-09-22 06:20:48.848 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe79810>
+2026-09-22 06:20:48.850 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:20:48.850 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d246690>
+2026-09-22 06:20:48.853 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:20:53.003 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:20:53.005 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:20:53.006 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:20:53.007 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:20:53.007 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:20:53.008 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9d206800>
+2026-09-22 06:20:53.481 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 59 complete, next_step type=NextStepRunAgain
+2026-09-22 06:20:53.490 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 60, current_agent=Strix
+2026-09-22 06:20:53.490 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe02710>
+2026-09-22 06:20:53.493 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:20:53.494 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f6cf0>
+2026-09-22 06:20:53.496 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:20:58.522 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:20:58.524 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:20:58.527 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:20:58.528 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:20:58.528 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:20:58.529 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe028a0>
+2026-09-22 06:20:58.712 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 60 complete, next_step type=NextStepRunAgain
+2026-09-22 06:20:58.721 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 61, current_agent=Strix
+2026-09-22 06:20:58.722 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe7a5d0>
+2026-09-22 06:20:58.725 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:20:58.725 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f5fd0>
+2026-09-22 06:20:58.727 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:21:02.219 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:21:02.221 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:21:02.224 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:21:02.225 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:21:02.225 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:21:02.226 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe1d680>
+2026-09-22 06:21:02.376 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 61 complete, next_step type=NextStepRunAgain
+2026-09-22 06:21:02.385 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 62, current_agent=Strix
+2026-09-22 06:21:02.385 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe1cdc0>
+2026-09-22 06:21:02.389 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:21:02.390 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f7f50>
+2026-09-22 06:21:02.392 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:21:08.173 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:21:08.175 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:21:08.178 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:21:08.179 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:21:08.179 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:21:08.180 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe02210>
+2026-09-22 06:21:08.331 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 62 complete, next_step type=NextStepRunAgain
+2026-09-22 06:21:08.341 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 63, current_agent=Strix
+2026-09-22 06:21:08.341 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe1c640>
+2026-09-22 06:21:08.345 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:21:08.346 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f7d10>
+2026-09-22 06:21:08.348 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:21:12.326 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:21:12.328 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:21:12.331 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:21:12.332 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:21:12.333 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:21:12.333 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:21:12.334 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe788c0>
+2026-09-22 06:21:12.334 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffeddb0>
+2026-09-22 06:21:12.543 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 63 complete, next_step type=NextStepRunAgain
+2026-09-22 06:21:12.554 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 64, current_agent=Strix
+2026-09-22 06:21:12.554 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe1d3b0>
+2026-09-22 06:21:12.557 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:21:12.558 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f6930>
+2026-09-22 06:21:12.561 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:21:15.901 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:21:15.904 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:21:15.907 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:21:15.908 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:21:15.909 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:21:15.910 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe798b0>
+2026-09-22 06:21:16.049 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 64 complete, next_step type=NextStepRunAgain
+2026-09-22 06:21:16.058 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 65, current_agent=Strix
+2026-09-22 06:21:16.059 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe79ea0>
+2026-09-22 06:21:16.061 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:21:16.062 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f7350>
+2026-09-22 06:21:16.064 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:21:22.937 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:21:22.940 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:21:22.942 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:21:22.943 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:21:22.943 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:21:22.944 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffec8c0>
+2026-09-22 06:21:24.395 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 65 complete, next_step type=NextStepRunAgain
+2026-09-22 06:21:24.405 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 66, current_agent=Strix
+2026-09-22 06:21:24.406 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8ffdfcf0>
+2026-09-22 06:21:24.410 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:21:24.410 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633adb0>
+2026-09-22 06:21:24.413 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:21:27.709 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:21:27.712 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:21:27.716 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:21:27.718 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:21:27.718 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:21:27.719 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9d2072a0>
+2026-09-22 06:21:27.937 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 66 complete, next_step type=NextStepRunAgain
+2026-09-22 06:21:27.951 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 67, current_agent=Strix
+2026-09-22 06:21:27.951 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9e4694a0>
+2026-09-22 06:21:27.956 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:21:27.957 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633ac30>
+2026-09-22 06:21:27.960 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:21:31.850 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:21:31.852 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:21:31.854 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:21:31.855 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:21:31.855 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:21:31.856 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffd3c00>
+2026-09-22 06:21:32.103 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 67 complete, next_step type=NextStepRunAgain
+2026-09-22 06:21:32.111 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 68, current_agent=Strix
+2026-09-22 06:21:32.111 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe1d9f0>
+2026-09-22 06:21:32.114 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:21:32.115 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f7d70>
+2026-09-22 06:21:32.117 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:21:35.921 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:21:35.923 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:21:35.925 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:21:35.926 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:21:35.926 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:21:35.927 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9e469c70>
+2026-09-22 06:21:36.100 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 68 complete, next_step type=NextStepRunAgain
+2026-09-22 06:21:36.109 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 69, current_agent=Strix
+2026-09-22 06:21:36.109 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe03fc0>
+2026-09-22 06:21:36.112 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:21:36.112 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa637c0b0>
+2026-09-22 06:21:36.115 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:21:41.359 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:21:41.361 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:21:41.363 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:21:41.364 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:21:41.364 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:21:41.365 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9e469c20>
+2026-09-22 06:21:42.359 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 69 complete, next_step type=NextStepRunAgain
+2026-09-22 06:21:42.368 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 70, current_agent=Strix
+2026-09-22 06:21:42.368 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d2700f0>
+2026-09-22 06:21:42.371 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:21:42.372 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633aa50>
+2026-09-22 06:21:42.375 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:21:45.546 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:21:45.548 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:21:45.550 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:21:45.551 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:21:45.551 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:21:45.552 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe03980>
+2026-09-22 06:21:46.175 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 70 complete, next_step type=NextStepRunAgain
+2026-09-22 06:21:46.184 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 71, current_agent=Strix
+2026-09-22 06:21:46.184 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748fa6374be0>
+2026-09-22 06:21:46.188 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:21:46.188 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f75f0>
+2026-09-22 06:21:46.190 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:21:49.701 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:21:49.703 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:21:49.707 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:21:49.708 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:21:49.708 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:21:49.709 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffec5f0>
+2026-09-22 06:21:49.869 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 71 complete, next_step type=NextStepRunAgain
+2026-09-22 06:21:49.878 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 72, current_agent=Strix
+2026-09-22 06:21:49.878 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe7bcf0>
+2026-09-22 06:21:49.881 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:21:49.882 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633bc50>
+2026-09-22 06:21:49.885 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:21:53.079 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:21:53.081 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:21:53.083 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:21:53.084 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:21:53.084 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:21:53.085 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffefd40>
+2026-09-22 06:21:57.271 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 72 complete, next_step type=NextStepRunAgain
+2026-09-22 06:21:57.281 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 73, current_agent=Strix
+2026-09-22 06:21:57.281 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe00be0>
+2026-09-22 06:21:57.285 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:21:57.285 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633b5f0>
+2026-09-22 06:21:57.288 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:22:00.133 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:22:00.135 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:22:00.137 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:22:00.138 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:22:00.138 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:22:00.139 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f9d22e2b0>
+2026-09-22 06:22:00.278 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 73 complete, next_step type=NextStepRunAgain
+2026-09-22 06:22:00.285 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 74, current_agent=Strix
+2026-09-22 06:22:00.285 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d22db80>
+2026-09-22 06:22:00.288 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:22:00.288 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa637e390>
+2026-09-22 06:22:00.290 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:22:04.136 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:22:04.139 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:22:04.142 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:22:04.144 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:22:04.144 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:22:04.145 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe7aa80>
+2026-09-22 06:22:04.465 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 74 complete, next_step type=NextStepRunAgain
+2026-09-22 06:22:04.475 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 75, current_agent=Strix
+2026-09-22 06:22:04.475 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8ffd3f70>
+2026-09-22 06:22:04.478 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:22:04.479 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f6210>
+2026-09-22 06:22:04.481 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:22:09.793 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:22:09.796 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:22:09.798 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:22:09.800 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:22:09.800 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:22:09.801 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe01720>
+2026-09-22 06:22:11.153 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 75 complete, next_step type=NextStepRunAgain
+2026-09-22 06:22:11.162 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 76, current_agent=Strix
+2026-09-22 06:22:11.162 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d2491d0>
+2026-09-22 06:22:11.165 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:22:11.166 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f6f90>
+2026-09-22 06:22:11.169 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:22:16.677 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:22:16.679 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:22:16.681 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:22:16.682 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:22:16.682 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:22:16.683 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffeeb70>
+2026-09-22 06:22:16.890 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 76 complete, next_step type=NextStepRunAgain
+2026-09-22 06:22:16.900 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 77, current_agent=Strix
+2026-09-22 06:22:16.900 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748fa468ce10>
+2026-09-22 06:22:16.903 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:22:16.904 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa6338dd0>
+2026-09-22 06:22:16.906 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:22:20.767 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:22:20.769 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:22:20.773 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:22:20.774 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:22:20.774 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:22:20.775 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe7b610>
+2026-09-22 06:22:22.636 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 77 complete, next_step type=NextStepRunAgain
+2026-09-22 06:22:22.648 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 78, current_agent=Strix
+2026-09-22 06:22:22.648 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8ffeee90>
+2026-09-22 06:22:22.652 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:22:22.652 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f7fb0>
+2026-09-22 06:22:22.655 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:22:26.147 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:22:26.149 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:22:26.152 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:22:26.153 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:22:26.153 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:22:26.154 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe1f980>
+2026-09-22 06:22:26.972 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 78 complete, next_step type=NextStepRunAgain
+2026-09-22 06:22:26.981 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 79, current_agent=Strix
+2026-09-22 06:22:26.981 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8ffeddb0>
+2026-09-22 06:22:26.985 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:22:26.985 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f6390>
+2026-09-22 06:22:26.988 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:22:30.188 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:22:30.190 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:22:30.194 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:22:30.195 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:22:30.195 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:22:30.196 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe1dbd0>
+2026-09-22 06:22:30.387 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 79 complete, next_step type=NextStepRunAgain
+2026-09-22 06:22:30.394 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 80, current_agent=Strix
+2026-09-22 06:22:30.395 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe02620>
+2026-09-22 06:22:30.398 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:22:30.398 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f6bd0>
+2026-09-22 06:22:30.401 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:22:33.716 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:22:33.718 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:22:33.722 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:22:33.723 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:22:33.723 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:22:33.724 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffef5c0>
+2026-09-22 06:22:33.870 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 80 complete, next_step type=NextStepRunAgain
+2026-09-22 06:22:33.878 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 81, current_agent=Strix
+2026-09-22 06:22:33.878 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f9d22c870>
+2026-09-22 06:22:33.881 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:22:33.882 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f7650>
+2026-09-22 06:22:33.885 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:22:37.944 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:22:37.946 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:22:37.949 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:22:37.950 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:22:37.951 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:22:37.952 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe00a00>
+2026-09-22 06:22:38.151 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 81 complete, next_step type=NextStepRunAgain
+2026-09-22 06:22:38.159 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 82, current_agent=Strix
+2026-09-22 06:22:38.160 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe1cdc0>
+2026-09-22 06:22:38.163 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:22:38.164 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f6990>
+2026-09-22 06:22:38.166 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:22:41.883 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:22:41.886 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:22:41.889 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:22:41.890 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:22:41.890 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:22:41.891 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe1f480>
+2026-09-22 06:22:42.581 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 82 complete, next_step type=NextStepRunAgain
+2026-09-22 06:22:42.589 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 83, current_agent=Strix
+2026-09-22 06:22:42.589 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe1e210>
+2026-09-22 06:22:42.593 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:22:42.593 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633b230>
+2026-09-22 06:22:42.596 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:22:46.325 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:22:46.329 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:22:46.333 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:22:46.335 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:22:46.335 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:22:46.337 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe03610>
+2026-09-22 06:22:49.227 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 83 complete, next_step type=NextStepRunAgain
+2026-09-22 06:22:49.237 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 84, current_agent=Strix
+2026-09-22 06:22:49.238 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe1f7f0>
+2026-09-22 06:22:49.242 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:22:49.242 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633b890>
+2026-09-22 06:22:49.246 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:22:54.204 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:22:54.208 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:22:54.211 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:22:54.212 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:22:54.213 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:22:54.214 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748fa63732f0>
+2026-09-22 06:22:54.977 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 84 complete, next_step type=NextStepRunAgain
+2026-09-22 06:22:54.992 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 85, current_agent=Strix
+2026-09-22 06:22:54.993 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8feaa6c0>
+2026-09-22 06:22:54.998 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:22:54.998 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa637c170>
+2026-09-22 06:22:55.003 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:22:59.504 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:22:59.506 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:22:59.510 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:22:59.512 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:22:59.512 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:22:59.513 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffee3f0>
+2026-09-22 06:23:01.185 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 85 complete, next_step type=NextStepRunAgain
+2026-09-22 06:23:01.195 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 86, current_agent=Strix
+2026-09-22 06:23:01.195 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe1f5c0>
+2026-09-22 06:23:01.201 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:23:01.201 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa447c290>
+2026-09-22 06:23:01.204 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:23:06.418 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:23:06.421 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:23:06.426 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:23:06.427 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:23:06.427 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:23:06.427 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:23:06.428 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8ffec5f0>
+2026-09-22 06:23:06.428 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fea8aa0>
+2026-09-22 06:23:07.307 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 86 complete, next_step type=NextStepRunAgain
+2026-09-22 06:23:07.315 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 87, current_agent=Strix
+2026-09-22 06:23:07.315 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe7b250>
+2026-09-22 06:23:07.319 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:23:07.320 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa633a870>
+2026-09-22 06:23:07.322 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:23:11.263 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:23:11.265 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:23:11.269 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:23:11.270 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:23:11.270 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:23:11.271 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe1fac0>
+2026-09-22 06:23:11.671 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 87 complete, next_step type=NextStepRunAgain
+2026-09-22 06:23:11.681 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 88, current_agent=Strix
+2026-09-22 06:23:11.681 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8feaa620>
+2026-09-22 06:23:11.686 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:23:11.686 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f60f0>
+2026-09-22 06:23:11.689 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:23:15.493 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:23:15.495 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:23:15.498 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:23:15.500 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:23:15.500 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:23:15.502 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe01130>
+2026-09-22 06:23:18.440 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 88 complete, next_step type=NextStepRunAgain
+2026-09-22 06:23:18.450 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 89, current_agent=Strix
+2026-09-22 06:23:18.450 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748fa63732f0>
+2026-09-22 06:23:18.455 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:23:18.455 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f6cf0>
+2026-09-22 06:23:18.458 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:23:24.580 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:23:24.582 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:23:24.585 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:23:24.587 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:23:24.587 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:23:24.588 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe1cd70>
+2026-09-22 06:23:25.325 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 89 complete, next_step type=NextStepRunAgain
+2026-09-22 06:23:25.334 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 90, current_agent=Strix
+2026-09-22 06:23:25.334 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe7b980>
+2026-09-22 06:23:25.338 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:23:25.339 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f5fd0>
+2026-09-22 06:23:25.342 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:23:32.515 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:23:32.517 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:23:32.520 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:23:32.521 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:23:32.521 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:23:32.521 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:23:32.522 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe79130>
+2026-09-22 06:23:32.523 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fea8be0>
+2026-09-22 06:23:32.524 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Invoking tool create_note
+2026-09-22 06:23:32.527 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tool create_note completed.
+2026-09-22 06:23:32.918 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 90 complete, next_step type=NextStepRunAgain
+2026-09-22 06:23:32.926 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 91, current_agent=Strix
+2026-09-22 06:23:32.926 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8ffecbe0>
+2026-09-22 06:23:32.930 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:23:32.930 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d1f7f50>
+2026-09-22 06:23:32.933 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:23:47.572 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:23:47.575 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (0 results)
+2026-09-22 06:23:47.578 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:23:47.580 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:23:47.580 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:23:47.581 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe02c60>
+2026-09-22 06:23:47.581 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Invoking tool create_vulnerability_report
+2026-09-22 06:23:47.588 INFO    172-17-112-1-8001_c4bc - strix.report.state: Added vulnerability report: vuln-0001 - Stored XSS via news title breaking out of the JSON-LD Article schema
+2026-09-22 06:23:48.482 DEBUG   172-17-112-1-8001_c4bc - strix.telemetry.posthog: posthog event sent: finding_reported
+2026-09-22 06:23:49.235 DEBUG   172-17-112-1-8001_c4bc - strix.telemetry.scarf: scarf event sent: finding_reported
+2026-09-22 06:23:49.251 INFO    172-17-112-1-8001_c4bc - strix.report.writer: Saved 1 new vulnerability report(s) to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/vulnerabilities
+2026-09-22 06:23:49.251 INFO    172-17-112-1-8001_c4bc - strix.report.writer: Updated vulnerability index: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/vulnerabilities.csv
+2026-09-22 06:23:49.253 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (1 results)
+2026-09-22 06:23:49.257 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:23:49.257 INFO    172-17-112-1-8001_c4bc - strix.tools.reporting.tool: Vulnerability report created: id=vuln-0001 severity=medium cvss=5.4 title=Stored XSS via news title breaking out of the JSON-LD Article schema
+2026-09-22 06:23:49.257 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tool create_vulnerability_report completed.
+2026-09-22 06:23:49.259 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 91 complete, next_step type=NextStepRunAgain
+2026-09-22 06:23:49.268 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 92, current_agent=Strix
+2026-09-22 06:23:49.268 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fe79130>
+2026-09-22 06:23:49.271 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:23:49.272 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748fa6338dd0>
+2026-09-22 06:23:49.275 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:23:53.221 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:23:53.224 INFO    172-17-112-1-8001_c4bc - strix.report.writer: Updated vulnerability index: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/vulnerabilities.csv
+2026-09-22 06:23:53.226 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (1 results)
+2026-09-22 06:23:53.229 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:23:53.230 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:23:53.230 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:23:53.230 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:23:53.231 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8feaa760>
+2026-09-22 06:23:53.232 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8feabc50>
+2026-09-22 06:23:53.232 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Invoking tool view_agent_graph
+2026-09-22 06:23:53.232 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tool view_agent_graph completed.
+2026-09-22 06:23:53.232 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Invoking tool list_reports
+2026-09-22 06:23:53.234 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tool list_reports completed.
+2026-09-22 06:23:53.234 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 92 complete, next_step type=NextStepRunAgain
+2026-09-22 06:23:53.247 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 93, current_agent=Strix
+2026-09-22 06:23:53.247 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8fd0d270>
+2026-09-22 06:23:53.252 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:23:53.253 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9d247e30>
+2026-09-22 06:23:53.256 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:23:58.973 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:23:58.979 INFO    172-17-112-1-8001_c4bc - strix.report.writer: Updated vulnerability index: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/vulnerabilities.csv
+2026-09-22 06:23:58.983 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (1 results)
+2026-09-22 06:23:58.988 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:23:58.989 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:23:58.990 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:23:58.991 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fe7b250>
+2026-09-22 06:23:58.992 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Invoking tool think
+2026-09-22 06:23:58.992 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tool think completed.
+2026-09-22 06:23:58.994 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 93 complete, next_step type=NextStepRunAgain
+2026-09-22 06:23:59.004 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Starting turn 94, current_agent=Strix
+2026-09-22 06:23:59.004 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.TurnSpanData object at 0x748f8feabc50>
+2026-09-22 06:23:59.008 DEBUG   172-17-112-1-8001_c4bc - openai.agents: No conversation_id available for request
+2026-09-22 06:23:59.009 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.GenerationSpanData object at 0x748f9e43d970>
+2026-09-22 06:23:59.012 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Calling LLM
+2026-09-22 06:24:13.432 DEBUG   172-17-112-1-8001_c4bc - strix.report.usage: LiteLLM cost estimate unavailable for model dailyDriver
+2026-09-22 06:24:13.434 INFO    172-17-112-1-8001_c4bc - strix.report.writer: Updated vulnerability index: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/vulnerabilities.csv
+2026-09-22 06:24:13.436 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (1 results)
+2026-09-22 06:24:13.438 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:24:13.440 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=message class=ResponseOutputMessage
+2026-09-22 06:24:13.440 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Processing output item type=function_call class=ResponseFunctionToolCall
+2026-09-22 06:24:13.441 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tracing is disabled. Not creating span <agents.tracing.span_data.FunctionSpanData object at 0x748f8fd0e030>
+2026-09-22 06:24:13.441 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Invoking tool finish_scan
+2026-09-22 06:24:13.441 INFO    172-17-112-1-8001_c4bc - strix.report.state: Updated scan final fields
+2026-09-22 06:24:13.444 INFO    172-17-112-1-8001_c4bc - strix.report.writer: Saved final penetration test report to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/penetration_test_report.md
+2026-09-22 06:24:13.445 INFO    172-17-112-1-8001_c4bc - strix.report.writer: Updated vulnerability index: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/vulnerabilities.csv
+2026-09-22 06:24:13.447 INFO    172-17-112-1-8001_c4bc - strix.report.sarif: Wrote SARIF 2.1.0 report: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc/findings.sarif (1 results)
+2026-09-22 06:24:13.451 INFO    172-17-112-1-8001_c4bc - strix.report.state: Essential scan data saved to: /home/dimas/disciplink-rerun/strix_runs/172-17-112-1-8001_c4bc
+2026-09-22 06:24:15.095 DEBUG   172-17-112-1-8001_c4bc - strix.telemetry.posthog: posthog event sent: scan_ended
+2026-09-22 06:24:16.061 DEBUG   172-17-112-1-8001_c4bc - strix.telemetry.scarf: scarf event sent: scan_ended
+2026-09-22 06:24:16.062 INFO    172-17-112-1-8001_c4bc - strix.tools.finish.tool: finish_scan: completed scan with 1 vulnerability report(s)
+2026-09-22 06:24:16.062 INFO    172-17-112-1-8001_c4bc - strix.core.agents: agent.status efa2a60d=completed
+2026-09-22 06:24:16.063 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Tool finish_scan completed.
+2026-09-22 06:24:16.064 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Turn 94 complete, next_step type=NextStepFinalOutput
+2026-09-22 06:24:16.069 DEBUG   172-17-112-1-8001_c4bc - openai.agents: Resetting current trace
+2026-09-22 06:24:16.078 INFO    172-17-112-1-8001_c4bc - strix.core.runner: Tearing down sandbox session for scan 172-17-112-1-8001_c4bc
+2026-09-22 06:24:17.353 INFO    172-17-112-1-8001_c4bc - strix.runtime.session_manager: Cleaned up sandbox session for scan 172-17-112-1-8001_c4bc
+2026-09-22 06:24:17.354 INFO    172-17-112-1-8001_c4bc - strix.core.runner: Strix scan 172-17-112-1-8001_c4bc done

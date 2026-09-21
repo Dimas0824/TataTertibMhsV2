@@ -1,0 +1,2 @@
+id,title,severity,timestamp,file
+vuln-0001,PHP session.use_strict_mode disabled — server adopts arbitrary client-supplied session identifiers,MEDIUM,2026-09-21 22:57:14 UTC,vulnerabilities/vuln-0001.md

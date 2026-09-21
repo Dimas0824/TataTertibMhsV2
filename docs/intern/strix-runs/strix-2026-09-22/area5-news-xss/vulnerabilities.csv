@@ -1,0 +1,2 @@
+id,title,severity,timestamp,file
+vuln-0001,Stored XSS via news title breaking out of the JSON-LD Article schema,MEDIUM,2026-09-21 23:23:47 UTC,vulnerabilities/vuln-0001.md

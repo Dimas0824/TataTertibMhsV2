@@ -1,0 +1,96 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Strix",
+          "informationUri": "https://strix.ai",
+          "rules": [
+            {
+              "id": "CWE-384",
+              "name": "PHP session.use_strict_mode disabled — server adopts arbitrary client-supplied session identifiers",
+              "shortDescription": {
+                "text": "PHP session.use_strict_mode disabled — server adopts arbitrary client-supplied session identifiers"
+              },
+              "fullDescription": {
+                "text": "The application runs with PHP's `session.use_strict_mode` disabled (the PHP default). As a result, the server accepts any client-supplied `PHPSESSID` value, materializes a server-side session under that exact identifier, and persists state in it. Because the session ID is attacker-chosen, an attacker who can influence a victim's cookie value (e.g. via a sibling-domain XSS or a network man-in-the-middle on the plaintext-HTTP deployment, where the session cookie carries no `Secure` flag) can pre-create a session whose identifier and CSRF token are fully known to the attacker before the victim ever authenticates."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "The application runs with PHP's `session.use_strict_mode` disabled (the PHP default). As a result, the server accepts any client-supplied `PHPSESSID` value, materializes a server-side session under that exact identifier, and persists state in it. Because the session ID is attacker-chosen, an attacker who can influence a victim's cookie value (e.g. via a sibling-domain XSS or a network man-in-the-middle on the plaintext-HTTP deployment, where the session cookie carries no `Secure` flag) can pre-create a session whose identifier and CSRF token are fully known to the attacker before the victim ever authenticates.\n\nThis is a session-fixation enabler (CWE-384). In the tested configuration the impact is limited because the login path calls `session_regenerate_id(true)` and clears the CSRF token, so a pre-planted identifier is replaced on authentication and cannot be replayed as an authenticated session. The residual risk is that the server will honour any externally supplied session identifier and will create/persist session state (including the CSRF token) under it, which broadens the session-fixation attack surface and enables unbounded low-cost server-side session materialization. This is a defence-in-depth weakness, not a directly exploitable authentication bypass in the current build.\n\nEnable strict session mode so PHP rejects unrecognised client-supplied session identifiers and issues a fresh one instead. Set `session.use_strict_mode = 1` in the effective `php.ini` (or via `ini_set('session.use_strict_mode', '1')` before `session_start()` in the bootstrap), and add a regression assertion to the session lifecycle test suite that a randomised, previously-unseen `PHPSESSID` is replaced by a server-generated value. This complements the existing login-time identifier rotation and closes the remaining session-fixation gap.",
+                "markdown": "The application runs with PHP's `session.use_strict_mode` disabled (the PHP default). As a result, the server accepts any client-supplied `PHPSESSID` value, materializes a server-side session under that exact identifier, and persists state in it. Because the session ID is attacker-chosen, an attacker who can influence a victim's cookie value (e.g. via a sibling-domain XSS or a network man-in-the-middle on the plaintext-HTTP deployment, where the session cookie carries no `Secure` flag) can pre-create a session whose identifier and CSRF token are fully known to the attacker before the victim ever authenticates.\n\nThis is a session-fixation enabler (CWE-384). In the tested configuration the impact is limited because the login path calls `session_regenerate_id(true)` and clears the CSRF token, so a pre-planted identifier is replaced on authentication and cannot be replayed as an authenticated session. The residual risk is that the server will honour any externally supplied session identifier and will create/persist session state (including the CSRF token) under it, which broadens the session-fixation attack surface and enables unbounded low-cost server-side session materialization. This is a defence-in-depth weakness, not a directly exploitable authentication bypass in the current build.\n\nEnable strict session mode so PHP rejects unrecognised client-supplied session identifiers and issues a fresh one instead. Set `session.use_strict_mode = 1` in the effective `php.ini` (or via `ini_set('session.use_strict_mode', '1')` before `session_start()` in the bootstrap), and add a regression assertion to the session lifecycle test suite that a randomised, previously-unseen `PHPSESSID` is replaced by a server-generated value. This complements the existing login-time identifier rotation and closes the remaining session-fixation gap."
+              },
+              "properties": {
+                "security-severity": "4.2",
+                "tags": [
+                  "security",
+                  "CWE-384",
+                  "stride:S"
+                ]
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/384.html"
+            }
+          ],
+          "version": "1.4.1"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CWE-384",
+          "ruleIndex": 0,
+          "level": "warning",
+          "message": {
+            "text": "PHP session.use_strict_mode disabled — server adopts arbitrary client-supplied session identifiers\n\nThe application runs with PHP's `session.use_strict_mode` disabled (the PHP default). As a result, the server accepts any client-supplied `PHPSESSID` value, materializes a server-side session under that exact identifier, and persists state in it. Because the session ID is attacker-chosen, an attacker who can influence a victim's cookie value (e.g. via a sibling-domain XSS or a network man-in-the-middle on the plaintext-HTTP deployment, where the session cookie carries no `Secure` flag) can pre-create a session whose identifier and CSRF token are fully known to the attacker before the victim ever authenticates."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "SECURITY.md"
+                }
+              }
+            },
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "http://172.17.112.1:8001",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "30412ee2be9c45b94ec6b1259f1bbdc024b0224870bf52c362e90acd5adfad12"
+          },
+          "properties": {
+            "security-severity": "4.2",
+            "strix_vuln_class_hash": "0f48ea5ee7feb9a09907f3f6905015a8373317610ab5dcf3fbdb78ef8de1fd19",
+            "synthetic_location": true,
+            "strix": {
+              "id": "vuln-0001",
+              "severity": "medium",
+              "cvss": 4.2,
+              "timestamp": "2026-09-21 22:57:14 UTC",
+              "target": "http://172.17.112.1:8001",
+              "cwe": "CWE-384",
+              "impact": "This is a session-fixation enabler (CWE-384). In the tested configuration the impact is limited because the login path calls `session_regenerate_id(true)` and clears the CSRF token, so a pre-planted identifier is replaced on authentication and cannot be replayed as an authenticated session. The residual risk is that the server will honour any externally supplied session identifier and will create/persist session state (including the CSRF token) under it, which broadens the session-fixation attack surface and enables unbounded low-cost server-side session materialization. This is a defence-in-depth weakness, not a directly exploitable authentication bypass in the current build.",
+              "technical_analysis": "PHP's `session.use_strict_mode` directive governs whether an unknown session ID supplied by the client is rejected or adopted. When it is `0` (disabled — the PHP default), `session_start()` accepts the client-provided identifier verbatim and initialises the session store under it.\n\nThe application hardens the session cookie (`session_set_cookie_params` with `HttpOnly`/`SameSite=Lax`/conditional `Secure`, see `helpers/token_helper.php`) and rotates the identifier on privilege change (`session_regenerate_id(true)` in `controllers/UserController.php` login path, and in `request/handler-login.php`), but it never enables `session.use_strict_mode`. Consequently:\n\n1. A request carrying an arbitrary, previously non-existent `PHPSESSID` is accepted without a replacement `Set-Cookie`.\n2. Repeated requests with the same attacker-chosen identifier resolve to the **same** server-side session — verified by an identical `csrf_token` returned across requests (`helpers/token_helper.php::app_csrf_token()` persists the token in `$_SESSION`).\n\nThe mitigation is a one-line `php.ini` / runtime directive change to `session.use_strict_mode = 1`, which makes PHP reject unknown client-supplied IDs and generate a fresh one.",
+              "remediation_steps": "Enable strict session mode so PHP rejects unrecognised client-supplied session identifiers and issues a fresh one instead. Set `session.use_strict_mode = 1` in the effective `php.ini` (or via `ini_set('session.use_strict_mode', '1')` before `session_start()` in the bootstrap), and add a regression assertion to the session lifecycle test suite that a randomised, previously-unseen `PHPSESSID` is replaced by a server-generated value. This complements the existing login-time identifier rotation and closes the remaining session-fixation gap.",
+              "poc": {
+                "description": "1. Send a request to `/login` with a `Cookie: PHPSESSID=<attacker-chosen 26-char value>` that has never been seen by the server.\n2. Observe the response: it does **not** include a replacement `Set-Cookie` header, proving the server adopted the supplied identifier.\n3. Repeat the same request with the same arbitrary identifier twice and extract the `csrf_token` hidden field from each response.\n4. Observe both responses return an identical `csrf_token`, proving a persistent server-side session exists under the attacker-chosen identifier.\n5. Attempt the fixation end-to-end: authenticate in the planted session, then replay the originally planted identifier — the replay is unauthenticated (HTTP 302 to `/login`), confirming the login-time rotation contains the impact.",
+                "script_available": true
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
+        "syntheticLocationCount": 1
+      }
+    }
+  ]
+}

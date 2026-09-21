@@ -1,0 +1,47 @@
+[
+  {
+    "id": "vuln-0001",
+    "title": "Missing role guard in mahasiswa violation page causes unhandled HTTP 500 for administrators",
+    "severity": "medium",
+    "timestamp": "2026-09-21 23:04:30 UTC",
+    "description": "The student violation page (`/pelanggaran`) is rendered after only redirecting away sessions whose `user_type` is `dosen`. It performs no role check for any other non-student role, then dereferences student-only session fields (`angkatan`, `nim`). An authenticated administrator reaching this route triggers a PHP undefined-array-key warning that the framework's error handler converts to an uncaught exception, returning **HTTP 500 Internal Server Error** instead of a controlled `403 Forbidden`.",
+    "impact": "An authenticated administrator (or any authenticated session that is neither `mahasiswa` nor `dosen`) can force an unhandled server-side exception on a route they are not authorised to view. This is an availability and access-control-consistency defect: the page fails with a generic error rather than a deliberate denial, and the same class of bug was already remediated elsewhere (`/pelanggaran/dosen` returns `403` for administrators). The generic error page does not leak stack traces or internal paths, so confidentiality impact is limited; there is no state change or data exposure.",
+    "target": "http://172.17.112.1:8001",
+    "technical_analysis": "`views/pelanggaran/pelanggaran-page.php` opens with a login check and a single role redirect:\n\n```php title=views/pelanggaran/pelanggaran-page.php startLineNumber=7 endLineNumber=14\nif (!isset($_SESSION['username'])) {\n    app_redirect_page('page.login');\n}\n\n\nif ($_SESSION['user_type'] === 'dosen') {\n    app_redirect_page('page.pelanggaran_dosen');\n}\n```\n\nOnly `dosen` is diverted. Control then falls through to student-only data access:\n\n```php title=views/pelanggaran/pelanggaran-page.php startLineNumber=17 endLineNumber=30\n$userData = $_SESSION['user_data'];\n\n$currentYear = date('Y');\n$currentMonth = date('n');\n$yearDiff = $currentYear - $userData['angkatan'];\n$semester = ($yearDiff * 2);\nif ($currentMonth >= 8) { // Semester ganjil dimulai sekitar Agustus\n    $semester += 1;\n}\n\n// tabel\n$pelanggaranController = new PelanggaranController();\n$nim = $userData['nim'];\n```\n\n`$_SESSION['user_data']` is the raw authentication row returned by `UserController::login()`. For an administrator it is the `ADMIN` row (`id_admin`, `NIP`, `nama_admin`, `password`) and contains neither `angkatan` nor `nim`. Accessing `$userData['angkatan']` on line 21 emits an undefined-array-key warning; `router.php` installs a `set_error_handler` that promotes warnings to `ErrorException`, and the registered exception handler renders the 500 error page. The response is a generic `500 - Sistem Bermasalah` page with no stack trace (display_errors is disabled).\n\nThe sibling lecturer page applies a fail-closed role guard and returns `403` for administrators, so the intended behaviour for an out-of-role request is a controlled denial. The student page is missing the equivalent guard.",
+    "poc_description": "1. Authenticate as an administrator (`ADMIN002` / `admin456`) and retain the session cookie.\n2. Request the student violation page: `GET /pelanggaran`.\n3. Observe that the server responds with `HTTP/1.1 500 Internal Server Error` and renders the generic \"500 - Sistem Bermasalah\" error page.\n4. For contrast, request the lecturer page `GET /pelanggaran/dosen` with the same administrator session and observe a controlled `HTTP/1.1 403 Forbidden`.",
+    "poc_script_code": "```python\nimport re\nimport requests\n\nBASE = \"http://172.17.112.1:8001\"\n\ns = requests.Session()\n# 1. fetch login page + CSRF token\nlogin_page = s.get(f\"{BASE}/login\").text\ncsrf = re.search(r'name=\"csrf_token\" value=\"([^\"]+)\"', login_page).group(1)\n\n# 2. authenticate as administrator\ns.post(f\"{BASE}/action/login\", data={\n    \"csrf_token\": csrf,\n    \"username\": \"ADMIN002\",\n    \"password\": \"admin456\",\n    \"user_type\": \"admin\",\n})\n\n# 3. administrator requests the student-only violation page\nr = s.get(f\"{BASE}/pelanggaran\")\nprint(\"GET /pelanggaran        ->\", r.status_code)   # 500 (unhandled exception)\n\n# 4. contrast: the guarded lecturer page denies correctly\nr2 = s.get(f\"{BASE}/pelanggaran/dosen\")\nprint(\"GET /pelanggaran/dosen  ->\", r2.status_code)  # 403 (fail-closed)\n```",
+    "remediation_steps": "Apply a fail-closed role guard to the student violation page. Immediately after the existing `dosen` redirect in `views/pelanggaran/pelanggaran-page.php`, abort with a controlled `403` when the session role is not `mahasiswa`, reusing the existing `app_abort_forbidden()` helper rather than falling through to student-only field access. More broadly, replace the ad-hoc per-view role checks with a single shared guard (e.g. `app_require_role('mahasiswa')`) invoked at the top of every role-scoped view and action handler, so that a request from an unexpected role always yields a deliberate denial instead of an unhandled exception.",
+    "evidence": "Administrator session against the student violation page:\n\n```http\nGET /pelanggaran HTTP/1.1\nHost: 172.17.112.1:8001\nCookie: PHPSESSID=<admin session>\n\nHTTP/1.1 500 Internal Server Error\nContent-Type: text/html; charset=UTF-8\n\n<title>500 - Sistem Bermasalah | DiscipLink</title>\n```\n\nContrast — same administrator session, lecturer page denies in a controlled manner:\n\n```http\nGET /pelanggaran/dosen HTTP/1.1\nHost: 172.17.112.1:8001\nCookie: PHPSESSID=<admin session>\n\nHTTP/1.1 403 Forbidden\n```\n\nControl — a `mahasiswa` session reaches the same page normally:\n\n```http\nGET /pelanggaran HTTP/1.1\nHost: 172.17.112.1:8001\nCookie: PHPSESSID=<mahasiswa session>\n\nHTTP/1.1 200 OK\n```",
+    "assumptions": "Requires an authenticated session whose `user_type` is neither `mahasiswa` nor `dosen` (e.g. `admin`). The impact is bounded to a controlled-denial failure (500 instead of 403) on one route; no data is exposed and no state is modified.",
+    "fix_effort": "trivial",
+    "cvss": 4.3,
+    "cvss_breakdown": {
+      "attack_vector": "N",
+      "attack_complexity": "L",
+      "privileges_required": "L",
+      "user_interaction": "N",
+      "scope": "U",
+      "confidentiality": "N",
+      "integrity": "N",
+      "availability": "L"
+    },
+    "endpoint": "/pelanggaran",
+    "method": "GET",
+    "cwe": "CWE-754",
+    "code_locations": [
+      {
+        "file": "views/pelanggaran/pelanggaran-page.php",
+        "start_line": 12,
+        "end_line": 14,
+        "snippet": "if ($_SESSION['user_type'] === 'dosen') {\n    app_redirect_page('page.pelanggaran_dosen');\n}",
+        "label": "Enforce student-only access with a fail-closed role guard",
+        "fix_before": "if ($_SESSION['user_type'] === 'dosen') {\n    app_redirect_page('page.pelanggaran_dosen');\n}",
+        "fix_after": "if ($_SESSION['user_type'] === 'dosen') {\n    app_redirect_page('page.pelanggaran_dosen');\n}\n\nif (($_SESSION['user_type'] ?? '') !== 'mahasiswa') {\n    app_abort_forbidden();\n}"
+      }
+    ],
+    "fix_pr_body": "## Summary\n\n`GET /pelanggaran` (the student violation page) only redirects `dosen` sessions away and performs no guard for other roles. An administrator session therefore falls through to student-only session fields (`angkatan`, `nim`) that the `ADMIN` row does not contain, raising an undefined-array-key warning that the framework converts into an unhandled exception — returning `HTTP 500` instead of a controlled denial.\n\nThe sibling route `/pelanggaran/dosen` already returns `403` for administrators, so the intended behaviour for an out-of-role request is a fail-closed denial.\n\n## Change\n\nAdd a fail-closed guard in `views/pelanggaran/pelanggaran-page.php` immediately after the existing `dosen` redirect: if the session role is not `mahasiswa`, abort with `403` (via the existing `app_abort_forbidden()` helper) rather than continuing to dereference student-only fields.\n\n## Rationale\n\n- Aligns the student page with the lecturer page's fail-closed behaviour.\n- Converts an unhandled-exception `500` into a deliberate `403`.\n- Deny-by-default for any role that is not explicitly permitted.",
+    "finding_class": "dynamic",
+    "agent_id": "2754b6f6",
+    "agent_name": "Strix"
+  }
+]

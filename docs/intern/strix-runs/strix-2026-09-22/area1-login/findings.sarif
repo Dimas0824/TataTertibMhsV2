@@ -1,0 +1,164 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Strix",
+          "informationUri": "https://strix.ai",
+          "rules": [
+            {
+              "id": "CWE-307",
+              "name": "Login lockout can be bypassed via case-varied account identifiers (CI collation vs case-sensitive throttle key)",
+              "shortDescription": {
+                "text": "Login lockout can be bypassed via case-varied account identifiers (CI collation vs case-sensitive throttle key)"
+              },
+              "fullDescription": {
+                "text": "The failed-login throttle keys its per-account bucket on the **exact username string** submitted, while the account lookup in `models/User.php` runs against MySQL columns using a **case-insensitive** collation (`utf8mb4_unicode_ci`). As a result, `ADMIN001`, `admin001`, `Admin001`, `aDmIn001`, … are treated as the *same account* for authentication but as *different accounts* for the 5-failures/15-minute lockout. An attacker can therefore multiply the effective brute-force budget for a target account by enumerating case permutations of its identifier (2^(alphanumeric characters)), defeating the per-account lockout."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "The failed-login throttle keys its per-account bucket on the **exact username string** submitted, while the account lookup in `models/User.php` runs against MySQL columns using a **case-insensitive** collation (`utf8mb4_unicode_ci`). As a result, `ADMIN001`, `admin001`, `Admin001`, `aDmIn001`, … are treated as the *same account* for authentication but as *different accounts* for the 5-failures/15-minute lockout. An attacker can therefore multiply the effective brute-force budget for a target account by enumerating case permutations of its identifier (2^(alphanumeric characters)), defeating the per-account lockout.\n\nThe per-account brute-force lockout (the primary control for a small, predictable identifier space of numeric NIM/NIDN and alphanumeric NIP) can be bypassed for any account. For the admin identifier `ADMIN001` (8 characters) an attacker gains up to 2^8 = 256 distinct throttle buckets (realistically fewer, but dozens), drastically increasing the number of password guesses per account before any lock engages. Combined with weak/seed passwords (`admin123`, `password123`) this materially raises the likelihood of credential compromise and, for the administrator account, of full compromise of the discipline-management surface. The per-source-IP cap (15 failures / 900s) is the only remaining limiter and is defeated by distributing attempts across source addresses.\n\nNormalize the account identifier to a single canonical form before it is used for **both** authentication and throttling, so the two comparators are guaranteed identical. Concretely: define the identity field as case-sensitive end-to-end (declare the identity columns with a binary/case-sensitive collation such as `utf8mb4_bin`, so case variants no longer resolve to the same row), and/or canonicalize the submitted identifier once (`strtolower(trim(...))` for the alphanumeric NIP, exact form for numeric NIM/NIDN) and use the canonical value for the lookup, the audit `actor_id`, and the throttle key. If case-insensitive identity is intended, then the throttle must key on the same case-folded value the lookup uses. Add a regression test that locks one case spelling and asserts a differently-cased spelling of the same identifier is also locked. Keep the per-source-IP cap, and add a global/progressive delay so rotating identifiers cannot multiply the budget.",
+                "markdown": "The failed-login throttle keys its per-account bucket on the **exact username string** submitted, while the account lookup in `models/User.php` runs against MySQL columns using a **case-insensitive** collation (`utf8mb4_unicode_ci`). As a result, `ADMIN001`, `admin001`, `Admin001`, `aDmIn001`, … are treated as the *same account* for authentication but as *different accounts* for the 5-failures/15-minute lockout. An attacker can therefore multiply the effective brute-force budget for a target account by enumerating case permutations of its identifier (2^(alphanumeric characters)), defeating the per-account lockout.\n\nThe per-account brute-force lockout (the primary control for a small, predictable identifier space of numeric NIM/NIDN and alphanumeric NIP) can be bypassed for any account. For the admin identifier `ADMIN001` (8 characters) an attacker gains up to 2^8 = 256 distinct throttle buckets (realistically fewer, but dozens), drastically increasing the number of password guesses per account before any lock engages. Combined with weak/seed passwords (`admin123`, `password123`) this materially raises the likelihood of credential compromise and, for the administrator account, of full compromise of the discipline-management surface. The per-source-IP cap (15 failures / 900s) is the only remaining limiter and is defeated by distributing attempts across source addresses.\n\nNormalize the account identifier to a single canonical form before it is used for **both** authentication and throttling, so the two comparators are guaranteed identical. Concretely: define the identity field as case-sensitive end-to-end (declare the identity columns with a binary/case-sensitive collation such as `utf8mb4_bin`, so case variants no longer resolve to the same row), and/or canonicalize the submitted identifier once (`strtolower(trim(...))` for the alphanumeric NIP, exact form for numeric NIM/NIDN) and use the canonical value for the lookup, the audit `actor_id`, and the throttle key. If case-insensitive identity is intended, then the throttle must key on the same case-folded value the lookup uses. Add a regression test that locks one case spelling and asserts a differently-cased spelling of the same identifier is also locked. Keep the per-source-IP cap, and add a global/progressive delay so rotating identifiers cannot multiply the budget."
+              },
+              "properties": {
+                "security-severity": "9.1",
+                "tags": [
+                  "security",
+                  "CWE-307",
+                  "stride:T",
+                  "stride:I"
+                ]
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/307.html"
+            }
+          ],
+          "version": "1.4.1"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CWE-307",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "Login lockout can be bypassed via case-varied account identifiers (CI collation vs case-sensitive throttle key)\n\nThe failed-login throttle keys its per-account bucket on the **exact username string** submitted, while the account lookup in `models/User.php` runs against MySQL columns using a **case-insensitive** collation (`utf8mb4_unicode_ci`). As a result, `ADMIN001`, `admin001`, `Admin001`, `aDmIn001`, … are treated as the *same account* for authentication but as *different accounts* for the 5-failures/15-minute lockout. An attacker can therefore multiply the effective brute-force budget for a target account by enumerating case permutations of its identifier (2^(alphanumeric characters)), defeating the per-account lockout."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "helpers/login_throttle_helper.php"
+                },
+                "region": {
+                  "startLine": 105,
+                  "endLine": 106,
+                  "snippet": {
+                    "text": "$actor = substr($username, 0, 32);"
+                  }
+                }
+              },
+              "message": {
+                "text": "Throttle key uses the raw submitted identifier (case-sensitive) while the DB lookup is case-insensitive"
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "request/handler-login.php"
+                },
+                "region": {
+                  "startLine": 22,
+                  "endLine": 22,
+                  "snippet": {
+                    "text": "$username = trim((string) ($_POST['username'] ?? ''));"
+                  }
+                }
+              },
+              "message": {
+                "text": "Canonicalize once at the entry point and use the same value for lookup + audit + throttle"
+              }
+            },
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "/action/login",
+                  "kind": "endpoint"
+                }
+              ]
+            }
+          ],
+          "fixes": [
+            {
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "helpers/login_throttle_helper.php"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 105,
+                        "endLine": 106
+                      },
+                      "insertedContent": {
+                        "text": "// Canonicalize the identifier so the throttle bucket matches the\n        // case-insensitive identity lookup in models/User.php (utf8mb4_unicode_ci).\n        // Otherwise case variants of the same account each get a fresh budget.\n        $actor = substr(strtolower(trim($username)), 0, 32);"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "artifactLocation": {
+                    "uri": "request/handler-login.php"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 22,
+                        "endLine": 22
+                      },
+                      "insertedContent": {
+                        "text": "$username = trim((string) ($_POST['username'] ?? ''));\n        // Case-fold the alphanumeric identifier so authentication and throttling\n        // key on the same canonical value (NIM/NIDN are numeric and unaffected).\n        $username = strtolower($username);"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "description": {
+                "text": "Normalize the account identifier to a single canonical form before it is used for **both** authentication and throttling, so the two comparators are guaranteed identical. Concretely: define the identity field as case-sensitive end-to-end (declare the identity columns with a binary/case-sensitive collation such as `utf8mb4_bin`, so case variants no longer resolve to the same row), and/or canonicalize the submitted identifier once (`strtolower(trim(...))` for the alphanumeric NIP, exact form for numeric NIM/NIDN) and use the canonical value for the lookup, the audit `actor_id`, and the throttle key. If case-insensitive identity is intended, then the throttle must key on the same case-folded value the lookup uses. Add a regression test that locks one case spelling and asserts a differently-cased spelling of the same identifier is also locked. Keep the per-source-IP cap, and add a global/progressive delay so rotating identifiers cannot multiply the budget.",
+                "markdown": "Normalize the account identifier to a single canonical form before it is used for **both** authentication and throttling, so the two comparators are guaranteed identical. Concretely: define the identity field as case-sensitive end-to-end (declare the identity columns with a binary/case-sensitive collation such as `utf8mb4_bin`, so case variants no longer resolve to the same row), and/or canonicalize the submitted identifier once (`strtolower(trim(...))` for the alphanumeric NIP, exact form for numeric NIM/NIDN) and use the canonical value for the lookup, the audit `actor_id`, and the throttle key. If case-insensitive identity is intended, then the throttle must key on the same case-folded value the lookup uses. Add a regression test that locks one case spelling and asserts a differently-cased spelling of the same identifier is also locked. Keep the per-source-IP cap, and add a global/progressive delay so rotating identifiers cannot multiply the budget."
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "4ff2eaa2f20aa13219f4ac175e646ff92a380d999135c42aebb95cda53845189"
+          },
+          "properties": {
+            "security-severity": "9.1",
+            "strix_vuln_class_hash": "567f33027129d9d0c17604490d9bc227a6e82046487d5c0045776f94c70af1d9",
+            "strix": {
+              "id": "vuln-0001",
+              "severity": "critical",
+              "cvss": 9.1,
+              "timestamp": "2026-09-21 22:51:48 UTC",
+              "target": "http://172.17.112.1:8001",
+              "endpoint": "/action/login",
+              "method": "POST",
+              "cwe": "CWE-307",
+              "impact": "The per-account brute-force lockout (the primary control for a small, predictable identifier space of numeric NIM/NIDN and alphanumeric NIP) can be bypassed for any account. For the admin identifier `ADMIN001` (8 characters) an attacker gains up to 2^8 = 256 distinct throttle buckets (realistically fewer, but dozens), drastically increasing the number of password guesses per account before any lock engages. Combined with weak/seed passwords (`admin123`, `password123`) this materially raises the likelihood of credential compromise and, for the administrator account, of full compromise of the discipline-management surface. The per-source-IP cap (15 failures / 900s) is the only remaining limiter and is defeated by distributing attempts across source addresses.",
+              "technical_analysis": "**Two asymmetric comparators.**\n\nAuthentication lookup (case-INSENSITIVE) — `models/User.php`:\n\n```php title=models/User.php startLineNumber=34 endLineNumber=38\n$stmt = $this->connect->prepare(\"SELECT * FROM {$table} WHERE {$identifierColumn} = ? LIMIT 1\");\n$stmt->execute([$username]);\n$user = $stmt->fetch(PDO::FETCH_ASSOC);\n```\n\nThe identity columns (`NIP`, `nidn`, `nim`) are declared `VARCHAR ... UNIQUE` with no explicit per-column collation, so the database/table default `utf8mb4_unicode_ci` applies. Under this collation `WHERE NIP = 'ADMIN001'` matches a stored `ADMIN001` for the input `admin001` too.\n\nThrottle key (case-SENSITIVE) — `helpers/login_throttle_helper.php`:\n\n```php title=helpers/login_throttle_helper.php startLineNumber=105 endLineNumber=118\n$actor = substr($username, 0, 32);\n...\n$where = \"event = 'login_fail'\n            AND created_at >= (NOW() - INTERVAL :window SECOND)\n            AND (actor_id = :actor_b OR ip = :ip_b)\";\n```\n\n`actor_id` is the raw submitted string, compared by the application/driver as a **binary/case-sensitive** value (the audit column is compared with `=` against this literal; the lock is computed per distinct submitted identifier). Each case variant of the identifier therefore produces its own failure count.\n\n**Empirical corroboration (live target).** Submitting a wrong password for two case variants of the same admin account both reached the bcrypt verifier (≈0.71–0.73 s, the cost-12 comparison path) rather than being rejected before it, proving the lookup matched the same underlying row for both spellings:\n\n```markdown\nADMIN001 / wrongpw   -> t=0.73s  \"Invalid username or password.\"\nadmin001 / wrongpw   -> t=0.71s  \"Invalid username or password.\"\n```\n\nBecause the durable throttle is keyed on `substr($username,0,32)` verbatim, five failures logged under `ADMIN001` do not increment the bucket consulted for `admin001`, and so on for each case mutation.\n\n**Existing regression coverage.** The project's `tests/security/LoginBruteForceSuite.php` covers the session-reset bypass (CWE-307) and the NUL-byte truncation (CWE-230) with fixed-case identifiers only; it does not exercise case variation, so this asymmetry is untested and unguarded.",
+              "remediation_steps": "Normalize the account identifier to a single canonical form before it is used for **both** authentication and throttling, so the two comparators are guaranteed identical. Concretely: define the identity field as case-sensitive end-to-end (declare the identity columns with a binary/case-sensitive collation such as `utf8mb4_bin`, so case variants no longer resolve to the same row), and/or canonicalize the submitted identifier once (`strtolower(trim(...))` for the alphanumeric NIP, exact form for numeric NIM/NIDN) and use the canonical value for the lookup, the audit `actor_id`, and the throttle key. If case-insensitive identity is intended, then the throttle must key on the same case-folded value the lookup uses. Add a regression test that locks one case spelling and asserts a differently-cased spelling of the same identifier is also locked. Keep the per-source-IP cap, and add a global/progressive delay so rotating identifiers cannot multiply the budget.",
+              "poc": {
+                "description": "1. Confirm the case-insensitive lookup: submit a wrong password for `ADMIN001` and for `admin001` (both from clean sessions). Both responses take the bcrypt-verification time (~0.7 s) and return the ordinary \"Invalid username or password\" message, showing both spellings resolve to the same account row.\n2. Exhaust the per-account budget for one spelling: submit 5 wrong passwords using `ADMIN001`; the 6th attempt for `ADMIN001` is refused with \"Terlalu banyak percobaan gagal\" (locked).\n3. Switch the spelling: submit a login for `admin001` (or `Admin001`, `aDmIn001`, …). It is processed normally (ordinary failure), not refused — the throttle bucket for that spelling is empty.\n4. Repeat across the 2^N case permutations of the identifier to obtain a multiplied guessing budget for the same account. A correct password discovered under any spelling authenticates (the lookup is case-insensitive).\n5. Note: the per-source-IP cap (15 failures/900 s) still throttles a single source; distributing attempts across source addresses removes this limiter.",
+                "script_available": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

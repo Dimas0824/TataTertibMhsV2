@@ -111,11 +111,24 @@ Audit code-level yang memetakan & menutup temuan (auth/session, injection, file 
 Dijalankan dalam dua fase: **quick** (blackbox, menemukan robots.txt MEDIUM) dan **deep**
 (authenticated 3 role - 0 vulnerability terkonfirmasi, otorisasi server-side terbukti kuat).
 
-### Showcase: pentest Strix per-area + remediasi (2026-09-21)
+### Showcase: pentest Strix per-area + remediasi (berjalan, per tanggal)
 
-Putaran kedua menjalankan Strix **white-box per area** (target live + source di-mount), satu area per
-run, `reasoning=low`, RPM-safe - **5 area, 6 temuan, semuanya diperbaiki & diverifikasi ulang** dengan
-bukti `before/` (artefak Strix asli) dan `after/` (skrip reproduce + log + screenshot).
+> **Proyek ini masih terus dikembangkan.** Setiap perubahan akan terus diuji
+> melalui **Strix pentesting**, celah yang ditemukan terus diperbaiki, lalu
+> **diverifikasi ulang** dengan re-scan. Seluruh bukti mentah (SARIF, PoC,
+> laporan, log, database percakapan agent) - dan catatan sebelum/sesudah -
+> tersimpan di **[`docs/intern/strix-runs/`](docs/intern/strix-runs/)**.
+
+Strix dijalankan **white-box per area** (target live + source di-mount), satu area per run,
+`reasoning=low`, RPM-safe. Setiap run disimpan **per tanggal**, dengan `before/` (temuan) dan
+`after/` (bukti fix + skrip reproduce).
+
+| Tanggal | Jenis | Hasil |
+| ------- | ----- | ----- |
+| **2026-09-21** | Run pertama (5 area) | 6 temuan: 1 CRITICAL, 1 HIGH, 3 MEDIUM, 1 LOW |
+| **2026-09-22** | Re-scan verifikasi (instruksi identik) | **6 temuan 21-09 HILANG** (fix terbukti) + 5 temuan baru (1 false positive + 4 valid, sudah difix) |
+
+**Temuan run pertama (2026-09-21) - semua FIXED:**
 
 | # | Area | Temuan | Severity | Status |
 | --- | ---- | ------ | -------- | ------ |
@@ -127,19 +140,34 @@ bukti `before/` (artefak Strix asli) dan `after/` (skrip reproduce + log + scree
 | 4 | PELANGGARAN | Sanksi tidak divalidasi terhadap tingkat pelanggaran (client-selectable) | MEDIUM (CVSS 6.5) | FIXED |
 | 5 | NEWS | Stored XSS halaman publik via quote-boundary bypass sanitizer | MEDIUM (CVSS 5.4) | FIXED |
 
-**Bukti lengkap (reproducible):** [`docs/intern/strix-runs-2026-09-21/`](docs/intern/strix-runs-2026-09-21/)
-- `00-CONSOLIDATED-REPORT.md` (laporan gabungan + indeks status), `COMBINED.sarif` (5 run, 6 result),
-serta `areaN/before/` (SARIF + PoC + `agents.db`) & `areaN/after/` (`reproduce.sh`,
-`reproduce-after.log`, screenshot). Setiap area punya skrip verifikasi yang bisa dijalankan ulang:
+**Re-scan 2026-09-22 membuktikan** bahwa seluruh 6 temuan di atas **sudah tidak ada** pada kode
+saat ini - sekaligus menemukan **4 celah baru** yang juga sudah diperbaiki:
+
+| # | Area | Temuan baru (2026-09-22) | Severity | Status |
+| --- | ---- | ------------------------ | -------- | ------ |
+| 2 | SESSION/CSRF | `session.use_strict_mode` nonaktif (session fixation) | MEDIUM (CVSS 4.2) | FIXED |
+| 3 | UPLOAD/IDOR | Halaman mahasiswa tanpa role guard -> HTTP 500 untuk admin | MEDIUM (CVSS 4.3) | FIXED |
+| 4 | PELANGGARAN | Pelanggaran berstatus `selesai` masih bisa dihapus | HIGH (CVSS 7.1) | FIXED |
+| 5 | NEWS | XSS via judul berita keluar dari blok JSON-LD | MEDIUM (CVSS 5.4) | FIXED |
+
+*(Satu temuan re-scan lain - "case-variant lockout" - terbukti **false positive**: throttle &
+lookup keduanya case-insensitive. Analisis + skrip buktinya ada di
+[`strix-2026-09-22/verification-analysis/`](docs/intern/strix-runs/strix-2026-09-22/verification-analysis/).)*
+
+**Cara memeriksa bukti:**
 
 ```bash
-# contoh (butuh app jalan di :8123 + DB ter-seed)
-cd docs/intern/strix-runs-2026-09-21/area1-login/after && bash reproduce.sh http://127.0.0.1:8123
+# contoh reproduce perbaikan area LOGIN (butuh app jalan di :8123 + DB ter-seed)
+cd docs/intern/strix-runs/strix-2026-09-21/area1-login/after && bash reproduce.sh http://127.0.0.1:8123
 ```
 
+Struktur & konvensi folder: **[`docs/intern/strix-runs/README.md`](docs/intern/strix-runs/README.md)**
+
 Setiap temuan punya **regression test** yang mengunci perbaikannya (`LoginThrottleHelperTest`,
-`LoginBruteForceSuite`, `SessionLifecycleSuite`, `Area3AccessSuite`, `Area4SanctionSuite`,
-`Area5XssSuite`) - total suite kini **191/191 hijau**.
+`LoginBruteForceSuite`, `SessionLifecycleSuite`, `SessionFixationSuite`, `Area3AccessSuite`,
+`Area4SanctionSuite`, `Area4WorkflowSuite`, `Area5XssSuite`, `Area5JsonLdSuite`) - total suite
+kini **198/198 hijau**.
+
 
 
 **Kontrol yang aktif (terverifikasi):** bcrypt + throttle login (5 gagal/15 mnt) + dummy-verify anti

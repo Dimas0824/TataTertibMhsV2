@@ -1,0 +1,1369 @@
+{
+  "run_id": "172-17-112-1-8001_c43c",
+  "run_name": "172-17-112-1-8001_c43c",
+  "start_time": "2026-09-21T22:53:19.809849+00:00",
+  "end_time": "2026-09-21T22:57:43.469580+00:00",
+  "status": "completed",
+  "auth_mode": "api_key",
+  "targets_info": [
+    {
+      "type": "web_application",
+      "details": {
+        "target_url": "http://172.17.112.1:8001"
+      },
+      "original": "http://172.17.112.1:8001"
+    },
+    {
+      "type": "local_code",
+      "details": {
+        "target_path": "/mnt/d/MiniProject/TataTertibMhsV2",
+        "mount": true,
+        "workspace_subdir": "TataTertibMhsV2"
+      },
+      "original": "/mnt/d/MiniProject/TataTertibMhsV2"
+    }
+  ],
+  "llm_usage": {
+    "requests": 58,
+    "input_tokens": 3653593,
+    "input_tokens_details": [
+      {
+        "cached_tokens": 0
+      }
+    ],
+    "output_tokens": 24403,
+    "output_tokens_details": [
+      {
+        "reasoning_tokens": 0
+      }
+    ],
+    "total_tokens": 3677996,
+    "request_usage_entries": [
+      {
+        "input_tokens": 23242,
+        "output_tokens": 378,
+        "total_tokens": 23620,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 25264,
+        "output_tokens": 135,
+        "total_tokens": 25399,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 31105,
+        "output_tokens": 192,
+        "total_tokens": 31297,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 37912,
+        "output_tokens": 211,
+        "total_tokens": 38123,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 43439,
+        "output_tokens": 195,
+        "total_tokens": 43634,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 44529,
+        "output_tokens": 311,
+        "total_tokens": 44840,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 45393,
+        "output_tokens": 301,
+        "total_tokens": 45694,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 46162,
+        "output_tokens": 159,
+        "total_tokens": 46321,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 46602,
+        "output_tokens": 88,
+        "total_tokens": 46690,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 48441,
+        "output_tokens": 328,
+        "total_tokens": 48769,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 48919,
+        "output_tokens": 78,
+        "total_tokens": 48997,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 49067,
+        "output_tokens": 213,
+        "total_tokens": 49280,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 49349,
+        "output_tokens": 100,
+        "total_tokens": 49449,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 49504,
+        "output_tokens": 332,
+        "total_tokens": 49836,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 49941,
+        "output_tokens": 122,
+        "total_tokens": 50063,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 51537,
+        "output_tokens": 640,
+        "total_tokens": 52177,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 52421,
+        "output_tokens": 364,
+        "total_tokens": 52785,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 52920,
+        "output_tokens": 211,
+        "total_tokens": 53131,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 53585,
+        "output_tokens": 170,
+        "total_tokens": 53755,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 54690,
+        "output_tokens": 156,
+        "total_tokens": 54846,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 56001,
+        "output_tokens": 347,
+        "total_tokens": 56348,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 56556,
+        "output_tokens": 326,
+        "total_tokens": 56882,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 56943,
+        "output_tokens": 364,
+        "total_tokens": 57307,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 57486,
+        "output_tokens": 523,
+        "total_tokens": 58009,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 58235,
+        "output_tokens": 475,
+        "total_tokens": 58710,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 58852,
+        "output_tokens": 294,
+        "total_tokens": 59146,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 59550,
+        "output_tokens": 513,
+        "total_tokens": 60063,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 60202,
+        "output_tokens": 843,
+        "total_tokens": 61045,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 61327,
+        "output_tokens": 833,
+        "total_tokens": 62160,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 62329,
+        "output_tokens": 395,
+        "total_tokens": 62724,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 62973,
+        "output_tokens": 575,
+        "total_tokens": 63548,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 63794,
+        "output_tokens": 500,
+        "total_tokens": 64294,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 64722,
+        "output_tokens": 285,
+        "total_tokens": 65007,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 65298,
+        "output_tokens": 158,
+        "total_tokens": 65456,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 65609,
+        "output_tokens": 253,
+        "total_tokens": 65862,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 67089,
+        "output_tokens": 667,
+        "total_tokens": 67756,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 67871,
+        "output_tokens": 169,
+        "total_tokens": 68040,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 68181,
+        "output_tokens": 132,
+        "total_tokens": 68313,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 69130,
+        "output_tokens": 327,
+        "total_tokens": 69457,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 69761,
+        "output_tokens": 381,
+        "total_tokens": 70142,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 70310,
+        "output_tokens": 340,
+        "total_tokens": 70650,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 70791,
+        "output_tokens": 730,
+        "total_tokens": 71521,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 76645,
+        "output_tokens": 581,
+        "total_tokens": 77226,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 77418,
+        "output_tokens": 742,
+        "total_tokens": 78160,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 78426,
+        "output_tokens": 503,
+        "total_tokens": 78929,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 79110,
+        "output_tokens": 738,
+        "total_tokens": 79848,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 80162,
+        "output_tokens": 144,
+        "total_tokens": 80306,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 81630,
+        "output_tokens": 116,
+        "total_tokens": 81746,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 83007,
+        "output_tokens": 237,
+        "total_tokens": 83244,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 84809,
+        "output_tokens": 589,
+        "total_tokens": 85398,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 85644,
+        "output_tokens": 364,
+        "total_tokens": 86008,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 87461,
+        "output_tokens": 392,
+        "total_tokens": 87853,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 88097,
+        "output_tokens": 590,
+        "total_tokens": 88687,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 88746,
+        "output_tokens": 2025,
+        "total_tokens": 90771,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 90845,
+        "output_tokens": 65,
+        "total_tokens": 90910,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 91007,
+        "output_tokens": 148,
+        "total_tokens": 91155,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 91398,
+        "output_tokens": 594,
+        "total_tokens": 91992,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 92156,
+        "output_tokens": 2461,
+        "total_tokens": 94617,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      }
+    ],
+    "cost": 0.0,
+    "agents": [
+      {
+        "requests": 58,
+        "input_tokens": 3653593,
+        "input_tokens_details": [
+          {
+            "cached_tokens": 0
+          }
+        ],
+        "output_tokens": 24403,
+        "output_tokens_details": [
+          {
+            "reasoning_tokens": 0
+          }
+        ],
+        "total_tokens": 3677996,
+        "request_usage_entries": [
+          {
+            "input_tokens": 23242,
+            "output_tokens": 378,
+            "total_tokens": 23620,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 25264,
+            "output_tokens": 135,
+            "total_tokens": 25399,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 31105,
+            "output_tokens": 192,
+            "total_tokens": 31297,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 37912,
+            "output_tokens": 211,
+            "total_tokens": 38123,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 43439,
+            "output_tokens": 195,
+            "total_tokens": 43634,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 44529,
+            "output_tokens": 311,
+            "total_tokens": 44840,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 45393,
+            "output_tokens": 301,
+            "total_tokens": 45694,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 46162,
+            "output_tokens": 159,
+            "total_tokens": 46321,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 46602,
+            "output_tokens": 88,
+            "total_tokens": 46690,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 48441,
+            "output_tokens": 328,
+            "total_tokens": 48769,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 48919,
+            "output_tokens": 78,
+            "total_tokens": 48997,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 49067,
+            "output_tokens": 213,
+            "total_tokens": 49280,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 49349,
+            "output_tokens": 100,
+            "total_tokens": 49449,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 49504,
+            "output_tokens": 332,
+            "total_tokens": 49836,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 49941,
+            "output_tokens": 122,
+            "total_tokens": 50063,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 51537,
+            "output_tokens": 640,
+            "total_tokens": 52177,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 52421,
+            "output_tokens": 364,
+            "total_tokens": 52785,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 52920,
+            "output_tokens": 211,
+            "total_tokens": 53131,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 53585,
+            "output_tokens": 170,
+            "total_tokens": 53755,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 54690,
+            "output_tokens": 156,
+            "total_tokens": 54846,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 56001,
+            "output_tokens": 347,
+            "total_tokens": 56348,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 56556,
+            "output_tokens": 326,
+            "total_tokens": 56882,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 56943,
+            "output_tokens": 364,
+            "total_tokens": 57307,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 57486,
+            "output_tokens": 523,
+            "total_tokens": 58009,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 58235,
+            "output_tokens": 475,
+            "total_tokens": 58710,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 58852,
+            "output_tokens": 294,
+            "total_tokens": 59146,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 59550,
+            "output_tokens": 513,
+            "total_tokens": 60063,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 60202,
+            "output_tokens": 843,
+            "total_tokens": 61045,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 61327,
+            "output_tokens": 833,
+            "total_tokens": 62160,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 62329,
+            "output_tokens": 395,
+            "total_tokens": 62724,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 62973,
+            "output_tokens": 575,
+            "total_tokens": 63548,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 63794,
+            "output_tokens": 500,
+            "total_tokens": 64294,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 64722,
+            "output_tokens": 285,
+            "total_tokens": 65007,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 65298,
+            "output_tokens": 158,
+            "total_tokens": 65456,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 65609,
+            "output_tokens": 253,
+            "total_tokens": 65862,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 67089,
+            "output_tokens": 667,
+            "total_tokens": 67756,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 67871,
+            "output_tokens": 169,
+            "total_tokens": 68040,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 68181,
+            "output_tokens": 132,
+            "total_tokens": 68313,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 69130,
+            "output_tokens": 327,
+            "total_tokens": 69457,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 69761,
+            "output_tokens": 381,
+            "total_tokens": 70142,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 70310,
+            "output_tokens": 340,
+            "total_tokens": 70650,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 70791,
+            "output_tokens": 730,
+            "total_tokens": 71521,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 76645,
+            "output_tokens": 581,
+            "total_tokens": 77226,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 77418,
+            "output_tokens": 742,
+            "total_tokens": 78160,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 78426,
+            "output_tokens": 503,
+            "total_tokens": 78929,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 79110,
+            "output_tokens": 738,
+            "total_tokens": 79848,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 80162,
+            "output_tokens": 144,
+            "total_tokens": 80306,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 81630,
+            "output_tokens": 116,
+            "total_tokens": 81746,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 83007,
+            "output_tokens": 237,
+            "total_tokens": 83244,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 84809,
+            "output_tokens": 589,
+            "total_tokens": 85398,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 85644,
+            "output_tokens": 364,
+            "total_tokens": 86008,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 87461,
+            "output_tokens": 392,
+            "total_tokens": 87853,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 88097,
+            "output_tokens": 590,
+            "total_tokens": 88687,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 88746,
+            "output_tokens": 2025,
+            "total_tokens": 90771,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 90845,
+            "output_tokens": 65,
+            "total_tokens": 90910,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 91007,
+            "output_tokens": 148,
+            "total_tokens": 91155,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 91398,
+            "output_tokens": 594,
+            "total_tokens": 91992,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 92156,
+            "output_tokens": 2461,
+            "total_tokens": 94617,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          }
+        ],
+        "agent_id": "e95e4d22",
+        "agent_name": "Strix",
+        "model": "dailyDriver",
+        "cost": 0.0
+      }
+    ]
+  },
+  "scan_mode": "deep",
+  "instruction": "# AREA 2 — SESSION MANAGEMENT & CSRF (offensive, focused, single area)\n\nAuthorized penetration test against a LOCAL, SELF-OWNED instance of DiscipLink\n(PHP 8.3 native). Target: http://172.17.112.1:8001\nAlso mounted: the source repo (whitebox). Trace:\n  helpers/token_helper.php (session + CSRF + authz), helpers/route_helper.php,\n  request/handler-login.php, config.php, .htaccess.\n\n## CONTEXT (already found in AREA 1 — do NOT re-report, build on it)\n- vuln-0001 HIGH: NUL-byte truncation in password verification.\n- vuln-0002 CRITICAL: login lockout is per-session only; discard cookie to bypass.\nAREA 2 is about the SESSION LIFECYCLE and CSRF, not the password check.\n\n## SCOPE: SESSION MANAGEMENT + CSRF ONLY.\nDo not re-test SQLi/password-byte issues. Exhaust this surface.\n\n## Attack classes to attempt (produce a PoC or a documented negative result)\n\n1. Session fixation — does the session id ROTATE on successful login?\n   Capture PHPSESSID before and after. If it is unchanged, an attacker who can\n   plant a session id pre-login owns the authenticated session.\n2. Session lifecycle — is the session destroyed server-side on logout?\n   Replay the old PHPSESSID after logout; does it still authenticate?\n   Are idle/absolute timeouts enforced?\n3. Cookie flags — inspect PHPSESSID: HttpOnly, SameSite, Secure, Path, Domain.\n   Note any missing flag with the exact Set-Cookie line.\n4. Concurrent sessions — can the same account hold unlimited parallel sessions?\n   Is an old session invalidated when a new login happens?\n5. CSRF token semantics — is csrf_token stable per session or per request?\n   Reuse a token across two different state-changing actions. Replay a token\n   from session A in session B. Test token present but empty, and absent.\n6. CSRF coverage — enumerate state-changing endpoints (login, logout, upload,\n   pelanggaran create/edit, news CRUD, user/tatib admin actions). For EACH,\n   test a POST without the CSRF token and record the HTTP status (419? 403? 302?).\n   A state-changing action that succeeds without a token is a finding.\n7. Session-id entropy / predictability — inspect the id format; attempt to\n   enumerate or fixate valid sessions.\n8. Authorization after session events — after logout or timeout, do protected\n   pages (/admin/*, /pelanggaran) still serve? Verify server-side, not just UI.\n\n## Rules of engagement\n- Authorized local lab; attack ONLY the given target.\n- Attach the exact request and response for every finding.\n- Record defenses that HELD (payload tried, why it failed) — negative results\n  are first-class evidence for the README matrix.\n- Severity justified by exploitability (Impact + Likelihood + CVSS).\n\n## Known test accounts\n- mahasiswa: 2341238901 / password123\n- dosen: 1234567890 / password123\n- admin: ADMIN001 / admin123",
+  "non_interactive": true,
+  "local_sources": [
+    {
+      "source_path": "/mnt/d/MiniProject/TataTertibMhsV2",
+      "workspace_subdir": "TataTertibMhsV2",
+      "mount": true
+    }
+  ],
+  "diff_scope": {
+    "active": false,
+    "mode": "full"
+  },
+  "scope_mode": "full",
+  "diff_base": null,
+  "scan_results": {
+    "scan_completed": true,
+    "executive_summary": "# Executive Summary\n\nA focused, offensive assessment of **session management and CSRF** was performed against the self-owned DiscipLink (PHP 8.3) instance at `http://172.17.112.1:8001`, supported by white-box review of `helpers/token_helper.php`, `helpers/route_helper.php`, `request/handler-login.php`, `request/handler-logout.php`, `config.php` and `.htaccess`.\n\n**Overall risk posture: Low–Moderate.** The session and CSRF controls are materially stronger than typical custom PHP applications. Every state-changing endpoint rejects requests without a valid CSRF token, the session identifier rotates on authentication, logout destroys the session server-side, and older sessions are revoked when a new login occurs. One hardening gap was confirmed.\n\n**Key finding**\n- **PHP `session.use_strict_mode` is disabled** (Medium, CWE-384) — the server adopts any client-supplied `PHPSESSID` verbatim and persists session state (including the CSRF token) under it. This is a session-fixation enabler. It is contained in the current build because the login path regenerates the identifier and resets the CSRF token, so it is a defence-in-depth weakness rather than a working account takeover.\n\n**Controls that held** (recorded as first-class negative evidence): session-ID rotation on login, server-side session destruction on logout, single-active-session enforcement, complete CSRF coverage (token required on every state-changing endpoint, cross-session/empty/absent/JSON-replay attempts all rejected with HTTP 419), high-entropy identifiers (26 chars, ~134 bits, no enumeration), and deny-by-default server-side authorization on protected pages.\n\n**Business impact:** No path to account takeover or unauthorized data modification was demonstrated. The confirmed weakness slightly widens the session-fixation attack surface and allows low-cost server-side session materialization; it should be closed as routine hardening.",
+    "methodology": "# Methodology\n\n**Engagement type:** Gray-box offensive assessment of a locally hosted, self-owned lab instance, with full white-box access to the source repository.\n\n**Scope:** Session management and CSRF only. Specifically: session fixation, session lifecycle (logout destruction, idle/absolute timeouts), cookie flags, concurrent-session handling, CSRF token semantics and coverage, session-identifier entropy, and post-session authorization enforcement. Password-verification and brute-force controls were out of scope (covered by a prior assessment area).\n\n**Reference frameworks:** OWASP Web Security Testing Guide (session management and CSRF testing), OWASP Top 10:2021 A01/A07, and CWE mapping (CWE-384, CWE-613, CWE-614, CWE-352).\n\n**Activities performed**\n1. Static review of the session bootstrap (`app_session_start_if_needed`), timeout/rotation logic (`app_session_touch_or_expire`, `session_regenerate_id`), session inventory (`helpers/session_inventory_helper.php`), CSRF primitives (`app_csrf_token`, `app_verify_csrf`), router dispatch and `.htaccess` deny rules.\n2. Dynamic testing against the live instance using three authenticated roles (admin, mahasiswa, dosen), capturing full request/response pairs.\n3. Enumerated every registered state-changing route (`/action/login`, `/action/logout`, `/action/news`, `/action/tatib`, `/action/pelanggaran`, `/action/notifikasi`, `/action/upload`, `/action/download`) and tested each with a valid session but no token, an empty token, a cross-session token, and a JSON-body token.\n4. Probed session-identifier handling, cookie attributes, fixation scenarios, and post-logout/post-timeout authorization.\n\n**Constraints:** Testing was performed exclusively against the provided target. The `Secure` cookie flag cannot be asserted over plain HTTP (expected for a local lab); it was additionally verified by supplying a proxy-HTTPS signal.",
+    "technical_analysis": "# Technical Analysis\n\n**Severity model:** rated by demonstrated exploitability (Impact × Likelihood), mapped to CVSS v3.1.\n\n## Confirmed finding\n\n**1. `session.use_strict_mode` disabled (Medium, CVSS 4.2, CWE-384).**\nThe application never enables PHP's strict session mode. Sending `Cookie: PHPSESSID=<arbitrary value>` to `/login` yields a `200` response **without** a replacement `Set-Cookie`, proving the server adopted the supplied identifier. Repeating the request with the same identifier returns an **identical** `csrf_token`, proving a persistent server-side session exists under the attacker-chosen ID. Root cause is configuration (the insecure PHP default), not custom code. Impact is bounded by the login-time `session_regenerate_id(true)` and CSRF-token reset, which defeat fixation of the *authenticated* session — hence Medium, not High. Remediation is a one-line directive change.\n\n## Controls verified as effective (negative results)\n\n1. **Session fixation — defeated.** The identifier rotates on successful login (`Set-Cookie: PHPSESSID=<new>`); a pre-planted identifier is never authenticated (replay → `302`).\n2. **Logout — server-side termination.** Logout destroys the session and clears the cookie (`PHPSESSID=deleted; Max-Age=0`); replaying the pre-logout identifier yields `302` to `/login`.\n3. **Cookie flags.** `Set-Cookie: PHPSESSID=…; path=/; HttpOnly; SameSite=Lax`. `Secure` is absent on plain HTTP (lab) but is correctly emitted when a proxy-HTTPS signal (`X-Forwarded-Proto: https`) is present. `SameSite=Lax` blocks cross-site cookie delivery on POST.\n4. **Concurrent sessions — revoked.** A second login for the same account invalidates the earlier session through the `USER_SESSION` inventory (CWE-613 fix active); the older session returned `302` after a new login.\n5. **CSRF token semantics.** The token is stable per session (not rotated per request). Cross-session replay, empty token, absent token, and JSON-body-without-token were all rejected with HTTP `419`; a valid JSON-body token was accepted.\n6. **CSRF coverage — complete.** `/action/news`, `/action/tatib`, `/action/pelanggaran`, `/action/notifikasi`, `/action/upload`, `/action/logout`, `/action/login` all returned `419` without a token. GET-based write attempts returned `403` (token-bound route protection). `/action/download` is capability-token-bound (`403`).\n7. **Identifier entropy.** 26-character IDs over `[a-z0-9]` (~134 bits); no predictability or enumeration path.\n8. **Authorization after session events.** All protected pages (`/admin/*`, `/pelanggaran`, `/pelaporan`, `/notifikasi`) redirect to `/login` after logout/timeout; role enforcement is deny-by-default (mahasiswa → `/admin` = `302`; admin-only actions = `403`). Sensitive paths (`/views/*`, `/request/*`, `/config.php`, `/.env`, `/storage/keys/*`) are denied case-insensitively.\n\n## Systemic themes\nSession and CSRF handling is centralized and consistently applied: the session bootstrap and timeout logic live in one helper, all dynamic traffic passes through `router.php` (which enforces idle/absolute expiry and revoked-session checks), and CSRF verification is invoked by every state-mutating handler. The single gap is a missing PHP runtime directive, which is unusual to overlook precisely because the rest of the session hardening is thorough.\n\n## Attack-chaining consideration\nThe confirmed finding was assessed for chaining. Its only plausible escalation is (a) the missing `Secure` flag under plaintext HTTP plus (b) a cookie-injection primitive (sibling-subdomain XSS or a network man-in-the-middle) to plant the session identifier. Both prerequisites are environmental and neither was independently confirmed; more importantly, the login-time identifier regeneration and CSRF-token reset break the chain at the authentication step. No end-to-end higher-impact path was demonstrable, and no other finding is of a class that chains with this one.",
+    "recommendations": "# Recommendations\n\n## Immediate\n1. **Enable strict session mode.** Set `session.use_strict_mode = 1` in the effective `php.ini` (or via `ini_set()` before `session_start()` in the bootstrap). This makes PHP reject unknown client-supplied session IDs and issue a server-generated one, closing the residual fixation gap. Add a regression assertion that a randomised, previously-unseen `PHPSESSID` is replaced by the server.\n\n## Short-term\n2. **Force HTTPS and the `Secure` flag in production.** Serve all traffic over TLS, redirect HTTP → HTTPS, and ensure the session cookie always carries `Secure`. Verify that reverse-proxy HTTPS signalling is trustworthy and cannot be spoofed by clients.\n3. **Reduce session-fixation surface further** by regenerating the session identifier on any privilege transition and on sensitive actions (already done at login — extend to role elevation if introduced).\n\n## Medium-term\n4. **Consider per-request or short-lived CSRF tokens**, or at minimum bind tokens to a short validity window, to limit the value of a leaked token (currently valid for the whole session). This is optional given the strong existing controls.\n5. **Add automated regression coverage** for the session lifecycle (identifier rotation on login, revocation of prior sessions, timeout enforcement, cookie attributes) and the CSRF coverage matrix so these controls remain verified in CI.\n\n## Retest & validation\n6. Re-test after the `use_strict_mode` change: confirm a randomised, unseen `PHPSESSID` is now replaced with a new server value and that no state (CSRF token) persists under the attacker-supplied identifier. Re-run the full session-fixation, logout-replay, concurrent-session, CSRF-coverage, and post-timeout authorization checks to confirm no regression.",
+    "success": true
+  }
+}

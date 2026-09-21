@@ -1,0 +1,2161 @@
+{
+  "run_id": "172-17-112-1-8001_c4bc",
+  "run_name": "172-17-112-1-8001_c4bc",
+  "start_time": "2026-09-21T23:16:10.063701+00:00",
+  "end_time": "2026-09-21T23:24:13.442228+00:00",
+  "status": "completed",
+  "auth_mode": "api_key",
+  "targets_info": [
+    {
+      "type": "web_application",
+      "details": {
+        "target_url": "http://172.17.112.1:8001"
+      },
+      "original": "http://172.17.112.1:8001"
+    },
+    {
+      "type": "local_code",
+      "details": {
+        "target_path": "/mnt/d/MiniProject/TataTertibMhsV2",
+        "mount": true,
+        "workspace_subdir": "TataTertibMhsV2"
+      },
+      "original": "/mnt/d/MiniProject/TataTertibMhsV2"
+    }
+  ],
+  "llm_usage": {
+    "requests": 94,
+    "input_tokens": 7809298,
+    "input_tokens_details": [
+      {
+        "cached_tokens": 0
+      }
+    ],
+    "output_tokens": 39937,
+    "output_tokens_details": [
+      {
+        "reasoning_tokens": 0
+      }
+    ],
+    "total_tokens": 7849235,
+    "request_usage_entries": [
+      {
+        "input_tokens": 23466,
+        "output_tokens": 348,
+        "total_tokens": 23814,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 25682,
+        "output_tokens": 327,
+        "total_tokens": 26009,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 26233,
+        "output_tokens": 317,
+        "total_tokens": 26550,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 29294,
+        "output_tokens": 167,
+        "total_tokens": 29461,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 32102,
+        "output_tokens": 74,
+        "total_tokens": 32176,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 35507,
+        "output_tokens": 71,
+        "total_tokens": 35578,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 38264,
+        "output_tokens": 93,
+        "total_tokens": 38357,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 43364,
+        "output_tokens": 57,
+        "total_tokens": 43421,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 44757,
+        "output_tokens": 76,
+        "total_tokens": 44833,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 48775,
+        "output_tokens": 183,
+        "total_tokens": 48958,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 49754,
+        "output_tokens": 173,
+        "total_tokens": 49927,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 50046,
+        "output_tokens": 53,
+        "total_tokens": 50099,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 52149,
+        "output_tokens": 74,
+        "total_tokens": 52223,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 54433,
+        "output_tokens": 163,
+        "total_tokens": 54596,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 54724,
+        "output_tokens": 55,
+        "total_tokens": 54779,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 55381,
+        "output_tokens": 146,
+        "total_tokens": 55527,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 55971,
+        "output_tokens": 216,
+        "total_tokens": 56187,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 64870,
+        "output_tokens": 231,
+        "total_tokens": 65101,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 65308,
+        "output_tokens": 131,
+        "total_tokens": 65439,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 65946,
+        "output_tokens": 264,
+        "total_tokens": 66210,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 66567,
+        "output_tokens": 374,
+        "total_tokens": 66941,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 67028,
+        "output_tokens": 203,
+        "total_tokens": 67231,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 67352,
+        "output_tokens": 105,
+        "total_tokens": 67457,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 68242,
+        "output_tokens": 119,
+        "total_tokens": 68361,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 68414,
+        "output_tokens": 92,
+        "total_tokens": 68506,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 68546,
+        "output_tokens": 420,
+        "total_tokens": 68966,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 69012,
+        "output_tokens": 145,
+        "total_tokens": 69157,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 69238,
+        "output_tokens": 149,
+        "total_tokens": 69387,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 69445,
+        "output_tokens": 573,
+        "total_tokens": 70018,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 70066,
+        "output_tokens": 295,
+        "total_tokens": 70361,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 70626,
+        "output_tokens": 209,
+        "total_tokens": 70835,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 70911,
+        "output_tokens": 202,
+        "total_tokens": 71113,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 71171,
+        "output_tokens": 818,
+        "total_tokens": 71989,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 72185,
+        "output_tokens": 308,
+        "total_tokens": 72493,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 72948,
+        "output_tokens": 570,
+        "total_tokens": 73518,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 73685,
+        "output_tokens": 308,
+        "total_tokens": 73993,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 74056,
+        "output_tokens": 808,
+        "total_tokens": 74864,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 75130,
+        "output_tokens": 501,
+        "total_tokens": 75631,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 76258,
+        "output_tokens": 953,
+        "total_tokens": 77211,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 78380,
+        "output_tokens": 523,
+        "total_tokens": 78903,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 79116,
+        "output_tokens": 213,
+        "total_tokens": 79329,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 79472,
+        "output_tokens": 353,
+        "total_tokens": 79825,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 79976,
+        "output_tokens": 845,
+        "total_tokens": 80821,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 80998,
+        "output_tokens": 602,
+        "total_tokens": 81600,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 81752,
+        "output_tokens": 708,
+        "total_tokens": 82460,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 83185,
+        "output_tokens": 2390,
+        "total_tokens": 85575,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 85790,
+        "output_tokens": 549,
+        "total_tokens": 86339,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 87094,
+        "output_tokens": 487,
+        "total_tokens": 87581,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 87925,
+        "output_tokens": 1046,
+        "total_tokens": 88971,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 89087,
+        "output_tokens": 517,
+        "total_tokens": 89604,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 89726,
+        "output_tokens": 964,
+        "total_tokens": 90690,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 90879,
+        "output_tokens": 544,
+        "total_tokens": 91423,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 91617,
+        "output_tokens": 502,
+        "total_tokens": 92119,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 92284,
+        "output_tokens": 877,
+        "total_tokens": 93161,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 93230,
+        "output_tokens": 77,
+        "total_tokens": 93307,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 93523,
+        "output_tokens": 772,
+        "total_tokens": 94295,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 94410,
+        "output_tokens": 512,
+        "total_tokens": 94922,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 95757,
+        "output_tokens": 496,
+        "total_tokens": 96253,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 96334,
+        "output_tokens": 353,
+        "total_tokens": 96687,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 96933,
+        "output_tokens": 505,
+        "total_tokens": 97438,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 97684,
+        "output_tokens": 91,
+        "total_tokens": 97775,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 99064,
+        "output_tokens": 188,
+        "total_tokens": 99252,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 99650,
+        "output_tokens": 271,
+        "total_tokens": 99921,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 100925,
+        "output_tokens": 204,
+        "total_tokens": 101129,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 101980,
+        "output_tokens": 1004,
+        "total_tokens": 102984,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 103074,
+        "output_tokens": 200,
+        "total_tokens": 103274,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 103331,
+        "output_tokens": 219,
+        "total_tokens": 103550,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 104124,
+        "output_tokens": 299,
+        "total_tokens": 104423,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 104498,
+        "output_tokens": 372,
+        "total_tokens": 104870,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 105760,
+        "output_tokens": 86,
+        "total_tokens": 105846,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 106518,
+        "output_tokens": 74,
+        "total_tokens": 106592,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 106938,
+        "output_tokens": 89,
+        "total_tokens": 107027,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 107127,
+        "output_tokens": 88,
+        "total_tokens": 107215,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 107898,
+        "output_tokens": 212,
+        "total_tokens": 108110,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 108257,
+        "output_tokens": 759,
+        "total_tokens": 109016,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 109096,
+        "output_tokens": 87,
+        "total_tokens": 109183,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 109264,
+        "output_tokens": 185,
+        "total_tokens": 109449,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 109580,
+        "output_tokens": 251,
+        "total_tokens": 109831,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 109878,
+        "output_tokens": 133,
+        "total_tokens": 110011,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 110058,
+        "output_tokens": 198,
+        "total_tokens": 110256,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 110362,
+        "output_tokens": 271,
+        "total_tokens": 110633,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 110698,
+        "output_tokens": 261,
+        "total_tokens": 110959,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 111001,
+        "output_tokens": 239,
+        "total_tokens": 111240,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 111361,
+        "output_tokens": 440,
+        "total_tokens": 111801,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 111881,
+        "output_tokens": 374,
+        "total_tokens": 112255,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 112374,
+        "output_tokens": 870,
+        "total_tokens": 113244,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 113524,
+        "output_tokens": 213,
+        "total_tokens": 113737,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 113918,
+        "output_tokens": 199,
+        "total_tokens": 114117,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 114251,
+        "output_tokens": 558,
+        "total_tokens": 114809,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 114954,
+        "output_tokens": 1007,
+        "total_tokens": 115961,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 116077,
+        "output_tokens": 3350,
+        "total_tokens": 119427,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 119501,
+        "output_tokens": 169,
+        "total_tokens": 119670,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 120033,
+        "output_tokens": 228,
+        "total_tokens": 120261,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      {
+        "input_tokens": 120285,
+        "output_tokens": 2542,
+        "total_tokens": 122827,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      }
+    ],
+    "cost": 0.0,
+    "agents": [
+      {
+        "requests": 94,
+        "input_tokens": 7809298,
+        "input_tokens_details": [
+          {
+            "cached_tokens": 0
+          }
+        ],
+        "output_tokens": 39937,
+        "output_tokens_details": [
+          {
+            "reasoning_tokens": 0
+          }
+        ],
+        "total_tokens": 7849235,
+        "request_usage_entries": [
+          {
+            "input_tokens": 23466,
+            "output_tokens": 348,
+            "total_tokens": 23814,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 25682,
+            "output_tokens": 327,
+            "total_tokens": 26009,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 26233,
+            "output_tokens": 317,
+            "total_tokens": 26550,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 29294,
+            "output_tokens": 167,
+            "total_tokens": 29461,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 32102,
+            "output_tokens": 74,
+            "total_tokens": 32176,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 35507,
+            "output_tokens": 71,
+            "total_tokens": 35578,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 38264,
+            "output_tokens": 93,
+            "total_tokens": 38357,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 43364,
+            "output_tokens": 57,
+            "total_tokens": 43421,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 44757,
+            "output_tokens": 76,
+            "total_tokens": 44833,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 48775,
+            "output_tokens": 183,
+            "total_tokens": 48958,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 49754,
+            "output_tokens": 173,
+            "total_tokens": 49927,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 50046,
+            "output_tokens": 53,
+            "total_tokens": 50099,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 52149,
+            "output_tokens": 74,
+            "total_tokens": 52223,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 54433,
+            "output_tokens": 163,
+            "total_tokens": 54596,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 54724,
+            "output_tokens": 55,
+            "total_tokens": 54779,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 55381,
+            "output_tokens": 146,
+            "total_tokens": 55527,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 55971,
+            "output_tokens": 216,
+            "total_tokens": 56187,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 64870,
+            "output_tokens": 231,
+            "total_tokens": 65101,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 65308,
+            "output_tokens": 131,
+            "total_tokens": 65439,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 65946,
+            "output_tokens": 264,
+            "total_tokens": 66210,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 66567,
+            "output_tokens": 374,
+            "total_tokens": 66941,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 67028,
+            "output_tokens": 203,
+            "total_tokens": 67231,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 67352,
+            "output_tokens": 105,
+            "total_tokens": 67457,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 68242,
+            "output_tokens": 119,
+            "total_tokens": 68361,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 68414,
+            "output_tokens": 92,
+            "total_tokens": 68506,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 68546,
+            "output_tokens": 420,
+            "total_tokens": 68966,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 69012,
+            "output_tokens": 145,
+            "total_tokens": 69157,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 69238,
+            "output_tokens": 149,
+            "total_tokens": 69387,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 69445,
+            "output_tokens": 573,
+            "total_tokens": 70018,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 70066,
+            "output_tokens": 295,
+            "total_tokens": 70361,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 70626,
+            "output_tokens": 209,
+            "total_tokens": 70835,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 70911,
+            "output_tokens": 202,
+            "total_tokens": 71113,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 71171,
+            "output_tokens": 818,
+            "total_tokens": 71989,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 72185,
+            "output_tokens": 308,
+            "total_tokens": 72493,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 72948,
+            "output_tokens": 570,
+            "total_tokens": 73518,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 73685,
+            "output_tokens": 308,
+            "total_tokens": 73993,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 74056,
+            "output_tokens": 808,
+            "total_tokens": 74864,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 75130,
+            "output_tokens": 501,
+            "total_tokens": 75631,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 76258,
+            "output_tokens": 953,
+            "total_tokens": 77211,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 78380,
+            "output_tokens": 523,
+            "total_tokens": 78903,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 79116,
+            "output_tokens": 213,
+            "total_tokens": 79329,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 79472,
+            "output_tokens": 353,
+            "total_tokens": 79825,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 79976,
+            "output_tokens": 845,
+            "total_tokens": 80821,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 80998,
+            "output_tokens": 602,
+            "total_tokens": 81600,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 81752,
+            "output_tokens": 708,
+            "total_tokens": 82460,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 83185,
+            "output_tokens": 2390,
+            "total_tokens": 85575,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 85790,
+            "output_tokens": 549,
+            "total_tokens": 86339,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 87094,
+            "output_tokens": 487,
+            "total_tokens": 87581,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 87925,
+            "output_tokens": 1046,
+            "total_tokens": 88971,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 89087,
+            "output_tokens": 517,
+            "total_tokens": 89604,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 89726,
+            "output_tokens": 964,
+            "total_tokens": 90690,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 90879,
+            "output_tokens": 544,
+            "total_tokens": 91423,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 91617,
+            "output_tokens": 502,
+            "total_tokens": 92119,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 92284,
+            "output_tokens": 877,
+            "total_tokens": 93161,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 93230,
+            "output_tokens": 77,
+            "total_tokens": 93307,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 93523,
+            "output_tokens": 772,
+            "total_tokens": 94295,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 94410,
+            "output_tokens": 512,
+            "total_tokens": 94922,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 95757,
+            "output_tokens": 496,
+            "total_tokens": 96253,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 96334,
+            "output_tokens": 353,
+            "total_tokens": 96687,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 96933,
+            "output_tokens": 505,
+            "total_tokens": 97438,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 97684,
+            "output_tokens": 91,
+            "total_tokens": 97775,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 99064,
+            "output_tokens": 188,
+            "total_tokens": 99252,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 99650,
+            "output_tokens": 271,
+            "total_tokens": 99921,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 100925,
+            "output_tokens": 204,
+            "total_tokens": 101129,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 101980,
+            "output_tokens": 1004,
+            "total_tokens": 102984,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 103074,
+            "output_tokens": 200,
+            "total_tokens": 103274,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 103331,
+            "output_tokens": 219,
+            "total_tokens": 103550,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 104124,
+            "output_tokens": 299,
+            "total_tokens": 104423,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 104498,
+            "output_tokens": 372,
+            "total_tokens": 104870,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 105760,
+            "output_tokens": 86,
+            "total_tokens": 105846,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 106518,
+            "output_tokens": 74,
+            "total_tokens": 106592,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 106938,
+            "output_tokens": 89,
+            "total_tokens": 107027,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 107127,
+            "output_tokens": 88,
+            "total_tokens": 107215,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 107898,
+            "output_tokens": 212,
+            "total_tokens": 108110,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 108257,
+            "output_tokens": 759,
+            "total_tokens": 109016,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 109096,
+            "output_tokens": 87,
+            "total_tokens": 109183,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 109264,
+            "output_tokens": 185,
+            "total_tokens": 109449,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 109580,
+            "output_tokens": 251,
+            "total_tokens": 109831,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 109878,
+            "output_tokens": 133,
+            "total_tokens": 110011,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 110058,
+            "output_tokens": 198,
+            "total_tokens": 110256,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 110362,
+            "output_tokens": 271,
+            "total_tokens": 110633,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 110698,
+            "output_tokens": 261,
+            "total_tokens": 110959,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 111001,
+            "output_tokens": 239,
+            "total_tokens": 111240,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 111361,
+            "output_tokens": 440,
+            "total_tokens": 111801,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 111881,
+            "output_tokens": 374,
+            "total_tokens": 112255,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 112374,
+            "output_tokens": 870,
+            "total_tokens": 113244,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 113524,
+            "output_tokens": 213,
+            "total_tokens": 113737,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 113918,
+            "output_tokens": 199,
+            "total_tokens": 114117,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 114251,
+            "output_tokens": 558,
+            "total_tokens": 114809,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 114954,
+            "output_tokens": 1007,
+            "total_tokens": 115961,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 116077,
+            "output_tokens": 3350,
+            "total_tokens": 119427,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 119501,
+            "output_tokens": 169,
+            "total_tokens": 119670,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 120033,
+            "output_tokens": 228,
+            "total_tokens": 120261,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          {
+            "input_tokens": 120285,
+            "output_tokens": 2542,
+            "total_tokens": 122827,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          }
+        ],
+        "agent_id": "efa2a60d",
+        "agent_name": "Strix",
+        "model": "dailyDriver",
+        "cost": 0.0
+      }
+    ]
+  },
+  "scan_mode": "deep",
+  "instruction": "# AREA 5 — NEWS MODULE: XSS, SANITIZATION, CSRF & AUTHORIZATION\n\nAuthorized penetration test against a LOCAL, SELF-OWNED instance of DiscipLink\n(PHP 8.3 native). Target: http://172.17.112.1:8001\nAlso mounted: the source repo (whitebox). Trace:\n  controllers/NewsController.php, request/handler-news.php, models/News.php,\n  views/admin/news-admin.php, views/admin/tambah-berita.php, views/admin/edit-berita.php,\n  views/public/berita-detail.php, helpers/token_helper.php, js/news-form-editor.js.\n\n## CONTEXT (already found in AREA 1-4 — do NOT re-report)\n- AREA 1: NUL-byte password truncation (HIGH); per-session lockout bypass (CRITICAL).\n- AREA 2: cookie without Secure; no absolute session lifetime.\n- AREA 3: upload/download/IDOR hardened; no findings.\n- AREA 4: sanction tier not validated against violation tier (MEDIUM).\nAREA 5 is the NEWS/ANNOUNCEMENT surface (rich text -> public rendering).\n\n## SCOPE: NEWS CRUD, its HTML sanitizer, and its authorization.\n\n## Attack classes to attempt (PoC or documented negative result)\n\n### A. Stored XSS (primary target)\n1. Inject script payloads into news fields (title, body, slug, meta/SEO fields)\n   as admin, then view the PUBLIC page and the admin list. Payloads to try:\n   <script>alert(1)</script>, <img src=x onerror=alert(1)>,\n   <svg/onload=alert(1)>, <p/onmouseover=alert(1)>, <iframe srcdoc=...>,\n   javascript: URIs in <a href>, <a href=\"data:text/html,...\">,\n   mutation-XSS style <noscript><p title=\"</noscript><img src=x onerror=...\">,\n   and nested/mixed-case/entity-encoded variants (&#60;script&#62;,\n   <ScRiPt>, <scr<script>ipt>).\n2. Verify the sanitizer BOTH at rest (what is stored in DB) and at render\n   (what the public page emits). A payload stored raw but escaped at render is\n   acceptable; stored raw AND emitted raw is a finding.\n3. Try to break out of the rich-text context (attribute injection, style=\n   expression, unclosed tags) and of any JSON embed used by the editor.\n\n### B. Injection\n4. SQL injection in news lookups: slug, id, category/tag, search, pagination,\n   sort. error-based, boolean, time-based, UNION, stacked.\n5. Second-order: store a payload via create, then trigger it on edit/view.\n\n### C. Authorization & workflow\n6. CSRF on news create/edit/delete — POST without a token, replay a token,\n   cross-session replay. Must fail closed.\n7. As mahasiswa/dosen: attempt to POST to /action/news (create/edit/delete).\n   Must be denied server-side (403), not merely hidden in the UI.\n8. As admin: attempt to edit/delete another admin's article; check ownership\n   expectations. Test whether drafts/unpublished articles are reachable\n   publicly by guessing the slug/id.\n9. Open redirect / SSRF via any URL or image field in news (e.g. \"fetch from\n   URL\" or an image src the server follows).\n\n### D. Output handling\n10. Check whether news content is emitted inside a JSON/JS block\n    (editor bootstrap) and whether that embed is safely escaped\n    (it must be hex/unicode escaped, not raw).\n\n## Rules of engagement\n- Authorized local lab; attack ONLY the given target.\n- Attach exact request + response for every finding.\n- Record defenses that HELD (payload tried, why it failed) — negative results\n  are first-class evidence for the README matrix.\n- Severity justified by exploitability (Impact + Likelihood + CVSS).\n\n## Known test accounts\n- mahasiswa: 2341238901 / password123\n- dosen: 1234567890 / password123\n- admin: ADMIN001 / admin123",
+  "non_interactive": true,
+  "local_sources": [
+    {
+      "source_path": "/mnt/d/MiniProject/TataTertibMhsV2",
+      "workspace_subdir": "TataTertibMhsV2",
+      "mount": true
+    }
+  ],
+  "diff_scope": {
+    "active": false,
+    "mode": "full"
+  },
+  "scope_mode": "full",
+  "diff_base": null,
+  "scan_results": {
+    "scan_completed": true,
+    "executive_summary": "# Executive Summary\n\nAn authorized gray-box assessment of the **News / Announcement module** of the DiscipLink application (`http://172.17.112.1:8001`) was performed. The module is admin-managed and renders rich text to public pages, making it a high-value target for stored content attacks.\n\n**Overall risk posture:** Moderate — the defense-in-depth controls around the news module are generally strong, but one confirmed stored cross-site scripting issue exists in a public rendering path.\n\n**Key finding**\n- **Stored XSS via the article title.** A news article title is embedded without escaping into a JSON-LD metadata block on the public article page. A crafted title can break out of that block and inject JavaScript that executes for every visitor of the affected article. Reported as a **Medium** severity issue (CVSS 5.4). An attacker requires an admin account to publish, but the payload then fires for all readers with no further interaction.\n\n**Controls that held (verified negative results)**\n- The article **body** sanitizer resisted a broad payload matrix (script tags, event handlers, dangerous URI schemes, entity-encoded/mixed-case/nested variants, and attribute-breakout attempts).\n- **SQL injection** in the article lookup path was not possible (strict integer parsing plus bound parameters).\n- **CSRF** protection on create/update/delete rejected missing, empty, incorrect, and cross-session tokens.\n- **Server-side role enforcement** denied non-admin users on the news action endpoint (`403`), and the admin listing is scoped to the signed-in administrator.\n\n**Business impact**\nThe confirmed issue allows script execution in the browsers of students, lecturers, guests, and administrators viewing an affected article — enabling session/credential theft, content defacement, or redirection to attacker-controlled pages. Remediation is low-effort (a single output-encoding fix), and the systemic theme — JSON embedded in HTML requires hex escaping of tag delimiters — is straightforward to standardize across the codebase.",
+    "methodology": "# Methodology\n\nThis engagement assessed **AREA 5 — the News / Announcement module** of the DiscipLink application, a PHP 8.3 native web application.\n\n**Engagement type:** Gray-box assessment against a local, self-owned instance (`http://172.17.112.1:8001`), with full read access to the application source for white-box tracing.\n\n**Scope:** News CRUD operations, the HTML sanitizer applied to news content, and the authorization/CSRF controls governing the news surface. The public rendering of news articles was in scope as the sink for stored input.\n\n**Frameworks:** Testing followed the **OWASP Web Security Testing Guide (WSTG)** and **OWASP Top 10 (2021)**, with emphasis on:\n- WSTG-CLNT / stored cross-site scripting (A03:2021 Injection),\n- Output-encoding contexts (HTML body, HTML attribute, and inside `<script>` / JSON-LD),\n- SQL injection in lookups (A03:2021),\n- CSRF and server-side authorization for state-changing operations (A01:2021 Broken Access Control).\n\n**Activities performed:**\n1. Source review of the news controller, request handler, model, admin and public views, token/CSRF helper, and the client-side rich-text editor.\n2. A structured stored-XSS payload matrix (50+ payloads) covering `<script>`, event-handler attributes (`onerror`, `onload`, `onmouseover`, `ontoggle`, etc.), `javascript:`/`data:` URIs, entity-encoded, mixed-case, nested/concatenated tags, and attribute-breakout variants.\n3. Verification of each payload in **two contexts**: the value persisted server-side (surfaced via the edit view) and the byte-for-byte rendering of the public article page.\n4. Dynamic browser verification (headless Chromium) of any payload that survived server-side filtering.\n5. Injection testing of the article lookup path (slug/id), plus CSRF (absent/empty/wrong/replayed/cross-session tokens) and server-side role enforcement on the news action endpoint.\n6. Review of output-context handling for embedded JSON/JavaScript (the editor bootstrap and the SEO/JSON-LD block).\n\n**Constraints:** Testing was limited to the provided target host and the listed test accounts (`mahasiswa`, `dosen`, `admin`); no denial-of-service or destructive actions against shared data beyond creating/altering test articles used as PoCs.",
+    "technical_analysis": "# Technical Analysis\n\n**Severity model:** Aligned to CVSS v3.1 (attack vector, complexity, privileges, interaction, scope, and CIA impact). One confirmed vulnerability was identified; the remaining attack classes produced negative results (the controls held).\n\n## Confirmed finding\n\n**1. Stored Cross-Site Scripting via the news title embedded in the JSON-LD Article schema (Medium, CVSS 5.4).**\nThe news title is embedded unescaped into a `<script type=\"application/ld+json\">` block on the public article page. The JSON is serialized without hex-escaping of `<`, `>`, `&`, `'`, `\"`, so a title containing `</script>` terminates the script element early and the trailing markup is parsed as HTML. A payload title `</script><svg onload=alert(document.domain)>` results in a live handler executing for any visitor of the article. Because the deployed Content-Security-Policy includes `script-src 'unsafe-inline'` (no nonce/hash), the injected inline handler is not blocked. The value is stored raw and emitted raw in this single output context; all other output contexts (page `<title>`, heading, and meta/OpenGraph tags) are correctly HTML-encoded. Verified both at the HTTP level (the literal `</script>` appears inside the JSON-LD `headline`) and in a live browser (the injected `<svg>` element with a live `onload` handler is present in the DOM and its JavaScript executes).\n\n## Attack classes tested — controls that held (negative results)\n\n**A. Stored XSS (content body):** The body-content sanitizer, applied both on write and again as a render-time defense, neutralized the full payload matrix: `<script>`, `<img onerror>`, `<svg onload>`, `<iframe srcdoc>`, `javascript:` and `data:` URIs in `href`/`src`, HTML-entity-encoded and mixed-case tags, nested/concatenated tags (`<scr<script>ipt>`), and attribute-breakout variants including handlers attached without a preceding space (`<div title=\"x\"onmouseover=...>`), handlers separated by `/` or tab/newline, and `style=`/`expression()` constructs. Whole `<script>`/`<style>` blocks are removed with their contents, and a submission that reduces to empty content is rejected outright. Event-handler and URI-scheme filtering is robust.\n\n**B. SQL Injection:** The article lookup derives its key from the slug via a strict trailing-integer pattern and an explicit integer cast, and all queries use bound prepared-statement parameters. Error-based, boolean, time-based, and stacked-query probes produced only `404` responses with no database error disclosure and no timing delay — not injectable.\n\n**C. Authorization & CSRF:** State-changing news operations (create/update/delete) require a valid session-bound CSRF token: absent, empty, or incorrect tokens are rejected (`419`), and a token issued to a different session is rejected (`401`). Replay of a valid same-session token is accepted, which is expected for a per-session token design. Server-side role enforcement holds: `mahasiswa` and `dosen` submitting to the news action endpoint receive `403`, and the admin news pages redirect such users to their own pages; the admin listing shows only the signed-in administrator's own articles.\n\n**D. Output handling — JSON/JavaScript embedding:** This is the location of the confirmed finding above. The other embedded-JavaScript surfaces reviewed (the client-side rich-text editor initialization and the analytics block) did not introduce an additional independent issue.\n\n## Notes / hardening observations (not filed as vulnerabilities)\n\n- **Draft reachability:** The news table has no status/draft/published column — all rows are immediately public, so \"unpublished draft\" access does not apply.\n- **Object-level authorization (defense-in-depth):** The update/delete paths do not verify that the acting administrator owns the target article. In practice this is gated by session-bound, authenticated-encryption id-tokens that are only issued for the administrator's own rows, so cross-administrator editing was not reachable; noted as a hardening item rather than a confirmed exploit.\n- **Open redirect / SSRF:** The news image field is upload-only and the server never fetches a user-supplied URL; canonical/redirect URLs are constructed from relative paths, so no open-redirect or SSRF condition was found.\n\n## Systemic theme\n\nOutput encoding is applied correctly for HTML text and attribute contexts but was missed for the `<script>`-embedded JSON context — a reminder that JSON-in-HTML is not a safe sink without hex-escaping of tag delimiters.",
+    "recommendations": "# Recommendations\n\n## Immediate\n1. **Fix the JSON-LD output encoding.** Serialize every JSON-LD block with hex escaping enabled (`JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT`) in addition to the existing flags, applied centrally so all schema blocks are covered. This prevents any user-controlled string (article `headline`, `description`, `author`) from closing the enclosing `<script>` element.\n2. **Re-publish / review existing articles** for titles or metadata containing `</script>` or angle brackets, and correct any found, since already-stored values remain exploitable until the rendering fix is deployed.\n3. **Retest** the confirmed finding after remediation: create an article whose title contains `</script><svg onload=...>` and confirm the rendered page no longer contains a literal `</script>` inside any `application/ld+json` block and that no handler executes in the browser.\n\n## Short-term\n4. **Treat the news title as untrusted output data:** HTML-encode it at storage time as defense in depth, and optionally reject titles containing `<`/`>` unless legitimately required.\n5. **Strengthen the Content-Security-Policy** by removing `'unsafe-inline'` from `script-src` and adopting nonces or hashes, so any residual inline-handler injection cannot execute.\n6. **Add explicit object-level authorization checks** to the news update/delete paths so that an administrator can only modify articles they own, independent of token possession.\n\n## Medium-term\n7. **Standardize output-encoding guidance** across the codebase: maintain a context-specific escaping matrix (HTML text, HTML attribute, URL, JavaScript, and JSON-in-script) and apply the corresponding encoder at each sink; add linting/review checks for `json_encode` used inside `<script>` tags without hex flags.\n8. **Introduce regression tests** for the news rendering pipeline that assert no user-controlled value can break out of a `<script>` context, complementing existing sanitizer tests.\n\n## Retest & validation\nAfter fixes are deployed, re-run the stored-XSS payload matrix (both storage-time and render-time), the CSRF and role-enforcement checks, and the injection probes to confirm the controls continue to hold and that the JSON-LD context is now safe.",
+    "success": true
+  }
+}

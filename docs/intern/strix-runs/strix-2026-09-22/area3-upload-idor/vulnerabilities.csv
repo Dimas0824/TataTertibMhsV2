@@ -1,0 +1,2 @@
+id,title,severity,timestamp,file
+vuln-0001,Missing role guard in mahasiswa violation page causes unhandled HTTP 500 for administrators,MEDIUM,2026-09-21 23:04:30 UTC,vulnerabilities/vuln-0001.md

