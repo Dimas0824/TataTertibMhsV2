@@ -1,0 +1,714 @@
+{
+    "version": "2.1.0",
+    "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+    "runs": [
+        {
+            "tool": {
+                "driver": {
+                    "name": "Strix",
+                    "informationUri": "https://strix.ai",
+                    "rules": [
+                        {
+                            "id": "CWE-230",
+                            "name": "NUL-byte truncation in password verification allows authentication with a NUL-suffixed password",
+                            "shortDescription": {
+                                "text": "NUL-byte truncation in password verification allows authentication with a NUL-suffixed password"
+                            },
+                            "fullDescription": {
+                                "text": "The login password comparison is not length-exact: any password value containing a NUL byte (`%00`) is compared only up to that byte. As a result, submitting a **valid password followed by `%00` and arbitrary trailing data** authenticates successfully, while the same value without the NUL byte is rejected. This is a weakness in the authentication integrity check (CWE-230 Improper Handling of NUL Bytes / CWE-20)."
+                            },
+                            "defaultConfiguration": {
+                                "level": "error"
+                            },
+                            "help": {
+                                "text": "The login password comparison is not length-exact: any password value containing a NUL byte (`%00`) is compared only up to that byte. As a result, submitting a **valid password followed by `%00` and arbitrary trailing data** authenticates successfully, while the same value without the NUL byte is rejected. This is a weakness in the authentication integrity check (CWE-230 Improper Handling of NUL Bytes / CWE-20).\n\nAn attacker who learns or guesses a valid password prefix — or who has any means of capturing an individually-valid credential — can submit it with an appended `%00<arbitrary payload>` and still be authenticated. The client-supplied password is silently truncated by the underlying bcrypt verifier, so the effective credential space is shortened and any trailing data is discarded. This undermines the integrity of the credential check, defeats any input-normalization or length validation applied to the password, and means a password that is a correct prefix of the real password followed by a NUL byte is honored. It does not allow login without knowledge of at least the correct prefix, so on its own it is an authentication-integrity defect rather than a full unauthenticated bypass; however, it materially weakens the username/password control and should be fixed prior to any external deployment.\n\nReject credentials containing NUL bytes before they reach the password verifier, and ensure the comparison is performed on the exact, bounded byte sequence. Concretely: after reading `$_POST['password']`, if `strpos($password, \"\\0\") !== false` then reject the login attempt and record an audit event; additionally enforce a maximum password length (e.g. 72 bytes for bcrypt) so inputs cannot be silently truncated. Prefer a verification routine whose semantics are explicitly length-delimited rather than relying on the verifier's C-string behavior. Apply the same NUL rejection to the username to keep input handling uniform. Add a regression test asserting that a valid password suffixed with `\\0` plus data fails authentication.",
+                                "markdown": "The login password comparison is not length-exact: any password value containing a NUL byte (`%00`) is compared only up to that byte. As a result, submitting a **valid password followed by `%00` and arbitrary trailing data** authenticates successfully, while the same value without the NUL byte is rejected. This is a weakness in the authentication integrity check (CWE-230 Improper Handling of NUL Bytes / CWE-20).\n\nAn attacker who learns or guesses a valid password prefix — or who has any means of capturing an individually-valid credential — can submit it with an appended `%00<arbitrary payload>` and still be authenticated. The client-supplied password is silently truncated by the underlying bcrypt verifier, so the effective credential space is shortened and any trailing data is discarded. This undermines the integrity of the credential check, defeats any input-normalization or length validation applied to the password, and means a password that is a correct prefix of the real password followed by a NUL byte is honored. It does not allow login without knowledge of at least the correct prefix, so on its own it is an authentication-integrity defect rather than a full unauthenticated bypass; however, it materially weakens the username/password control and should be fixed prior to any external deployment.\n\nReject credentials containing NUL bytes before they reach the password verifier, and ensure the comparison is performed on the exact, bounded byte sequence. Concretely: after reading `$_POST['password']`, if `strpos($password, \"\\0\") !== false` then reject the login attempt and record an audit event; additionally enforce a maximum password length (e.g. 72 bytes for bcrypt) so inputs cannot be silently truncated. Prefer a verification routine whose semantics are explicitly length-delimited rather than relying on the verifier's C-string behavior. Apply the same NUL rejection to the username to keep input handling uniform. Add a regression test asserting that a valid password suffixed with `\\0` plus data fails authentication."
+                            },
+                            "properties": {
+                                "security-severity": "7.4",
+                                "tags": [
+                                    "security",
+                                    "CWE-230",
+                                    "stride:T",
+                                    "stride:I"
+                                ]
+                            },
+                            "helpUri": "https://cwe.mitre.org/data/definitions/230.html"
+                        },
+                        {
+                            "id": "CWE-307",
+                            "name": "Login brute-force lockout is per-session only and bypassed by discarding the session cookie",
+                            "shortDescription": {
+                                "text": "Login brute-force lockout is per-session only and bypassed by discarding the session cookie"
+                            },
+                            "fullDescription": {
+                                "text": "The login brute-force protection (5 failed attempts → 15-minute lock) is stored exclusively in the PHP session. Discarding the session cookie (obtaining a fresh `PHPSESSID`) resets the counter to zero, so the lockout can be bypassed indefinitely and provides no effective limit on password guessing."
+                            },
+                            "defaultConfiguration": {
+                                "level": "error"
+                            },
+                            "help": {
+                                "text": "The login brute-force protection (5 failed attempts → 15-minute lock) is stored exclusively in the PHP session. Discarding the session cookie (obtaining a fresh `PHPSESSID`) resets the counter to zero, so the lockout can be bypassed indefinitely and provides no effective limit on password guessing.\n\nThe account lockout provides no protection against password guessing. An attacker can submit unlimited login attempts by simply discarding the session cookie between requests, achieving credential brute force / password spraying against any account. Because the identifiers (NIM/NIDN/NIP) and default/lab passwords are weak and predictable, an attacker can realistically recover valid student, lecturer, or administrator credentials, leading to unauthorized access to student-discipline records and, for the administrator account, the full administrative surface.\n\nStore the failed-attempt counter and lock state server-side, keyed on an attribute the client cannot reset — the source IP address, the attempted account identifier, or both — rather than in `$_SESSION`. Record each failed attempt in a durable store (the existing `SECURITY_AUDIT_LOG` table already captures event, actor_id, sid, and ip) and enforce the 5-attempts/15-minute rule by querying recent failures for the client IP and/or identifier, not the session. Additionally: apply a small constant delay or use a per-IP global counter to slow distributed guessing; add a CAPTCHA or progressive delay after repeated failures; and alert or temporarily disable the targeted account after a threshold. Because reverse-proxy headers (`X-Forwarded-For`) are client-controllable, derive the client IP from the trusted peer address or a correctly configured trusted-proxy list. Ensure the lock applies to the account/IP even when the attacker rotates session cookies.",
+                                "markdown": "The login brute-force protection (5 failed attempts → 15-minute lock) is stored exclusively in the PHP session. Discarding the session cookie (obtaining a fresh `PHPSESSID`) resets the counter to zero, so the lockout can be bypassed indefinitely and provides no effective limit on password guessing.\n\nThe account lockout provides no protection against password guessing. An attacker can submit unlimited login attempts by simply discarding the session cookie between requests, achieving credential brute force / password spraying against any account. Because the identifiers (NIM/NIDN/NIP) and default/lab passwords are weak and predictable, an attacker can realistically recover valid student, lecturer, or administrator credentials, leading to unauthorized access to student-discipline records and, for the administrator account, the full administrative surface.\n\nStore the failed-attempt counter and lock state server-side, keyed on an attribute the client cannot reset — the source IP address, the attempted account identifier, or both — rather than in `$_SESSION`. Record each failed attempt in a durable store (the existing `SECURITY_AUDIT_LOG` table already captures event, actor_id, sid, and ip) and enforce the 5-attempts/15-minute rule by querying recent failures for the client IP and/or identifier, not the session. Additionally: apply a small constant delay or use a per-IP global counter to slow distributed guessing; add a CAPTCHA or progressive delay after repeated failures; and alert or temporarily disable the targeted account after a threshold. Because reverse-proxy headers (`X-Forwarded-For`) are client-controllable, derive the client IP from the trusted peer address or a correctly configured trusted-proxy list. Ensure the lock applies to the account/IP even when the attacker rotates session cookies."
+                            },
+                            "properties": {
+                                "security-severity": "9.1",
+                                "tags": [
+                                    "security",
+                                    "CWE-307",
+                                    "stride:T",
+                                    "stride:I"
+                                ]
+                            },
+                            "helpUri": "https://cwe.mitre.org/data/definitions/307.html"
+                        }
+                    ],
+                    "version": "1.4.1"
+                }
+            },
+            "results": [
+                {
+                    "ruleId": "CWE-230",
+                    "ruleIndex": 0,
+                    "level": "error",
+                    "message": {
+                        "text": "NUL-byte truncation in password verification allows authentication with a NUL-suffixed password\n\nThe login password comparison is not length-exact: any password value containing a NUL byte (`%00`) is compared only up to that byte. As a result, submitting a **valid password followed by `%00` and arbitrary trailing data** authenticates successfully, while the same value without the NUL byte is rejected. This is a weakness in the authentication integrity check (CWE-230 Improper Handling of NUL Bytes / CWE-20)."
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "request/handler-login.php"
+                                },
+                                "region": {
+                                    "startLine": 24,
+                                    "endLine": 34,
+                                    "snippet": {
+                                        "text": "$userType = $_POST['user_type'] ?? null;\n        $username = trim((string) ($_POST['username'] ?? ''));\n        $password = (string) ($_POST['password'] ?? '');\n\n        if ($username === '' || $password === '') {\n            set_app_flash_modal('error', 'Username dan password wajib diisi.');\n            app_redirect('views/auth/login.php');\n        }"
+                                    }
+                                }
+                            },
+                            "message": {
+                                "text": "Reject NUL bytes in password before authentication"
+                            }
+                        },
+                        {
+                            "logicalLocations": [
+                                {
+                                    "fullyQualifiedName": "/action/login",
+                                    "kind": "endpoint"
+                                }
+                            ]
+                        }
+                    ],
+                    "fixes": [
+                        {
+                            "artifactChanges": [
+                                {
+                                    "artifactLocation": {
+                                        "uri": "request/handler-login.php"
+                                    },
+                                    "replacements": [
+                                        {
+                                            "deletedRegion": {
+                                                "startLine": 24,
+                                                "endLine": 34
+                                            },
+                                            "insertedContent": {
+                                                "text": "$userType = $_POST['user_type'] ?? null;\n        $username = trim((string) ($_POST['username'] ?? ''));\n        $password = (string) ($_POST['password'] ?? '');\n\n        // Reject NUL bytes: bcrypt verification is NUL-terminated, so a valid\n        // password suffixed with \"\\0<data>\" would otherwise authenticate.\n        if (strpos($username, \"\\0\") !== false || strpos($password, \"\\0\") !== false) {\n            app_audit_log('login_fail', ['actor_id' => substr($username, 0, 32), 'detail' => 'nul byte in credential']);\n            set_app_flash_modal('error', 'Username atau password tidak valid.');\n            app_redirect('views/auth/login.php');\n        }\n\n        if ($username === '' || $password === '') {\n            set_app_flash_modal('error', 'Username dan password wajib diisi.');\n            app_redirect('views/auth/login.php');\n        }"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ],
+                            "description": {
+                                "text": "Reject credentials containing NUL bytes before they reach the password verifier, and ensure the comparison is performed on the exact, bounded byte sequence. Concretely: after reading `$_POST['password']`, if `strpos($password, \"\\0\") !== false` then reject the login attempt and record an audit event; additionally enforce a maximum password length (e.g. 72 bytes for bcrypt) so inputs cannot be silently truncated. Prefer a verification routine whose semantics are explicitly length-delimited rather than relying on the verifier's C-string behavior. Apply the same NUL rejection to the username to keep input handling uniform. Add a regression test asserting that a valid password suffixed with `\\0` plus data fails authentication.",
+                                "markdown": "Reject credentials containing NUL bytes before they reach the password verifier, and ensure the comparison is performed on the exact, bounded byte sequence. Concretely: after reading `$_POST['password']`, if `strpos($password, \"\\0\") !== false` then reject the login attempt and record an audit event; additionally enforce a maximum password length (e.g. 72 bytes for bcrypt) so inputs cannot be silently truncated. Prefer a verification routine whose semantics are explicitly length-delimited rather than relying on the verifier's C-string behavior. Apply the same NUL rejection to the username to keep input handling uniform. Add a regression test asserting that a valid password suffixed with `\\0` plus data fails authentication."
+                            }
+                        }
+                    ],
+                    "partialFingerprints": {
+                        "primaryLocationLineHash": "2cb6991188c99bb19c4b2834411da6a2b40aa04e97d3003999037f37853137a9"
+                    },
+                    "properties": {
+                        "security-severity": "7.4",
+                        "strix_vuln_class_hash": "4625cbc8f546082bc8e383d1ecc64c5906bac77bcf4fbb34239fd5391dd74a3b",
+                        "strix": {
+                            "id": "vuln-0001",
+                            "severity": "high",
+                            "cvss": 7.4,
+                            "timestamp": "2026-09-21 14:32:59 UTC",
+                            "target": "http://172.17.112.1:8001",
+                            "endpoint": "/action/login",
+                            "method": "POST",
+                            "cwe": "CWE-230",
+                            "impact": "An attacker who learns or guesses a valid password prefix — or who has any means of capturing an individually-valid credential — can submit it with an appended `%00<arbitrary payload>` and still be authenticated. The client-supplied password is silently truncated by the underlying bcrypt verifier, so the effective credential space is shortened and any trailing data is discarded. This undermines the integrity of the credential check, defeats any input-normalization or length validation applied to the password, and means a password that is a correct prefix of the real password followed by a NUL byte is honored. It does not allow login without knowledge of at least the correct prefix, so on its own it is an authentication-integrity defect rather than a full unauthenticated bypass; however, it materially weakens the username/password control and should be fixed prior to any external deployment.",
+                            "technical_analysis": "The login handler reads the password as a raw string and passes it to the model without rejecting NUL bytes:\n\n```php title=request/handler-login.php startLineNumber=24 endLineNumber=26\n$userType = $_POST['user_type'] ?? null;\n$username = trim((string) ($_POST['username'] ?? ''));\n$password = (string) ($_POST['password'] ?? '');\n```\n\nThe credential check is a standard bcrypt verification:\n\n```php title=models/User.php startLineNumber=56 endLineNumber=60\n$storedPassword = (string) $user['password'];\n\n// Hashed credentials only; legacy plaintext rows are rejected here and must be\n// migrated once via: php database/cli/hash-plaintext-passwords.php\n$isValid = str_starts_with($storedPassword, '$2') && password_verify($plainPassword, $storedPassword);\n```\n\nPHP's bcrypt verifier (`password_verify` over the `$2y$` scheme) uses C-string semantics for the candidate password and stops at the first NUL byte. Consequently the string `password123\\0XYZ` is compared as `password123`, and verification succeeds. The username field is unaffected because it is normalized with `trim()` (which does not strip NUL) and then compared as a whole against the database column, so `2341238901\\0junk` legitimately fails. The asymmetry — password truncates at NUL, username does not — isolates the defect to the password verification path.\n\nVerified behaviors against the live target (`nim` account `2341238901`, real password `password123`), all via `POST /action/login` with a valid CSRF token:\n\n| Submitted `password` value | Result |\n| --- | --- |\n| `password123%00INJECTED` | `302 Found` → `Location: /pelanggaran` (authenticated) |\n| `password123XINJECTED` | `302 Found` → `Location: /login` (rejected) |\n| `password12%00junk` | `302 Found` → `Location: /login` (rejected) |\n| `password124%00XYZ` | `302 Found` → `Location: /login` (rejected) |\n| `%00password123` | `302 Found` → `Location: /login` (rejected) |\n\nThe pattern (± arbitrary suffix only when a NUL immediately follows the correctly-typed password) is exactly consistent with NUL-terminated comparison in the password verifier.",
+                            "remediation_steps": "Reject credentials containing NUL bytes before they reach the password verifier, and ensure the comparison is performed on the exact, bounded byte sequence. Concretely: after reading `$_POST['password']`, if `strpos($password, \"\\0\") !== false` then reject the login attempt and record an audit event; additionally enforce a maximum password length (e.g. 72 bytes for bcrypt) so inputs cannot be silently truncated. Prefer a verification routine whose semantics are explicitly length-delimited rather than relying on the verifier's C-string behavior. Apply the same NUL rejection to the username to keep input handling uniform. Add a regression test asserting that a valid password suffixed with `\\0` plus data fails authentication.",
+                            "poc": {
+                                "description": "1. Request the login page and extract the `csrf_token` value together with the session cookie.\n2. Submit `POST /action/login` with `Content-Type: application/x-www-form-urlencoded` and the body `csrf_token=<token>&user_type=nim&username=2341238901&password=password123%00INJECTED` (the `%00` is the URL-encoded NUL byte; percent-encoding is used so the byte is decoded by the PHP form parser).\n3. Observe a `302` response with `Location: /pelanggaran` and a **new** `Set-Cookie: PHPSESSID=...` — the login succeeded.\n4. As a control, repeat with `password=password123XINJECTED` (no NUL). The response is `302` with `Location: /login`, confirming the difference is caused solely by the NUL byte.",
+                                "script_available": true
+                            }
+                        }
+                    }
+                },
+                {
+                    "ruleId": "CWE-307",
+                    "ruleIndex": 1,
+                    "level": "error",
+                    "message": {
+                        "text": "Login brute-force lockout is per-session only and bypassed by discarding the session cookie\n\nThe login brute-force protection (5 failed attempts → 15-minute lock) is stored exclusively in the PHP session. Discarding the session cookie (obtaining a fresh `PHPSESSID`) resets the counter to zero, so the lockout can be bypassed indefinitely and provides no effective limit on password guessing."
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "SECURITY.md"
+                                }
+                            }
+                        },
+                        {
+                            "logicalLocations": [
+                                {
+                                    "fullyQualifiedName": "/action/login",
+                                    "kind": "endpoint"
+                                }
+                            ]
+                        }
+                    ],
+                    "partialFingerprints": {
+                        "primaryLocationLineHash": "074afecb7081c71504f5d5cbd66a404fa68d715dc99680b18df4f5ee8f9960d5"
+                    },
+                    "properties": {
+                        "security-severity": "9.1",
+                        "strix_vuln_class_hash": "139606aba0d80d7a2bf4f42b267252134e5955f98a535b8ba64e3d029192a8a6",
+                        "synthetic_location": true,
+                        "strix": {
+                            "id": "vuln-0002",
+                            "severity": "critical",
+                            "cvss": 9.1,
+                            "timestamp": "2026-09-21 14:33:16 UTC",
+                            "target": "http://172.17.112.1:8001",
+                            "endpoint": "/action/login",
+                            "cwe": "CWE-307",
+                            "impact": "The account lockout provides no protection against password guessing. An attacker can submit unlimited login attempts by simply discarding the session cookie between requests, achieving credential brute force / password spraying against any account. Because the identifiers (NIM/NIDN/NIP) and default/lab passwords are weak and predictable, an attacker can realistically recover valid student, lecturer, or administrator credentials, leading to unauthorized access to student-discipline records and, for the administrator account, the full administrative surface.",
+                            "technical_analysis": "The login handler tracks failures and the lock expiry entirely in the PHP session:\n\n```php title=request/handler-login.php startLineNumber=16 endLineNumber=38\n        // per-session throttle (session dies w/ idle expiry). Add an IP-keyed store if deployed open-internet.\n        if ((int) ($_SESSION['__login_until'] ?? 0) > time()) {\n            set_app_flash_modal('error', 'Terlalu banyak percobaan gagal. Coba lagi beberapa menit.');\n            app_redirect('views/auth/login.php');\n        }\n        ...\n        if (!$user->login($username, $password, $userType)) {\n            app_audit_log('login_fail', ['actor_id' => substr($username, 0, 32)]);\n            $_SESSION['__login_fails'] = (int) ($_SESSION['__login_fails'] ?? 0) + 1;\n            if ($_SESSION['__login_fails'] >= 5) {\n                $_SESSION['__login_until'] = time() + 900;\n                unset($_SESSION['__login_fails']);\n                app_audit_log('login_locked', ['actor_id' => substr($username, 0, 32)]);\n            }\n            set_app_flash_modal('error', 'Invalid username or password.');\n            app_redirect('views/auth/login.php');\n        }\n```\n\nBoth `__login_fails` and `__login_until` are session variables. The session identifier is issued by the server but chosen by the client on each request; an attacker who does not return the `PHPSESSID` cookie receives a brand-new session with an empty counter. The `$_SESSION['__login_until']` guard is therefore only effective against a naive client that reuses its cookie. The code comment itself notes the limitation (\"Add an IP-keyed store if deployed open-internet\"), and `controllers/UserController.php` clears the counters on the first successful login (`unset($_SESSION['csrf_token'], $_SESSION['__login_fails'], $_SESSION['__login_until'])`), so logout/login cycling also resets state. No IP-keyed or global counter exists anywhere in `request/`, `controllers/`, or `models/`; the `SECURITY_AUDIT_LOG` table records failures but nothing reads it to enforce a limit. PHP's per-session file lock serializes concurrent requests that share a session (so a same-session burst still reaches the lock), but independent sessions are processed in parallel with no cap.",
+                            "remediation_steps": "Store the failed-attempt counter and lock state server-side, keyed on an attribute the client cannot reset — the source IP address, the attempted account identifier, or both — rather than in `$_SESSION`. Record each failed attempt in a durable store (the existing `SECURITY_AUDIT_LOG` table already captures event, actor_id, sid, and ip) and enforce the 5-attempts/15-minute rule by querying recent failures for the client IP and/or identifier, not the session. Additionally: apply a small constant delay or use a per-IP global counter to slow distributed guessing; add a CAPTCHA or progressive delay after repeated failures; and alert or temporarily disable the targeted account after a threshold. Because reverse-proxy headers (`X-Forwarded-For`) are client-controllable, derive the client IP from the trusted peer address or a correctly configured trusted-proxy list. Ensure the lock applies to the account/IP even when the attacker rotates session cookies.",
+                            "poc": {
+                                "description": "1. Attempt 5 invalid logins from a single session (same `PHPSESSID`): each returns `302` → `/login`. On the 6th attempt the response body carries the message \"Terlalu banyak percobaan gagal. Coba lagi beberapa menit.\" and login is refused.\n2. Discard the cookie jar (or use a new `PHPSESSID`) and attempt a login again. The counter is reset — the first attempt from the new session returns the ordinary \"Invalid username or password\" (no throttle), proving the lock is bound to the session and not the account, IP, or server.\n3. Repeat step 2 in a loop, rotating sessions, to perform unlimited password guessing — a valid credential returns `302` → the role dashboard (e.g. `/pelanggaran`).\n4. Confirm `X-Forwarded-For` rotation is irrelevant (the lock is session-scoped), and that a concurrent burst from a single session is serialized (PHP session lock) while independent sessions run without any cap.",
+                                "script_available": true
+                            }
+                        }
+                    }
+                }
+            ],
+            "properties": {
+                "syntheticLocationCount": 1,
+                "discip_link_area": "area1-login"
+            }
+        },
+        {
+            "tool": {
+                "driver": {
+                    "name": "Strix",
+                    "informationUri": "https://strix.ai",
+                    "rules": [
+                        {
+                            "id": "CWE-614",
+                            "name": "Session cookie issued without Secure flag on HTTPS-terminated (proxy) requests",
+                            "shortDescription": {
+                                "text": "Session cookie issued without Secure flag on HTTPS-terminated (proxy) requests"
+                            },
+                            "fullDescription": {
+                                "text": "The `PHPSESSID` session cookie is only marked `Secure` when the PHP variable `$_SERVER['HTTPS']` is literally set. When TLS is terminated by a reverse proxy that signals HTTPS through `X-Forwarded-Proto` (or `SERVER_PORT=443`) instead of setting `HTTPS`, the application still treats the connection as HTTPS for other features (HSTS is emitted) but issues the session cookie **without** the `Secure` attribute. The cookie can therefore be transmitted over cleartext HTTP, exposing the session to interception."
+                            },
+                            "defaultConfiguration": {
+                                "level": "warning"
+                            },
+                            "help": {
+                                "text": "The `PHPSESSID` session cookie is only marked `Secure` when the PHP variable `$_SERVER['HTTPS']` is literally set. When TLS is terminated by a reverse proxy that signals HTTPS through `X-Forwarded-Proto` (or `SERVER_PORT=443`) instead of setting `HTTPS`, the application still treats the connection as HTTPS for other features (HSTS is emitted) but issues the session cookie **without** the `Secure` attribute. The cookie can therefore be transmitted over cleartext HTTP, exposing the session to interception.\n\nIf the deployment sits behind a TLS-terminating proxy (the documented canonical deployment is `https://dimspersonal.my.id`), the session cookie is not restricted to HTTPS. An attacker positioned to observe or force a single cleartext HTTP request (e.g., a downgrade link, an `http://` subresource/redirect, or a network adversary) can capture a valid `PHPSESSID` and hijack the authenticated session of any role, including `admin`. This undermines the confidentiality of all authenticated functionality (violation records, reports, user actions, admin news/tatib CRUD).\n\nDetermine the request scheme using the same logic already used elsewhere in the application (a single shared helper). Mark the session cookie `Secure` whenever the request is HTTPS by any of: `$_SERVER['HTTPS']` set, `SERVER_PORT` equal to `443`, or `X-Forwarded-Proto: https`. Only trust forwarded headers from known proxy addresses. As defence in depth, enable `session.cookie_secure` and consider HSTS `preload` plus an HTTP-to-HTTPS redirect so no cleartext request can carry the cookie.",
+                                "markdown": "The `PHPSESSID` session cookie is only marked `Secure` when the PHP variable `$_SERVER['HTTPS']` is literally set. When TLS is terminated by a reverse proxy that signals HTTPS through `X-Forwarded-Proto` (or `SERVER_PORT=443`) instead of setting `HTTPS`, the application still treats the connection as HTTPS for other features (HSTS is emitted) but issues the session cookie **without** the `Secure` attribute. The cookie can therefore be transmitted over cleartext HTTP, exposing the session to interception.\n\nIf the deployment sits behind a TLS-terminating proxy (the documented canonical deployment is `https://dimspersonal.my.id`), the session cookie is not restricted to HTTPS. An attacker positioned to observe or force a single cleartext HTTP request (e.g., a downgrade link, an `http://` subresource/redirect, or a network adversary) can capture a valid `PHPSESSID` and hijack the authenticated session of any role, including `admin`. This undermines the confidentiality of all authenticated functionality (violation records, reports, user actions, admin news/tatib CRUD).\n\nDetermine the request scheme using the same logic already used elsewhere in the application (a single shared helper). Mark the session cookie `Secure` whenever the request is HTTPS by any of: `$_SERVER['HTTPS']` set, `SERVER_PORT` equal to `443`, or `X-Forwarded-Proto: https`. Only trust forwarded headers from known proxy addresses. As defence in depth, enable `session.cookie_secure` and consider HSTS `preload` plus an HTTP-to-HTTPS redirect so no cleartext request can carry the cookie."
+                            },
+                            "properties": {
+                                "security-severity": "5.9",
+                                "tags": [
+                                    "security",
+                                    "CWE-614",
+                                    "stride:T",
+                                    "stride:I"
+                                ]
+                            },
+                            "helpUri": "https://cwe.mitre.org/data/definitions/614.html"
+                        },
+                        {
+                            "id": "CWE-613",
+                            "name": "No absolute session lifetime and no invalidation of concurrent sessions",
+                            "shortDescription": {
+                                "text": "No absolute session lifetime and no invalidation of concurrent sessions"
+                            },
+                            "fullDescription": {
+                                "text": "The application enforces only a 30-minute **idle** timeout that is reset on every request; there is no absolute session lifetime. In addition, an account may hold an unlimited number of simultaneous sessions, and a new login does not invalidate existing sessions. A captured session cookie therefore remains usable indefinitely as long as it is used periodically, and logging in again does not revoke a hijacked session."
+                            },
+                            "defaultConfiguration": {
+                                "level": "note"
+                            },
+                            "help": {
+                                "text": "The application enforces only a 30-minute **idle** timeout that is reset on every request; there is no absolute session lifetime. In addition, an account may hold an unlimited number of simultaneous sessions, and a new login does not invalidate existing sessions. A captured session cookie therefore remains usable indefinitely as long as it is used periodically, and logging in again does not revoke a hijacked session.\n\nA stolen session cookie is valid for the entire browsing lifetime of the victim rather than being bounded by an absolute cap, and re-authentication does not evict the attacker. Combined with the missing `Secure` attribute, a captured `PHPSESSID` provides durable, unaudited access as the victim (including `admin`), extending the window for data theft and fraudulent state changes.\n\nStore a session creation timestamp (e.g., `__created_at`) at login and reject the session after an absolute lifetime (for example 8-12 hours) regardless of activity, forcing re-authentication. Track the server-side session inventory per user and, on each successful login (and on password change), invalidate all other sessions for that account. Optionally cap concurrent sessions and require re-authentication for logout. Enable server-side session garbage collection with a matching `gc_maxlifetime`.",
+                                "markdown": "The application enforces only a 30-minute **idle** timeout that is reset on every request; there is no absolute session lifetime. In addition, an account may hold an unlimited number of simultaneous sessions, and a new login does not invalidate existing sessions. A captured session cookie therefore remains usable indefinitely as long as it is used periodically, and logging in again does not revoke a hijacked session.\n\nA stolen session cookie is valid for the entire browsing lifetime of the victim rather than being bounded by an absolute cap, and re-authentication does not evict the attacker. Combined with the missing `Secure` attribute, a captured `PHPSESSID` provides durable, unaudited access as the victim (including `admin`), extending the window for data theft and fraudulent state changes.\n\nStore a session creation timestamp (e.g., `__created_at`) at login and reject the session after an absolute lifetime (for example 8-12 hours) regardless of activity, forcing re-authentication. Track the server-side session inventory per user and, on each successful login (and on password change), invalidate all other sessions for that account. Optionally cap concurrent sessions and require re-authentication for logout. Enable server-side session garbage collection with a matching `gc_maxlifetime`."
+                            },
+                            "properties": {
+                                "security-severity": "3.7",
+                                "tags": [
+                                    "security",
+                                    "CWE-613",
+                                    "stride:S"
+                                ]
+                            },
+                            "helpUri": "https://cwe.mitre.org/data/definitions/613.html"
+                        }
+                    ],
+                    "version": "1.4.1"
+                }
+            },
+            "results": [
+                {
+                    "ruleId": "CWE-614",
+                    "ruleIndex": 0,
+                    "level": "warning",
+                    "message": {
+                        "text": "Session cookie issued without Secure flag on HTTPS-terminated (proxy) requests\n\nThe `PHPSESSID` session cookie is only marked `Secure` when the PHP variable `$_SERVER['HTTPS']` is literally set. When TLS is terminated by a reverse proxy that signals HTTPS through `X-Forwarded-Proto` (or `SERVER_PORT=443`) instead of setting `HTTPS`, the application still treats the connection as HTTPS for other features (HSTS is emitted) but issues the session cookie **without** the `Secure` attribute. The cookie can therefore be transmitted over cleartext HTTP, exposing the session to interception."
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "helpers/token_helper.php"
+                                },
+                                "region": {
+                                    "startLine": 13,
+                                    "endLine": 17,
+                                    "snippet": {
+                                        "text": "session_set_cookie_params([\n    'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),\n    'httponly' => true,\n    'samesite' => 'Lax',\n]);"
+                                    }
+                                }
+                            },
+                            "message": {
+                                "text": "Session cookie params: secure derived only from $_SERVER['HTTPS']"
+                            }
+                        },
+                        {
+                            "logicalLocations": [
+                                {
+                                    "fullyQualifiedName": "/login (Set-Cookie for PHPSESSID)",
+                                    "kind": "endpoint"
+                                }
+                            ]
+                        }
+                    ],
+                    "fixes": [
+                        {
+                            "artifactChanges": [
+                                {
+                                    "artifactLocation": {
+                                        "uri": "helpers/token_helper.php"
+                                    },
+                                    "replacements": [
+                                        {
+                                            "deletedRegion": {
+                                                "startLine": 13,
+                                                "endLine": 17
+                                            },
+                                            "insertedContent": {
+                                                "text": "$isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')\n                    || ((string) ($_SERVER['SERVER_PORT'] ?? '') === '443')\n                    || (strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https');\n                session_set_cookie_params([\n                    'secure' => $isHttps,\n                    'httponly' => true,\n                    'samesite' => 'Lax',\n                ]);"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ],
+                            "description": {
+                                "text": "Determine the request scheme using the same logic already used elsewhere in the application (a single shared helper). Mark the session cookie `Secure` whenever the request is HTTPS by any of: `$_SERVER['HTTPS']` set, `SERVER_PORT` equal to `443`, or `X-Forwarded-Proto: https`. Only trust forwarded headers from known proxy addresses. As defence in depth, enable `session.cookie_secure` and consider HSTS `preload` plus an HTTP-to-HTTPS redirect so no cleartext request can carry the cookie.",
+                                "markdown": "Determine the request scheme using the same logic already used elsewhere in the application (a single shared helper). Mark the session cookie `Secure` whenever the request is HTTPS by any of: `$_SERVER['HTTPS']` set, `SERVER_PORT` equal to `443`, or `X-Forwarded-Proto: https`. Only trust forwarded headers from known proxy addresses. As defence in depth, enable `session.cookie_secure` and consider HSTS `preload` plus an HTTP-to-HTTPS redirect so no cleartext request can carry the cookie."
+                            }
+                        }
+                    ],
+                    "partialFingerprints": {
+                        "primaryLocationLineHash": "b141d808a1844c74e11829b6f8098fa751a0c720f9aba0230af87178aa423729"
+                    },
+                    "properties": {
+                        "security-severity": "5.9",
+                        "strix_vuln_class_hash": "3edef167ee7aaf1bb2a606ae97bc9fb3cbff8e08603f2cf58d28d7d25660387c",
+                        "strix": {
+                            "id": "vuln-0001",
+                            "severity": "medium",
+                            "cvss": 5.9,
+                            "timestamp": "2026-09-21 14:40:38 UTC",
+                            "target": "http://172.17.112.1:8001",
+                            "endpoint": "/login (Set-Cookie for PHPSESSID)",
+                            "method": "GET",
+                            "cwe": "CWE-614",
+                            "impact": "If the deployment sits behind a TLS-terminating proxy (the documented canonical deployment is `https://dimspersonal.my.id`), the session cookie is not restricted to HTTPS. An attacker positioned to observe or force a single cleartext HTTP request (e.g., a downgrade link, an `http://` subresource/redirect, or a network adversary) can capture a valid `PHPSESSID` and hijack the authenticated session of any role, including `admin`. This undermines the confidentiality of all authenticated functionality (violation records, reports, user actions, admin news/tatib CRUD).",
+                            "technical_analysis": "Session cookie parameters are configured in a single place:\n\n```php title=helpers/token_helper.php startLineNumber=13 endLineNumber=17\nsession_set_cookie_params([\n    'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),\n    'httponly' => true,\n    'samesite' => 'Lax',\n]);\n```\n\nThe `secure` value depends solely on `$_SERVER['HTTPS']`. It does **not** consider `X-Forwarded-Proto` or `SERVER_PORT`, unlike the rest of the application. `helpers/seo_helper.php` (lines 219-222 and 146-151) determines HTTPS from `$_SERVER['HTTPS']` **or** `SERVER_PORT === '443'` **or** `HTTP_X_FORWARDED_PROTO === 'https'`, and emits `Strict-Transport-Security` on that basis (lines 227-229).\n\nThe result is an internal inconsistency: on a request the application itself classifies as HTTPS (HSTS emitted), the session cookie is not marked `Secure`. This was confirmed against the running instance by sending `X-Forwarded-Proto: https` with a non-local `Host`: the response carried the HSTS header but the `Set-Cookie` line lacked `Secure`.",
+                            "remediation_steps": "Determine the request scheme using the same logic already used elsewhere in the application (a single shared helper). Mark the session cookie `Secure` whenever the request is HTTPS by any of: `$_SERVER['HTTPS']` set, `SERVER_PORT` equal to `443`, or `X-Forwarded-Proto: https`. Only trust forwarded headers from known proxy addresses. As defence in depth, enable `session.cookie_secure` and consider HSTS `preload` plus an HTTP-to-HTTPS redirect so no cleartext request can carry the cookie.",
+                            "poc": {
+                                "description": "1. Send a request that the application classifies as HTTPS via the forwarded-proto signal, using a non-local `Host` so the HSTS branch is taken.\n2. Observe the response headers.\n3. Note that `Strict-Transport-Security` is present (application believes the request is HTTPS) while the `Set-Cookie: PHPSESSID=...` line omits the `Secure` attribute.\n4. Repeating without the header (or with `Host` local) produces the same cookie flags, confirming `secure` is never set when `$_SERVER['HTTPS']` is absent.",
+                                "script_available": true
+                            }
+                        }
+                    }
+                },
+                {
+                    "ruleId": "CWE-613",
+                    "ruleIndex": 1,
+                    "level": "note",
+                    "message": {
+                        "text": "No absolute session lifetime and no invalidation of concurrent sessions\n\nThe application enforces only a 30-minute **idle** timeout that is reset on every request; there is no absolute session lifetime. In addition, an account may hold an unlimited number of simultaneous sessions, and a new login does not invalidate existing sessions. A captured session cookie therefore remains usable indefinitely as long as it is used periodically, and logging in again does not revoke a hijacked session."
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "helpers/token_helper.php"
+                                },
+                                "region": {
+                                    "startLine": 102,
+                                    "endLine": 120
+                                }
+                            },
+                            "message": {
+                                "text": "Only idle TTL is enforced; no absolute lifetime cap"
+                            }
+                        },
+                        {
+                            "logicalLocations": [
+                                {
+                                    "fullyQualifiedName": "/action/login, /action/logout",
+                                    "kind": "endpoint"
+                                }
+                            ]
+                        }
+                    ],
+                    "partialFingerprints": {
+                        "primaryLocationLineHash": "7fd6337330e5df21223c814e1e67347b437c374c7cab3063653337d5bf434060"
+                    },
+                    "properties": {
+                        "security-severity": "3.7",
+                        "strix_vuln_class_hash": "0c071b0ac7efb013f84d7664e13e9fca6ec807c2f0ec853d69b19db944d6bed1",
+                        "strix": {
+                            "id": "vuln-0002",
+                            "severity": "low",
+                            "cvss": 3.7,
+                            "timestamp": "2026-09-21 14:40:50 UTC",
+                            "target": "http://172.17.112.1:8001",
+                            "endpoint": "/action/login, /action/logout",
+                            "method": "POST",
+                            "cwe": "CWE-613",
+                            "impact": "A stolen session cookie is valid for the entire browsing lifetime of the victim rather than being bounded by an absolute cap, and re-authentication does not evict the attacker. Combined with the missing `Secure` attribute, a captured `PHPSESSID` provides durable, unaudited access as the victim (including `admin`), extending the window for data theft and fraudulent state changes.",
+                            "technical_analysis": "Session liveness is governed entirely by `app_session_touch_or_expire()` in `helpers/token_helper.php`, invoked once per request from `router.php`. It records only a last-activity timestamp and expires the session purely on idle time:\n\n```php title=helpers/token_helper.php startLineNumber=105 endLineNumber=120\n$now = time();\n$lastActivity = isset($_SESSION['__last_activity']) ? (int) $_SESSION['__last_activity'] : 0;\n\nif ($lastActivity > 0 && ($now - $lastActivity) > $idleTtl) {\n    $_SESSION = [];\n    if (session_status() === PHP_SESSION_ACTIVE) {\n        session_destroy();\n    }\n    @session_start();\n    $_SESSION['__last_activity'] = $now;\n    return false;\n}\n\n$_SESSION['__last_activity'] = $now;\nreturn true;\n```\n\nNo creation/issued timestamp is stored, so there is no absolute lifetime. Because `__last_activity` is updated on every request, any periodic request resets the window indefinitely.\n\nOn authentication, `controllers/UserController.php` (lines 56-62) regenerates the session identifier but does not enumerate or invalidate the account's other sessions; nothing in the schema or handlers caps the number of live sessions per user. The verified behaviour is that two logins for one account yield two simultaneously valid sessions.",
+                            "remediation_steps": "Store a session creation timestamp (e.g., `__created_at`) at login and reject the session after an absolute lifetime (for example 8-12 hours) regardless of activity, forcing re-authentication. Track the server-side session inventory per user and, on each successful login (and on password change), invalidate all other sessions for that account. Optionally cap concurrent sessions and require re-authentication for logout. Enable server-side session garbage collection with a matching `gc_maxlifetime`.",
+                            "poc": {
+                                "description": "1. Authenticate the same account twice from two independent cookie jars.\n2. Confirm both session identifiers remain simultaneously valid against a protected page (`/pelanggaran` or `/pelanggaran/dosen`) returning HTTP 200.\n3. Continue issuing requests on the older session; observe it is never invalidated by the newer login.\n4. (Lifetime) Programmatically, only `__last_activity` is checked; there is no creation timestamp or absolute cap, so periodic requests keep the session alive without limit.",
+                                "script_available": true
+                            }
+                        }
+                    }
+                }
+            ],
+            "properties": {
+                "discip_link_area": "area2-session-csrf"
+            }
+        },
+        {
+            "tool": {
+                "driver": {
+                    "name": "Strix",
+                    "informationUri": "https://strix.ai",
+                    "rules": [],
+                    "version": "1.4.1"
+                }
+            },
+            "results": [],
+            "properties": {
+                "discip_link_area": "area3-upload-idor"
+            }
+        },
+        {
+            "tool": {
+                "driver": {
+                    "name": "Strix",
+                    "informationUri": "https://strix.ai",
+                    "rules": [
+                        {
+                            "id": "CWE-20",
+                            "name": "Sanction Level Not Validated Against Violation Tier (client-selectable sanksi)",
+                            "shortDescription": {
+                                "text": "Sanction Level Not Validated Against Violation Tier (client-selectable sanksi)"
+                            },
+                            "fullDescription": {
+                                "text": "When a lecturer records a violation, the sanction (`sanksi`) is taken from a client-supplied token and stored without verifying that the sanction's tier matches the violation's tier. A lecturer can therefore attach the most severe sanction (Tier I — expulsion) to a trivial Tier V violation (2 points), or any other mismatched combination. The student portal renders the mismatched sanction as authoritative."
+                            },
+                            "defaultConfiguration": {
+                                "level": "warning"
+                            },
+                            "help": {
+                                "text": "When a lecturer records a violation, the sanction (`sanksi`) is taken from a client-supplied token and stored without verifying that the sanction's tier matches the violation's tier. A lecturer can therefore attach the most severe sanction (Tier I — expulsion) to a trivial Tier V violation (2 points), or any other mismatched combination. The student portal renders the mismatched sanction as authoritative.\n\nThe integrity of the disciplinary record is broken: a student can be shown a sanction that is far more severe than the actual violation warrants (e.g. \"Diberhentikan sebagai mahasiswa\" / expelled, or \"Dinonaktifkan (Cuti Akademik) selama dua semester\") for a minor 2-point infraction. Because the student portal presents this as the authoritative outcome, it can cause significant distress, reputational harm, and support fraudulent escalation. The same mismatch is accepted on the edit/update path, so existing records can be tampered with. This is a server-side data-integrity flaw: the sanction is effectively attacker-selected rather than derived from the violation.\n\n1. Derive the sanction from the violation tier server-side and do not accept an arbitrary client-selected sanction. If a lecturer must be able to choose among the sanctions valid for a tier, first load the violation's `tingkat` server-side and constrain the choice to sanction rows whose `SANKSI.tingkat` equals that tier.\n2. Enforce the tier-match inside the model by selecting the sanction together with its tier and comparing it to the tata-tertib tier before insert/update, e.g. `SELECT id_sanksi, tingkat FROM SANKSI WHERE id_sanksi = ?` and reject when `upper(tingkat) !== upper($tatibTingkat)`.\n3. Apply the same validation on the update path (`updateDetailPelanggaran`) so existing records cannot be tampered with.\n4. As defense-in-depth, add a database-level integrity constraint or trigger ensuring `DETAIL_PELANGGARAN.id_sanksi` references a sanction whose tier matches the referenced `TATA_TERTIB.tingkat`.\n5. Validate the response rendering so that a record whose sanction tier differs from its violation tier is never displayed as authoritative.",
+                                "markdown": "When a lecturer records a violation, the sanction (`sanksi`) is taken from a client-supplied token and stored without verifying that the sanction's tier matches the violation's tier. A lecturer can therefore attach the most severe sanction (Tier I — expulsion) to a trivial Tier V violation (2 points), or any other mismatched combination. The student portal renders the mismatched sanction as authoritative.\n\nThe integrity of the disciplinary record is broken: a student can be shown a sanction that is far more severe than the actual violation warrants (e.g. \"Diberhentikan sebagai mahasiswa\" / expelled, or \"Dinonaktifkan (Cuti Akademik) selama dua semester\") for a minor 2-point infraction. Because the student portal presents this as the authoritative outcome, it can cause significant distress, reputational harm, and support fraudulent escalation. The same mismatch is accepted on the edit/update path, so existing records can be tampered with. This is a server-side data-integrity flaw: the sanction is effectively attacker-selected rather than derived from the violation.\n\n1. Derive the sanction from the violation tier server-side and do not accept an arbitrary client-selected sanction. If a lecturer must be able to choose among the sanctions valid for a tier, first load the violation's `tingkat` server-side and constrain the choice to sanction rows whose `SANKSI.tingkat` equals that tier.\n2. Enforce the tier-match inside the model by selecting the sanction together with its tier and comparing it to the tata-tertib tier before insert/update, e.g. `SELECT id_sanksi, tingkat FROM SANKSI WHERE id_sanksi = ?` and reject when `upper(tingkat) !== upper($tatibTingkat)`.\n3. Apply the same validation on the update path (`updateDetailPelanggaran`) so existing records cannot be tampered with.\n4. As defense-in-depth, add a database-level integrity constraint or trigger ensuring `DETAIL_PELANGGARAN.id_sanksi` references a sanction whose tier matches the referenced `TATA_TERTIB.tingkat`.\n5. Validate the response rendering so that a record whose sanction tier differs from its violation tier is never displayed as authoritative."
+                            },
+                            "properties": {
+                                "security-severity": "6.5",
+                                "tags": [
+                                    "security",
+                                    "CWE-20",
+                                    "stride:T"
+                                ]
+                            },
+                            "helpUri": "https://cwe.mitre.org/data/definitions/20.html"
+                        }
+                    ],
+                    "version": "1.4.1"
+                }
+            },
+            "results": [
+                {
+                    "ruleId": "CWE-20",
+                    "ruleIndex": 0,
+                    "level": "warning",
+                    "message": {
+                        "text": "Sanction Level Not Validated Against Violation Tier (client-selectable sanksi)\n\nWhen a lecturer records a violation, the sanction (`sanksi`) is taken from a client-supplied token and stored without verifying that the sanction's tier matches the violation's tier. A lecturer can therefore attach the most severe sanction (Tier I — expulsion) to a trivial Tier V violation (2 points), or any other mismatched combination. The student portal renders the mismatched sanction as authoritative."
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "request/handler-pelanggaran.php"
+                                },
+                                "region": {
+                                    "startLine": 168,
+                                    "endLine": 179,
+                                    "snippet": {
+                                        "text": "$resolvedSanksi = null;\n      if (isset($_POST['sanksi']) && trim((string) $_POST['sanksi']) !== '') {\n         $resolvedSanksi = app_id_resolve((string) $_POST['sanksi'], 'sanksi');\n         if ($resolvedSanksi === null) {\n            throw new RuntimeException('Token sanksi tidak valid.');\n         }\n      }\n      $detailPelanggaran = $_POST['deskripsiPelanggaran'] ?? ($tatibDetail['deskripsi'] ?? null);\n\n      if ((!$resolvedSanksi || trim((string) $resolvedSanksi) === '') && $tingkat !== '') {\n         $resolvedSanksi = $pelanggaranController->getDefaultSanksiByTingkat($tingkat);\n      }"
+                                    }
+                                }
+                            },
+                            "message": {
+                                "text": "Resolve sanction from client token without tier check"
+                            }
+                        },
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "models/Pelanggaran.php"
+                                },
+                                "region": {
+                                    "startLine": 299,
+                                    "endLine": 302,
+                                    "snippet": {
+                                        "text": "$stmtSanksi = $this->connect->prepare(\"SELECT id_sanksi FROM SANKSI WHERE id_sanksi = ? LIMIT 1\");\n            $stmtSanksi->execute([$idSanksi]);\n            if (!$stmtSanksi->fetch(PDO::FETCH_ASSOC)) {\n                throw new RuntimeException('Sanksi tidak valid.');\n            }"
+                                    }
+                                }
+                            },
+                            "message": {
+                                "text": "Model validates existence only, not sanction tier"
+                            }
+                        },
+                        {
+                            "logicalLocations": [
+                                {
+                                    "fullyQualifiedName": "/action/pelanggaran",
+                                    "kind": "endpoint"
+                                }
+                            ]
+                        }
+                    ],
+                    "fixes": [
+                        {
+                            "artifactChanges": [
+                                {
+                                    "artifactLocation": {
+                                        "uri": "request/handler-pelanggaran.php"
+                                    },
+                                    "replacements": [
+                                        {
+                                            "deletedRegion": {
+                                                "startLine": 168,
+                                                "endLine": 179
+                                            },
+                                            "insertedContent": {
+                                                "text": "$resolvedSanksi = null;\n      if (isset($_POST['sanksi']) && trim((string) $_POST['sanksi']) !== '') {\n         $resolvedSanksi = app_id_resolve((string) $_POST['sanksi'], 'sanksi');\n         if ($resolvedSanksi === null) {\n            throw new RuntimeException('Token sanksi tidak valid.');\n         }\n\n         // Enforce the sanction tier matches the violation tier (server-derived).\n         $sanksiTingkat = $pelanggaranController->getSanksiTingkatById((int) $resolvedSanksi);\n         if ($sanksiTingkat === null || strcasecmp(trim($sanksiTingkat), trim((string) $tingkat)) !== 0) {\n            throw new RuntimeException('Sanksi tidak sesuai dengan tingkat pelanggaran.');\n         }\n      }\n      $detailPelanggaran = $_POST['deskripsiPelanggaran'] ?? ($tatibDetail['deskripsi'] ?? null);\n\n      if ((!$resolvedSanksi || trim((string) $resolvedSanksi) === '') && $tingkat !== '') {\n         $resolvedSanksi = $pelanggaranController->getDefaultSanksiByTingkat($tingkat);\n      }"
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "artifactLocation": {
+                                        "uri": "models/Pelanggaran.php"
+                                    },
+                                    "replacements": [
+                                        {
+                                            "deletedRegion": {
+                                                "startLine": 299,
+                                                "endLine": 302
+                                            },
+                                            "insertedContent": {
+                                                "text": "$stmtSanksi = $this->connect->prepare(\"SELECT id_sanksi, tingkat FROM SANKSI WHERE id_sanksi = ? LIMIT 1\");\n            $stmtSanksi->execute([$idSanksi]);\n            $sanksiRow = $stmtSanksi->fetch(PDO::FETCH_ASSOC);\n            if (!$sanksiRow) {\n                throw new RuntimeException('Sanksi tidak valid.');\n            }\n            if (strcasecmp(trim((string) $sanksiRow['tingkat']), $tingkat) !== 0) {\n                throw new RuntimeException('Sanksi tidak sesuai dengan tingkat pelanggaran.');\n            }"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ],
+                            "description": {
+                                "text": "1. Derive the sanction from the violation tier server-side and do not accept an arbitrary client-selected sanction. If a lecturer must be able to choose among the sanctions valid for a tier, first load the violation's `tingkat` server-side and constrain the choice to sanction rows whose `SANKSI.tingkat` equals that tier.\n2. Enforce the tier-match inside the model by selecting the sanction together with its tier and comparing it to the tata-tertib tier before insert/update, e.g. `SELECT id_sanksi, tingkat FROM SANKSI WHERE id_sanksi = ?` and reject when `upper(tingkat) !== upper($tatibTingkat)`.\n3. Apply the same validation on the update path (`updateDetailPelanggaran`) so existing records cannot be tampered with.\n4. As defense-in-depth, add a database-level integrity constraint or trigger ensuring `DETAIL_PELANGGARAN.id_sanksi` references a sanction whose tier matches the referenced `TATA_TERTIB.tingkat`.\n5. Validate the response rendering so that a record whose sanction tier differs from its violation tier is never displayed as authoritative.",
+                                "markdown": "1. Derive the sanction from the violation tier server-side and do not accept an arbitrary client-selected sanction. If a lecturer must be able to choose among the sanctions valid for a tier, first load the violation's `tingkat` server-side and constrain the choice to sanction rows whose `SANKSI.tingkat` equals that tier.\n2. Enforce the tier-match inside the model by selecting the sanction together with its tier and comparing it to the tata-tertib tier before insert/update, e.g. `SELECT id_sanksi, tingkat FROM SANKSI WHERE id_sanksi = ?` and reject when `upper(tingkat) !== upper($tatibTingkat)`.\n3. Apply the same validation on the update path (`updateDetailPelanggaran`) so existing records cannot be tampered with.\n4. As defense-in-depth, add a database-level integrity constraint or trigger ensuring `DETAIL_PELANGGARAN.id_sanksi` references a sanction whose tier matches the referenced `TATA_TERTIB.tingkat`.\n5. Validate the response rendering so that a record whose sanction tier differs from its violation tier is never displayed as authoritative."
+                            }
+                        }
+                    ],
+                    "partialFingerprints": {
+                        "primaryLocationLineHash": "12379c6255de35465c644cb544c33b7a44133dde04c32581b91af9a43278b51c"
+                    },
+                    "properties": {
+                        "security-severity": "6.5",
+                        "strix_vuln_class_hash": "8c4da30d50f481bfb7fb3494a59d5e259559ca364f0c7be432f81d6dacde001f",
+                        "strix": {
+                            "id": "vuln-0001",
+                            "severity": "medium",
+                            "cvss": 6.5,
+                            "timestamp": "2026-09-21 14:58:50 UTC",
+                            "target": "http://172.17.112.1:8001",
+                            "endpoint": "/action/pelanggaran",
+                            "method": "POST",
+                            "cwe": "CWE-20",
+                            "impact": "The integrity of the disciplinary record is broken: a student can be shown a sanction that is far more severe than the actual violation warrants (e.g. \"Diberhentikan sebagai mahasiswa\" / expelled, or \"Dinonaktifkan (Cuti Akademik) selama dua semester\") for a minor 2-point infraction. Because the student portal presents this as the authoritative outcome, it can cause significant distress, reputational harm, and support fraudulent escalation. The same mismatch is accepted on the edit/update path, so existing records can be tampered with. This is a server-side data-integrity flaw: the sanction is effectively attacker-selected rather than derived from the violation.",
+                            "technical_analysis": "## Root cause\n\nThe violation save handler resolves the sanction straight from the client POST field without any tier/point cross-check:\n\n```php title=request/handler-pelanggaran.php startLineNumber=165 endLineNumber=179\n$tatibDetail = $tatibController->getTatibDetail($tatibId);\n$tingkat = $tatibDetail['tingkat'] ?? '';\n$resolvedSanksi = null;\nif (isset($_POST['sanksi']) && trim((string) $_POST['sanksi']) !== '') {\n    $resolvedSanksi = app_id_resolve((string) $_POST['sanksi'], 'sanksi');\n    if ($resolvedSanksi === null) {\n        throw new RuntimeException('Token sanksi tidak valid.');\n    }\n}\n$detailPelanggaran = $_POST['deskripsiPelanggaran'] ?? ($tatibDetail['deskripsi'] ?? null);\n\n// Only used as a FALLBACK when the client omits `sanksi`:\nif ((!$resolvedSanksi || trim((string) $resolvedSanksi) === '') && $tingkat !== '') {\n    $resolvedSanksi = $pelanggaranController->getDefaultSanksiByTingkat($tingkat);\n}\n```\n\nThe tier is correctly derived server-side from the selected `TATA_TERTIB` row (`$tingkat`), and points (`poin`) are read from `TATA_TERTIB` at render time, so neither can be forged directly. However, the explicitly supplied `sanksi` overrides the tier-consistent default and is **never compared** against `$tingkat`.\n\nThe model performs only an existence check — it confirms the sanction row exists but never reads or compares its `tingkat`:\n\n```php title=models/Pelanggaran.php startLineNumber=299 endLineNumber=302\n$stmtSanksi = $this->connect->prepare(\"SELECT id_sanksi FROM SANKSI WHERE id_sanksi = ? LIMIT 1\");\n$stmtSanksi->execute([$idSanksi]);\nif (!$stmtSanksi->fetch(PDO::FETCH_ASSOC)) {\n    throw new RuntimeException('Sanksi tidak valid.');\n}\n```\n\nThe same pattern exists in `updateDetailPelanggaran` (lines 447-450), so the mismatch is also accepted when editing an existing record.\n\nThe `SANKSI` table stores a per-row `tingkat` (I..V), and the edit form already exposes `data-tingkat` on each sanction `<option>`, proving the tier is available server-side and simply not enforced.\n\n## Impact\nA sanction of Tier I (e.g. \"Diberhentikan sebagai mahasiswa\" — expulsion) can be stored against a Tier V violation worth 2 points (\"Berkomunikasi dengan tidak sopan\"). The student view (`pelanggaran-page.php`) renders both the tier and the sanction, producing an internally contradictory and grossly overstated record.\n\n## CVSS notes\n- Attack vector Network, low complexity (replay of legitimate form with one field swapped), low privileges (any lecturer), no user interaction.\n- Confidentiality: none — this is a data-integrity / availability-of-trust issue. Integrity High (records can be arbitrarily mislabeled); the record is the authoritative disciplinary artifact.",
+                            "remediation_steps": "1. Derive the sanction from the violation tier server-side and do not accept an arbitrary client-selected sanction. If a lecturer must be able to choose among the sanctions valid for a tier, first load the violation's `tingkat` server-side and constrain the choice to sanction rows whose `SANKSI.tingkat` equals that tier.\n2. Enforce the tier-match inside the model by selecting the sanction together with its tier and comparing it to the tata-tertib tier before insert/update, e.g. `SELECT id_sanksi, tingkat FROM SANKSI WHERE id_sanksi = ?` and reject when `upper(tingkat) !== upper($tatibTingkat)`.\n3. Apply the same validation on the update path (`updateDetailPelanggaran`) so existing records cannot be tampered with.\n4. As defense-in-depth, add a database-level integrity constraint or trigger ensuring `DETAIL_PELANGGARAN.id_sanksi` references a sanction whose tier matches the referenced `TATA_TERTIB.tingkat`.\n5. Validate the response rendering so that a record whose sanction tier differs from its violation tier is never displayed as authoritative.",
+                            "poc": {
+                                "description": "1. Authenticate as any lecturer (e.g. `1234567890` / `password123`) and open the reporting page (`/pelaporan`) to obtain a session-bound CSRF token and the `jenisPelanggaran` (tata-tertib) token list.\n2. Select a Tier V violation (e.g. \"Berkomunikasi dengan tidak sopan\", 2 points) as `jenisPelanggaran`.\n3. Obtain a Tier I `sanksi` token from any edit page (`/pelaporan/edit?id_detail=...`, each `<option>` under the `sanksi` select carries its token). Choose the option whose description is \"Diberhentikan sebagai mahasiswa\".\n4. Submit `POST /action/pelanggaran` with both tokens, the CSRF token, a target `nim`, and `store=1`.\n5. The response is `302` to `/pelanggaran/dosen` (success).\n6. Request `/pelanggaran` as the affected student (`2341238901` / `password123`); the row shows Tier `V` with sanction \"Diberhentikan sebagai mahasiswa\".\n7. The same swap works on the update path by additionally sending `update=1` and a valid `id_detail` token.",
+                                "script_available": true
+                            }
+                        }
+                    }
+                }
+            ],
+            "properties": {
+                "discip_link_area": "area4-pelanggaran"
+            }
+        },
+        {
+            "tool": {
+                "driver": {
+                    "name": "Strix",
+                    "informationUri": "https://strix.ai",
+                    "rules": [
+                        {
+                            "id": "CWE-79",
+                            "name": "Stored XSS on public news detail page via quote-boundary bypass of event-handler sanitizer",
+                            "shortDescription": {
+                                "text": "Stored XSS on public news detail page via quote-boundary bypass of event-handler sanitizer"
+                            },
+                            "fullDescription": {
+                                "text": "News article content is sanitized with `strip_tags()` followed by a regular expression intended to remove inline event handlers. Because `strip_tags()` preserves attributes on allowed tags and the regex only matches handlers preceded by whitespace or `/`, an attacker who can author news (any admin) can inject a live event handler by closing a preceding attribute with a quote — e.g. `<div title=\"x\"onmouseover=\"alert(document.domain)\">`. The payload is stored raw in the database and emitted unescaped inside the public article body, so it executes in the browser of every visitor (including unauthenticated guests) who interacts with the article."
+                            },
+                            "defaultConfiguration": {
+                                "level": "warning"
+                            },
+                            "help": {
+                                "text": "News article content is sanitized with `strip_tags()` followed by a regular expression intended to remove inline event handlers. Because `strip_tags()` preserves attributes on allowed tags and the regex only matches handlers preceded by whitespace or `/`, an attacker who can author news (any admin) can inject a live event handler by closing a preceding attribute with a quote — e.g. `<div title=\"x\"onmouseover=\"alert(document.domain)\">`. The payload is stored raw in the database and emitted unescaped inside the public article body, so it executes in the browser of every visitor (including unauthenticated guests) who interacts with the article.\n\nAn admin-authored article becomes a persistent XSS vector on a public, unauthenticated page. Triggering requires only hovering over the injected content (or, with the `autofocus`/`onfocus` variant, no interaction at all). Impact includes session/token theft (CSRF tokens are exposed in the DOM), execution of attacker JavaScript in the origin of the news portal, content defacement, and drive-by actions on behalf of any visitor — students, lecturers, and administrators — who views the article.\n\nReplace the tag-based `strip_tags()` + regex sanitizer with a well-tested HTML sanitization library (e.g. HTML Purifier with an explicit allow-list of tags and attributes, no event handlers and no `style`), applied on input and treated as authoritative on output. Enforce a strict attribute allow-list rather than attempting to blacklist `on*` handlers via regex. Additionally, ensure the render path never emits stored content raw: either sanitize with the library at render time or escape by default and only re-introduce markup through the sanitizer. Deploy a strict Content Security Policy and remove `unsafe-inline` from `script-src` so that inline handlers are refused even if injected. Apply the same fix to every place content is stored or rendered.",
+                                "markdown": "News article content is sanitized with `strip_tags()` followed by a regular expression intended to remove inline event handlers. Because `strip_tags()` preserves attributes on allowed tags and the regex only matches handlers preceded by whitespace or `/`, an attacker who can author news (any admin) can inject a live event handler by closing a preceding attribute with a quote — e.g. `<div title=\"x\"onmouseover=\"alert(document.domain)\">`. The payload is stored raw in the database and emitted unescaped inside the public article body, so it executes in the browser of every visitor (including unauthenticated guests) who interacts with the article.\n\nAn admin-authored article becomes a persistent XSS vector on a public, unauthenticated page. Triggering requires only hovering over the injected content (or, with the `autofocus`/`onfocus` variant, no interaction at all). Impact includes session/token theft (CSRF tokens are exposed in the DOM), execution of attacker JavaScript in the origin of the news portal, content defacement, and drive-by actions on behalf of any visitor — students, lecturers, and administrators — who views the article.\n\nReplace the tag-based `strip_tags()` + regex sanitizer with a well-tested HTML sanitization library (e.g. HTML Purifier with an explicit allow-list of tags and attributes, no event handlers and no `style`), applied on input and treated as authoritative on output. Enforce a strict attribute allow-list rather than attempting to blacklist `on*` handlers via regex. Additionally, ensure the render path never emits stored content raw: either sanitize with the library at render time or escape by default and only re-introduce markup through the sanitizer. Deploy a strict Content Security Policy and remove `unsafe-inline` from `script-src` so that inline handlers are refused even if injected. Apply the same fix to every place content is stored or rendered."
+                            },
+                            "properties": {
+                                "security-severity": "5.4",
+                                "tags": [
+                                    "security",
+                                    "CWE-79",
+                                    "stride:T",
+                                    "stride:I"
+                                ]
+                            },
+                            "helpUri": "https://cwe.mitre.org/data/definitions/79.html"
+                        }
+                    ],
+                    "version": "1.4.1"
+                }
+            },
+            "results": [
+                {
+                    "ruleId": "CWE-79",
+                    "ruleIndex": 0,
+                    "level": "warning",
+                    "message": {
+                        "text": "Stored XSS on public news detail page via quote-boundary bypass of event-handler sanitizer\n\nNews article content is sanitized with `strip_tags()` followed by a regular expression intended to remove inline event handlers. Because `strip_tags()` preserves attributes on allowed tags and the regex only matches handlers preceded by whitespace or `/`, an attacker who can author news (any admin) can inject a live event handler by closing a preceding attribute with a quote — e.g. `<div title=\"x\"onmouseover=\"alert(document.domain)\">`. The payload is stored raw in the database and emitted unescaped inside the public article body, so it executes in the browser of every visitor (including unauthenticated guests) who interacts with the article."
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "controllers/NewsController.php"
+                                },
+                                "region": {
+                                    "startLine": 187,
+                                    "endLine": 199,
+                                    "snippet": {
+                                        "text": "$allowedTags = '<div><p><br><strong><b><em><i><u><ul><ol><li><h3><blockquote>';\n        $clean = strip_tags($html, $allowedTags);\n\n        $clean = (string) preg_replace('/<\\/?(h1|h2|h4|h5|h6)>/i', '', $clean);\n        $clean = (string) preg_replace('/[\\s\\/]on[a-z]+\\s*=\\s*(\"[^\"]*\"|\\'[^\\']*\\'|[^\\s>]+)/i', '', $clean);\n        $clean = (string) preg_replace('/[\\s\\/]style\\s*=\\s*(\"[^\"]*\"|\\'[^\\']*\\'|[^\\s>]+)/i', '', $clean);"
+                                    }
+                                }
+                            },
+                            "message": {
+                                "text": "Defective handler-stripping regex in store-path sanitizer"
+                            }
+                        },
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "views/public/berita-detail.php"
+                                },
+                                "region": {
+                                    "startLine": 50,
+                                    "endLine": 57,
+                                    "snippet": {
+                                        "text": "$safeHtmlContent = strip_tags($rawContent, $allowedContentTags);\n    $safeHtmlContent = (string) preg_replace('/[\\s\\/]on[a-z]+\\s*=\\s*(\"[^\"]*\"|\\'[^\\']*\\'|[^\\s>]+)/i', '', $safeHtmlContent);\n    $safeHtmlContent = (string) preg_replace('/[\\s\\/]style\\s*=\\s*(\"[^\"]*\"|\\'[^\\']*\\'|[^\\s>]+)/i', '', $safeHtmlContent);"
+                                    }
+                                }
+                            },
+                            "message": {
+                                "text": "Same defective sanitizer at render time; result emitted raw"
+                            }
+                        },
+                        {
+                            "logicalLocations": [
+                                {
+                                    "fullyQualifiedName": "/berita",
+                                    "kind": "endpoint"
+                                }
+                            ]
+                        }
+                    ],
+                    "partialFingerprints": {
+                        "primaryLocationLineHash": "280f57b80462edfedf2228b43ede9c18f58e203a91a27d85bdc4bfb3046c0bc8"
+                    },
+                    "properties": {
+                        "security-severity": "5.4",
+                        "strix_vuln_class_hash": "841d192a59e6812ef6a771cf84fa82963f628884ed58037aa16b7e6cdd3695f8",
+                        "strix": {
+                            "id": "vuln-0001",
+                            "severity": "medium",
+                            "cvss": 5.4,
+                            "timestamp": "2026-09-21 15:11:10 UTC",
+                            "target": "http://172.17.112.1:8001 — News module (public article render)",
+                            "endpoint": "/berita",
+                            "method": "GET",
+                            "cwe": "CWE-79",
+                            "impact": "An admin-authored article becomes a persistent XSS vector on a public, unauthenticated page. Triggering requires only hovering over the injected content (or, with the `autofocus`/`onfocus` variant, no interaction at all). Impact includes session/token theft (CSRF tokens are exposed in the DOM), execution of attacker JavaScript in the origin of the news portal, content defacement, and drive-by actions on behalf of any visitor — students, lecturers, and administrators — who views the article.",
+                            "technical_analysis": "Two layers are involved, and both share the same defective pattern.\n\n**At store time** — `NewsController::sanitizeNewsContent()`:\n\n```php title=controllers/NewsController.php\n$allowedTags = '<div><p><br><strong><b><em><i><u><ul><ol><li><h3><blockquote>';\n$clean = strip_tags($html, $allowedTags);\n...\n$clean = (string) preg_replace('/[\\s\\/]on[a-z]+\\s*=\\s*(\"[^\"]*\"|\\'[^\\']*\\'|[^\\s>]+)/i', '', $clean);\n$clean = (string) preg_replace('/[\\s\\/]style\\s*=\\s*(\"[^\"]*\"|\\'[^\\']*\\'|[^\\s>]+)/i', '', $clean);\n```\n\n`strip_tags()` preserves attributes on allowed tags. The handler-stripping regex requires the handler name to be preceded by a whitespace character or `/`. In `title=\"x\"onmouseover=\"alert(1)\"`, the `onmouseover` token is preceded by `\"` (the closing quote of the previous attribute), which the regex does not match, so the handler survives. The browser subsequently parses `\"x\"onmouseover=...` as two independent, valid attributes.\n\n**At render time** — `views/public/berita-detail.php` re-applies the identical defective logic and then outputs the result raw:\n\n```php title=views/public/berita-detail.php\n$safeHtmlContent = strip_tags($rawContent, $allowedContentTags);\n$safeHtmlContent = (string) preg_replace('/[\\s\\/]on[a-z]+\\s*=\\s*(\"[^\"]*\"|\\'[^\\']*\\'|[^\\s>]+)/i', '', $safeHtmlContent);\n...\n$formattedContent = $containsHtml ? $safeHtmlContent : nl2br(htmlspecialchars(...));\n...\n<div class=\"news-detail-body\">\n    <?= $formattedContent ?>\n</div>\n```\n\nBecause the content contains HTML, `$formattedContent` is emitted without `htmlspecialchars()`, delivering the surviving handler verbatim to the client.\n\nVerified bypass variants (all delivered raw to the public page):\n- `<div title=\"x\"onmouseover=\"alert(1)\">t</div>`\n- `<p title=\"a\"onfocus=\"alert(1)\" autofocus tabindex=\"1\">t</p>` (auto-fires on load)\n- `<p title=\"z\"onanimationstart=...>`, `<div title=\"a\"ontoggle=...>`, `<div title=\"a\"onerror=...>`\n- Single-quote equivalent: `<div title='x'onmouseover='alert(1)'>`\n\nControls that held (negative results): `<script>` (tag stripped, inner text emitted as literal text), `<img>`/`<svg>`/`<iframe>`/`<a>` (tags fully removed), `style=` (removed), HTML-entity-encoded `&#60;script&#62;` (remains inert text), and a normally-spaced ` onmouseover=` (removed by the regex).",
+                            "remediation_steps": "Replace the tag-based `strip_tags()` + regex sanitizer with a well-tested HTML sanitization library (e.g. HTML Purifier with an explicit allow-list of tags and attributes, no event handlers and no `style`), applied on input and treated as authoritative on output. Enforce a strict attribute allow-list rather than attempting to blacklist `on*` handlers via regex. Additionally, ensure the render path never emits stored content raw: either sanitize with the library at render time or escape by default and only re-introduce markup through the sanitizer. Deploy a strict Content Security Policy and remove `unsafe-inline` from `script-src` so that inline handlers are refused even if injected. Apply the same fix to every place content is stored or rendered.",
+                            "poc": {
+                                "description": "1. Authenticate as an administrator at `/login` (any admin account).\n2. Open the \"Add News\" form at `/admin/news/tambah`.\n3. Set the title, and set the content to the payload `<div title=\"x\"onmouseover=\"alert(document.domain)\">hover me</div>` (a single quote or double quote may close the preceding attribute).\n4. Submit the form (`store=1`). The response redirects to `/admin/news` and the article is created.\n5. Open the public homepage `/` as an unauthenticated guest and follow the article link, or request `/berita?slug=<slug>-<id>` directly.\n6. Observe that the article body in the HTML response contains the raw attribute `onmouseover=\"alert(document.domain)\"`, and that hovering the element executes the injected script.",
+                                "script_available": true
+                            }
+                        }
+                    }
+                }
+            ],
+            "properties": {
+                "discip_link_area": "area5-news-xss"
+            }
+        }
+    ]
+}
