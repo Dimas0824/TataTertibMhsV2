@@ -15,6 +15,14 @@ if ($_SESSION['user_type'] === 'mahasiswa') {
     app_redirect_page('page.pelanggaran');
 }
 
+// Lecturer-only page: any other role (e.g. admin) is refused with 403 instead of
+// reaching the code below, which reads $userData['nidn'] and would 500 for a
+// role that has no nidn.
+if ($_SESSION['user_type'] !== 'dosen') {
+    app_render_error_page(403);
+    return;
+}
+
 $userData = $_SESSION['user_data'];
 $pelanggaranController = new PelanggaranController();
 $nidn = $userData['nidn'];
