@@ -38,10 +38,12 @@ _tiny*
 # Exception: archived pentest evidence keeps its raw Strix run traces on purpose,
 # so each finding can be traced back to the exact agent steps that produced it.
 !docs/intern/strix-runs*/**/strix.log
+# ...and the post-fix reproduction logs that prove a finding is closed.
+!docs/intern/strix-runs*/**/reproduce-after.log
 
 # SQLite sidecar/temp files from the Strix agent database: transient, not evidence.
-docs/intern/strix-runs*/*/.state/*.db-shm
-docs/intern/strix-runs*/*/.state/*.db-wal
+docs/intern/strix-runs*/**/.state/*.db-shm
+docs/intern/strix-runs*/**/.state/*.db-wal
 
 # Strix live run output at repo root (working dir; archived evidence lives under docs/intern/)
 /strix_runs/

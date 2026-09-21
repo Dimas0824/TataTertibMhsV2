@@ -1,0 +1,15 @@
+==================================================================
+ Reproduce AFTER fix - login hardening (area1-login)
+ target: http://127.0.0.1:8123
+==================================================================
+
+CWE-230 (HIGH) - NUL-byte truncation in password verification
+  [PASS] NUL-suffixed password rejected                 -> /login
+  [PASS] exact password still authenticates             -> /pelanggaran
+
+CWE-307 (CRITICAL) - brute-force lockout is per-session only
+  [PASS] fresh session cannot bypass lockout            -> /login
+
+==================================================================
+ RESULT: 3 passed, 0 failed
+==================================================================
