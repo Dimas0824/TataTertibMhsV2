@@ -209,11 +209,21 @@ class NewsController
         }
 
         $allowedTags = '<div><p><br><strong><b><em><i><u><ul><ol><li><h3><blockquote>';
+        // Drop whole script/style blocks (tag AND contents) before strip_tags, so
+        // the payload text cannot survive as inert-but-confusing content.
+        $html = (string) preg_replace('#<(script|style)\b[^>]*>.*?</\1>#is', '', $html);
         $clean = strip_tags($html, $allowedTags);
 
         $clean = (string) preg_replace('/<\/?(h1|h2|h4|h5|h6)>/i', '', $clean);
-        $clean = (string) preg_replace('/[\s\/]on[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $clean);
-        $clean = (string) preg_replace('/[\s\/]style\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $clean);
+        // Strip every inline event handler, not only those preceded by whitespace or
+        // '/': a payload can close a preceding attribute with a quote and start the
+        // handler immediately after it ("<div title=\"x\"onmouseover=...>"), which the
+        // old [\s\/] anchor missed (CWE-79). Anchor on a word boundary instead.
+        $clean = (string) preg_replace('/\bon[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $clean);
+        $clean = (string) preg_replace('/\bstyle\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $clean);
+        // Neutralize script-bearing URI schemes in href/src (defence in depth, in
+        // case a future allow-list re-admits <a>).
+        $clean = (string) preg_replace('/\b(?:href|src)\s*=\s*("|\')?\s*(?:javascript|vbscript|data)\s*:[^"\'>\s]*/i', '', $clean);
         $clean = (string) preg_replace_callback('/\sclass\s*=\s*("([^"]*)"|\'([^\']*)\')/i', static function (array $matches): string {
             $rawClasses = trim((string) (($matches[2] ?? '') !== '' ? $matches[2] : ($matches[3] ?? '')));
             if ($rawClasses === '') {

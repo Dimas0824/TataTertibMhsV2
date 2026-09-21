@@ -62,9 +62,15 @@ $readMinutes = max(1, (int) ceil($wordCount / 200));
 $rawContent = (string) ($news['konten'] ?? '');
 $containsHtml = $rawContent !== strip_tags($rawContent);
 $allowedContentTags = '<div><p><br><strong><em><ul><ol><li><h3><blockquote>';
+// Raw content is already sanitized on store; this render pass is defence in
+// depth for rows written before that fix. Drop whole script/style blocks, then
+// strip every inline event handler (not only space/slash-preceded ones, which
+// the old [\s\/] anchor missed for "<div title=\"x\"onmouseover=...>", CWE-79).
+$rawContent = (string) preg_replace('#<(script|style)\b[^>]*>.*?</\1>#is', '', $rawContent);
 $safeHtmlContent = strip_tags($rawContent, $allowedContentTags);
-$safeHtmlContent = (string) preg_replace('/[\s\/]on[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $safeHtmlContent);
-$safeHtmlContent = (string) preg_replace('/[\s\/]style\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $safeHtmlContent);
+$safeHtmlContent = (string) preg_replace('/\bon[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $safeHtmlContent);
+$safeHtmlContent = (string) preg_replace('/\bstyle\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $safeHtmlContent);
+$safeHtmlContent = (string) preg_replace('/\b(?:href|src)\s*=\s*("|\')?\s*(?:javascript|vbscript|data)\s*:[^"\'>\s]*/i', '', $safeHtmlContent);
 $safeHtmlContent = (string) preg_replace_callback('/\sclass\s*=\s*("([^"]*)"|\'([^\']*)\')/i', static function (array $matches): string {
     $rawClasses = trim((string) (($matches[2] ?? '') !== '' ? $matches[2] : ($matches[3] ?? '')));
     if ($rawClasses === '') {

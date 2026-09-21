@@ -29,6 +29,8 @@ $testFiles = [
     __DIR__ . '/unit/LoginThrottleHelperTest.php',
     // AREA 4 sanction-tier validation:
     __DIR__ . '/unit/Area4SanctionSuite.php',
+    // AREA 5 news sanitizer (stored XSS):
+    __DIR__ . '/unit/Area5XssSuite.php',
     __DIR__ . '/integration/DatabaseTest.php',
     __DIR__ . '/security/SourceScanSuite.php',
     __DIR__ . '/security/TokenSuite.php',
