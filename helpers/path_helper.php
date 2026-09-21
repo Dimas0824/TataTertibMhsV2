@@ -248,3 +248,21 @@ if (!function_exists('app_redirect')) {
         exit();
     }
 }
+
+if (!function_exists('app_request_is_https')) {
+    /**
+     * Single source of truth for "is this request HTTPS?".
+     *
+     * Covers direct TLS and TLS terminated by a reverse proxy, which signals
+     * HTTPS via X-Forwarded-Proto or by forwarding to port 443. The session
+     * cookie and the HSTS header must both derive from this so they cannot
+     * disagree (a Secure-less session cookie served over proxy HTTPS is
+     * CWE-614).
+     */
+    function app_request_is_https(): bool
+    {
+        return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || ((string) ($_SERVER['SERVER_PORT'] ?? '') === '443')
+            || (strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https');
+    }
+}

@@ -146,11 +146,7 @@ if (!function_exists('app_seo_enforce_canonical_host')) {
         }
 
         $currentScheme = 'http';
-        if (
-            (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-            || ((string) ($_SERVER['SERVER_PORT'] ?? '') === '443')
-            || (strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https')
-        ) {
+        if (app_request_is_https()) {
             $currentScheme = 'https';
         }
 
@@ -216,11 +212,7 @@ if (!function_exists('app_seo_apply_security_headers')) {
             return; // HSTS only makes sense (and is only accepted) on real HTTPS hosts
         }
 
-        $isHttps = (
-            (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-            || ((string) ($_SERVER['SERVER_PORT'] ?? '') === '443')
-            || (strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https')
-        );
+        $isHttps = app_request_is_https();
 
         if ($isHttps) {
             header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
