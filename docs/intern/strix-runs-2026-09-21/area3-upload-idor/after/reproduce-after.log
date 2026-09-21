@@ -1,0 +1,16 @@
+==================================================================
+ AREA 3 after-state (upload/download/IDOR)
+ target: http://127.0.0.1:8123
+==================================================================
+
+defect fixed - non-dosen role on lecturer-only page
+  [PASS] admin GET /pelanggaran/dosen -> 403                  -> 403
+  [PASS] dosen GET /pelanggaran/dosen -> 200                  -> 200
+
+held defense spot-check
+  [PASS] raw filename download refused                        -> 403
+  [PASS] anonymous download refused                           -> 403
+
+==================================================================
+ RESULT: 4 passed, 0 failed
+==================================================================
