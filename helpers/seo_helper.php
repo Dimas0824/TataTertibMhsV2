@@ -235,11 +235,16 @@ if (!function_exists('app_seo_apply_security_headers')) {
         header('Referrer-Policy: strict-origin-when-cross-origin');
         header('Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()');
 
-        // 'unsafe-inline' script/style karena view memakai inline <script> + CDN css on-the-fly;
-        // upgrade path: nonce per-tag lalu hapus 'unsafe-inline'.
+        // script-src uses a per-request nonce instead of 'unsafe-inline': every inline
+        // <script> carries nonce="..." matching the header. Inline event handler
+        // attributes (onload=, onclick=) are disallowed outright via script-src-attr
+        // 'none'; the preload handlers were migrated to plain stylesheets. style-src
+        // keeps 'unsafe-inline' (out of scope for this change).
+        $nonce = app_csp_nonce();
         $csp = implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.googletagmanager.com",
+            "script-src 'self' 'nonce-" . $nonce . "' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.googletagmanager.com",
+            "script-src-attr 'none'",
             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com",
             "font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
             "img-src 'self' data: https:",
