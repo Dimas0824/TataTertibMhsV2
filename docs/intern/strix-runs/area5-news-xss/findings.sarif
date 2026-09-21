@@ -1,0 +1,122 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Strix",
+          "informationUri": "https://strix.ai",
+          "rules": [
+            {
+              "id": "CWE-79",
+              "name": "Stored XSS on public news detail page via quote-boundary bypass of event-handler sanitizer",
+              "shortDescription": {
+                "text": "Stored XSS on public news detail page via quote-boundary bypass of event-handler sanitizer"
+              },
+              "fullDescription": {
+                "text": "News article content is sanitized with `strip_tags()` followed by a regular expression intended to remove inline event handlers. Because `strip_tags()` preserves attributes on allowed tags and the regex only matches handlers preceded by whitespace or `/`, an attacker who can author news (any admin) can inject a live event handler by closing a preceding attribute with a quote — e.g. `<div title=\"x\"onmouseover=\"alert(document.domain)\">`. The payload is stored raw in the database and emitted unescaped inside the public article body, so it executes in the browser of every visitor (including unauthenticated guests) who interacts with the article."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "News article content is sanitized with `strip_tags()` followed by a regular expression intended to remove inline event handlers. Because `strip_tags()` preserves attributes on allowed tags and the regex only matches handlers preceded by whitespace or `/`, an attacker who can author news (any admin) can inject a live event handler by closing a preceding attribute with a quote — e.g. `<div title=\"x\"onmouseover=\"alert(document.domain)\">`. The payload is stored raw in the database and emitted unescaped inside the public article body, so it executes in the browser of every visitor (including unauthenticated guests) who interacts with the article.\n\nAn admin-authored article becomes a persistent XSS vector on a public, unauthenticated page. Triggering requires only hovering over the injected content (or, with the `autofocus`/`onfocus` variant, no interaction at all). Impact includes session/token theft (CSRF tokens are exposed in the DOM), execution of attacker JavaScript in the origin of the news portal, content defacement, and drive-by actions on behalf of any visitor — students, lecturers, and administrators — who views the article.\n\nReplace the tag-based `strip_tags()` + regex sanitizer with a well-tested HTML sanitization library (e.g. HTML Purifier with an explicit allow-list of tags and attributes, no event handlers and no `style`), applied on input and treated as authoritative on output. Enforce a strict attribute allow-list rather than attempting to blacklist `on*` handlers via regex. Additionally, ensure the render path never emits stored content raw: either sanitize with the library at render time or escape by default and only re-introduce markup through the sanitizer. Deploy a strict Content Security Policy and remove `unsafe-inline` from `script-src` so that inline handlers are refused even if injected. Apply the same fix to every place content is stored or rendered.",
+                "markdown": "News article content is sanitized with `strip_tags()` followed by a regular expression intended to remove inline event handlers. Because `strip_tags()` preserves attributes on allowed tags and the regex only matches handlers preceded by whitespace or `/`, an attacker who can author news (any admin) can inject a live event handler by closing a preceding attribute with a quote — e.g. `<div title=\"x\"onmouseover=\"alert(document.domain)\">`. The payload is stored raw in the database and emitted unescaped inside the public article body, so it executes in the browser of every visitor (including unauthenticated guests) who interacts with the article.\n\nAn admin-authored article becomes a persistent XSS vector on a public, unauthenticated page. Triggering requires only hovering over the injected content (or, with the `autofocus`/`onfocus` variant, no interaction at all). Impact includes session/token theft (CSRF tokens are exposed in the DOM), execution of attacker JavaScript in the origin of the news portal, content defacement, and drive-by actions on behalf of any visitor — students, lecturers, and administrators — who views the article.\n\nReplace the tag-based `strip_tags()` + regex sanitizer with a well-tested HTML sanitization library (e.g. HTML Purifier with an explicit allow-list of tags and attributes, no event handlers and no `style`), applied on input and treated as authoritative on output. Enforce a strict attribute allow-list rather than attempting to blacklist `on*` handlers via regex. Additionally, ensure the render path never emits stored content raw: either sanitize with the library at render time or escape by default and only re-introduce markup through the sanitizer. Deploy a strict Content Security Policy and remove `unsafe-inline` from `script-src` so that inline handlers are refused even if injected. Apply the same fix to every place content is stored or rendered."
+              },
+              "properties": {
+                "security-severity": "5.4",
+                "tags": [
+                  "security",
+                  "CWE-79",
+                  "stride:T",
+                  "stride:I"
+                ]
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/79.html"
+            }
+          ],
+          "version": "1.4.1"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CWE-79",
+          "ruleIndex": 0,
+          "level": "warning",
+          "message": {
+            "text": "Stored XSS on public news detail page via quote-boundary bypass of event-handler sanitizer\n\nNews article content is sanitized with `strip_tags()` followed by a regular expression intended to remove inline event handlers. Because `strip_tags()` preserves attributes on allowed tags and the regex only matches handlers preceded by whitespace or `/`, an attacker who can author news (any admin) can inject a live event handler by closing a preceding attribute with a quote — e.g. `<div title=\"x\"onmouseover=\"alert(document.domain)\">`. The payload is stored raw in the database and emitted unescaped inside the public article body, so it executes in the browser of every visitor (including unauthenticated guests) who interacts with the article."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "controllers/NewsController.php"
+                },
+                "region": {
+                  "startLine": 187,
+                  "endLine": 199,
+                  "snippet": {
+                    "text": "$allowedTags = '<div><p><br><strong><b><em><i><u><ul><ol><li><h3><blockquote>';\n        $clean = strip_tags($html, $allowedTags);\n\n        $clean = (string) preg_replace('/<\\/?(h1|h2|h4|h5|h6)>/i', '', $clean);\n        $clean = (string) preg_replace('/[\\s\\/]on[a-z]+\\s*=\\s*(\"[^\"]*\"|\\'[^\\']*\\'|[^\\s>]+)/i', '', $clean);\n        $clean = (string) preg_replace('/[\\s\\/]style\\s*=\\s*(\"[^\"]*\"|\\'[^\\']*\\'|[^\\s>]+)/i', '', $clean);"
+                  }
+                }
+              },
+              "message": {
+                "text": "Defective handler-stripping regex in store-path sanitizer"
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "views/public/berita-detail.php"
+                },
+                "region": {
+                  "startLine": 50,
+                  "endLine": 57,
+                  "snippet": {
+                    "text": "$safeHtmlContent = strip_tags($rawContent, $allowedContentTags);\n    $safeHtmlContent = (string) preg_replace('/[\\s\\/]on[a-z]+\\s*=\\s*(\"[^\"]*\"|\\'[^\\']*\\'|[^\\s>]+)/i', '', $safeHtmlContent);\n    $safeHtmlContent = (string) preg_replace('/[\\s\\/]style\\s*=\\s*(\"[^\"]*\"|\\'[^\\']*\\'|[^\\s>]+)/i', '', $safeHtmlContent);"
+                  }
+                }
+              },
+              "message": {
+                "text": "Same defective sanitizer at render time; result emitted raw"
+              }
+            },
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "/berita",
+                  "kind": "endpoint"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "280f57b80462edfedf2228b43ede9c18f58e203a91a27d85bdc4bfb3046c0bc8"
+          },
+          "properties": {
+            "security-severity": "5.4",
+            "strix_vuln_class_hash": "841d192a59e6812ef6a771cf84fa82963f628884ed58037aa16b7e6cdd3695f8",
+            "strix": {
+              "id": "vuln-0001",
+              "severity": "medium",
+              "cvss": 5.4,
+              "timestamp": "2026-09-21 15:11:10 UTC",
+              "target": "http://172.17.112.1:8001 — News module (public article render)",
+              "endpoint": "/berita",
+              "method": "GET",
+              "cwe": "CWE-79",
+              "impact": "An admin-authored article becomes a persistent XSS vector on a public, unauthenticated page. Triggering requires only hovering over the injected content (or, with the `autofocus`/`onfocus` variant, no interaction at all). Impact includes session/token theft (CSRF tokens are exposed in the DOM), execution of attacker JavaScript in the origin of the news portal, content defacement, and drive-by actions on behalf of any visitor — students, lecturers, and administrators — who views the article.",
+              "technical_analysis": "Two layers are involved, and both share the same defective pattern.\n\n**At store time** — `NewsController::sanitizeNewsContent()`:\n\n```php title=controllers/NewsController.php\n$allowedTags = '<div><p><br><strong><b><em><i><u><ul><ol><li><h3><blockquote>';\n$clean = strip_tags($html, $allowedTags);\n...\n$clean = (string) preg_replace('/[\\s\\/]on[a-z]+\\s*=\\s*(\"[^\"]*\"|\\'[^\\']*\\'|[^\\s>]+)/i', '', $clean);\n$clean = (string) preg_replace('/[\\s\\/]style\\s*=\\s*(\"[^\"]*\"|\\'[^\\']*\\'|[^\\s>]+)/i', '', $clean);\n```\n\n`strip_tags()` preserves attributes on allowed tags. The handler-stripping regex requires the handler name to be preceded by a whitespace character or `/`. In `title=\"x\"onmouseover=\"alert(1)\"`, the `onmouseover` token is preceded by `\"` (the closing quote of the previous attribute), which the regex does not match, so the handler survives. The browser subsequently parses `\"x\"onmouseover=...` as two independent, valid attributes.\n\n**At render time** — `views/public/berita-detail.php` re-applies the identical defective logic and then outputs the result raw:\n\n```php title=views/public/berita-detail.php\n$safeHtmlContent = strip_tags($rawContent, $allowedContentTags);\n$safeHtmlContent = (string) preg_replace('/[\\s\\/]on[a-z]+\\s*=\\s*(\"[^\"]*\"|\\'[^\\']*\\'|[^\\s>]+)/i', '', $safeHtmlContent);\n...\n$formattedContent = $containsHtml ? $safeHtmlContent : nl2br(htmlspecialchars(...));\n...\n<div class=\"news-detail-body\">\n    <?= $formattedContent ?>\n</div>\n```\n\nBecause the content contains HTML, `$formattedContent` is emitted without `htmlspecialchars()`, delivering the surviving handler verbatim to the client.\n\nVerified bypass variants (all delivered raw to the public page):\n- `<div title=\"x\"onmouseover=\"alert(1)\">t</div>`\n- `<p title=\"a\"onfocus=\"alert(1)\" autofocus tabindex=\"1\">t</p>` (auto-fires on load)\n- `<p title=\"z\"onanimationstart=...>`, `<div title=\"a\"ontoggle=...>`, `<div title=\"a\"onerror=...>`\n- Single-quote equivalent: `<div title='x'onmouseover='alert(1)'>`\n\nControls that held (negative results): `<script>` (tag stripped, inner text emitted as literal text), `<img>`/`<svg>`/`<iframe>`/`<a>` (tags fully removed), `style=` (removed), HTML-entity-encoded `&#60;script&#62;` (remains inert text), and a normally-spaced ` onmouseover=` (removed by the regex).",
+              "remediation_steps": "Replace the tag-based `strip_tags()` + regex sanitizer with a well-tested HTML sanitization library (e.g. HTML Purifier with an explicit allow-list of tags and attributes, no event handlers and no `style`), applied on input and treated as authoritative on output. Enforce a strict attribute allow-list rather than attempting to blacklist `on*` handlers via regex. Additionally, ensure the render path never emits stored content raw: either sanitize with the library at render time or escape by default and only re-introduce markup through the sanitizer. Deploy a strict Content Security Policy and remove `unsafe-inline` from `script-src` so that inline handlers are refused even if injected. Apply the same fix to every place content is stored or rendered.",
+              "poc": {
+                "description": "1. Authenticate as an administrator at `/login` (any admin account).\n2. Open the \"Add News\" form at `/admin/news/tambah`.\n3. Set the title, and set the content to the payload `<div title=\"x\"onmouseover=\"alert(document.domain)\">hover me</div>` (a single quote or double quote may close the preceding attribute).\n4. Submit the form (`store=1`). The response redirects to `/admin/news` and the article is created.\n5. Open the public homepage `/` as an unauthenticated guest and follow the article link, or request `/berita?slug=<slug>-<id>` directly.\n6. Observe that the article body in the HTML response contains the raw attribute `onmouseover=\"alert(document.domain)\"`, and that hovering the element executes the injected script.",
+                "script_available": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,210 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Strix",
+          "informationUri": "https://strix.ai",
+          "rules": [
+            {
+              "id": "CWE-230",
+              "name": "NUL-byte truncation in password verification allows authentication with a NUL-suffixed password",
+              "shortDescription": {
+                "text": "NUL-byte truncation in password verification allows authentication with a NUL-suffixed password"
+              },
+              "fullDescription": {
+                "text": "The login password comparison is not length-exact: any password value containing a NUL byte (`%00`) is compared only up to that byte. As a result, submitting a **valid password followed by `%00` and arbitrary trailing data** authenticates successfully, while the same value without the NUL byte is rejected. This is a weakness in the authentication integrity check (CWE-230 Improper Handling of NUL Bytes / CWE-20)."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "The login password comparison is not length-exact: any password value containing a NUL byte (`%00`) is compared only up to that byte. As a result, submitting a **valid password followed by `%00` and arbitrary trailing data** authenticates successfully, while the same value without the NUL byte is rejected. This is a weakness in the authentication integrity check (CWE-230 Improper Handling of NUL Bytes / CWE-20).\n\nAn attacker who learns or guesses a valid password prefix — or who has any means of capturing an individually-valid credential — can submit it with an appended `%00<arbitrary payload>` and still be authenticated. The client-supplied password is silently truncated by the underlying bcrypt verifier, so the effective credential space is shortened and any trailing data is discarded. This undermines the integrity of the credential check, defeats any input-normalization or length validation applied to the password, and means a password that is a correct prefix of the real password followed by a NUL byte is honored. It does not allow login without knowledge of at least the correct prefix, so on its own it is an authentication-integrity defect rather than a full unauthenticated bypass; however, it materially weakens the username/password control and should be fixed prior to any external deployment.\n\nReject credentials containing NUL bytes before they reach the password verifier, and ensure the comparison is performed on the exact, bounded byte sequence. Concretely: after reading `$_POST['password']`, if `strpos($password, \"\\0\") !== false` then reject the login attempt and record an audit event; additionally enforce a maximum password length (e.g. 72 bytes for bcrypt) so inputs cannot be silently truncated. Prefer a verification routine whose semantics are explicitly length-delimited rather than relying on the verifier's C-string behavior. Apply the same NUL rejection to the username to keep input handling uniform. Add a regression test asserting that a valid password suffixed with `\\0` plus data fails authentication.",
+                "markdown": "The login password comparison is not length-exact: any password value containing a NUL byte (`%00`) is compared only up to that byte. As a result, submitting a **valid password followed by `%00` and arbitrary trailing data** authenticates successfully, while the same value without the NUL byte is rejected. This is a weakness in the authentication integrity check (CWE-230 Improper Handling of NUL Bytes / CWE-20).\n\nAn attacker who learns or guesses a valid password prefix — or who has any means of capturing an individually-valid credential — can submit it with an appended `%00<arbitrary payload>` and still be authenticated. The client-supplied password is silently truncated by the underlying bcrypt verifier, so the effective credential space is shortened and any trailing data is discarded. This undermines the integrity of the credential check, defeats any input-normalization or length validation applied to the password, and means a password that is a correct prefix of the real password followed by a NUL byte is honored. It does not allow login without knowledge of at least the correct prefix, so on its own it is an authentication-integrity defect rather than a full unauthenticated bypass; however, it materially weakens the username/password control and should be fixed prior to any external deployment.\n\nReject credentials containing NUL bytes before they reach the password verifier, and ensure the comparison is performed on the exact, bounded byte sequence. Concretely: after reading `$_POST['password']`, if `strpos($password, \"\\0\") !== false` then reject the login attempt and record an audit event; additionally enforce a maximum password length (e.g. 72 bytes for bcrypt) so inputs cannot be silently truncated. Prefer a verification routine whose semantics are explicitly length-delimited rather than relying on the verifier's C-string behavior. Apply the same NUL rejection to the username to keep input handling uniform. Add a regression test asserting that a valid password suffixed with `\\0` plus data fails authentication."
+              },
+              "properties": {
+                "security-severity": "7.4",
+                "tags": [
+                  "security",
+                  "CWE-230",
+                  "stride:T",
+                  "stride:I"
+                ]
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/230.html"
+            },
+            {
+              "id": "CWE-307",
+              "name": "Login brute-force lockout is per-session only and bypassed by discarding the session cookie",
+              "shortDescription": {
+                "text": "Login brute-force lockout is per-session only and bypassed by discarding the session cookie"
+              },
+              "fullDescription": {
+                "text": "The login brute-force protection (5 failed attempts → 15-minute lock) is stored exclusively in the PHP session. Discarding the session cookie (obtaining a fresh `PHPSESSID`) resets the counter to zero, so the lockout can be bypassed indefinitely and provides no effective limit on password guessing."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "The login brute-force protection (5 failed attempts → 15-minute lock) is stored exclusively in the PHP session. Discarding the session cookie (obtaining a fresh `PHPSESSID`) resets the counter to zero, so the lockout can be bypassed indefinitely and provides no effective limit on password guessing.\n\nThe account lockout provides no protection against password guessing. An attacker can submit unlimited login attempts by simply discarding the session cookie between requests, achieving credential brute force / password spraying against any account. Because the identifiers (NIM/NIDN/NIP) and default/lab passwords are weak and predictable, an attacker can realistically recover valid student, lecturer, or administrator credentials, leading to unauthorized access to student-discipline records and, for the administrator account, the full administrative surface.\n\nStore the failed-attempt counter and lock state server-side, keyed on an attribute the client cannot reset — the source IP address, the attempted account identifier, or both — rather than in `$_SESSION`. Record each failed attempt in a durable store (the existing `SECURITY_AUDIT_LOG` table already captures event, actor_id, sid, and ip) and enforce the 5-attempts/15-minute rule by querying recent failures for the client IP and/or identifier, not the session. Additionally: apply a small constant delay or use a per-IP global counter to slow distributed guessing; add a CAPTCHA or progressive delay after repeated failures; and alert or temporarily disable the targeted account after a threshold. Because reverse-proxy headers (`X-Forwarded-For`) are client-controllable, derive the client IP from the trusted peer address or a correctly configured trusted-proxy list. Ensure the lock applies to the account/IP even when the attacker rotates session cookies.",
+                "markdown": "The login brute-force protection (5 failed attempts → 15-minute lock) is stored exclusively in the PHP session. Discarding the session cookie (obtaining a fresh `PHPSESSID`) resets the counter to zero, so the lockout can be bypassed indefinitely and provides no effective limit on password guessing.\n\nThe account lockout provides no protection against password guessing. An attacker can submit unlimited login attempts by simply discarding the session cookie between requests, achieving credential brute force / password spraying against any account. Because the identifiers (NIM/NIDN/NIP) and default/lab passwords are weak and predictable, an attacker can realistically recover valid student, lecturer, or administrator credentials, leading to unauthorized access to student-discipline records and, for the administrator account, the full administrative surface.\n\nStore the failed-attempt counter and lock state server-side, keyed on an attribute the client cannot reset — the source IP address, the attempted account identifier, or both — rather than in `$_SESSION`. Record each failed attempt in a durable store (the existing `SECURITY_AUDIT_LOG` table already captures event, actor_id, sid, and ip) and enforce the 5-attempts/15-minute rule by querying recent failures for the client IP and/or identifier, not the session. Additionally: apply a small constant delay or use a per-IP global counter to slow distributed guessing; add a CAPTCHA or progressive delay after repeated failures; and alert or temporarily disable the targeted account after a threshold. Because reverse-proxy headers (`X-Forwarded-For`) are client-controllable, derive the client IP from the trusted peer address or a correctly configured trusted-proxy list. Ensure the lock applies to the account/IP even when the attacker rotates session cookies."
+              },
+              "properties": {
+                "security-severity": "9.1",
+                "tags": [
+                  "security",
+                  "CWE-307",
+                  "stride:T",
+                  "stride:I"
+                ]
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/307.html"
+            }
+          ],
+          "version": "1.4.1"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CWE-230",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "NUL-byte truncation in password verification allows authentication with a NUL-suffixed password\n\nThe login password comparison is not length-exact: any password value containing a NUL byte (`%00`) is compared only up to that byte. As a result, submitting a **valid password followed by `%00` and arbitrary trailing data** authenticates successfully, while the same value without the NUL byte is rejected. This is a weakness in the authentication integrity check (CWE-230 Improper Handling of NUL Bytes / CWE-20)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "request/handler-login.php"
+                },
+                "region": {
+                  "startLine": 24,
+                  "endLine": 34,
+                  "snippet": {
+                    "text": "$userType = $_POST['user_type'] ?? null;\n        $username = trim((string) ($_POST['username'] ?? ''));\n        $password = (string) ($_POST['password'] ?? '');\n\n        if ($username === '' || $password === '') {\n            set_app_flash_modal('error', 'Username dan password wajib diisi.');\n            app_redirect('views/auth/login.php');\n        }"
+                  }
+                }
+              },
+              "message": {
+                "text": "Reject NUL bytes in password before authentication"
+              }
+            },
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "/action/login",
+                  "kind": "endpoint"
+                }
+              ]
+            }
+          ],
+          "fixes": [
+            {
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "request/handler-login.php"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 24,
+                        "endLine": 34
+                      },
+                      "insertedContent": {
+                        "text": "$userType = $_POST['user_type'] ?? null;\n        $username = trim((string) ($_POST['username'] ?? ''));\n        $password = (string) ($_POST['password'] ?? '');\n\n        // Reject NUL bytes: bcrypt verification is NUL-terminated, so a valid\n        // password suffixed with \"\\0<data>\" would otherwise authenticate.\n        if (strpos($username, \"\\0\") !== false || strpos($password, \"\\0\") !== false) {\n            app_audit_log('login_fail', ['actor_id' => substr($username, 0, 32), 'detail' => 'nul byte in credential']);\n            set_app_flash_modal('error', 'Username atau password tidak valid.');\n            app_redirect('views/auth/login.php');\n        }\n\n        if ($username === '' || $password === '') {\n            set_app_flash_modal('error', 'Username dan password wajib diisi.');\n            app_redirect('views/auth/login.php');\n        }"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "description": {
+                "text": "Reject credentials containing NUL bytes before they reach the password verifier, and ensure the comparison is performed on the exact, bounded byte sequence. Concretely: after reading `$_POST['password']`, if `strpos($password, \"\\0\") !== false` then reject the login attempt and record an audit event; additionally enforce a maximum password length (e.g. 72 bytes for bcrypt) so inputs cannot be silently truncated. Prefer a verification routine whose semantics are explicitly length-delimited rather than relying on the verifier's C-string behavior. Apply the same NUL rejection to the username to keep input handling uniform. Add a regression test asserting that a valid password suffixed with `\\0` plus data fails authentication.",
+                "markdown": "Reject credentials containing NUL bytes before they reach the password verifier, and ensure the comparison is performed on the exact, bounded byte sequence. Concretely: after reading `$_POST['password']`, if `strpos($password, \"\\0\") !== false` then reject the login attempt and record an audit event; additionally enforce a maximum password length (e.g. 72 bytes for bcrypt) so inputs cannot be silently truncated. Prefer a verification routine whose semantics are explicitly length-delimited rather than relying on the verifier's C-string behavior. Apply the same NUL rejection to the username to keep input handling uniform. Add a regression test asserting that a valid password suffixed with `\\0` plus data fails authentication."
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "2cb6991188c99bb19c4b2834411da6a2b40aa04e97d3003999037f37853137a9"
+          },
+          "properties": {
+            "security-severity": "7.4",
+            "strix_vuln_class_hash": "4625cbc8f546082bc8e383d1ecc64c5906bac77bcf4fbb34239fd5391dd74a3b",
+            "strix": {
+              "id": "vuln-0001",
+              "severity": "high",
+              "cvss": 7.4,
+              "timestamp": "2026-09-21 14:32:59 UTC",
+              "target": "http://172.17.112.1:8001",
+              "endpoint": "/action/login",
+              "method": "POST",
+              "cwe": "CWE-230",
+              "impact": "An attacker who learns or guesses a valid password prefix — or who has any means of capturing an individually-valid credential — can submit it with an appended `%00<arbitrary payload>` and still be authenticated. The client-supplied password is silently truncated by the underlying bcrypt verifier, so the effective credential space is shortened and any trailing data is discarded. This undermines the integrity of the credential check, defeats any input-normalization or length validation applied to the password, and means a password that is a correct prefix of the real password followed by a NUL byte is honored. It does not allow login without knowledge of at least the correct prefix, so on its own it is an authentication-integrity defect rather than a full unauthenticated bypass; however, it materially weakens the username/password control and should be fixed prior to any external deployment.",
+              "technical_analysis": "The login handler reads the password as a raw string and passes it to the model without rejecting NUL bytes:\n\n```php title=request/handler-login.php startLineNumber=24 endLineNumber=26\n$userType = $_POST['user_type'] ?? null;\n$username = trim((string) ($_POST['username'] ?? ''));\n$password = (string) ($_POST['password'] ?? '');\n```\n\nThe credential check is a standard bcrypt verification:\n\n```php title=models/User.php startLineNumber=56 endLineNumber=60\n$storedPassword = (string) $user['password'];\n\n// Hashed credentials only; legacy plaintext rows are rejected here and must be\n// migrated once via: php database/cli/hash-plaintext-passwords.php\n$isValid = str_starts_with($storedPassword, '$2') && password_verify($plainPassword, $storedPassword);\n```\n\nPHP's bcrypt verifier (`password_verify` over the `$2y$` scheme) uses C-string semantics for the candidate password and stops at the first NUL byte. Consequently the string `password123\\0XYZ` is compared as `password123`, and verification succeeds. The username field is unaffected because it is normalized with `trim()` (which does not strip NUL) and then compared as a whole against the database column, so `2341238901\\0junk` legitimately fails. The asymmetry — password truncates at NUL, username does not — isolates the defect to the password verification path.\n\nVerified behaviors against the live target (`nim` account `2341238901`, real password `password123`), all via `POST /action/login` with a valid CSRF token:\n\n| Submitted `password` value | Result |\n| --- | --- |\n| `password123%00INJECTED` | `302 Found` → `Location: /pelanggaran` (authenticated) |\n| `password123XINJECTED` | `302 Found` → `Location: /login` (rejected) |\n| `password12%00junk` | `302 Found` → `Location: /login` (rejected) |\n| `password124%00XYZ` | `302 Found` → `Location: /login` (rejected) |\n| `%00password123` | `302 Found` → `Location: /login` (rejected) |\n\nThe pattern (± arbitrary suffix only when a NUL immediately follows the correctly-typed password) is exactly consistent with NUL-terminated comparison in the password verifier.",
+              "remediation_steps": "Reject credentials containing NUL bytes before they reach the password verifier, and ensure the comparison is performed on the exact, bounded byte sequence. Concretely: after reading `$_POST['password']`, if `strpos($password, \"\\0\") !== false` then reject the login attempt and record an audit event; additionally enforce a maximum password length (e.g. 72 bytes for bcrypt) so inputs cannot be silently truncated. Prefer a verification routine whose semantics are explicitly length-delimited rather than relying on the verifier's C-string behavior. Apply the same NUL rejection to the username to keep input handling uniform. Add a regression test asserting that a valid password suffixed with `\\0` plus data fails authentication.",
+              "poc": {
+                "description": "1. Request the login page and extract the `csrf_token` value together with the session cookie.\n2. Submit `POST /action/login` with `Content-Type: application/x-www-form-urlencoded` and the body `csrf_token=<token>&user_type=nim&username=2341238901&password=password123%00INJECTED` (the `%00` is the URL-encoded NUL byte; percent-encoding is used so the byte is decoded by the PHP form parser).\n3. Observe a `302` response with `Location: /pelanggaran` and a **new** `Set-Cookie: PHPSESSID=...` — the login succeeded.\n4. As a control, repeat with `password=password123XINJECTED` (no NUL). The response is `302` with `Location: /login`, confirming the difference is caused solely by the NUL byte.",
+                "script_available": true
+              }
+            }
+          }
+        },
+        {
+          "ruleId": "CWE-307",
+          "ruleIndex": 1,
+          "level": "error",
+          "message": {
+            "text": "Login brute-force lockout is per-session only and bypassed by discarding the session cookie\n\nThe login brute-force protection (5 failed attempts → 15-minute lock) is stored exclusively in the PHP session. Discarding the session cookie (obtaining a fresh `PHPSESSID`) resets the counter to zero, so the lockout can be bypassed indefinitely and provides no effective limit on password guessing."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "SECURITY.md"
+                }
+              }
+            },
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "/action/login",
+                  "kind": "endpoint"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "074afecb7081c71504f5d5cbd66a404fa68d715dc99680b18df4f5ee8f9960d5"
+          },
+          "properties": {
+            "security-severity": "9.1",
+            "strix_vuln_class_hash": "139606aba0d80d7a2bf4f42b267252134e5955f98a535b8ba64e3d029192a8a6",
+            "synthetic_location": true,
+            "strix": {
+              "id": "vuln-0002",
+              "severity": "critical",
+              "cvss": 9.1,
+              "timestamp": "2026-09-21 14:33:16 UTC",
+              "target": "http://172.17.112.1:8001",
+              "endpoint": "/action/login",
+              "cwe": "CWE-307",
+              "impact": "The account lockout provides no protection against password guessing. An attacker can submit unlimited login attempts by simply discarding the session cookie between requests, achieving credential brute force / password spraying against any account. Because the identifiers (NIM/NIDN/NIP) and default/lab passwords are weak and predictable, an attacker can realistically recover valid student, lecturer, or administrator credentials, leading to unauthorized access to student-discipline records and, for the administrator account, the full administrative surface.",
+              "technical_analysis": "The login handler tracks failures and the lock expiry entirely in the PHP session:\n\n```php title=request/handler-login.php startLineNumber=16 endLineNumber=38\n        // per-session throttle (session dies w/ idle expiry). Add an IP-keyed store if deployed open-internet.\n        if ((int) ($_SESSION['__login_until'] ?? 0) > time()) {\n            set_app_flash_modal('error', 'Terlalu banyak percobaan gagal. Coba lagi beberapa menit.');\n            app_redirect('views/auth/login.php');\n        }\n        ...\n        if (!$user->login($username, $password, $userType)) {\n            app_audit_log('login_fail', ['actor_id' => substr($username, 0, 32)]);\n            $_SESSION['__login_fails'] = (int) ($_SESSION['__login_fails'] ?? 0) + 1;\n            if ($_SESSION['__login_fails'] >= 5) {\n                $_SESSION['__login_until'] = time() + 900;\n                unset($_SESSION['__login_fails']);\n                app_audit_log('login_locked', ['actor_id' => substr($username, 0, 32)]);\n            }\n            set_app_flash_modal('error', 'Invalid username or password.');\n            app_redirect('views/auth/login.php');\n        }\n```\n\nBoth `__login_fails` and `__login_until` are session variables. The session identifier is issued by the server but chosen by the client on each request; an attacker who does not return the `PHPSESSID` cookie receives a brand-new session with an empty counter. The `$_SESSION['__login_until']` guard is therefore only effective against a naive client that reuses its cookie. The code comment itself notes the limitation (\"Add an IP-keyed store if deployed open-internet\"), and `controllers/UserController.php` clears the counters on the first successful login (`unset($_SESSION['csrf_token'], $_SESSION['__login_fails'], $_SESSION['__login_until'])`), so logout/login cycling also resets state. No IP-keyed or global counter exists anywhere in `request/`, `controllers/`, or `models/`; the `SECURITY_AUDIT_LOG` table records failures but nothing reads it to enforce a limit. PHP's per-session file lock serializes concurrent requests that share a session (so a same-session burst still reaches the lock), but independent sessions are processed in parallel with no cap.",
+              "remediation_steps": "Store the failed-attempt counter and lock state server-side, keyed on an attribute the client cannot reset — the source IP address, the attempted account identifier, or both — rather than in `$_SESSION`. Record each failed attempt in a durable store (the existing `SECURITY_AUDIT_LOG` table already captures event, actor_id, sid, and ip) and enforce the 5-attempts/15-minute rule by querying recent failures for the client IP and/or identifier, not the session. Additionally: apply a small constant delay or use a per-IP global counter to slow distributed guessing; add a CAPTCHA or progressive delay after repeated failures; and alert or temporarily disable the targeted account after a threshold. Because reverse-proxy headers (`X-Forwarded-For`) are client-controllable, derive the client IP from the trusted peer address or a correctly configured trusted-proxy list. Ensure the lock applies to the account/IP even when the attacker rotates session cookies.",
+              "poc": {
+                "description": "1. Attempt 5 invalid logins from a single session (same `PHPSESSID`): each returns `302` → `/login`. On the 6th attempt the response body carries the message \"Terlalu banyak percobaan gagal. Coba lagi beberapa menit.\" and login is refused.\n2. Discard the cookie jar (or use a new `PHPSESSID`) and attempt a login again. The counter is reset — the first attempt from the new session returns the ordinary \"Invalid username or password\" (no throttle), proving the lock is bound to the session and not the account, IP, or server.\n3. Repeat step 2 in a loop, rotating sessions, to perform unlimited password guessing — a valid credential returns `302` → the role dashboard (e.g. `/pelanggaran`).\n4. Confirm `X-Forwarded-For` rotation is irrelevant (the lock is session-scoped), and that a concurrent burst from a single session is serialized (PHP session lock) while independent sessions run without any cap.",
+                "script_available": true
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
+        "syntheticLocationCount": 1
+      }
+    }
+  ]
+}

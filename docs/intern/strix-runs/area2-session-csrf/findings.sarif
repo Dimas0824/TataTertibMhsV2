@@ -1,0 +1,213 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Strix",
+          "informationUri": "https://strix.ai",
+          "rules": [
+            {
+              "id": "CWE-614",
+              "name": "Session cookie issued without Secure flag on HTTPS-terminated (proxy) requests",
+              "shortDescription": {
+                "text": "Session cookie issued without Secure flag on HTTPS-terminated (proxy) requests"
+              },
+              "fullDescription": {
+                "text": "The `PHPSESSID` session cookie is only marked `Secure` when the PHP variable `$_SERVER['HTTPS']` is literally set. When TLS is terminated by a reverse proxy that signals HTTPS through `X-Forwarded-Proto` (or `SERVER_PORT=443`) instead of setting `HTTPS`, the application still treats the connection as HTTPS for other features (HSTS is emitted) but issues the session cookie **without** the `Secure` attribute. The cookie can therefore be transmitted over cleartext HTTP, exposing the session to interception."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "The `PHPSESSID` session cookie is only marked `Secure` when the PHP variable `$_SERVER['HTTPS']` is literally set. When TLS is terminated by a reverse proxy that signals HTTPS through `X-Forwarded-Proto` (or `SERVER_PORT=443`) instead of setting `HTTPS`, the application still treats the connection as HTTPS for other features (HSTS is emitted) but issues the session cookie **without** the `Secure` attribute. The cookie can therefore be transmitted over cleartext HTTP, exposing the session to interception.\n\nIf the deployment sits behind a TLS-terminating proxy (the documented canonical deployment is `https://dimspersonal.my.id`), the session cookie is not restricted to HTTPS. An attacker positioned to observe or force a single cleartext HTTP request (e.g., a downgrade link, an `http://` subresource/redirect, or a network adversary) can capture a valid `PHPSESSID` and hijack the authenticated session of any role, including `admin`. This undermines the confidentiality of all authenticated functionality (violation records, reports, user actions, admin news/tatib CRUD).\n\nDetermine the request scheme using the same logic already used elsewhere in the application (a single shared helper). Mark the session cookie `Secure` whenever the request is HTTPS by any of: `$_SERVER['HTTPS']` set, `SERVER_PORT` equal to `443`, or `X-Forwarded-Proto: https`. Only trust forwarded headers from known proxy addresses. As defence in depth, enable `session.cookie_secure` and consider HSTS `preload` plus an HTTP-to-HTTPS redirect so no cleartext request can carry the cookie.",
+                "markdown": "The `PHPSESSID` session cookie is only marked `Secure` when the PHP variable `$_SERVER['HTTPS']` is literally set. When TLS is terminated by a reverse proxy that signals HTTPS through `X-Forwarded-Proto` (or `SERVER_PORT=443`) instead of setting `HTTPS`, the application still treats the connection as HTTPS for other features (HSTS is emitted) but issues the session cookie **without** the `Secure` attribute. The cookie can therefore be transmitted over cleartext HTTP, exposing the session to interception.\n\nIf the deployment sits behind a TLS-terminating proxy (the documented canonical deployment is `https://dimspersonal.my.id`), the session cookie is not restricted to HTTPS. An attacker positioned to observe or force a single cleartext HTTP request (e.g., a downgrade link, an `http://` subresource/redirect, or a network adversary) can capture a valid `PHPSESSID` and hijack the authenticated session of any role, including `admin`. This undermines the confidentiality of all authenticated functionality (violation records, reports, user actions, admin news/tatib CRUD).\n\nDetermine the request scheme using the same logic already used elsewhere in the application (a single shared helper). Mark the session cookie `Secure` whenever the request is HTTPS by any of: `$_SERVER['HTTPS']` set, `SERVER_PORT` equal to `443`, or `X-Forwarded-Proto: https`. Only trust forwarded headers from known proxy addresses. As defence in depth, enable `session.cookie_secure` and consider HSTS `preload` plus an HTTP-to-HTTPS redirect so no cleartext request can carry the cookie."
+              },
+              "properties": {
+                "security-severity": "5.9",
+                "tags": [
+                  "security",
+                  "CWE-614",
+                  "stride:T",
+                  "stride:I"
+                ]
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/614.html"
+            },
+            {
+              "id": "CWE-613",
+              "name": "No absolute session lifetime and no invalidation of concurrent sessions",
+              "shortDescription": {
+                "text": "No absolute session lifetime and no invalidation of concurrent sessions"
+              },
+              "fullDescription": {
+                "text": "The application enforces only a 30-minute **idle** timeout that is reset on every request; there is no absolute session lifetime. In addition, an account may hold an unlimited number of simultaneous sessions, and a new login does not invalidate existing sessions. A captured session cookie therefore remains usable indefinitely as long as it is used periodically, and logging in again does not revoke a hijacked session."
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "help": {
+                "text": "The application enforces only a 30-minute **idle** timeout that is reset on every request; there is no absolute session lifetime. In addition, an account may hold an unlimited number of simultaneous sessions, and a new login does not invalidate existing sessions. A captured session cookie therefore remains usable indefinitely as long as it is used periodically, and logging in again does not revoke a hijacked session.\n\nA stolen session cookie is valid for the entire browsing lifetime of the victim rather than being bounded by an absolute cap, and re-authentication does not evict the attacker. Combined with the missing `Secure` attribute, a captured `PHPSESSID` provides durable, unaudited access as the victim (including `admin`), extending the window for data theft and fraudulent state changes.\n\nStore a session creation timestamp (e.g., `__created_at`) at login and reject the session after an absolute lifetime (for example 8-12 hours) regardless of activity, forcing re-authentication. Track the server-side session inventory per user and, on each successful login (and on password change), invalidate all other sessions for that account. Optionally cap concurrent sessions and require re-authentication for logout. Enable server-side session garbage collection with a matching `gc_maxlifetime`.",
+                "markdown": "The application enforces only a 30-minute **idle** timeout that is reset on every request; there is no absolute session lifetime. In addition, an account may hold an unlimited number of simultaneous sessions, and a new login does not invalidate existing sessions. A captured session cookie therefore remains usable indefinitely as long as it is used periodically, and logging in again does not revoke a hijacked session.\n\nA stolen session cookie is valid for the entire browsing lifetime of the victim rather than being bounded by an absolute cap, and re-authentication does not evict the attacker. Combined with the missing `Secure` attribute, a captured `PHPSESSID` provides durable, unaudited access as the victim (including `admin`), extending the window for data theft and fraudulent state changes.\n\nStore a session creation timestamp (e.g., `__created_at`) at login and reject the session after an absolute lifetime (for example 8-12 hours) regardless of activity, forcing re-authentication. Track the server-side session inventory per user and, on each successful login (and on password change), invalidate all other sessions for that account. Optionally cap concurrent sessions and require re-authentication for logout. Enable server-side session garbage collection with a matching `gc_maxlifetime`."
+              },
+              "properties": {
+                "security-severity": "3.7",
+                "tags": [
+                  "security",
+                  "CWE-613",
+                  "stride:S"
+                ]
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/613.html"
+            }
+          ],
+          "version": "1.4.1"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CWE-614",
+          "ruleIndex": 0,
+          "level": "warning",
+          "message": {
+            "text": "Session cookie issued without Secure flag on HTTPS-terminated (proxy) requests\n\nThe `PHPSESSID` session cookie is only marked `Secure` when the PHP variable `$_SERVER['HTTPS']` is literally set. When TLS is terminated by a reverse proxy that signals HTTPS through `X-Forwarded-Proto` (or `SERVER_PORT=443`) instead of setting `HTTPS`, the application still treats the connection as HTTPS for other features (HSTS is emitted) but issues the session cookie **without** the `Secure` attribute. The cookie can therefore be transmitted over cleartext HTTP, exposing the session to interception."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "helpers/token_helper.php"
+                },
+                "region": {
+                  "startLine": 13,
+                  "endLine": 17,
+                  "snippet": {
+                    "text": "session_set_cookie_params([\n    'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),\n    'httponly' => true,\n    'samesite' => 'Lax',\n]);"
+                  }
+                }
+              },
+              "message": {
+                "text": "Session cookie params: secure derived only from $_SERVER['HTTPS']"
+              }
+            },
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "/login (Set-Cookie for PHPSESSID)",
+                  "kind": "endpoint"
+                }
+              ]
+            }
+          ],
+          "fixes": [
+            {
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "helpers/token_helper.php"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 13,
+                        "endLine": 17
+                      },
+                      "insertedContent": {
+                        "text": "$isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')\n                    || ((string) ($_SERVER['SERVER_PORT'] ?? '') === '443')\n                    || (strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https');\n                session_set_cookie_params([\n                    'secure' => $isHttps,\n                    'httponly' => true,\n                    'samesite' => 'Lax',\n                ]);"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "description": {
+                "text": "Determine the request scheme using the same logic already used elsewhere in the application (a single shared helper). Mark the session cookie `Secure` whenever the request is HTTPS by any of: `$_SERVER['HTTPS']` set, `SERVER_PORT` equal to `443`, or `X-Forwarded-Proto: https`. Only trust forwarded headers from known proxy addresses. As defence in depth, enable `session.cookie_secure` and consider HSTS `preload` plus an HTTP-to-HTTPS redirect so no cleartext request can carry the cookie.",
+                "markdown": "Determine the request scheme using the same logic already used elsewhere in the application (a single shared helper). Mark the session cookie `Secure` whenever the request is HTTPS by any of: `$_SERVER['HTTPS']` set, `SERVER_PORT` equal to `443`, or `X-Forwarded-Proto: https`. Only trust forwarded headers from known proxy addresses. As defence in depth, enable `session.cookie_secure` and consider HSTS `preload` plus an HTTP-to-HTTPS redirect so no cleartext request can carry the cookie."
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "b141d808a1844c74e11829b6f8098fa751a0c720f9aba0230af87178aa423729"
+          },
+          "properties": {
+            "security-severity": "5.9",
+            "strix_vuln_class_hash": "3edef167ee7aaf1bb2a606ae97bc9fb3cbff8e08603f2cf58d28d7d25660387c",
+            "strix": {
+              "id": "vuln-0001",
+              "severity": "medium",
+              "cvss": 5.9,
+              "timestamp": "2026-09-21 14:40:38 UTC",
+              "target": "http://172.17.112.1:8001",
+              "endpoint": "/login (Set-Cookie for PHPSESSID)",
+              "method": "GET",
+              "cwe": "CWE-614",
+              "impact": "If the deployment sits behind a TLS-terminating proxy (the documented canonical deployment is `https://dimspersonal.my.id`), the session cookie is not restricted to HTTPS. An attacker positioned to observe or force a single cleartext HTTP request (e.g., a downgrade link, an `http://` subresource/redirect, or a network adversary) can capture a valid `PHPSESSID` and hijack the authenticated session of any role, including `admin`. This undermines the confidentiality of all authenticated functionality (violation records, reports, user actions, admin news/tatib CRUD).",
+              "technical_analysis": "Session cookie parameters are configured in a single place:\n\n```php title=helpers/token_helper.php startLineNumber=13 endLineNumber=17\nsession_set_cookie_params([\n    'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),\n    'httponly' => true,\n    'samesite' => 'Lax',\n]);\n```\n\nThe `secure` value depends solely on `$_SERVER['HTTPS']`. It does **not** consider `X-Forwarded-Proto` or `SERVER_PORT`, unlike the rest of the application. `helpers/seo_helper.php` (lines 219-222 and 146-151) determines HTTPS from `$_SERVER['HTTPS']` **or** `SERVER_PORT === '443'` **or** `HTTP_X_FORWARDED_PROTO === 'https'`, and emits `Strict-Transport-Security` on that basis (lines 227-229).\n\nThe result is an internal inconsistency: on a request the application itself classifies as HTTPS (HSTS emitted), the session cookie is not marked `Secure`. This was confirmed against the running instance by sending `X-Forwarded-Proto: https` with a non-local `Host`: the response carried the HSTS header but the `Set-Cookie` line lacked `Secure`.",
+              "remediation_steps": "Determine the request scheme using the same logic already used elsewhere in the application (a single shared helper). Mark the session cookie `Secure` whenever the request is HTTPS by any of: `$_SERVER['HTTPS']` set, `SERVER_PORT` equal to `443`, or `X-Forwarded-Proto: https`. Only trust forwarded headers from known proxy addresses. As defence in depth, enable `session.cookie_secure` and consider HSTS `preload` plus an HTTP-to-HTTPS redirect so no cleartext request can carry the cookie.",
+              "poc": {
+                "description": "1. Send a request that the application classifies as HTTPS via the forwarded-proto signal, using a non-local `Host` so the HSTS branch is taken.\n2. Observe the response headers.\n3. Note that `Strict-Transport-Security` is present (application believes the request is HTTPS) while the `Set-Cookie: PHPSESSID=...` line omits the `Secure` attribute.\n4. Repeating without the header (or with `Host` local) produces the same cookie flags, confirming `secure` is never set when `$_SERVER['HTTPS']` is absent.",
+                "script_available": true
+              }
+            }
+          }
+        },
+        {
+          "ruleId": "CWE-613",
+          "ruleIndex": 1,
+          "level": "note",
+          "message": {
+            "text": "No absolute session lifetime and no invalidation of concurrent sessions\n\nThe application enforces only a 30-minute **idle** timeout that is reset on every request; there is no absolute session lifetime. In addition, an account may hold an unlimited number of simultaneous sessions, and a new login does not invalidate existing sessions. A captured session cookie therefore remains usable indefinitely as long as it is used periodically, and logging in again does not revoke a hijacked session."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "helpers/token_helper.php"
+                },
+                "region": {
+                  "startLine": 102,
+                  "endLine": 120
+                }
+              },
+              "message": {
+                "text": "Only idle TTL is enforced; no absolute lifetime cap"
+              }
+            },
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "/action/login, /action/logout",
+                  "kind": "endpoint"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "7fd6337330e5df21223c814e1e67347b437c374c7cab3063653337d5bf434060"
+          },
+          "properties": {
+            "security-severity": "3.7",
+            "strix_vuln_class_hash": "0c071b0ac7efb013f84d7664e13e9fca6ec807c2f0ec853d69b19db944d6bed1",
+            "strix": {
+              "id": "vuln-0002",
+              "severity": "low",
+              "cvss": 3.7,
+              "timestamp": "2026-09-21 14:40:50 UTC",
+              "target": "http://172.17.112.1:8001",
+              "endpoint": "/action/login, /action/logout",
+              "method": "POST",
+              "cwe": "CWE-613",
+              "impact": "A stolen session cookie is valid for the entire browsing lifetime of the victim rather than being bounded by an absolute cap, and re-authentication does not evict the attacker. Combined with the missing `Secure` attribute, a captured `PHPSESSID` provides durable, unaudited access as the victim (including `admin`), extending the window for data theft and fraudulent state changes.",
+              "technical_analysis": "Session liveness is governed entirely by `app_session_touch_or_expire()` in `helpers/token_helper.php`, invoked once per request from `router.php`. It records only a last-activity timestamp and expires the session purely on idle time:\n\n```php title=helpers/token_helper.php startLineNumber=105 endLineNumber=120\n$now = time();\n$lastActivity = isset($_SESSION['__last_activity']) ? (int) $_SESSION['__last_activity'] : 0;\n\nif ($lastActivity > 0 && ($now - $lastActivity) > $idleTtl) {\n    $_SESSION = [];\n    if (session_status() === PHP_SESSION_ACTIVE) {\n        session_destroy();\n    }\n    @session_start();\n    $_SESSION['__last_activity'] = $now;\n    return false;\n}\n\n$_SESSION['__last_activity'] = $now;\nreturn true;\n```\n\nNo creation/issued timestamp is stored, so there is no absolute lifetime. Because `__last_activity` is updated on every request, any periodic request resets the window indefinitely.\n\nOn authentication, `controllers/UserController.php` (lines 56-62) regenerates the session identifier but does not enumerate or invalidate the account's other sessions; nothing in the schema or handlers caps the number of live sessions per user. The verified behaviour is that two logins for one account yield two simultaneously valid sessions.",
+              "remediation_steps": "Store a session creation timestamp (e.g., `__created_at`) at login and reject the session after an absolute lifetime (for example 8-12 hours) regardless of activity, forcing re-authentication. Track the server-side session inventory per user and, on each successful login (and on password change), invalidate all other sessions for that account. Optionally cap concurrent sessions and require re-authentication for logout. Enable server-side session garbage collection with a matching `gc_maxlifetime`.",
+              "poc": {
+                "description": "1. Authenticate the same account twice from two independent cookie jars.\n2. Confirm both session identifiers remain simultaneously valid against a protected page (`/pelanggaran` or `/pelanggaran/dosen`) returning HTTP 200.\n3. Continue issuing requests on the older session; observe it is never invalidated by the newer login.\n4. (Lifetime) Programmatically, only `__last_activity` is checked; there is no creation timestamp or absolute cap, so periodic requests keep the session alive without limit.",
+                "script_available": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

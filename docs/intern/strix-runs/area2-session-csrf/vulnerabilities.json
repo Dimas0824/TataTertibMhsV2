@@ -1,0 +1,87 @@
+[
+  {
+    "id": "vuln-0001",
+    "title": "Session cookie issued without Secure flag on HTTPS-terminated (proxy) requests",
+    "severity": "medium",
+    "timestamp": "2026-09-21 14:40:38 UTC",
+    "description": "The `PHPSESSID` session cookie is only marked `Secure` when the PHP variable `$_SERVER['HTTPS']` is literally set. When TLS is terminated by a reverse proxy that signals HTTPS through `X-Forwarded-Proto` (or `SERVER_PORT=443`) instead of setting `HTTPS`, the application still treats the connection as HTTPS for other features (HSTS is emitted) but issues the session cookie **without** the `Secure` attribute. The cookie can therefore be transmitted over cleartext HTTP, exposing the session to interception.",
+    "impact": "If the deployment sits behind a TLS-terminating proxy (the documented canonical deployment is `https://dimspersonal.my.id`), the session cookie is not restricted to HTTPS. An attacker positioned to observe or force a single cleartext HTTP request (e.g., a downgrade link, an `http://` subresource/redirect, or a network adversary) can capture a valid `PHPSESSID` and hijack the authenticated session of any role, including `admin`. This undermines the confidentiality of all authenticated functionality (violation records, reports, user actions, admin news/tatib CRUD).",
+    "target": "http://172.17.112.1:8001",
+    "technical_analysis": "Session cookie parameters are configured in a single place:\n\n```php title=helpers/token_helper.php startLineNumber=13 endLineNumber=17\nsession_set_cookie_params([\n    'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),\n    'httponly' => true,\n    'samesite' => 'Lax',\n]);\n```\n\nThe `secure` value depends solely on `$_SERVER['HTTPS']`. It does **not** consider `X-Forwarded-Proto` or `SERVER_PORT`, unlike the rest of the application. `helpers/seo_helper.php` (lines 219-222 and 146-151) determines HTTPS from `$_SERVER['HTTPS']` **or** `SERVER_PORT === '443'` **or** `HTTP_X_FORWARDED_PROTO === 'https'`, and emits `Strict-Transport-Security` on that basis (lines 227-229).\n\nThe result is an internal inconsistency: on a request the application itself classifies as HTTPS (HSTS emitted), the session cookie is not marked `Secure`. This was confirmed against the running instance by sending `X-Forwarded-Proto: https` with a non-local `Host`: the response carried the HSTS header but the `Set-Cookie` line lacked `Secure`.",
+    "poc_description": "1. Send a request that the application classifies as HTTPS via the forwarded-proto signal, using a non-local `Host` so the HSTS branch is taken.\n2. Observe the response headers.\n3. Note that `Strict-Transport-Security` is present (application believes the request is HTTPS) while the `Set-Cookie: PHPSESSID=...` line omits the `Secure` attribute.\n4. Repeating without the header (or with `Host` local) produces the same cookie flags, confirming `secure` is never set when `$_SERVER['HTTPS']` is absent.",
+    "poc_script_code": "```bash\n# Response is treated as HTTPS (HSTS emitted) yet the session cookie lacks Secure\ncurl -s -i -H \"X-Forwarded-Proto: https\" -H \"Host: dimspersonal.my.id\" \\\n  http://172.17.112.1:8001/login -D - -o /dev/null | grep -iE \"set-cookie|strict-transport\"\n```\n\nObserved:\n\n```http\nSet-Cookie: PHPSESSID=hh5q0hgt2qii0p2q2dd06juaqh; path=/; HttpOnly; SameSite=Lax\nStrict-Transport-Security: max-age=31536000; includeSubDomains; preload\n```",
+    "remediation_steps": "Determine the request scheme using the same logic already used elsewhere in the application (a single shared helper). Mark the session cookie `Secure` whenever the request is HTTPS by any of: `$_SERVER['HTTPS']` set, `SERVER_PORT` equal to `443`, or `X-Forwarded-Proto: https`. Only trust forwarded headers from known proxy addresses. As defence in depth, enable `session.cookie_secure` and consider HSTS `preload` plus an HTTP-to-HTTPS redirect so no cleartext request can carry the cookie.",
+    "evidence": "Request (application treats as HTTPS):\n\n```http\nGET /login HTTP/1.1\nHost: dimspersonal.my.id\nX-Forwarded-Proto: https\n```\n\nResponse (note HSTS present, cookie lacks `Secure`):\n\n```http\nHTTP/1.1 200 OK\nSet-Cookie: PHPSESSID=hh5q0hgt2qii0p2q2dd06juaqh; path=/; HttpOnly; SameSite=Lax\nStrict-Transport-Security: max-age=31536000; includeSubDomains; preload\n```\n\nBaseline plain HTTP:\n\n```http\nSet-Cookie: PHPSESSID=1pbhqcjlkd5f40aj7uatn49ma8; path=/; HttpOnly; SameSite=Lax\n```",
+    "assumptions": "Assumes the production deployment terminates TLS at a reverse proxy that conveys the scheme via `X-Forwarded-Proto`/`SERVER_PORT` rather than setting `$_SERVER['HTTPS']`, which is consistent with the application's canonical URL (`https://dimspersonal.my.id`) and its own proxy-aware HTTPS detection elsewhere. On the provided lab target (plain HTTP) the same code path yields no `Secure` by design.",
+    "fix_effort": "low",
+    "cvss": 5.9,
+    "cvss_breakdown": {
+      "attack_vector": "N",
+      "attack_complexity": "H",
+      "privileges_required": "N",
+      "user_interaction": "R",
+      "scope": "U",
+      "confidentiality": "H",
+      "integrity": "L",
+      "availability": "N"
+    },
+    "endpoint": "/login (Set-Cookie for PHPSESSID)",
+    "method": "GET",
+    "cwe": "CWE-614",
+    "code_locations": [
+      {
+        "file": "helpers/token_helper.php",
+        "start_line": 13,
+        "end_line": 17,
+        "snippet": "session_set_cookie_params([\n    'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),\n    'httponly' => true,\n    'samesite' => 'Lax',\n]);",
+        "label": "Session cookie params: secure derived only from $_SERVER['HTTPS']",
+        "fix_before": "                session_set_cookie_params([\n                    'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),\n                    'httponly' => true,\n                    'samesite' => 'Lax',\n                ]);",
+        "fix_after": "                $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')\n                    || ((string) ($_SERVER['SERVER_PORT'] ?? '') === '443')\n                    || (strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https');\n                session_set_cookie_params([\n                    'secure' => $isHttps,\n                    'httponly' => true,\n                    'samesite' => 'Lax',\n                ]);"
+      }
+    ],
+    "finding_class": "dynamic",
+    "agent_id": "c2cb9a88",
+    "agent_name": "Strix"
+  },
+  {
+    "id": "vuln-0002",
+    "title": "No absolute session lifetime and no invalidation of concurrent sessions",
+    "severity": "low",
+    "timestamp": "2026-09-21 14:40:50 UTC",
+    "description": "The application enforces only a 30-minute **idle** timeout that is reset on every request; there is no absolute session lifetime. In addition, an account may hold an unlimited number of simultaneous sessions, and a new login does not invalidate existing sessions. A captured session cookie therefore remains usable indefinitely as long as it is used periodically, and logging in again does not revoke a hijacked session.",
+    "impact": "A stolen session cookie is valid for the entire browsing lifetime of the victim rather than being bounded by an absolute cap, and re-authentication does not evict the attacker. Combined with the missing `Secure` attribute, a captured `PHPSESSID` provides durable, unaudited access as the victim (including `admin`), extending the window for data theft and fraudulent state changes.",
+    "target": "http://172.17.112.1:8001",
+    "technical_analysis": "Session liveness is governed entirely by `app_session_touch_or_expire()` in `helpers/token_helper.php`, invoked once per request from `router.php`. It records only a last-activity timestamp and expires the session purely on idle time:\n\n```php title=helpers/token_helper.php startLineNumber=105 endLineNumber=120\n$now = time();\n$lastActivity = isset($_SESSION['__last_activity']) ? (int) $_SESSION['__last_activity'] : 0;\n\nif ($lastActivity > 0 && ($now - $lastActivity) > $idleTtl) {\n    $_SESSION = [];\n    if (session_status() === PHP_SESSION_ACTIVE) {\n        session_destroy();\n    }\n    @session_start();\n    $_SESSION['__last_activity'] = $now;\n    return false;\n}\n\n$_SESSION['__last_activity'] = $now;\nreturn true;\n```\n\nNo creation/issued timestamp is stored, so there is no absolute lifetime. Because `__last_activity` is updated on every request, any periodic request resets the window indefinitely.\n\nOn authentication, `controllers/UserController.php` (lines 56-62) regenerates the session identifier but does not enumerate or invalidate the account's other sessions; nothing in the schema or handlers caps the number of live sessions per user. The verified behaviour is that two logins for one account yield two simultaneously valid sessions.",
+    "poc_description": "1. Authenticate the same account twice from two independent cookie jars.\n2. Confirm both session identifiers remain simultaneously valid against a protected page (`/pelanggaran` or `/pelanggaran/dosen`) returning HTTP 200.\n3. Continue issuing requests on the older session; observe it is never invalidated by the newer login.\n4. (Lifetime) Programmatically, only `__last_activity` is checked; there is no creation timestamp or absolute cap, so periodic requests keep the session alive without limit.",
+    "poc_script_code": "```bash\nlogin() { # user pass type jar\n  jar=$4; rm -f $jar\n  tok=$(curl -s -c $jar http://172.17.112.1:8001/login \\\n        | grep -o 'name=\"csrf_token\" value=\"[0-9a-f]*\"' | grep -o '[0-9a-f]\\{64\\}' | head -1)\n  curl -s -o /dev/null -b $jar -c $jar -X POST http://172.17.112.1:8001/action/login \\\n       --data-urlencode \"csrf_token=$tok\" --data-urlencode \"user_type=$3\" \\\n       --data-urlencode \"username=$1\" --data-urlencode \"password=$2\"\n}\n\nlogin 1234567890 password123 dosen cA.txt\nlogin 1234567890 password123 dosen cB.txt   # second session, same account\n\ncurl -s -o /dev/null -w \"A /pelanggaran/dosen -> %{http_code}\\n\" -b cA.txt http://172.17.112.1:8001/pelanggaran/dosen\ncurl -s -o /dev/null -w \"B /pelanggaran/dosen -> %{http_code}\\n\" -b cB.txt http://172.17.112.1:8001/pelanggaran/dosen\n# both return 200 => concurrent sessions coexist, neither revoked\n```",
+    "remediation_steps": "Store a session creation timestamp (e.g., `__created_at`) at login and reject the session after an absolute lifetime (for example 8-12 hours) regardless of activity, forcing re-authentication. Track the server-side session inventory per user and, on each successful login (and on password change), invalidate all other sessions for that account. Optionally cap concurrent sessions and require re-authentication for logout. Enable server-side session garbage collection with a matching `gc_maxlifetime`.",
+    "evidence": "Two live sessions for the same `dosen` account (both HTTP 200 on protected page):\n\n```text\nSID A=iqpeoc735qma9vhsnij5drbit7  SID B=qah2ohf6fvcctj0mf1p07r8js5\nA -> 200\nB -> 200\n```\n\nTwo live sessions for the same `mahasiswa` account:\n\n```text\nSID1(original)=408jn9og18nlgvd8clfu4vvoed  SID2(new)=9m3rov404rm2ih910h6g4i2pkf\nSID1 /pelanggaran -> 200\nSID2 /pelanggaran -> 200\n```\n\nThe idle timer is refreshed on every request, so continuous activity keeps the session alive with no upper bound.\n\n```php title=helpers/token_helper.php startLineNumber=107 endLineNumber=119\n$lastActivity = isset($_SESSION['__last_activity']) ? (int) $_SESSION['__last_activity'] : 0;\nif ($lastActivity > 0 && ($now - $lastActivity) > $idleTtl) {\n    // ...expire...\n}\n$_SESSION['__last_activity'] = $now; // refreshed on every request\n```",
+    "assumptions": "Assumes an attacker who has captured a session cookie (e.g., via the missing-Secure issue, a shared/untrusted device, or network interception). The findings are configuration/lifecycle weaknesses that do not by themselves grant access without a stolen session or a compromised browser. The concurrency observation applies to any authenticated account, including `admin`.",
+    "fix_effort": "medium",
+    "cvss": 3.7,
+    "cvss_breakdown": {
+      "attack_vector": "N",
+      "attack_complexity": "H",
+      "privileges_required": "L",
+      "user_interaction": "R",
+      "scope": "U",
+      "confidentiality": "L",
+      "integrity": "L",
+      "availability": "N"
+    },
+    "endpoint": "/action/login, /action/logout",
+    "method": "POST",
+    "cwe": "CWE-613",
+    "code_locations": [
+      {
+        "file": "helpers/token_helper.php",
+        "start_line": 102,
+        "end_line": 120,
+        "label": "Only idle TTL is enforced; no absolute lifetime cap"
+      }
+    ],
+    "finding_class": "dynamic",
+    "agent_id": "c2cb9a88",
+    "agent_name": "Strix"
+  }
+]

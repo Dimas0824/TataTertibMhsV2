@@ -1,0 +1,3 @@
+id,title,severity,timestamp,file
+vuln-0001,Session cookie issued without Secure flag on HTTPS-terminated (proxy) requests,MEDIUM,2026-09-21 14:40:38 UTC,vulnerabilities/vuln-0001.md
+vuln-0002,No absolute session lifetime and no invalidation of concurrent sessions,LOW,2026-09-21 14:40:50 UTC,vulnerabilities/vuln-0002.md

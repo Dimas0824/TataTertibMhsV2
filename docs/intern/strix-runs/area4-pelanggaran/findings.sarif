@@ -1,0 +1,163 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Strix",
+          "informationUri": "https://strix.ai",
+          "rules": [
+            {
+              "id": "CWE-20",
+              "name": "Sanction Level Not Validated Against Violation Tier (client-selectable sanksi)",
+              "shortDescription": {
+                "text": "Sanction Level Not Validated Against Violation Tier (client-selectable sanksi)"
+              },
+              "fullDescription": {
+                "text": "When a lecturer records a violation, the sanction (`sanksi`) is taken from a client-supplied token and stored without verifying that the sanction's tier matches the violation's tier. A lecturer can therefore attach the most severe sanction (Tier I — expulsion) to a trivial Tier V violation (2 points), or any other mismatched combination. The student portal renders the mismatched sanction as authoritative."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "When a lecturer records a violation, the sanction (`sanksi`) is taken from a client-supplied token and stored without verifying that the sanction's tier matches the violation's tier. A lecturer can therefore attach the most severe sanction (Tier I — expulsion) to a trivial Tier V violation (2 points), or any other mismatched combination. The student portal renders the mismatched sanction as authoritative.\n\nThe integrity of the disciplinary record is broken: a student can be shown a sanction that is far more severe than the actual violation warrants (e.g. \"Diberhentikan sebagai mahasiswa\" / expelled, or \"Dinonaktifkan (Cuti Akademik) selama dua semester\") for a minor 2-point infraction. Because the student portal presents this as the authoritative outcome, it can cause significant distress, reputational harm, and support fraudulent escalation. The same mismatch is accepted on the edit/update path, so existing records can be tampered with. This is a server-side data-integrity flaw: the sanction is effectively attacker-selected rather than derived from the violation.\n\n1. Derive the sanction from the violation tier server-side and do not accept an arbitrary client-selected sanction. If a lecturer must be able to choose among the sanctions valid for a tier, first load the violation's `tingkat` server-side and constrain the choice to sanction rows whose `SANKSI.tingkat` equals that tier.\n2. Enforce the tier-match inside the model by selecting the sanction together with its tier and comparing it to the tata-tertib tier before insert/update, e.g. `SELECT id_sanksi, tingkat FROM SANKSI WHERE id_sanksi = ?` and reject when `upper(tingkat) !== upper($tatibTingkat)`.\n3. Apply the same validation on the update path (`updateDetailPelanggaran`) so existing records cannot be tampered with.\n4. As defense-in-depth, add a database-level integrity constraint or trigger ensuring `DETAIL_PELANGGARAN.id_sanksi` references a sanction whose tier matches the referenced `TATA_TERTIB.tingkat`.\n5. Validate the response rendering so that a record whose sanction tier differs from its violation tier is never displayed as authoritative.",
+                "markdown": "When a lecturer records a violation, the sanction (`sanksi`) is taken from a client-supplied token and stored without verifying that the sanction's tier matches the violation's tier. A lecturer can therefore attach the most severe sanction (Tier I — expulsion) to a trivial Tier V violation (2 points), or any other mismatched combination. The student portal renders the mismatched sanction as authoritative.\n\nThe integrity of the disciplinary record is broken: a student can be shown a sanction that is far more severe than the actual violation warrants (e.g. \"Diberhentikan sebagai mahasiswa\" / expelled, or \"Dinonaktifkan (Cuti Akademik) selama dua semester\") for a minor 2-point infraction. Because the student portal presents this as the authoritative outcome, it can cause significant distress, reputational harm, and support fraudulent escalation. The same mismatch is accepted on the edit/update path, so existing records can be tampered with. This is a server-side data-integrity flaw: the sanction is effectively attacker-selected rather than derived from the violation.\n\n1. Derive the sanction from the violation tier server-side and do not accept an arbitrary client-selected sanction. If a lecturer must be able to choose among the sanctions valid for a tier, first load the violation's `tingkat` server-side and constrain the choice to sanction rows whose `SANKSI.tingkat` equals that tier.\n2. Enforce the tier-match inside the model by selecting the sanction together with its tier and comparing it to the tata-tertib tier before insert/update, e.g. `SELECT id_sanksi, tingkat FROM SANKSI WHERE id_sanksi = ?` and reject when `upper(tingkat) !== upper($tatibTingkat)`.\n3. Apply the same validation on the update path (`updateDetailPelanggaran`) so existing records cannot be tampered with.\n4. As defense-in-depth, add a database-level integrity constraint or trigger ensuring `DETAIL_PELANGGARAN.id_sanksi` references a sanction whose tier matches the referenced `TATA_TERTIB.tingkat`.\n5. Validate the response rendering so that a record whose sanction tier differs from its violation tier is never displayed as authoritative."
+              },
+              "properties": {
+                "security-severity": "6.5",
+                "tags": [
+                  "security",
+                  "CWE-20",
+                  "stride:T"
+                ]
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/20.html"
+            }
+          ],
+          "version": "1.4.1"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CWE-20",
+          "ruleIndex": 0,
+          "level": "warning",
+          "message": {
+            "text": "Sanction Level Not Validated Against Violation Tier (client-selectable sanksi)\n\nWhen a lecturer records a violation, the sanction (`sanksi`) is taken from a client-supplied token and stored without verifying that the sanction's tier matches the violation's tier. A lecturer can therefore attach the most severe sanction (Tier I — expulsion) to a trivial Tier V violation (2 points), or any other mismatched combination. The student portal renders the mismatched sanction as authoritative."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "request/handler-pelanggaran.php"
+                },
+                "region": {
+                  "startLine": 168,
+                  "endLine": 179,
+                  "snippet": {
+                    "text": "$resolvedSanksi = null;\n      if (isset($_POST['sanksi']) && trim((string) $_POST['sanksi']) !== '') {\n         $resolvedSanksi = app_id_resolve((string) $_POST['sanksi'], 'sanksi');\n         if ($resolvedSanksi === null) {\n            throw new RuntimeException('Token sanksi tidak valid.');\n         }\n      }\n      $detailPelanggaran = $_POST['deskripsiPelanggaran'] ?? ($tatibDetail['deskripsi'] ?? null);\n\n      if ((!$resolvedSanksi || trim((string) $resolvedSanksi) === '') && $tingkat !== '') {\n         $resolvedSanksi = $pelanggaranController->getDefaultSanksiByTingkat($tingkat);\n      }"
+                  }
+                }
+              },
+              "message": {
+                "text": "Resolve sanction from client token without tier check"
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "models/Pelanggaran.php"
+                },
+                "region": {
+                  "startLine": 299,
+                  "endLine": 302,
+                  "snippet": {
+                    "text": "$stmtSanksi = $this->connect->prepare(\"SELECT id_sanksi FROM SANKSI WHERE id_sanksi = ? LIMIT 1\");\n            $stmtSanksi->execute([$idSanksi]);\n            if (!$stmtSanksi->fetch(PDO::FETCH_ASSOC)) {\n                throw new RuntimeException('Sanksi tidak valid.');\n            }"
+                  }
+                }
+              },
+              "message": {
+                "text": "Model validates existence only, not sanction tier"
+              }
+            },
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "/action/pelanggaran",
+                  "kind": "endpoint"
+                }
+              ]
+            }
+          ],
+          "fixes": [
+            {
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "request/handler-pelanggaran.php"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 168,
+                        "endLine": 179
+                      },
+                      "insertedContent": {
+                        "text": "$resolvedSanksi = null;\n      if (isset($_POST['sanksi']) && trim((string) $_POST['sanksi']) !== '') {\n         $resolvedSanksi = app_id_resolve((string) $_POST['sanksi'], 'sanksi');\n         if ($resolvedSanksi === null) {\n            throw new RuntimeException('Token sanksi tidak valid.');\n         }\n\n         // Enforce the sanction tier matches the violation tier (server-derived).\n         $sanksiTingkat = $pelanggaranController->getSanksiTingkatById((int) $resolvedSanksi);\n         if ($sanksiTingkat === null || strcasecmp(trim($sanksiTingkat), trim((string) $tingkat)) !== 0) {\n            throw new RuntimeException('Sanksi tidak sesuai dengan tingkat pelanggaran.');\n         }\n      }\n      $detailPelanggaran = $_POST['deskripsiPelanggaran'] ?? ($tatibDetail['deskripsi'] ?? null);\n\n      if ((!$resolvedSanksi || trim((string) $resolvedSanksi) === '') && $tingkat !== '') {\n         $resolvedSanksi = $pelanggaranController->getDefaultSanksiByTingkat($tingkat);\n      }"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "artifactLocation": {
+                    "uri": "models/Pelanggaran.php"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 299,
+                        "endLine": 302
+                      },
+                      "insertedContent": {
+                        "text": "$stmtSanksi = $this->connect->prepare(\"SELECT id_sanksi, tingkat FROM SANKSI WHERE id_sanksi = ? LIMIT 1\");\n            $stmtSanksi->execute([$idSanksi]);\n            $sanksiRow = $stmtSanksi->fetch(PDO::FETCH_ASSOC);\n            if (!$sanksiRow) {\n                throw new RuntimeException('Sanksi tidak valid.');\n            }\n            if (strcasecmp(trim((string) $sanksiRow['tingkat']), $tingkat) !== 0) {\n                throw new RuntimeException('Sanksi tidak sesuai dengan tingkat pelanggaran.');\n            }"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "description": {
+                "text": "1. Derive the sanction from the violation tier server-side and do not accept an arbitrary client-selected sanction. If a lecturer must be able to choose among the sanctions valid for a tier, first load the violation's `tingkat` server-side and constrain the choice to sanction rows whose `SANKSI.tingkat` equals that tier.\n2. Enforce the tier-match inside the model by selecting the sanction together with its tier and comparing it to the tata-tertib tier before insert/update, e.g. `SELECT id_sanksi, tingkat FROM SANKSI WHERE id_sanksi = ?` and reject when `upper(tingkat) !== upper($tatibTingkat)`.\n3. Apply the same validation on the update path (`updateDetailPelanggaran`) so existing records cannot be tampered with.\n4. As defense-in-depth, add a database-level integrity constraint or trigger ensuring `DETAIL_PELANGGARAN.id_sanksi` references a sanction whose tier matches the referenced `TATA_TERTIB.tingkat`.\n5. Validate the response rendering so that a record whose sanction tier differs from its violation tier is never displayed as authoritative.",
+                "markdown": "1. Derive the sanction from the violation tier server-side and do not accept an arbitrary client-selected sanction. If a lecturer must be able to choose among the sanctions valid for a tier, first load the violation's `tingkat` server-side and constrain the choice to sanction rows whose `SANKSI.tingkat` equals that tier.\n2. Enforce the tier-match inside the model by selecting the sanction together with its tier and comparing it to the tata-tertib tier before insert/update, e.g. `SELECT id_sanksi, tingkat FROM SANKSI WHERE id_sanksi = ?` and reject when `upper(tingkat) !== upper($tatibTingkat)`.\n3. Apply the same validation on the update path (`updateDetailPelanggaran`) so existing records cannot be tampered with.\n4. As defense-in-depth, add a database-level integrity constraint or trigger ensuring `DETAIL_PELANGGARAN.id_sanksi` references a sanction whose tier matches the referenced `TATA_TERTIB.tingkat`.\n5. Validate the response rendering so that a record whose sanction tier differs from its violation tier is never displayed as authoritative."
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "12379c6255de35465c644cb544c33b7a44133dde04c32581b91af9a43278b51c"
+          },
+          "properties": {
+            "security-severity": "6.5",
+            "strix_vuln_class_hash": "8c4da30d50f481bfb7fb3494a59d5e259559ca364f0c7be432f81d6dacde001f",
+            "strix": {
+              "id": "vuln-0001",
+              "severity": "medium",
+              "cvss": 6.5,
+              "timestamp": "2026-09-21 14:58:50 UTC",
+              "target": "http://172.17.112.1:8001",
+              "endpoint": "/action/pelanggaran",
+              "method": "POST",
+              "cwe": "CWE-20",
+              "impact": "The integrity of the disciplinary record is broken: a student can be shown a sanction that is far more severe than the actual violation warrants (e.g. \"Diberhentikan sebagai mahasiswa\" / expelled, or \"Dinonaktifkan (Cuti Akademik) selama dua semester\") for a minor 2-point infraction. Because the student portal presents this as the authoritative outcome, it can cause significant distress, reputational harm, and support fraudulent escalation. The same mismatch is accepted on the edit/update path, so existing records can be tampered with. This is a server-side data-integrity flaw: the sanction is effectively attacker-selected rather than derived from the violation.",
+              "technical_analysis": "## Root cause\n\nThe violation save handler resolves the sanction straight from the client POST field without any tier/point cross-check:\n\n```php title=request/handler-pelanggaran.php startLineNumber=165 endLineNumber=179\n$tatibDetail = $tatibController->getTatibDetail($tatibId);\n$tingkat = $tatibDetail['tingkat'] ?? '';\n$resolvedSanksi = null;\nif (isset($_POST['sanksi']) && trim((string) $_POST['sanksi']) !== '') {\n    $resolvedSanksi = app_id_resolve((string) $_POST['sanksi'], 'sanksi');\n    if ($resolvedSanksi === null) {\n        throw new RuntimeException('Token sanksi tidak valid.');\n    }\n}\n$detailPelanggaran = $_POST['deskripsiPelanggaran'] ?? ($tatibDetail['deskripsi'] ?? null);\n\n// Only used as a FALLBACK when the client omits `sanksi`:\nif ((!$resolvedSanksi || trim((string) $resolvedSanksi) === '') && $tingkat !== '') {\n    $resolvedSanksi = $pelanggaranController->getDefaultSanksiByTingkat($tingkat);\n}\n```\n\nThe tier is correctly derived server-side from the selected `TATA_TERTIB` row (`$tingkat`), and points (`poin`) are read from `TATA_TERTIB` at render time, so neither can be forged directly. However, the explicitly supplied `sanksi` overrides the tier-consistent default and is **never compared** against `$tingkat`.\n\nThe model performs only an existence check — it confirms the sanction row exists but never reads or compares its `tingkat`:\n\n```php title=models/Pelanggaran.php startLineNumber=299 endLineNumber=302\n$stmtSanksi = $this->connect->prepare(\"SELECT id_sanksi FROM SANKSI WHERE id_sanksi = ? LIMIT 1\");\n$stmtSanksi->execute([$idSanksi]);\nif (!$stmtSanksi->fetch(PDO::FETCH_ASSOC)) {\n    throw new RuntimeException('Sanksi tidak valid.');\n}\n```\n\nThe same pattern exists in `updateDetailPelanggaran` (lines 447-450), so the mismatch is also accepted when editing an existing record.\n\nThe `SANKSI` table stores a per-row `tingkat` (I..V), and the edit form already exposes `data-tingkat` on each sanction `<option>`, proving the tier is available server-side and simply not enforced.\n\n## Impact\nA sanction of Tier I (e.g. \"Diberhentikan sebagai mahasiswa\" — expulsion) can be stored against a Tier V violation worth 2 points (\"Berkomunikasi dengan tidak sopan\"). The student view (`pelanggaran-page.php`) renders both the tier and the sanction, producing an internally contradictory and grossly overstated record.\n\n## CVSS notes\n- Attack vector Network, low complexity (replay of legitimate form with one field swapped), low privileges (any lecturer), no user interaction.\n- Confidentiality: none — this is a data-integrity / availability-of-trust issue. Integrity High (records can be arbitrarily mislabeled); the record is the authoritative disciplinary artifact.",
+              "remediation_steps": "1. Derive the sanction from the violation tier server-side and do not accept an arbitrary client-selected sanction. If a lecturer must be able to choose among the sanctions valid for a tier, first load the violation's `tingkat` server-side and constrain the choice to sanction rows whose `SANKSI.tingkat` equals that tier.\n2. Enforce the tier-match inside the model by selecting the sanction together with its tier and comparing it to the tata-tertib tier before insert/update, e.g. `SELECT id_sanksi, tingkat FROM SANKSI WHERE id_sanksi = ?` and reject when `upper(tingkat) !== upper($tatibTingkat)`.\n3. Apply the same validation on the update path (`updateDetailPelanggaran`) so existing records cannot be tampered with.\n4. As defense-in-depth, add a database-level integrity constraint or trigger ensuring `DETAIL_PELANGGARAN.id_sanksi` references a sanction whose tier matches the referenced `TATA_TERTIB.tingkat`.\n5. Validate the response rendering so that a record whose sanction tier differs from its violation tier is never displayed as authoritative.",
+              "poc": {
+                "description": "1. Authenticate as any lecturer (e.g. `1234567890` / `password123`) and open the reporting page (`/pelaporan`) to obtain a session-bound CSRF token and the `jenisPelanggaran` (tata-tertib) token list.\n2. Select a Tier V violation (e.g. \"Berkomunikasi dengan tidak sopan\", 2 points) as `jenisPelanggaran`.\n3. Obtain a Tier I `sanksi` token from any edit page (`/pelaporan/edit?id_detail=...`, each `<option>` under the `sanksi` select carries its token). Choose the option whose description is \"Diberhentikan sebagai mahasiswa\".\n4. Submit `POST /action/pelanggaran` with both tokens, the CSRF token, a target `nim`, and `store=1`.\n5. The response is `302` to `/pelanggaran/dosen` (success).\n6. Request `/pelanggaran` as the affected student (`2341238901` / `password123`); the row shows Tier `V` with sanction \"Diberhentikan sebagai mahasiswa\".\n7. The same swap works on the update path by additionally sending `update=1` and a valid `id_detail` token.",
+                "script_available": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

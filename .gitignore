@@ -34,3 +34,6 @@ storage/uploads/**
 _*.ps1
 _*.php
 _tiny*
+
+# Strix live run output at repo root (failed Windows attempts; real artifacts live in docs/intern/strix-runs/)
+/strix_runs/
