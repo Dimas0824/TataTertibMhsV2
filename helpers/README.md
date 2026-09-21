@@ -10,3 +10,4 @@ Fungsi utilitas lintas modul untuk routing, keamanan, URL, dan rendering kompone
 - `seo_helper.php`: canonical/meta tags/JSON-LD + security headers terkait SEO.
 - `flash_modal.php`: helper flash message berbasis modal UI.
 - `error_page_helper.php`: helper rendering halaman error konsisten.
+- `login_throttle_helper.php`: throttle login berbasis server (audit-log, per akun + IP) dan validasi input kredensial (tolak NUL/over-long).

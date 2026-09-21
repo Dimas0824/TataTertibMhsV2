@@ -189,9 +189,13 @@ error_log($e->getMessage()); // "PDOException: SQLSTATE[42S02]..."
 
 Parameter `?file=` dulunya plain filename (siapa pun yang tahu nama file bisa unduh). Sekarang nama file adalah **capability token terenkripsi dan terikat sesi** (`app_file_token`, AEAD + hash `session_id` + kadaluarsa). Replay lintas sesi secara kriptografis mustahil; nama mentah ditolak di level router dengan 403. Regression test: `tests/security/HttpMatrixSuite.php` (upload→download→cross-session replay).
 
-### Rate limiting login bersifat per-sesi
+### Rate limiting login — diselesaikan 2026-09
 
-Login kini punya **5 percobaan gagal → lockout 15 menit** (per sesi; otomatis mati bersama idle-expiry) plus dummy-verify agar timing "user tidak ada" identik dengan "password salah". Yang masih terbuka: attacker dengan sesi baru mendapat budget baru — untuk exposure internet publik, upgrade ke store berbasis IP.
+Login punya **lockout 5 percobaan gagal / 15 menit** plus dummy-verify agar timing "user tidak ada" identik dengan "password salah".
+
+Sejak perbaikan pentest 2026-09-21, keputusan lockout **tidak lagi bergantung pada sesi**: `helpers/login_throttle_helper.php` (`app_login_throttle_status()`) menghitung kegagalan `login_fail` dalam window 15 menit dari `SECURITY_AUDIT_LOG`, berbasis **akun (5) dan IP klien (15)**. Membuang cookie sesi tidak lagi mereset budget. IP diambil dari `REMOTE_ADDR` saja (header `X-Forwarded-For` tidak dipercaya karena bisa dipalsukan klien). Store gagal → *fail-soft* (tidak mengunci siapa pun).
+
+Kredensial juga divalidasi sebelum verifier: byte NUL ditolak (bcrypt terpotong di NUL → CWE-230) dan password dibatasi 72 byte. Regression test: `tests/security/LoginBruteForceSuite.php`.
 
 ### CSP memakai `'unsafe-inline'`
 

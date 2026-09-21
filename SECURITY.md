@@ -18,7 +18,7 @@ temuan, dan cara berkontribusi.
 
 Aplikasi ini telah melalui **hardening** dan **beberapa gelombang pengujian keamanan**:
 
-- **Hardening (2026-09)** — bcrypt + throttle login (5 gagal/15 menit) + dummy-verify anti
+- **Hardening (2026-09)** — bcrypt + throttle login (5 gagal/15 menit, kini **berbasis server per akun+IP** — tahan ganti sesi) + validasi kredensial (tolak NUL/over-long) + dummy-verify anti
   timing-leak, session regeneration saat privilege change, capability token terenkripsi terikat
   sesi untuk ID & file (anti-IDOR), CSRF pada semua state-changing request, security headers
   (CSP/XFO/nosniff/Referrer-Policy), error fail-closed, output-encoding & sanitizer.

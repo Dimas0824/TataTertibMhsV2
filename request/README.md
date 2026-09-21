@@ -4,7 +4,7 @@ Entrypoint HTTP untuk action route (`/action/*`). Handler melakukan validasi awa
 
 ## File
 
-- `handler-login.php`: proses login (POST) dan validasi kredensial.
+- `handler-login.php`: proses login (POST), validasi kredensial (tolak NUL/over-long), dan lockout berbasis server (akun + IP).
 - `handler-logout.php`: proses logout dan pembersihan sesi.
 - `handler-pelanggaran.php`: proses aksi pelaporan/pelanggaran (create/update/read helper endpoints).
 - `handler-notifikasi.php`: endpoint aksi notifikasi (mark read, mark all read, dll).
