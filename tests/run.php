@@ -25,6 +25,8 @@ $testFiles = [
     __DIR__ . '/unit/ModelCrudTest.php',
     __DIR__ . '/unit/SeoHelperTest.php',
     __DIR__ . '/unit/ControllerCoverageTest.php',
+    // Login hardening helpers (NUL/length guard + durable throttle):
+    __DIR__ . '/unit/LoginThrottleHelperTest.php',
     __DIR__ . '/integration/DatabaseTest.php',
     __DIR__ . '/security/SourceScanSuite.php',
     __DIR__ . '/security/TokenSuite.php',
@@ -36,6 +38,8 @@ $testFiles = [
     __DIR__ . '/security/NewsHandlerSuite.php',
     // Pelanggaran report form (POST store/update):
     __DIR__ . '/security/PelanggaranFormSuite.php',
+    // Login brute-force + NUL-truncation regression (HTTP):
+    __DIR__ . '/security/LoginBruteForceSuite.php',
     // HTTP matrix boots its own `php -S` harness; longest-running, last:
     __DIR__ . '/security/HttpMatrixSuite.php',
 ];
