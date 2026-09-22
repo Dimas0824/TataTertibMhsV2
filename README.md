@@ -19,8 +19,7 @@ pentest otomatis setiap kali ada perubahan.
 ## Mengapa Keamanan Menjadi Fokus
 
 Ini proyek **belajar keamanan aplikasi web**. Tujuannya bukan sekadar membuat aplikasi
-berjalan, tetapi membangunnya dengan **postur keamanan yang dapat dibuktikan**: kontrol
-otorisasi di sisi server, penanganan input yang ketat, dan jejak pengujian yang lengkap.
+berjalan, tetapi membangunnya dengan **postur keamanan yang dapat dibuktikan**: kontrol otorisasi di sisi server, penanganan input yang ketat, dan jejak pengujian yang lengkap.
 
 Tiga prinsip yang dipegang:
 
@@ -37,8 +36,7 @@ dan dapat direproduksi.
 
 ## Postur Keamanan
 
-Berikut ulasan menyeluruh mengenai pertahanan yang sudah diterapkan. Setiap klaim di sini
-di-back oleh regression test dan/atau bukti pentest yang bisa Anda periksa sendiri.
+Berikut ulasan menyeluruh mengenai pertahanan yang sudah diterapkan. Setiap klaim di sini di-back oleh regression test dan/atau bukti pentest yang bisa Anda periksa sendiri.
 
 ### 1. Autentikasi
 
@@ -78,15 +76,12 @@ di-back oleh regression test dan/atau bukti pentest yang bisa Anda periksa sendi
 
 ### 5. Perlindungan Injeksi
 
-- **Prepared statement PDO secara native** (`ATTR_EMULATE_PREPARES = false`) untuk semua
-  query - parameterized, bukan string concatenation.
+- **Prepared statement PDO secara native** (`ATTR_EMULATE_PREPARES = false`) untuk semua query - parameterized, bukan string concatenation.
 - Validasi input ketat pada semua jalur yang menulis ke DB.
 
 ### 6. CSRF
 
-- CSRF token **64-hex** wajib pada **semua** state-changing request (POST/AJAX); request
-  tanpa token -> **419**. Diterapkan lewat helper terpusat (`app_verify_csrf()`), bukan
-  per-form.
+- CSRF token **64-hex** wajib pada **semua** state-changing request (POST/AJAX); request tanpa token -> **419**. Diterapkan lewat helper terpusat (`app_verify_csrf()`), bukan per-form.
 
 ### 7. XSS & Output Encoding
 
@@ -161,48 +156,25 @@ Laporan: [`docs/intern/PENTEST-REPORT-2026-09-08.md`](docs/intern/PENTEST-REPORT
 
 Strix dijalankan **white-box per area** (target live + source di-mount), satu area per run.
 Setiap run diuji ulang dengan instruksi identik untuk membuktikan perbaikan - dan menemukan
-celah baru.
+celah baru. Ringkasan status terkini:
 
-| Tanggal | Jenis | Hasil |
-| ------- | ----- | ----- |
-| **2026-09-21** | Run pertama (5 area) | 6 temuan: 1 CRITICAL, 1 HIGH, 3 MEDIUM, 1 LOW |
-| **2026-09-22** | Re-scan verifikasi (instruksi identik) | **6 temuan 21-09 HILANG** (fix terbukti) + 5 temuan baru (1 false positive + 4 valid, sudah difix) |
+| Metrik | Nilai |
+| ------- | ----- |
+| Run terakhir | **2026-09-22** (re-scan verifikasi, instruksi identik) |
+| Temuan terbuka | **0** - seluruh temuan pada kode saat ini sudah diperbaiki & terverifikasi |
+| Temuan terverifikasi tertutup | **10** (6 temuan 2026-09-21 + 4 temuan baru 2026-09-22) |
+| Klaim terbukti false positive | 1 (`case-variant lockout`; `_ci` collation - bukan celah) |
+| Regression suite | **198/198** hijau |
 
-**Temuan 2026-09-21 - semua diperbaiki dan terbukti tertutup:**
+**Riwayat lengkap temuan (change log) tidak ditampilkan di sini** - agar README tetap
+menampilkan postur keamanan *saat ini*, bukan riwayat. Riwayat dan bukti mentahnya adalah
+dokumen tersendiri:
 
-| Area | Temuan | Severity | Status |
-| ---- | ------ | -------- | ------ |
-| LOGIN | NUL-byte truncation pada verifikasi password | HIGH (CVSS 7.4) | Confirmed-fixed |
-| LOGIN | Lockout brute-force per-sesi - buang cookie = reset counter | CRITICAL (CVSS 9.1) | Confirmed-fixed |
-| SESSION/CSRF | Cookie session tanpa `Secure` saat TLS di-terminate proxy | MEDIUM (CVSS 5.9) | Confirmed-fixed |
-| SESSION/CSRF | Tidak ada absolute lifetime / invalidasi sesi bersamaan | LOW (CVSS 3.7) | Confirmed-fixed |
-| UPLOAD/IDOR | **0 temuan** - upload/token/IDOR/RBAC semua ditahan | - | documented |
-| PELANGGARAN | Sanksi tidak divalidasi terhadap tingkat pelanggaran | MEDIUM (CVSS 6.5) | Confirmed-fixed |
-| NEWS | Stored XSS halaman publik via quote-boundary bypass | MEDIUM (CVSS 5.4) | Confirmed-fixed |
-
-**Temuan baru 2026-09-22 - juga sudah diperbaiki:**
-
-| Area | Temuan | Severity | Status |
-| ---- | ------ | -------- | ------ |
-| SESSION/CSRF | `session.use_strict_mode` nonaktif (session fixation) | MEDIUM (CVSS 4.2) | Confirmed-fixed |
-| UPLOAD/IDOR | Halaman mahasiswa tanpa role guard -> HTTP 500 untuk admin | MEDIUM (CVSS 4.3) | Confirmed-fixed |
-| PELANGGARAN | Pelanggaran berstatus `selesai` masih bisa dihapus | HIGH (CVSS 7.1) | Confirmed-fixed |
-| NEWS | XSS via judul berita keluar dari blok JSON-LD | MEDIUM (CVSS 5.4) | Confirmed-fixed |
-
-Satu temuan re-scan terbukti **false positive** ("case-variant lockout") - throttle dan
-lookup keduanya case-insensitive; analisis 4 lapis ada di
-[`strix-2026-09-22/verification-analysis/`](docs/intern/strix-runs/strix-2026-09-22/verification-analysis/).
-
-**Indeks semua temuan lintas-run:** [`docs/intern/VULN-LOG.md`](docs/intern/VULN-LOG.md).
-
-#### Di mana membaca apa
-
-- **Temuan 2026-09-21 sudah SELESAI?** -> matriks penutupan per temuan di
-  [`strix-2026-09-21/README.md`](docs/intern/strix-runs/strix-2026-09-21/README.md).
-- **Celah keamanan BARU?** -> [`strix-2026-09-22/README.md`](docs/intern/strix-runs/strix-2026-09-22/README.md)
-  dan area per-area di dalamnya.
-- **Struktur & aturan dokumentasi pentest:** [`docs/intern/strix-runs/README.md`](docs/intern/strix-runs/README.md)
-  dan [`docs/intern/SECURITY-DOC-STANDARD.md`](docs/intern/SECURITY-DOC-STANDARD.md).
+- **Indeks semua temuan lintas-run (change-log security):** [`docs/intern/VULN-LOG.md`](docs/intern/VULN-LOG.md)
+  - satu baris per temuan, terbaru di atas, dengan CWE, severity, tanggal, commit fix, status terkini.
+- **Laporan per-run (temuan + matriks penutupan):** [`docs/intern/strix-runs/`](docs/intern/strix-runs/README.md)
+  - `strix-2026-09-21/` (temuan asli) dan `strix-2026-09-22/` (re-scan verifikasi + temuan baru).
+- **Standar & aturan dokumentasi keamanan:** [`docs/intern/SECURITY-DOC-STANDARD.md`](docs/intern/SECURITY-DOC-STANDARD.md).
 
 ```bash
 # contoh reproduce perbaikan area LOGIN (butuh app jalan di :8123 + DB ter-seed)
