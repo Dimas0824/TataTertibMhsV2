@@ -52,11 +52,6 @@ milik sendiri (authorized).
 | 5 | News module (XSS) | stored XSS, sanitizer bypass, SQLi, CSRF, authz, output encoding | 1 | 88 | 7.25M | completed | 1 MEDIUM |
 | | **TOTAL** | | **5** | **354** | **28.2M** | 5/5 completed | **1 CRITICAL - 1 HIGH - 3 MEDIUM - 1 LOW** |
 
-**Catatan reliabilitas:** **nol** kejadian HTTP 503 / rate-limit di kelima run
-(grep tiap `strix.log` untuk `HTTP 503` / `rate limit` / `RemoteDisconnected`
-tidak menghasilkan apa pun). Strategi berurutan, satu area per run, dan
-reasoning-effort rendah menjaga agen di bawah plafon gateway.
-
 ## Findings Matrix
 
 Severity sesuai laporan Strix; CVSS dan CWE diambil dari tiap `vuln-*.md`.
@@ -75,16 +70,16 @@ Severity sesuai laporan Strix; CVSS dan CWE diambil dari tiap `vuln-*.md`.
 Area 3 tidak menghasilkan temuan, tetapi bukti kelas serangan yang **dicoba dan
 bertahan** adalah bukti keamanan kelas satu. Direproduksi dari laporan run tersebut:
 
-| Attack class | Dicoba | Hasil |
-| --- | --- | --- |
-| Unrestricted file type (`.php`, `.phtml`, PHP-in-image, Content-Type mismatch) | allowlist MIME `finfo` + ekstensi di sisi server | **Ditolak** - "Tipe file tidak diizinkan" |
-| Path traversal pada nama file (`../`, `..%2f`, `....//`, null byte, absolute path) | nama dibuat server `<id>_<type>_<24-hex>.<ext>`; nama klien tidak pernah dipakai | **Ditolak** - semua tersimpan di dalam `storage/uploads/` |
-| Overwrite / collision | suffix acak 12 byte | **Ditolak** - unggahan bernama sama menghasilkan file berbeda |
-| SVG / polyglot XSS | MIME SVG tidak diizinkan; `nosniff` saat disajikan | **Ditolak** |
-| Download token tamper / replay / cross-entity | token tersegel NaCl/AES-GCM, `sid = sha256(session_id)`, `hash_equals`, expiry | **Ditolak** - 403 |
-| IDOR pada download / nama file mentah / path storage langsung | token wajib; `.htaccess` + router menolak | **Ditolak** - 403 |
-| IDOR / BOLA pada edit/confirm/delete pelanggaran (lintas-user) | token ID tersegel terikat sesi + SQL ber-scope kepemilikan (`id_mhs`/`id_dosen`) | **Ditolak** - 403 |
-| Role escalation (mahasiswa/dosen - aksi admin) | enforcement role + CSRF di sisi server | **Ditolak** - 403 |
+| Area | Attack class | Outcome |
+|---|---|---|
+| Upload / IDOR | Unrestricted file type (`.php`, `.phtml`, PHP-in-image, Content-Type mismatch) | **Blocked** - allowlist MIME `finfo` + ekstensi di sisi server; "Tipe file tidak diizinkan" |
+| Upload / IDOR | Path traversal pada nama file (`../`, `..%2f`, `....//`, null byte, absolute path) | **Blocked** - nama dibuat server `<id>_<type>_<24-hex>.<ext>`; semua tersimpan di dalam `storage/uploads/` |
+| Upload / IDOR | Overwrite / collision | **Blocked** - suffix acak 12 byte; unggahan bernama sama menghasilkan file berbeda |
+| Upload / IDOR | SVG / polyglot XSS | **Blocked** - MIME SVG tidak diizinkan; `nosniff` saat disajikan |
+| Upload / IDOR | Download token tamper / replay / cross-entity | **Blocked** - token tersegel NaCl/AES-GCM, `sid = sha256(session_id)`, `hash_equals`, expiry; 403 |
+| Upload / IDOR | IDOR pada download / nama file mentah / path storage langsung | **Blocked** - token wajib; `.htaccess` + router menolak; 403 |
+| Upload / IDOR | IDOR / BOLA pada edit/confirm/delete pelanggaran (lintas-user) | **Blocked** - token ID tersegel terikat sesi + SQL ber-scope kepemilikan; 403 |
+| Upload / IDOR | Role escalation (mahasiswa/dosen - aksi admin) | **Blocked** - enforcement role + CSRF di sisi server; 403 |
 
 Dua **non-security defect** dicatat (bukan kerentanan): tautan PDF generik yang
 di-hardcode di view pelanggaran mahasiswa, dan admin yang membuka halaman

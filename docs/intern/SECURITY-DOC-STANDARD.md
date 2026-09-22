@@ -103,11 +103,18 @@ konsisten dengan penamaan file di `vulnerabilities/vuln-*.md`.
 
 ### 2.6 Coverage / Negative-Result Matrix
 
-**Wajib ada meskipun kosong.** Jika area tidak menghasilkan temuan baru, tulis
-tabel "Attack class attempted -> Outcome" seperti dicontohkan Area 3 run 2026-09-21.
-Ini bukti bahwa suatu kelas serangan **dicoba dan bertahan**, bukan cuma "tidak
-sempat diuji". Jika benar-benar tidak ada yang diuji di area itu pada run ini,
-tulis eksplisit: `_Tidak ada pengujian baru di area ini pada run ini._`
+**Wajib ada meskipun kosong.** Kolom **baku, tidak boleh diubah urutannya**:
+
+```markdown
+| Area | Attack class | Outcome |
+```
+
+Isi tabel adalah kelas serangan yang **dicoba dan bertahan** (outcome `Blocked` /
+`bertahan`) - ini bukti suatu kelas serangan benar-benar diuji, bukan cuma "tidak
+sempat diuji". Gunakan struktur kolom yang sama di **setiap** run (run pertama maupun
+re-scan) supaya tabelnya bisa dibandingkan antar-run. Jika benar-benar tidak ada yang
+diuji di area itu pada run ini, tulis eksplisit:
+`_Tidak ada pengujian baru di area ini pada run ini._`
 
 ### 2.7 Remediation & Verification (khusus re-scan)
 

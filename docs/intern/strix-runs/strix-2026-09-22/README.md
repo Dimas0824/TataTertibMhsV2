@@ -6,7 +6,7 @@
 ## Metadata
 
 | Field | Value |
-|---|---|
+| --- | --- |
 | Target | DiscipLink / TataTertibMhsV2 - instance lab lokal `http://172.17.112.1:8001` |
 | Mode | white-box (`--mount` source tree + live target) |
 | Tool | Strix v1.4.1 (sandbox image: `ghcr.io/usestrix/strix-sandbox:1.2.0`) |
@@ -29,7 +29,7 @@ dicocokkan) agar perbandingan before/after sah. Lima area yang sama diuji ulang,
 satu area per run, white-box.
 
 | Area | Scope yang diuji |
-|---|---|
+| --- | --- |
 | Login / Authentication | SQLi, auth bypass, enumeration, brute-force, session, CSRF, open redirect |
 | Session & CSRF | session fixation, cookie flags, lifecycle, cakupan CSRF |
 | Upload / Download / IDOR | unrestricted upload, traversal, token sealing, IDOR/BOLA, RBAC |
@@ -41,7 +41,7 @@ satu area per run, white-box.
 ## Run Summary
 
 | # | Area | Scope tested | Runs | LLM reqs | Tokens | Status | Findings |
-|---|---|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | Login / Authentication | sama dengan baseline | 1 | - | - | completed | 1 klaim (false positive) |
 | 2 | Session & CSRF | sama dengan baseline | 1 | - | - | completed | 1 MEDIUM (baru) |
 | 3 | Upload / Download / IDOR | sama dengan baseline | 1 | - | - | completed | 1 MEDIUM (baru) |
@@ -58,7 +58,7 @@ Severity sesuai laporan Strix. Kolom `Status` memakai kosakata baku
 (`New` / `Confirmed-fixed` / `False-positive` / `Carried-over`).
 
 | ID | Area | Severity | CVSS | CWE | Finding | Endpoint | Status | Evidence |
-|---|---|---|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | A1-vuln-0001 (2026-09-22) | Login | CRITICAL (klaim) | - | CWE-307 | Lockout bisa dilewati via identifier akun berbeda huruf besar/kecil | `POST /action/login` | False-positive | [analisis](verification-analysis/README.md) |
 | A2-vuln-0001 (2026-09-22) | Session | MEDIUM | 4.2 | CWE-384 | `session.use_strict_mode` nonaktif - session ID tak dikenal dari klien diterima (session fixation) | siklus hidup sesi | New | [after](area2-session-csrf/after/README.md) |
 | A3-vuln-0001 (2026-09-22) | Upload/IDOR | MEDIUM | 4.3 | CWE-284 | Halaman mahasiswa tanpa role guard - role admin kena 500, bukan fail-closed | halaman mahasiswa | New | [after](area3-upload-idor/after/README.md) |
@@ -67,13 +67,13 @@ Severity sesuai laporan Strix. Kolom `Status` memakai kosakata baku
 
 ## Coverage / Negative-Result Matrix
 
-| Area | Attack class | Hasil re-scan |
+| Area | Attack class | Outcome |
 |---|---|---|
-| Login | brute-force / lockout bypass (varian huruf besar-kecil) | **bertahan** - throttle & lookup keduanya case-insensitive (lihat 4 lapis bukti di bawah) |
-| Session | session fixation via ID tak dikenal | **gagal** - `use_strict_mode` menerima hanya ID yang dibuat server (temuan baru) |
-| Upload/IDOR | akses halaman lintas-role | **gagal** - role tak berhak kena 500, bukan 403 (temuan baru) |
-| Pelanggaran | hapus record finalized | **gagal** - record `selesai` terhapus (temuan baru) |
-| News | XSS via jalur selain body artikel (JSON-LD) | **gagal** - judul keluar dari blok script (temuan baru) |
+| Login | brute-force / lockout bypass (varian huruf besar-kecil) | **Blocked** - throttle & lookup keduanya case-insensitive (lihat 4 lapis bukti di bawah) |
+| Session | session fixation via ID tak dikenal | **Bypass** - `use_strict_mode` menerima hanya ID yang dibuat server (temuan baru) |
+| Upload/IDOR | akses halaman lintas-role | **Bypass** - role tak berhak kena 500, bukan 403 (temuan baru) |
+| Pelanggaran | hapus record finalized | **Bypass** - record `selesai` terhapus (temuan baru) |
+| News | XSS via jalur selain body artikel (JSON-LD) | **Bypass** - judul keluar dari blok script (temuan baru) |
 
 _Area yang tidak menghasilkan temuan valid pada run ini: Login (hanya false positive)._
 
@@ -85,7 +85,7 @@ dan (b) temuan **baru** run ini (masuk Findings Matrix dengan Status `New`).
 **(a) Penutupan temuan run 2026-09-21:**
 
 | ID | Temuan run sebelumnya | Fix | Commit | Hasil re-scan |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | A1-vuln-0001 | NUL-byte truncation (CWE-230) | tolak NUL sebelum hashing | `ba4e8d1` | HILANG |
 | A1-vuln-0002 | Lockout per-sesi (CWE-307) | throttle durable | `ba4e8d1` | HILANG |
 | A2-vuln-0001 | Cookie tanpa `Secure` (CWE-614) | set `Secure` + `use_strict_mode` | `9f55f2a`, `a56baca` | HILANG |
@@ -93,19 +93,16 @@ dan (b) temuan **baru** run ini (masuk Findings Matrix dengan Status `New`).
 | A4-vuln-0001 | Tier sanksi tak divalidasi (CWE-20) | validasi tier | `487dd93` | HILANG |
 | A5-vuln-0001 | Stored XSS batas kutip (CWE-79) | sanitizer sadar-kutip | `7b4c39d` | HILANG |
 
-**(b) Perbaikan temuan baru run ini:**
-
-| ID | Temuan baru | Fix | Commit |
-|---|---|---|---|
-| A2-vuln-0001 (2026-09-22) | `session.use_strict_mode` nonaktif (CWE-384) | aktifkan `use_strict_mode` | `a56baca` |
-| A3-vuln-0001 (2026-09-22) | role guard halaman mahasiswa (CWE-284) | 403 (bukan 500) untuk non-mahasiswa | `d4aec0e` |
-| A4-vuln-0001 (2026-09-22) | hapus pelanggaran finalized (CWE-863) | tolak hapus bila status `selesai` | `579a4c6` |
-| A5-vuln-0001 (2026-09-22) | XSS via JSON-LD (CWE-79) | hex-escape nilai JSON-LD | `1181dec` |
+**(b) Perbaikan temuan baru run ini:** temuan baru (Status `New`) sudah terdaftar
+di [Findings Matrix](#findings-matrix) beserta commit fix-nya; tidak diulang di sini
+agar tidak ada tabel kembar. Ringkasannya: `A2-vuln-0001 (CWE-384)` -> `a56baca`,
+`A3-vuln-0001 (CWE-284)` -> `d4aec0e`, `A4-vuln-0001 (CWE-863)` -> `579a4c6`,
+`A5-vuln-0001 (CWE-79)` -> `1181dec`.
 
 ### Analisis: mengapa temuan case-variant lockout adalah false positive
 
-Re-scan (area 1) melaporkan CRITICAL *"Login lockout can be bypassed via
-case-varied account identifiers"* - klaim bahwa throttle case-sensitive sedangkan
+Re-scan (area 1) melaporkan CRITICAL _"Login lockout can be bypassed via
+case-varied account identifiers"_ - klaim bahwa throttle case-sensitive sedangkan
 lookup akun case-insensitive, sehingga varian huruf besar/kecil mendapat budget
 terpisah. **Klaim ini keliru.** Bukti (4 lapis, lihat
 [`verification-analysis/prove_case_variant_not_bypass.py`](verification-analysis/prove_case_variant_not_bypass.py)):
