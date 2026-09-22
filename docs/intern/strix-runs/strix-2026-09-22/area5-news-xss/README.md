@@ -1,28 +1,17 @@
-# area5-news-xss --- RE-RUN (Strix re-scan 2026-09-22)
+# Area 5 - News module / XSS (run 2026-09-22)
 
-Run kedua dengan **instruksi + parameter identik** run pertama, terhadap kode
-yang sudah diperbaiki. Tujuan: verifikasi independen klaim "sudah di-fix".
+| Bagian | Isi |
+| ------ | --- |
+| [`before/`](before/) | Artefak mentah Strix re-scan: `findings.sarif`, `vulnerabilities/vuln-*.md`, `penetration_test_report.md`, `run.json`, `strix.log`, `.state/` |
+| [`after/`](after/) | Bukti perbaikan temuan BARU area ini + skrip/commit |
 
-| | |
-| --- | --- |
-| **Area** | NEWS MODULE (XSS) |
-| **Run (re-run)** | `172-17-112-1-8001_c4bc` |
-| **Hasil** | 1 temuan LAMA HILANG; 1 temuan baru **MEDIUM** (XSS via JSON-LD title) --- **VALID**, DIFIX `1181dec` |
+## Temuan run ini
 
-## Temuan re-run
+| ID | Severity | CWE | Temuan | Status |
+| --- | -------- | --- | ------ | ------ |
+| A5-vuln-0001 (2026-09-22) | MEDIUM (5.4) | CWE-79 | Judul berita keluar dari blok JSON-LD (`application/ld+json`) - XSS | New |
 
-| id | title | severity |
-| --- | --- | --- |
-| `vuln-0001` | Stored XSS via news title breaking out of the JSON-LD Article schema | MEDIUM |
+Fix: `1181dec` (hex-escape nilai JSON-LD). Regression: `tests/unit/Area5JsonLdSuite.php`.
 
-## Artefak
-
-- `findings.sarif` --- SARIF 2.1.0 (tool=Strix)
-- `vulnerabilities/*.md` --- detail temuan + PoC
-- `penetration_test_report.md` --- laporan naratif
-- `vulnerabilities.csv` / `.json` --- indeks temuan
-- `run.json` --- status + usage LLM
-- `strix.log` --- log lengkap
-- `.state/` --- database percakapan agent (agents.db)
-
-> Ringkasan lengkap 5 area: [`../verification-analysis/README.md`](../verification-analysis/README.md)
+> 1 temuan LAMA run 2026-09-21 (stored XSS body) **HILANG** di re-scan ini.
+> Perbaikan temuan baru **belum** diverifikasi re-scan ketiga - lihat [`after/README.md`](after/README.md).

@@ -1,27 +1,32 @@
-# After - perbaikan temuan 2026-09-22 (Area 2: Session / CSRF)
+# Area 2 - After fix (verification evidence)
 
-`before/` berisi artefak mentah re-scan. `after/` berisi bukti perbaikan
-**temuan baru** yang muncul di re-scan 2026-09-22 untuk area ini.
+| | |
+| --- | --- |
+| Findings | A2-vuln-0001 (2026-09-22) - CWE-384 - MEDIUM (CVSS 4.2) |
+| Fix commit | `a56baca` |
+| Regression test | `tests/security/SessionFixationSuite.php` |
+| Reproduce | - (dikunci regression test; belum ada skrip re-scan) |
 
-## Temuan baru (2026-09-22)
+## Before vs After
 
-| ID | Severity | CWE | Temuan | Fix |
-| -- | -------- | --- | ------ | --- |
-| A2-rerun-0001 | MEDIUM (CVSS 4.2) | CWE-384 | `session.use_strict_mode` nonaktif - session ID tak dikenal dari klien diterima tanpa regenerasi (session fixation) | commit `a56baca` |
+| Skenario | BEFORE (rentan) | AFTER (terlindung) |
+| --- | --- | --- |
+| Klien mengirim `PHPSESSID` yang tidak pernah dibuat server | diterima apa adanya (session fixation) | **ditolak** - `session.use_strict_mode=1` mengganti dengan ID baru |
 
-## Perbaikan
+## Cara reproduksi (after)
 
-- `helpers/token_helper.php` - `app_session_start_if_needed()` kini menyalakan
-  `session.use_strict_mode=1` sebelum `session_start()`, sehingga PHP menolak
-  session ID yang tidak pernah dibuat server (diganti yang baru).
+Belum ada skrip mandiri; perilaku dikunci oleh regression test:
 
-## Bukti
+```bash
+php tests/run.php     # menjalankan SessionFixationSuite
+```
 
-- Komit: `a56baca` - fix(security): enable session.use_strict_mode to replace unknown PHPSESSID (CWE-384)
-- Regression test: `tests/security/SessionFixationSuite.php` (terdaftar di `tests/run.php`)
+Perbaikan kode: `helpers/token_helper.php` - `app_session_start_if_needed()`
+menyalakan `session.use_strict_mode=1` sebelum `session_start()`.
 
 ## Status verifikasi
 
-Perbaikan dikunci oleh **regression test** (suite hijau penuh). **Belum** ada
-re-scan Strix ketiga untuk area ini - lihat catatan di
-[`../../README.md`](../../README.md).
+Dikunci oleh **regression test** (suite hijau penuh). **Belum** diverifikasi
+re-scan Strix ketiga - lihat catatan di [`../../README.md`](../../README.md).
+Dua temuan LAMA 2026-09-21 (cookie tanpa `Secure`, tanpa absolute lifetime)
+**HILANG** di re-scan ini.

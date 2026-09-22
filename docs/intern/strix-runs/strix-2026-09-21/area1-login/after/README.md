@@ -1,4 +1,4 @@
-# area1-login - AFTER fix (verification evidence)
+# Area 1 - After fix (verification evidence)
 
 Bukti bahwa dua temuan pada run LOGIN **sudah diperbaiki dan terbukti tertutup**.
 
@@ -38,14 +38,14 @@ Screenshot ini diambil dari manual reproduction command mentah Strix:
 ## Cara reproduksi (after)
 
 ```bash
-# 1. Siapkan app (bind ke semua interface) + DB ter-seed
+# Area 1 - After fix (verification evidence)
 php artisan serve --host=0.0.0.0 --port=8123
 
-# 2. Jalankan verifikasi (butuh bash + curl + php)
+# Area 1 - After fix (verification evidence)
 bash reproduce.sh http://127.0.0.1:8123
-#    harapan: "RESULT: 3 passed, 0 failed"  (exit 0)
+# Area 1 - After fix (verification evidence)
 
-# 3. Simpan bukti
+# Area 1 - After fix (verification evidence)
 bash reproduce.sh http://127.0.0.1:8123 > reproduce-after.log 2>&1
 ```
 
@@ -55,8 +55,7 @@ bash reproduce.sh http://127.0.0.1:8123 > reproduce-after.log 2>&1
 
 ---
 
-## Kenapa hasilnya sah
-
+## Status verifikasi
 - **Exploit ditolak** (skenario 1 & 3) - celah benar-benar tertutup.
 - **Kontrol tetap jalan** (skenario 2) - perbaikan tidak merusak login normal.
 - **Regression test otomatis** (`php tests/run.php` - `LoginBruteForceSuite`)

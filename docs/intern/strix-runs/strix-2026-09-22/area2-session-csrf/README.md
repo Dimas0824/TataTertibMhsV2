@@ -1,28 +1,18 @@
-# area2-session-csrf --- RE-RUN (Strix re-scan 2026-09-22)
+# Area 2 - Session & CSRF (run 2026-09-22)
 
-Run kedua dengan **instruksi + parameter identik** run pertama, terhadap kode
-yang sudah diperbaiki. Tujuan: verifikasi independen klaim "sudah di-fix".
+| Bagian | Isi |
+| ------ | --- |
+| [`before/`](before/) | Artefak mentah Strix re-scan: `findings.sarif`, `vulnerabilities/vuln-*.md`, `penetration_test_report.md`, `run.json`, `strix.log`, `.state/` |
+| [`after/`](after/) | Bukti perbaikan temuan BARU area ini + skrip/commit |
 
-| | |
-| --- | --- |
-| **Area** | SESSION MANAGEMENT & CSRF |
-| **Run (re-run)** | `172-17-112-1-8001_c43c` |
-| **Hasil** | 2 temuan LAMA HILANG; 1 temuan baru **MEDIUM** (use_strict_mode) --- **VALID**, DIFIX `a56baca` |
+## Temuan run ini
 
-## Temuan re-run
+| ID | Severity | CWE | Temuan | Status |
+| --- | -------- | --- | ------ | ------ |
+| A2-vuln-0001 (2026-09-22) | MEDIUM (4.2) | CWE-384 | `session.use_strict_mode` nonaktif - session ID tak dikenal dari klien diterima (session fixation) | New |
 
-| id | title | severity |
-| --- | --- | --- |
-| `vuln-0001` | PHP session.use_strict_mode disabled --- server adopts arbitrary client-supplied session identifiers | MEDIUM |
+Fix: `a56baca` (aktifkan `use_strict_mode`). Regression: `tests/security/SessionFixationSuite.php`.
 
-## Artefak
-
-- `findings.sarif` --- SARIF 2.1.0 (tool=Strix)
-- `vulnerabilities/*.md` --- detail temuan + PoC
-- `penetration_test_report.md` --- laporan naratif
-- `vulnerabilities.csv` / `.json` --- indeks temuan
-- `run.json` --- status + usage LLM
-- `strix.log` --- log lengkap
-- `.state/` --- database percakapan agent (agents.db)
-
-> Ringkasan lengkap 5 area: [`../verification-analysis/README.md`](../verification-analysis/README.md)
+> 2 temuan LAMA run 2026-09-21 (cookie tanpa `Secure`, tanpa absolute lifetime)
+> **HILANG** di re-scan ini. Perbaikan temuan baru **belum** diverifikasi re-scan
+> ketiga - lihat [`after/README.md`](after/README.md).

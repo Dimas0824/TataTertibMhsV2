@@ -1,28 +1,17 @@
-# area3-upload-idor --- RE-RUN (Strix re-scan 2026-09-22)
+# Area 3 - Upload / Download / IDOR (run 2026-09-22)
 
-Run kedua dengan **instruksi + parameter identik** run pertama, terhadap kode
-yang sudah diperbaiki. Tujuan: verifikasi independen klaim "sudah di-fix".
+| Bagian | Isi |
+| ------ | --- |
+| [`before/`](before/) | Artefak mentah Strix re-scan: `findings.sarif`, `vulnerabilities/vuln-*.md`, `penetration_test_report.md`, `run.json`, `strix.log`, `.state/` |
+| [`after/`](after/) | Bukti perbaikan temuan BARU area ini + skrip/commit |
 
-| | |
-| --- | --- |
-| **Area** | UPLOAD / DOWNLOAD / IDOR |
-| **Run (re-run)** | `172-17-112-1-8001_929c` |
-| **Hasil** | 1 temuan baru **MEDIUM** (missing role guard -> 500) --- **VALID**, DIFIX `d4aec0e` |
+## Temuan run ini
 
-## Temuan re-run
+| ID | Severity | CWE | Temuan | Status |
+| --- | -------- | --- | ------ | ------ |
+| A3-vuln-0001 (2026-09-22) | MEDIUM (4.3) | CWE-284 | Halaman mahasiswa tanpa role guard - role admin kena 500, bukan fail-closed | New |
 
-| id | title | severity |
-| --- | --- | --- |
-| `vuln-0001` | Missing role guard in mahasiswa violation page causes unhandled HTTP 500 for administrators | MEDIUM |
+Fix: `d4aec0e` (403, bukan 500, untuk non-mahasiswa). Regression: `tests/security/Area3AccessSuite.php`.
 
-## Artefak
-
-- `findings.sarif` --- SARIF 2.1.0 (tool=Strix)
-- `vulnerabilities/*.md` --- detail temuan + PoC
-- `penetration_test_report.md` --- laporan naratif
-- `vulnerabilities.csv` / `.json` --- indeks temuan
-- `run.json` --- status + usage LLM
-- `strix.log` --- log lengkap
-- `.state/` --- database percakapan agent (agents.db)
-
-> Ringkasan lengkap 5 area: [`../verification-analysis/README.md`](../verification-analysis/README.md)
+> Area ini 0 temuan di run 2026-09-21; re-scan menemukan **1 temuan baru**.
+> Perbaikan **belum** diverifikasi re-scan ketiga - lihat [`after/README.md`](after/README.md).

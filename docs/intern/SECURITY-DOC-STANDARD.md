@@ -138,6 +138,69 @@ Wajib ada di akhir setiap README, minimal menyatakan: run yang `completed`
 dengan 0 temuan bukan bukti tidak adanya kerentanan, hanya bukti kelas
 serangan tertentu bertahan terhadap agent/model yang dipakai saat itu.
 
+### 2.10 areaN/README.md (indeks area)
+
+Setiap `strix-runs/<tanggal>/areaN-<slug>/README.md` **wajib** memakai bentuk berikut,
+sama untuk **semua** area dan **semua** tanggal:
+
+```markdown
+# Area N - <Nama Area> (run YYYY-MM-DD)
+
+| Bagian | Isi |
+| ------ | --- |
+| [`before/`](before/) | <deskripsi artefak mentah> |
+| [`after/`](after/) | <deskripsi bukti perbaikan> |
+
+## Temuan run ini
+
+| ID | Severity | CWE | Temuan | Status |
+| --- | -------- | --- | ------ | ------ |
+| ... |
+
+Fix: `hash` (...)  -  Regression: `path/test`.
+```
+
+Kolom tabel temuan **baku**: `ID | Severity | CWE | Temuan | Status`.
+Jika area tidak punya temuan, tulis satu baris `| - | - | - | 0 temuan (semua pertahanan bertahan) | - |`
+- **jangan** hilangkan tabelnya. H1 selalu berpola
+`# Area N - <Nama Area> (run YYYY-MM-DD)`.
+
+### 2.11 after/README.md (bukti perbaikan)
+
+Setiap `areaN-<slug>/after/README.md` **wajib** memakai bentuk berikut, sama untuk
+**semua** area dan **semua** tanggal:
+
+```markdown
+# Area N - After fix (verification evidence)
+
+| | |
+| --- | --- |
+| Findings | <ID + CWE + severity> |
+| Fix commit | `hash` ... |
+| Regression test | `path` |
+| Reproduce | [`reproduce.sh`](reproduce.sh) -> [`reproduce-after.log`](reproduce-after.log) |
+
+## Before vs After
+
+| # | Skenario | BEFORE (rentan) | AFTER (terbukti aman) |
+| --- | --- | --- | --- |
+
+## Cara reproduksi (after)
+
+```bash
+...
+```
+
+## Status verifikasi
+
+<"diverifikasi re-scan" ATAU "belum re-scan; dikunci regression test">
+```
+
+Aturan: (1) judul section **persis** seperti di atas; (2) tabel
+`Before vs After` (atau `Before vs After (kondisi terverifikasi)`) wajib; (3) bila
+perbaikan **belum** diverifikasi re-scan Strix ketiga, section Status verifikasi
+**wajib** menyatakannya jujur - dilarang mengklaim "terbukti" bila hanya berbasis test.
+
 ---
 
 ## 3. Definisi baku (jangan didefinisikan ulang per-file)

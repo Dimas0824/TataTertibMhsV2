@@ -1,28 +1,18 @@
-# area1-login --- RE-RUN (Strix re-scan 2026-09-22)
+# Area 1 - Login / Authentication (run 2026-09-22)
 
-Run kedua dengan **instruksi + parameter identik** run pertama, terhadap kode
-yang sudah diperbaiki. Tujuan: verifikasi independen klaim "sudah di-fix".
+| Bagian | Isi |
+| ------ | --- |
+| [`before/`](before/) | Artefak mentah Strix re-scan: `findings.sarif`, `vulnerabilities/vuln-*.md`, `penetration_test_report.md`, `run.json`, `strix.log`, `.state/` |
+| [`after/`](after/) | Bukti perbaikan temuan BARU area ini (area 1: tidak ada temuan valid) |
 
-| | |
-| --- | --- |
-| **Area** | LOGIN / AUTHENTICATION |
-| **Run (re-run)** | `172-17-112-1-8001_1a29` |
-| **Hasil** | 2 temuan LAMA HILANG; 1 temuan baru **CRITICAL** (case-variant lockout) --- **FALSE POSITIVE** (lihat verification-analysis/README.md) |
+## Temuan run ini
 
-## Temuan re-run
+| ID | Severity | CWE | Temuan | Status |
+| --- | -------- | --- | ------ | ------ |
+| A1-vuln-0001 (2026-09-22) | CRITICAL (klaim) | CWE-307 | Login lockout bisa dilewati via identifier akun berbeda huruf besar/kecil | False-positive |
 
-| id | title | severity |
-| --- | --- | --- |
-| `vuln-0001` | Login lockout can be bypassed via case-varied account identifiers (CI collation vs case-sensitive throttle key) | CRITICAL |
+Temuan tunggal area ini **false positive** - throttle & lookup keduanya
+case-insensitive (collation `utf8mb4_unicode_ci`). Bukti:
+[`../../verification-analysis/`](../verification-analysis/).
 
-## Artefak
-
-- `findings.sarif` --- SARIF 2.1.0 (tool=Strix)
-- `vulnerabilities/*.md` --- detail temuan + PoC
-- `penetration_test_report.md` --- laporan naratif
-- `vulnerabilities.csv` / `.json` --- indeks temuan
-- `run.json` --- status + usage LLM
-- `strix.log` --- log lengkap
-- `.state/` --- database percakapan agent (agents.db)
-
-> Ringkasan lengkap 5 area: [`../verification-analysis/README.md`](../verification-analysis/README.md)
+> 2 temuan LAMA run 2026-09-21 (NUL-byte, lockout per-sesi) **HILANG** di re-scan ini.

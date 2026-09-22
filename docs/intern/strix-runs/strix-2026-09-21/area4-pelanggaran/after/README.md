@@ -1,4 +1,4 @@
-# area4-pelanggaran - AFTER fix (verification evidence)
+# Area 4 - After fix (verification evidence)
 
 Bukti bahwa temuan AREA 4 (validasi tingkat sanksi) **sudah diperbaiki dan terbukti tertutup**.
 
@@ -33,7 +33,7 @@ Angka BEFORE diambil dari `before/vulnerabilities/vuln-0001.md`. Angka AFTER dih
 ## Cara reproduksi (after)
 
 ```bash
-# butuh DB ter-seed & dapat dijangkau (config.php). Dari root repo:
+# Area 4 - After fix (verification evidence)
 REPRO_ROOT=/path/ke/repo bash reproduce.sh     # harapan: "RESULT: 2 passed, 0 failed"
 ```
 
@@ -43,8 +43,7 @@ REPRO_ROOT=/path/ke/repo bash reproduce.sh     # harapan: "RESULT: 2 passed, 0 f
 
 ---
 
-## Kenapa hasilnya sah
-
+## Status verifikasi
 - **Mismatch ditolak** dan **tidak ada baris ditulis** (`before=23 after=23`) - celah CWE-20 tertutup.
 - **Regression test** (`Area4SanctionSuite`, 2/2) mengunci perilaku ini; suite penuh 186/186
   (termasuk `PelanggaranFormSuite` yang menyimpan sanksi valid - tidak rusak).

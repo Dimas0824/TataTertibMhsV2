@@ -9,10 +9,10 @@ Indeks area. Artefak mentah ada di `before/`, bukti perbaikan ada di `after/`.
 
 ## Temuan run ini
 
-| ID | Severity | CWE | Temuan |
-| -- | -------- | --- | ------ |
-| A1-vuln-0002 | CRITICAL (9.1) | CWE-307 | Lockout brute-force per-sesi - buang cookie = reset counter |
-| A1-vuln-0001 | HIGH (7.4) | CWE-230 | NUL-byte truncation pada verifikasi password |
+| ID | Severity | CWE | Temuan | Status |
+| --- | -------- | --- | ------ | ------ |
+| A1-vuln-0002 | CRITICAL (9.1) | CWE-307 | Lockout brute-force per-sesi - buang cookie = reset counter | Confirmed-fixed |
+| A1-vuln-0001 | HIGH (7.4) | CWE-230 | NUL-byte truncation pada verifikasi password | Confirmed-fixed |
 
 Fix: `ba4e8d1` (fix) - `6e3f3b1` (regression test) - `ffdaa26` (docs).
 Regression: `tests/security/LoginBruteForceSuite.php`.

@@ -1,4 +1,4 @@
-# area3-upload-idor - AFTER (verification & held defenses)
+# Area 3 - After fix (verification evidence)
 
 AREA 3 (upload / download / IDOR / access control) produced **zero vulnerabilities**:
 every offensive attempt was blocked by server-side controls. This `after/` records
@@ -50,7 +50,7 @@ were tested and **failed to break through**:
 
 ---
 
-## Reproduce (after)
+## Cara reproduksi (after)
 
 ```bash
 php artisan serve --host=0.0.0.0 --port=8123
@@ -60,3 +60,11 @@ bash reproduce.sh http://127.0.0.1:8123     # harapan: "RESULT: 2 passed, 0 fail
 > **Catatan:** AREA 3 tidak punya temuan keamanan, jadi `after/` ini **bukan** klaim
 > "celah ditutup" - ini catatan bahwa (a) kelas serangan yang diuji ditahan, dan
 > (b) satu defect non-keamanan diperbaiki.
+
+## Status verifikasi
+
+Diverifikasi oleh **re-scan 2026-09-22** (area 3): seluruh kelas serangan tetap
+**hening** (0 temuan valid untuk kelas upload/IDOR), dan defect role guard
+diperbaiki. Re-scan menemukan 1 temuan baru di area ini (halaman mahasiswa 500
+untuk admin) - lihat
+[`../../../strix-2026-09-22/area3-upload-idor/`](../../../strix-2026-09-22/area3-upload-idor/).

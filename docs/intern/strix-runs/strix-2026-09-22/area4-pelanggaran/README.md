@@ -1,28 +1,17 @@
-# area4-pelanggaran --- RE-RUN (Strix re-scan 2026-09-22)
+# Area 4 - Pelanggaran / Violation workflow (run 2026-09-22)
 
-Run kedua dengan **instruksi + parameter identik** run pertama, terhadap kode
-yang sudah diperbaiki. Tujuan: verifikasi independen klaim "sudah di-fix".
+| Bagian | Isi |
+| ------ | --- |
+| [`before/`](before/) | Artefak mentah Strix re-scan: `findings.sarif`, `vulnerabilities/vuln-*.md`, `penetration_test_report.md`, `run.json`, `strix.log`, `.state/` |
+| [`after/`](after/) | Bukti perbaikan temuan BARU area ini + skrip/commit |
 
-| | |
-| --- | --- |
-| **Area** | VIOLATION WORKFLOW |
-| **Run (re-run)** | `172-17-112-1-8001_2f0b` |
-| **Hasil** | 1 temuan LAMA HILANG; 1 temuan baru **HIGH** (delete finalized violation) --- **VALID**, DIFIX `579a4c6` |
+## Temuan run ini
 
-## Temuan re-run
+| ID | Severity | CWE | Temuan | Status |
+| --- | -------- | --- | ------ | ------ |
+| A4-vuln-0001 (2026-09-22) | HIGH (7.1) | CWE-863 | Pelanggaran berstatus `selesai` (finalized) masih bisa dihapus | New |
 
-| id | title | severity |
-| --- | --- | --- |
-| `vuln-0001` | Missing workflow-state check allows deletion of finalized violation records | HIGH |
+Fix: `579a4c6` (tolak hapus bila status `selesai`). Regression: `tests/unit/Area4WorkflowSuite.php`.
 
-## Artefak
-
-- `findings.sarif` --- SARIF 2.1.0 (tool=Strix)
-- `vulnerabilities/*.md` --- detail temuan + PoC
-- `penetration_test_report.md` --- laporan naratif
-- `vulnerabilities.csv` / `.json` --- indeks temuan
-- `run.json` --- status + usage LLM
-- `strix.log` --- log lengkap
-- `.state/` --- database percakapan agent (agents.db)
-
-> Ringkasan lengkap 5 area: [`../verification-analysis/README.md`](../verification-analysis/README.md)
+> 1 temuan LAMA run 2026-09-21 (sanksi tier) **HILANG** di re-scan ini.
+> Perbaikan temuan baru **belum** diverifikasi re-scan ketiga - lihat [`after/README.md`](after/README.md).

@@ -1,28 +1,31 @@
-# After - perbaikan temuan 2026-09-22 (Area 1: Login)
+# Area 1 - After fix (verification evidence)
 
-`before/` berisi artefak mentah re-scan. `after/` berisi bukti perbaikan
-**temuan baru** yang muncul di re-scan 2026-09-22 untuk area ini.
+| | |
+| --- | --- |
+| Findings | A1-vuln-0001 (2026-09-22) - CWE-307 - CRITICAL (klaim) - **FALSE POSITIVE** |
+| Fix commit | - (tidak perlu fix; klaim terbukti salah) |
+| Regression test | - (tidak ada kode yang diubah) |
+| Reproduce | [`../../verification-analysis/prove_case_variant_not_bypass.py`](../../verification-analysis/prove_case_variant_not_bypass.py) |
 
-## Temuan baru (2026-09-22)
+## Before vs After
 
-| ID | Severity | Klasifikasi | Status |
-| -- | -------- | ----------- | ------ |
-| case-variant lockout | CRITICAL | **FALSE POSITIVE** | tidak perlu fix (lihat [`../../verification-analysis/`](../../verification-analysis/)) |
+Tidak ada perubahan kode untuk area ini; tabel di bawah menunjukkan **verifikasi
+klaim**, bukan perbaikan.
 
-Area 1 re-scan **tidak menghasilkan temuan valid** - satu-satunya laporan
-(case-variant lockout) dibuktikan false positive: throttle dan lookup akun
-keduanya **case-insensitive** (collation `utf8mb4_unicode_ci` pada
-`SECURITY_AUDIT_LOG.actor_id`), sehingga varian huruf besar/kecil berbagi budget
-throttle yang sama.
+| Skenario | Klaim Strix (BEFORE) | Terverifikasi (AFTER) |
+| --- | --- | --- |
+| 5 gagal login `ADMIN001`, lalu varian `admin001` | seharusnya lock terpisah (bypass) | **terkunci** - throttle & lookup keduanya case-insensitive |
+| `WHERE actor_id='admin001'` vs baris `'ADMIN001'` | dianggap tidak cocok | **cocok** (collation `utf8mb4_unicode_ci`) |
 
-## Bukti
+## Cara reproduksi (after)
 
-- Analisis + skrip: [`../../verification-analysis/prove_case_variant_not_bypass.py`](../../verification-analysis/prove_case_variant_not_bypass.py)
-- Uraian: [`../../verification-analysis/README.md`](../../verification-analysis/README.md)
+```bash
+python3 ../../verification-analysis/prove_case_variant_not_bypass.py
+```
 
 ## Status verifikasi
 
-Tidak ada `after/` berbasis re-scan untuk area ini karena **tidak ada temuan valid
-yang perlu ditutup**. Enam temuan run 2026-09-21 (termasuk kedua temuan login)
-sudah terbukti HILANG di `before/` re-scan ini - lihat
-[`../../../strix-2026-09-21/README.md`](../../../strix-2026-09-21/README.md).
+**False positive**. Bukti 4 lapis (collation kolom, kecocokan query, unit test,
+end-to-end HTTP) ada di [`../../verification-analysis/README.md`](../../verification-analysis/README.md).
+Tidak ada perbaikan yang perlu diverifikasi ulang. Dua temuan LAMA 2026-09-21
+(NUL-byte, lockout per-sesi) **HILANG** di re-scan ini.

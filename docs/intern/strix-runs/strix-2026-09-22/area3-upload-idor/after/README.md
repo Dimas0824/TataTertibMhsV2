@@ -1,26 +1,31 @@
-# After - perbaikan temuan 2026-09-22 (Area 3: Upload / Download / IDOR)
+# Area 3 - After fix (verification evidence)
 
-`before/` berisi artefak mentah re-scan. `after/` berisi bukti perbaikan
-**temuan baru** yang muncul di re-scan 2026-09-22 untuk area ini.
+| | |
+| --- | --- |
+| Findings | A3-vuln-0001 (2026-09-22) - CWE-284 - MEDIUM (CVSS 4.3) |
+| Fix commit | `d4aec0e` |
+| Regression test | `tests/security/Area3AccessSuite.php` |
+| Reproduce | - (dikunci regression test; belum ada skrip re-scan) |
 
-## Temuan baru (2026-09-22)
+## Before vs After
 
-| ID | Severity | CWE | Temuan | Fix |
-| -- | -------- | --- | ------ | --- |
-| A3-rerun-0001 | MEDIUM (CVSS 4.3) | CWE-284 | Halaman mahasiswa diakses role admin tidak punya guard -> error 500 (kebocoran detail internal / bukan fail-closed) | commit `d4aec0e` |
+| Skenario | BEFORE (rentan) | AFTER (terlindung) |
+| --- | --- | --- |
+| Admin membuka halaman mahasiswa | **HTTP 500** (bukan fail-closed, bocor detail internal) | **HTTP 403** |
+| Mahasiswa membuka halaman mahasiswa | 200 | 200 (tidak berubah) |
 
-## Perbaikan
+## Cara reproduksi (after)
 
-- `controllers/UserController.php` - ditambahkan **role guard** pada halaman
-  mahasiswa; role yang tidak berhak diarahkan/denied (fail-closed), bukan 500.
+Belum ada skrip mandiri; perilaku dikunci oleh regression test:
 
-## Bukti
+```bash
+php tests/run.php     # menjalankan Area3AccessSuite
+```
 
-- Komit: `d4aec0e` - fix(security): guard student page by role instead of 500
-- Regression test: `tests/security/Area3AccessSuite.php`
+Perbaikan kode: `controllers/UserController.php` - role guard fail-closed
+(403) menggantikan 500.
 
 ## Status verifikasi
 
-Perbaikan dikunci oleh **regression test** (suite hijau penuh). **Belum** ada
-re-scan Strix ketiga untuk area ini - lihat catatan di
-[`../../README.md`](../../README.md).
+Dikunci oleh **regression test** (suite hijau penuh). **Belum** diverifikasi
+re-scan Strix ketiga - lihat catatan di [`../../README.md`](../../README.md).

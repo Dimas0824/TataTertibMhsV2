@@ -1,4 +1,4 @@
-# area2-session-csrf - AFTER fix (verification evidence)
+# Area 2 - After fix (verification evidence)
 
 Bukti bahwa dua temuan pada run SESSION & CSRF **sudah diperbaiki dan terbukti tertutup**.
 
@@ -36,13 +36,13 @@ Angka BEFORE diambil dari `before/vulnerabilities/vuln-0001.md` & `vuln-0002.md`
 ## Cara reproduksi (after)
 
 ```bash
-# 1. Siapkan app + DB (migrasi USER_SESSION ikut: php artisan migrate)
+# Area 2 - After fix (verification evidence)
 php artisan serve --host=0.0.0.0 --port=8123
 
-# 2. Verifikasi
+# Area 2 - After fix (verification evidence)
 bash reproduce.sh http://127.0.0.1:8123       # harapan: "RESULT: 6 passed, 0 failed"
 
-# 3. Simpan bukti
+# Area 2 - After fix (verification evidence)
 bash reproduce.sh http://127.0.0.1:8123 > reproduce-after.log 2>&1
 ```
 
@@ -51,8 +51,7 @@ bash reproduce.sh http://127.0.0.1:8123 > reproduce-after.log 2>&1
 
 ---
 
-## Kenapa hasilnya sah
-
+## Status verifikasi
 - **Cookie Secure mengikuti sinyal proxy** (skenario 1) tapi **plain HTTP tidak dipaksa Secure** (2)
  - celah CWE-614 tertutup tanpa merusak login http lokal.
 - **Login kedua mencabut sesi pertama** (3); login normal tetap jalan; idle tetap (4); dan ada

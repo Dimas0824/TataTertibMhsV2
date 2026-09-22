@@ -9,9 +9,9 @@ Indeks area. Artefak mentah ada di `before/`, bukti perbaikan ada di `after/`.
 
 ## Temuan run ini
 
-| ID | Severity | CWE | Temuan |
-| -- | -------- | --- | ------ |
-| A4-vuln-0001 | MEDIUM (6.5) | CWE-20 | Sanksi tidak divalidasi terhadap tingkat pelanggaran (client-selectable) |
+| ID | Severity | CWE | Temuan | Status |
+| --- | -------- | --- | ------ | ------ |
+| A4-vuln-0001 | MEDIUM (6.5) | CWE-20 | Sanksi tidak divalidasi terhadap tingkat pelanggaran (client-selectable) | Confirmed-fixed |
 
 Regression: `tests/unit/Area4SanctionSuite.php`.
 

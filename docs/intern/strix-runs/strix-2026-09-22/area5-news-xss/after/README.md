@@ -1,26 +1,30 @@
-# After - perbaikan temuan 2026-09-22 (Area 5: News / XSS)
+# Area 5 - After fix (verification evidence)
 
-`before/` berisi artefak mentah re-scan. `after/` berisi bukti perbaikan
-**temuan baru** yang muncul di re-scan 2026-09-22 untuk area ini.
+| | |
+| --- | --- |
+| Findings | A5-vuln-0001 (2026-09-22) - CWE-79 - MEDIUM (CVSS 5.4) |
+| Fix commit | `1181dec` |
+| Regression test | `tests/unit/Area5JsonLdSuite.php`, `tests/unit/Area5XssSuite.php` |
+| Reproduce | - (dikunci regression test; belum ada skrip re-scan) |
 
-## Temuan baru (2026-09-22)
+## Before vs After
 
-| ID | Severity | CWE | Temuan | Fix |
-| -- | -------- | --- | ------ | --- |
-| A5-rerun-0001 | MEDIUM (CVSS 5.4) | CWE-79 | Judul berita keluar dari blok `<script type="application/ld+json">` (JSON-LD) -> XSS | commit `1181dec` |
+| Skenario | BEFORE (rentan) | AFTER (terlindung) |
+| --- | --- | --- |
+| Judul berita berisi `</script>` (atau kutip) masuk blok `<script type="application/ld+json">` | **memutus blok** - XSS | **hex-escape** (`\uXXXX`) - blok utuh |
 
-## Perbaikan
+## Cara reproduksi (after)
 
-- `helpers/seo_helper.php` - nilai yang di-embed ke JSON-LD kini **hex-escape**
-  (`\uXXXX`) sehingga karakter `</script>` / kutip tidak bisa memutus blok.
+Belum ada skrip mandiri; perilaku dikunci oleh regression test:
 
-## Bukti
+```bash
+php tests/run.php     # menjalankan Area5JsonLdSuite + Area5XssSuite
+```
 
-- Komit: `1181dec` - fix(security): hex-escape JSON-LD values (CWE-79)
-- Regression test: `tests/unit/Area5JsonLdSuite.php`, `tests/unit/Area5XssSuite.php`
+Perbaikan kode: `helpers/seo_helper.php` - nilai JSON-LD di-hex-escape.
 
 ## Status verifikasi
 
-Perbaikan dikunci oleh **regression test** (suite hijau penuh). **Belum** ada
-re-scan Strix ketiga untuk area ini - lihat catatan di
-[`../../README.md`](../../README.md).
+Dikunci oleh **regression test** (suite hijau penuh). **Belum** diverifikasi
+re-scan Strix ketiga - lihat catatan di [`../../README.md`](../../README.md).
+Temuan LAMA 2026-09-21 (stored XSS body) **HILANG** di re-scan ini.

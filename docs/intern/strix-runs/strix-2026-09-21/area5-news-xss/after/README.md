@@ -1,4 +1,4 @@
-# area5-news-xss - AFTER fix (verification evidence)
+# Area 5 - After fix (verification evidence)
 
 Bukti bahwa temuan AREA 5 (stored XSS pada halaman berita) **sudah diperbaiki dan terbukti tertutup**.
 
@@ -36,7 +36,7 @@ Angka BEFORE diambil dari `before/vulnerabilities/vuln-0001.md` (bukti run Strix
 ## Cara reproduksi (after)
 
 ```bash
-# sanity langsung pada sanitizer (tanpa HTTP):
+# Area 5 - After fix (verification evidence)
 REPRO_ROOT=/path/ke/repo bash reproduce.sh     # harapan: "RESULT: 5 passed, 0 failed"
 ```
 
@@ -45,8 +45,7 @@ Skenario: kirim tiap payload ke `NewsController::sanitizeNewsContent()` dan past
 
 ---
 
-## Kenapa hasilnya sah
-
+## Status verifikasi
 - **Semua vektor XSS dibuang** (quote-boundary, autofocus, javascript:, script-block) sedangkan
   konten sah (`<strong>`) **tetap** - celah CWE-79 tertutup tanpa merusak fitur.
 - **Regression test** (`Area5XssSuite`, 5/5) mengunci perilaku ini; suite penuh 191/191

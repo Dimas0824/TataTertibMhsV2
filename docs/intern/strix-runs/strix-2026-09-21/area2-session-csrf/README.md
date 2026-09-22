@@ -9,10 +9,10 @@ Indeks area. Artefak mentah ada di `before/`, bukti perbaikan ada di `after/`.
 
 ## Temuan run ini
 
-| ID | Severity | CWE | Temuan |
-| -- | -------- | --- | ------ |
-| A2-vuln-0001 | MEDIUM (5.9) | CWE-614 | Cookie session tanpa `Secure` saat TLS di-terminate proxy |
-| A2-vuln-0002 | LOW (3.7) | CWE-613 | Tidak ada absolute lifetime / invalidasi sesi bersamaan |
+| ID | Severity | CWE | Temuan | Status |
+| --- | -------- | --- | ------ | ------ |
+| A2-vuln-0001 | MEDIUM (5.9) | CWE-614 | Cookie session tanpa `Secure` saat TLS di-terminate proxy | Confirmed-fixed |
+| A2-vuln-0002 | LOW (3.7) | CWE-613 | Tidak ada absolute lifetime / invalidasi sesi bersamaan | Confirmed-fixed |
 
 Regression: `tests/security/SessionLifecycleSuite.php`.
 

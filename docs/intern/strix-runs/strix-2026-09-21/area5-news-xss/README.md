@@ -9,9 +9,9 @@ Indeks area. Artefak mentah ada di `before/`, bukti perbaikan ada di `after/`.
 
 ## Temuan run ini
 
-| ID | Severity | CWE | Temuan |
-| -- | ---- | --- | ------ |
-| A5-vuln-0001 | MEDIUM (5.4) | CWE-79 | Stored XSS halaman publik via quote-boundary bypass sanitizer |
+| ID | Severity | CWE | Temuan | Status |
+| --- | -------- | --- | ------ | ------ |
+| A5-vuln-0001 | MEDIUM (5.4) | CWE-79 | Stored XSS halaman publik via quote-boundary bypass sanitizer | Confirmed-fixed |
 
 Regression: `tests/unit/Area5XssSuite.php`.
 

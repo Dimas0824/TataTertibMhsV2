@@ -1,26 +1,31 @@
-# After - perbaikan temuan 2026-09-22 (Area 4: Pelanggaran / Violation workflow)
+# Area 4 - After fix (verification evidence)
 
-`before/` berisi artefak mentah re-scan. `after/` berisi bukti perbaikan
-**temuan baru** yang muncul di re-scan 2026-09-22 untuk area ini.
+| | |
+| --- | --- |
+| Findings | A4-vuln-0001 (2026-09-22) - CWE-863 - HIGH (CVSS 7.1) |
+| Fix commit | `579a4c6` |
+| Regression test | `tests/unit/Area4WorkflowSuite.php`, `tests/unit/Area4SanctionSuite.php` |
+| Reproduce | - (dikunci regression test; belum ada skrip re-scan) |
 
-## Temuan baru (2026-09-22)
+## Before vs After
 
-| ID | Severity | CWE | Temuan | Fix |
-| -- | -------- | --- | ------ | --- |
-| A4-rerun-0001 | HIGH (CVSS 7.1) | CWE-20 | Pelanggaran berstatus `selesai` (finalized) masih bisa dihapus - integritas record hilang | commit `579a4c6` |
+| Skenario | BEFORE (rentan) | AFTER (terlindung) |
+| --- | --- | --- |
+| Hapus pelanggaran berstatus `selesai` (finalized) | **berhasil dihapus** (integritas record hilang) | **ditolak** |
+| Hapus pelanggaran berstatus non-final | berhasil | berhasil (tidak berubah) |
 
-## Perbaikan
+## Cara reproduksi (after)
 
-- `models/Pelanggaran.php` - hapus ditolak bila status pelanggaran sudah
-  `selesai` (finalized); hanya record non-final yang bisa dihapus.
+Belum ada skrip mandiri; perilaku dikunci oleh regression test:
 
-## Bukti
+```bash
+php tests/run.php     # menjalankan Area4WorkflowSuite + Area4SanctionSuite
+```
 
-- Komit: `579a4c6` - fix(security): reject deletion of finalized violation
-- Regression test: `tests/unit/Area4WorkflowSuite.php`, `tests/unit/Area4SanctionSuite.php`
+Perbaikan kode: `models/Pelanggaran.php` - hapus ditolak bila status `selesai`.
 
 ## Status verifikasi
 
-Perbaikan dikunci oleh **regression test** (suite hijau penuh). **Belum** ada
-re-scan Strix ketiga untuk area ini - lihat catatan di
-[`../../README.md`](../../README.md).
+Dikunci oleh **regression test** (suite hijau penuh). **Belum** diverifikasi
+re-scan Strix ketiga - lihat catatan di [`../../README.md`](../../README.md).
+Temuan LAMA 2026-09-21 (sanksi tier) **HILANG** di re-scan ini.
