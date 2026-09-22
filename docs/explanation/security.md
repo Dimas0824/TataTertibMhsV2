@@ -46,6 +46,7 @@ Konfigurasi production berbeda dari development:
 **Ancamannya:** Attacker menyisipkan SQL query melalui input form.
 
 **Contoh serangan:**
+
 ```
 Username: ' OR '1'='1' --
 ```
@@ -68,6 +69,7 @@ Kami tidak menggunakan ORM atau query builder — setiap query ditulis manual. I
 **Ancamannya:** User yang sudah login bisa dipaksa mengirim request dari situs malicious tanpa disadari.
 
 **Contoh serangan:**
+
 ```html
 <!-- Situs malicious -->
 <img src="https://disciplink.id/action/delete?id=42">
@@ -86,6 +88,7 @@ app_verify_csrf(); // exit(419) jika invalid
 ```
 
 **Kapan CSRF protection aktif?**
+
 - Semua form POST
 - Semua AJAX request yang mengubah state
 - Tidak untuk GET request (tidak seharusnya mengubah state)
@@ -95,6 +98,7 @@ app_verify_csrf(); // exit(419) jika invalid
 **Ancamannya:** User mengakses record orang lain dengan mengganti ID di URL.
 
 **Contoh serangan:**
+
 ```
 GET /action/pelanggaran?detail=42  (record sendiri)
 GET /action/pelanggaran?detail=43  (record orang lain!)
@@ -117,13 +121,14 @@ Token tidak bisa di-forge tanpa secret key di server.
 ### Session Hijacking & Fixation
 
 **Ancamannya:**
+
 - **Hijacking:** Attacker mencuri session cookie user
 - **Fixation:** Attacker menetapkan session ID sebelum user login
 
 **Perlindungan kami:**
 
 | Serangan | Perlindungan |
-|----------|--------------|
+| ---------- | -------------- |
 | Cookie theft via XSS | `HttpOnly` flag — JavaScript tidak bisa baca cookie |
 | CSRF via cross-site | `SameSite=Lax` — cookie tidak dikirim dari domain lain |
 | Session fixation | `session_regenerate_id(true)` setelah login sukses |
@@ -165,6 +170,7 @@ $filename = bin2hex(random_bytes(12)) . '.' . $extension;
 **Ancamannya:** Error message atau stack trace menampilkan detail internal aplikasi.
 
 **Contoh buruk:**
+
 ```
 Database Error: SELECT * FROM users WHERE id = 'x'
 Table 'disciplink.users' doesn't exist
@@ -204,6 +210,7 @@ Header CSP aktif (frame-ancestors 'none', object-src 'none', form-action 'self',
 ### Multiple Tab Session
 
 CSRF token di-generate per session, bukan per request. Ini berarti:
+
 - User bisa buka multiple tabs dengan satu token
 - Token dirotasi saat login (privilege change)
 
@@ -214,7 +221,7 @@ Ini acceptable untuk use case kampus dengan user single-browser.
 ## Responsibility Matrix
 
 | Siapa | Tanggung Jawab |
-|-------|----------------|
+| ------- | ---------------- |
 | **Developer** | Implementasi security yang benar di setiap handler |
 | **Admin** | Tidak share credentials, monitor anomalous activity |
 | **User** | Password kuat, logout setelah selesai, jangan share akun |
