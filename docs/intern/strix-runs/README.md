@@ -8,6 +8,12 @@ diorganisir **per tanggal run**. Tujuannya: setiap temuan bisa dilacak -> diperb
 > dokumentasi. Baca bagian [Aturan Dokumentasi (WAJIB)](#aturan-dokumentasi-wajib)
 > sebelum menambah run baru. Tujuannya: setiap run - dari tanggal mana pun, dikerjakan
 > agent mana pun - punya bentuk folder, penamaan, dan isi README yang **identik polanya**.
+>
+> **Dua dokumen mengatur dua hal berbeda:**
+> - **Bentuk folder** (struktur `before/`/`after/`, penamaan, artefak git) -> dokumen ini.
+> - **Isi & struktur README + indeks temuan** (section baku, terminologi severity/status)
+>   -> [`../SECURITY-DOC-STANDARD.md`](../SECURITY-DOC-STANDARD.md) (WAJIB DIIKUTI).
+> - Ringkasan semua temuan lintas-run -> [`../VULN-LOG.md`](../VULN-LOG.md).
 
 | Tanggal | Jenis | Hasil |
 | ------- | ----- | ----- |
@@ -91,13 +97,18 @@ Aturan ini mengikat supaya dokumentasi **seragam & persisten** antar agent/tangg
 
 ### B. Isi README (tiga level)
 
-1. **`strix-runs/README.md`** (dokumen ini) - indeks semua tanggal + kontrak ini.
-2. **`strix-<tanggal>/README.md`** - WAJIB memuat, minimal:
- - tujuan run (pertama / re-scan verifikasi),
- - ringkasan/table hasil,
- - **matriks penutupan**: temuan run **sebelumnya** yang HILANG (dengan link ke run ini),
- - **daftar temuan BARU** run ini, masing-masing dengan klasifikasi
-     (`valid` / `false positive`) dan commit fix-nya, dengan link ke `areaN/`.
+**Struktur section README per-run ditetapkan oleh
+[`../SECURITY-DOC-STANDARD.md`](../SECURITY-DOC-STANDARD.md) (WAJIB DIIKUTI)** -
+sembilan section baku: Metadata, Executive Summary, Scope & Methodology, Run Summary,
+Findings Matrix, Coverage / Negative-Result Matrix, Remediation & Verification, Raw
+Artifacts, Limitations & Honesty Note. Ringkasan di bawah ini konteksnya saja; rujukan
+resminya tetap standar tersebut.
+
+1. **`strix-runs/README.md`** (dokumen ini) - indeks semua tanggal + kontrak bentuk folder.
+2. **`strix-<tanggal>/README.md`** - laporan satu run, mengikuti sembilan section baku
+   di `SECURITY-DOC-STANDARD.md`. Ringkasnya memuat: Metadata, Executive Summary, Run
+   Summary, Findings Matrix (kolom baku + `Status`), Coverage Matrix, dan - bila re-scan -
+   Remediation & Verification (matriks penutupan + temuan baru).
 3. **`areaN/README.md`** - indeks area: tabel temuan area ini (ID, severity, CWE,
    ringkasan), pointer ke `before/` & `after/`, commit fix + regression test,
    dan status (HILANG / baru).
@@ -132,11 +143,14 @@ Aturan ini mengikat supaya dokumentasi **seragam & persisten** antar agent/tangg
 
 ### F. Checklist menambah run baru
 
-- [ ] `strix-<tanggal>/README.md` ditulis (ringkasan + matriks penutupan + temuan baru).
-- [ ] `instructions/` berisi 5 instruksi yang benar-benar dijalankan.
+- [ ] `strix-<tanggal>/README.md` mengikuti sembilan section baku
+      ([`../SECURITY-DOC-STANDARD.md`](../SECURITY-DOC-STANDARD.md) bagian 2).
+- [ ] `instructions/` berisi instruksi yang benar-benar dijalankan.
 - [ ] Tiap `areaN/before/` berisi artefak mentah lengkap; `strix.log` ada.
 - [ ] Tiap `areaN/after/README.md` ada (walau tanpa temuan valid).
+- [ ] `../VULN-LOG.md` di-update (baris temuan baru / perubahan status).
 - [ ] Tabel di `strix-runs/README.md` (dokumen ini) ditambah baris tanggal baru.
+- [ ] Commit fix memakai prefix `fix(security): ... [CWE-XXX]`.
 - [ ] `git status` bersih dari `-shm`/`-wal`/scratch.
 - [ ] Link antar-README diuji resolve (relatif, benar).
 

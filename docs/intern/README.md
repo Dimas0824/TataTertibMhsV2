@@ -8,6 +8,9 @@ teknis internal - berguna untuk auditor baru maupun sebagai jejak portofolio.
 
 | Dokumen | Jenis | Isi |
 | --------- | ------- | ----- |
+| [`SECURITY-DOC-STANDARD.md`](./SECURITY-DOC-STANDARD.md) | **Standar (WAJIB)** | Struktur, terminologi, dan proses dokumentasi keamanan - single source of truth |
+| [`VULN-LOG.md`](./VULN-LOG.md) | **Indeks lintas-run** | Satu baris per temuan dari semua run pentest (mudah di-grep) |
+| [`strix-runs/`](./strix-runs/README.md) | Pentest otomatis (agen AI Strix) | Riwayat per-tanggal: `before/` (temuan) + `after/` (bukti fix); 2026-09-21 & 2026-09-22 |
 | [`PENTEST-REPORT-2026-09-08.md`](./PENTEST-REPORT-2026-09-08.md) | Audit code-level | Pemetaan & remediasi temuan (auth/session, injection, file handling, XSS, server config) |
 | [`pentest-strix/`](./pentest-strix/README.md) | Pentest otomatis (agen AI) | Fase **quick** (blackbox) & **deep** (authenticated 3 role) + artefak SARIF - temuan **sudah diremediasi** |
 | [`SECURITY_AUDIT.md`](./SECURITY_AUDIT.md) | Audit baseline | Checklist PHP Manual Security |
@@ -24,6 +27,12 @@ teknis internal - berguna untuk auditor baru maupun sebagai jejak portofolio.
    (authenticated, 0 vulnerability), plus menemukan bug fungsional `/action/upload` 500.
    **Semua temuan (robots.txt + upload 500 + gap IDOR upload) sudah diperbaiki dan diverifikasi**
    (`php tests/run.php` -> 160/160 PASS; line coverage inti >80%).
+4. **2026-09-21** - Pentest Strix per-area (5 area, white-box): 6 temuan (1 CRITICAL, 1 HIGH,
+   3 MEDIUM, 1 LOW) - semuanya diperbaiki. Lihat [`strix-runs/strix-2026-09-21/`](./strix-runs/strix-2026-09-21/).
+5. **2026-09-22** - Re-scan verifikasi (instruksi identik): **6 temuan lama HILANG** (fix terbukti)
+   + 5 temuan baru (1 false positive + 4 valid, sudah difix). Lihat
+   [`strix-runs/strix-2026-09-22/`](./strix-runs/strix-2026-09-22/).
+   Ringkasan semua temuan lintas-run: [`VULN-LOG.md`](./VULN-LOG.md).
 
 ## Kebijakan keamanan
 

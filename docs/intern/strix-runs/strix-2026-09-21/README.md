@@ -1,118 +1,119 @@
-# DiscipLink - Strix Automated Penetration Test (Run 2026-09-21)
+# DiscipLink - Strix Automated Pentest (Run 2026-09-21)
 
-> **Status: SELESAI (CLOSED).** Seluruh **6 temuan** di bawah sudah **diperbaiki**
-> dan **terbukti hilang** saat diuji ulang oleh re-scan 2026-09-22 dengan
-> instruksi + parameter **identik** (MD5 instruksi diverifikasi sama). Lihat
-> [Verifikasi penutupan](#verifikasi-penutupan--re-scan-2026-09-22) di bawah.
->
-> **Celah keamanan BARU** (bukan temuan run ini) ditemukan re-scan 2026-09-22 -
-> arahkan ke [`../strix-2026-09-22/`](../strix-2026-09-22/) untuk daftar lengkapnya.
->
-> Hierarki folder: [`../strix-runs/README.md`](../README.md) - panduan repro: [`CARA-REPRODUKSI.md`](CARA-REPRODUKSI.md)
+> Dokumen ini mengikuti [Standar Dokumentasi Security Testing](../../SECURITY-DOC-STANDARD.md).
+> Bentuk folder dijelaskan di [`../strix-runs/README.md`](../README.md).
 
-Automated offensive security assessment of **DiscipLink** (student-discipline web app, PHP 8.3
-native, no framework) using [Strix](https://github.com/usestrix/strix) (AI pentest agent,
-Apache-2.0) in **white-box** mode: each run received both the live target and the source tree
-(`--mount`).
+## Metadata
 
-Every run was scoped to **one attack area** and executed **sequentially with a cooldown**
-(one area per run, `STRIX_REASONING_EFFORT=low`, `--max-turns 120`, `sleep 30` between runs) to
-stay inside the LLM gateway's RPM ceiling. All testing was **authorized, local, self-owned**
-(Lab instance: `http://172.17.112.1:8001`).
+| Field | Value |
+| --- | --- |
+| Target | DiscipLink / TataTertibMhsV2 (PHP 8.3 native, tanpa framework) - instance lab lokal `http://172.17.112.1:8001` |
+| Mode | white-box (`--mount` source tree + live target) |
+| Tool | Strix v1.4.1 (sandbox image: `ghcr.io/usestrix/strix-sandbox:1.2.0`) |
+| Model | `dailyDriver` (self-hosted gateway) |
+| Guardrails | one-area-per-run, `STRIX_REASONING_EFFORT=low`, `--max-turns 120`, `sleep 30` antar run |
+| Baseline run | - (ini run pertama; tidak ada baseline) |
+| Status | SELESAI (CLOSED) - seluruh temuan diperbaiki & terbukti hilang di re-scan 2026-09-22 |
 
-> **Provenance.** Every finding below is a verbatim artifact produced by Strix - each area folder
-> contains the raw `findings.sarif` (SARIF 2.1.0, `tool.driver.name = "Strix"`), the per-finding
-> `vulnerabilities/vuln-*.md` reports with request/response PoCs, `vulnerabilities.csv/json`,
-> `penetration_test_report.md`, and the run log. Nothing here is hand-written or estimated.
+## Executive Summary
 
----
+Lima area aplikasi diuji secara terpisah. Ditemukan **6 temuan**: 1 CRITICAL,
+1 HIGH, 3 MEDIUM, 1 LOW. Temuan terberat adalah lockout brute-force yang hanya
+berlaku per-sesi (CRITICAL) dan NUL-byte truncation pada verifikasi password (HIGH).
+Seluruh 6 temuan sudah **diperbaiki** dan **diverifikasi tertutup** oleh re-scan
+2026-09-22; status run ini: **CLOSED**.
 
-## Run summary
+## Scope & Methodology
+
+Run dijalankan satu area per eksekusi (lima run berurutan dengan cooldown) untuk
+menjaga penggunaan di bawah batas RPM gateway LLM. Setiap area menerima target
+live **dan** source tree (`--mount`) - white-box.
+
+| Area | Scope yang diuji |
+| --- | --- |
+| Login / Authentication | SQLi, auth bypass, user enumeration, brute-force, session, CSRF, open redirect |
+| Session & CSRF | session fixation, cookie flags, lifecycle, cakupan CSRF |
+| Upload / Download / IDOR | unrestricted upload, path traversal, token sealing, IDOR/BOLA, RBAC |
+| Violation workflow | business logic, mass assignment, SQLi, stored XSS, otorisasi |
+| News module (XSS) | stored XSS, bypass sanitizer, SQLi, CSRF, otorisasi, output encoding |
+
+**Di luar scope:** pengujian infrastruktur (OS/container/DB engine), serangan
+DoS/beban, dan rekayasa sosial. Aplikasi diuji apa adanya sebagai instance lab
+milik sendiri (authorized).
+
+## Run Summary
 
 | # | Area | Scope tested | Runs | LLM reqs | Tokens | Status | Findings |
-| --- | ------ | -------------- | ------ | ---------- | -------- | -------- | ---------- |
-| 1 | **Login / Authentication** | SQLi, auth bypass, enumeration, brute-force, session, CSRF, open redirect | 1 | 70 | 3.99M | completed | **1 CRITICAL, 1 HIGH** |
-| 2 | **Session & CSRF** | session fixation, cookie flags, lifecycle, CSRF coverage | 1 | 38 | 2.56M | completed | **1 MEDIUM, 1 LOW** |
-| 3 | **Upload / Download / IDOR** | unrestricted upload, traversal, token sealing, IDOR/BOLA, RBAC | 1 | 69 | 6.07M | completed | **0** (all defenses held) |
-| 4 | **Violation workflow** | business logic, mass assignment, SQLi, stored XSS, authz | 1 | 89 | 8.35M | completed | **1 MEDIUM** |
-| 5 | **News module (XSS)** | stored XSS, sanitizer bypass, SQLi, CSRF, authz, output encoding | 1 | 88 | 7.25M | completed | **1 MEDIUM** |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | Login / Authentication | SQLi, auth bypass, enumeration, brute-force, session, CSRF, open redirect | 1 | 70 | 3.99M | completed | 1 CRITICAL, 1 HIGH |
+| 2 | Session & CSRF | session fixation, cookie flags, lifecycle, CSRF coverage | 1 | 38 | 2.56M | completed | 1 MEDIUM, 1 LOW |
+| 3 | Upload / Download / IDOR | unrestricted upload, traversal, token sealing, IDOR/BOLA, RBAC | 1 | 69 | 6.07M | completed | 0 (semua pertahanan bertahan) |
+| 4 | Violation workflow | business logic, mass assignment, SQLi, stored XSS, authz | 1 | 89 | 8.35M | completed | 1 MEDIUM |
+| 5 | News module (XSS) | stored XSS, sanitizer bypass, SQLi, CSRF, authz, output encoding | 1 | 88 | 7.25M | completed | 1 MEDIUM |
 | | **TOTAL** | | **5** | **354** | **28.2M** | 5/5 completed | **1 CRITICAL - 1 HIGH - 3 MEDIUM - 1 LOW** |
 
-**Reliability note:** **zero** HTTP 503 / rate-limit events across all five runs (grepping each
-`strix.log` for `HTTP 503` / `rate limit` / `RemoteDisconnected` returns nothing - the only "503"
-strings in the logs are timestamp milliseconds). The sequential, limited-reasoning,
-one-area-per-run strategy kept the agent under the gateway ceiling.
+**Catatan reliabilitas:** **nol** kejadian HTTP 503 / rate-limit di kelima run
+(grep tiap `strix.log` untuk `HTTP 503` / `rate limit` / `RemoteDisconnected`
+tidak menghasilkan apa pun). Strategi berurutan, satu area per run, dan
+reasoning-effort rendah menjaga agen di bawah plafon gateway.
 
----
+## Findings Matrix
 
-## Findings matrix
+Severity sesuai laporan Strix; CVSS dan CWE diambil dari tiap `vuln-*.md`.
 
-Severity is as reported by Strix; CVSS and CWE are taken from each `vuln-*.md`.
+| ID | Area | Severity | CVSS | CWE | Finding | Endpoint | Status | Evidence |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| A1-vuln-0002 | Login | CRITICAL | 9.1 | CWE-307 | Lockout brute-force hanya per-sesi - membuang cookie sesi me-reset counter, sehingga lock 5-gagal/15-menit bisa dilewati tanpa batas | `POST /action/login` | Confirmed-fixed | [vuln](area1-login/before/vulnerabilities/vuln-0002.md) |
+| A1-vuln-0001 | Login | HIGH | 7.4 | CWE-230 | NUL-byte truncation pada verifikasi password - `password123%00INJECTED` terautentikasi karena bcrypt berhenti di NUL | `POST /action/login` | Confirmed-fixed | [vuln](area1-login/before/vulnerabilities/vuln-0001.md) |
+| A2-vuln-0001 | Session | MEDIUM | 5.9 | CWE-614 | Cookie sesi diterbitkan tanpa `Secure` pada permintaan yang TLS-nya di-terminate proxy | `Set-Cookie` | Confirmed-fixed | [vuln](area2-session-csrf/before/vulnerabilities/vuln-0001.md) |
+| A2-vuln-0002 | Session | LOW | 3.7 | CWE-613 | Tidak ada absolute session lifetime; sesi konkuren tidak pernah diinvalidasi | siklus hidup sesi | Confirmed-fixed | [vuln](area2-session-csrf/before/vulnerabilities/vuln-0002.md) |
+| A4-vuln-0001 | Pelanggaran | MEDIUM | 6.5 | CWE-20 | Tier sanksi tidak divalidasi terhadap tier pelanggaran - dosen bisa memasang sanksi terberat (Tier I) pada pelanggaran ringan Tier V; `sanksi` bisa dipilih klien | `POST /action/pelanggaran` | Confirmed-fixed | [vuln](area4-pelanggaran/before/vulnerabilities/vuln-0001.md) |
+| A5-vuln-0001 | News | MEDIUM | 5.4 | CWE-79 | Stored XSS di halaman artikel publik - sanitizer event-handler dilewati via batas kutip (`<div title="x"onmouseover=alert(1)>`); terbukti eksekusi di browser headless | `GET /berita?slug=-` | Confirmed-fixed | [vuln](area5-news-xss/before/vulnerabilities/vuln-0001.md) |
 
-| ID | Area | Severity | CVSS | CWE | Finding | Endpoint | Evidence |
-| ---- | ------ | ---------- | ------ | ----- | --------- | ---------- | ---------- |
-| **A1-vuln-0002** | Login | -- **CRITICAL** | 9.1 | CWE-307 | Brute-force lockout is **per-session only** - discarding the session cookie resets the counter, so the 5-failure/15-min lock is bypassed indefinitely | `POST /action/login` | [vuln](area1-login/before/vulnerabilities/vuln-0002.md) |
-| **A1-vuln-0001** | Login | -- **HIGH** | 7.4 | CWE-230 | **NUL-byte truncation** in password verification - `password123%00INJECTED` authenticates because bcrypt is NUL-terminated | `POST /action/login` | [vuln](area1-login/before/vulnerabilities/vuln-0001.md) |
-| **A2-vuln-0001** | Session | -- MEDIUM | 5.9 | CWE-614 | Session cookie issued **without `Secure`** on HTTPS-terminated (proxy) requests | `Set-Cookie` | [vuln](area2-session-csrf/before/vulnerabilities/vuln-0001.md) |
-| **A2-vuln-0002** | Session | -- LOW | 3.7 | CWE-613 | No **absolute session lifetime**; concurrent sessions are never invalidated | session lifecycle | [vuln](area2-session-csrf/before/vulnerabilities/vuln-0002.md) |
-| **A4-vuln-0001** | Violation | -- MEDIUM | 6.5 | CWE-20 | **Sanction tier not validated** against the violation tier - a lecturer can attach the most severe sanction (Tier I) to a trivial Tier V violation; client-selectable `sanksi` | `POST /action/pelanggaran` | [vuln](area4-pelanggaran/before/vulnerabilities/vuln-0001.md) |
-| **A5-vuln-0001** | News | -- MEDIUM | 5.4 | CWE-79 | **Stored XSS** on the public article page - event-handler sanitizer bypassed via a quote boundary (`<div title="x"onmouseover=alert(1)>`); confirmed executing in a headless browser | `GET /berita?slug=-` | [vuln](area5-news-xss/before/vulnerabilities/vuln-0001.md) |
+## Coverage / Negative-Result Matrix
 
----
+Area 3 tidak menghasilkan temuan, tetapi bukti kelas serangan yang **dicoba dan
+bertahan** adalah bukti keamanan kelas satu. Direproduksi dari laporan run tersebut:
 
-## Verifikasi penutupan - re-scan 2026-09-22
+| Attack class | Dicoba | Hasil |
+| --- | --- | --- |
+| Unrestricted file type (`.php`, `.phtml`, PHP-in-image, Content-Type mismatch) | allowlist MIME `finfo` + ekstensi di sisi server | **Ditolak** - "Tipe file tidak diizinkan" |
+| Path traversal pada nama file (`../`, `..%2f`, `....//`, null byte, absolute path) | nama dibuat server `<id>_<type>_<24-hex>.<ext>`; nama klien tidak pernah dipakai | **Ditolak** - semua tersimpan di dalam `storage/uploads/` |
+| Overwrite / collision | suffix acak 12 byte | **Ditolak** - unggahan bernama sama menghasilkan file berbeda |
+| SVG / polyglot XSS | MIME SVG tidak diizinkan; `nosniff` saat disajikan | **Ditolak** |
+| Download token tamper / replay / cross-entity | token tersegel NaCl/AES-GCM, `sid = sha256(session_id)`, `hash_equals`, expiry | **Ditolak** - 403 |
+| IDOR pada download / nama file mentah / path storage langsung | token wajib; `.htaccess` + router menolak | **Ditolak** - 403 |
+| IDOR / BOLA pada edit/confirm/delete pelanggaran (lintas-user) | token ID tersegel terikat sesi + SQL ber-scope kepemilikan (`id_mhs`/`id_dosen`) | **Ditolak** - 403 |
+| Role escalation (mahasiswa/dosen - aksi admin) | enforcement role + CSRF di sisi server | **Ditolak** - 403 |
 
-Setelah semua temuan diperbaiki, **area-area yang sama diuji ulang** dengan Strix
-(instruksi + guardrail identik, target = kode yang sudah dipatch; verifikasi MD5
-instruksi ada di [`../strix-2026-09-22/`](../strix-2026-09-22/)). Hasilnya:
-**keenam temuan hilang** - tidak satu pun muncul kembali.
+Dua **non-security defect** dicatat (bukan kerentanan): tautan PDF generik yang
+di-hardcode di view pelanggaran mahasiswa, dan admin yang membuka halaman
+khusus-dosen mendapat 500 yang ditangani dengan rapi.
 
-| ID | Temuan 2026-09-21 | Fix | Hasil re-scan 2026-09-22 |
-| ---- | ----------------- | --- | ------------------------ |
-| **A1-vuln-0001** | NUL-byte truncation in password verification (CWE-230) | reject raw NUL before hashing | **HILANG** |
-| **A1-vuln-0002** | Brute-force lockout per-session only (CWE-307) | input `trim`/NUL-reject + throttle durable (akun 5 / IP 15 / 15 mnt, tabel `SECURITY_AUDIT_LOG`) | **HILANG** |
-| **A2-vuln-0001** | Session cookie without `Secure` (CWE-614) | `app_session_start_if_needed()` set `Secure` (HTTPS/`X-Forwarded-Proto`) | **HILANG** |
-| **A2-vuln-0002** | No absolute session lifetime (CWE-613) | `APP_SESSION_ABSOLUTE_TTL` + `app_session_touch_or_expire()` | **HILANG** |
-| **A4-vuln-0001** | Sanction tier not validated (CWE-20) | server memvalidasi tier sanksi terhadap tier pelanggaran | **HILANG** |
-| **A5-vuln-0001** | Stored XSS via quote boundary (CWE-79) | quote-aware attribute sanitizer | **HILANG** |
+## Remediation & Verification
 
-**Cara membaca bukti:** setiap area re-scan tersimpan di
-[`../strix-2026-09-22/areaN/`](../strix-2026-09-22/) sebagai artefak verbatim
-(`findings.sarif`, `vulnerabilities/`, `run.json`, `strix.log`). Per-area README
-di sana menyatakan temuan mana yang hilang dan mana yang baru.
+Perbaikan 6 temuan run ini diverifikasi oleh re-scan 2026-09-22 dengan instruksi +
+guardrail identik (MD5 instruksi dicocokkan). Hasil: **keenamnya HILANG**.
 
-> **Re-scan 2026-09-22 juga menemukan celah BARU** yang tidak ada di run ini
-> (4 valid + 1 false positive, semuanya sudah diklasifikasi & difix).
-> **Daftar lengkap ada di**
-> [`strix-2026-09-22/README.md`](../strix-2026-09-22/README.md) ->
-> [`strix-2026-09-22/areaN/README.md`](../strix-2026-09-22/).
+| ID | Temuan run sebelumnya | Fix | Commit | Hasil re-scan |
+| --- | --- | --- | --- | --- |
+| A1-vuln-0001 | NUL-byte truncation pada verifikasi password (CWE-230) | tolak NUL sebelum hashing | `ba4e8d1` | HILANG |
+| A1-vuln-0002 | Lockout brute-force per-sesi (CWE-307) | throttle durable berbasis tabel audit (akun 5 / IP 15 / 15 menit) | `ba4e8d1` | HILANG |
+| A2-vuln-0001 | Cookie sesi tanpa `Secure` (CWE-614) | set `Secure` pada permintaan HTTPS / `X-Forwarded-Proto` | `9f55f2a` | HILANG |
+| A2-vuln-0002 | Tidak ada absolute session lifetime (CWE-613) | `APP_SESSION_ABSOLUTE_TTL` + invalidasi sesi lain saat login | `484bb67` | HILANG |
+| A4-vuln-0001 | Tier sanksi tidak divalidasi (CWE-20) | validasi tier sanksi terhadap tier pelanggaran | `487dd93` | HILANG |
+| A5-vuln-0001 | Stored XSS via batas kutip (CWE-79) | sanitizer event-handler sadar-kutip | `7b4c39d` | HILANG |
 
----
+Regression test yang mengunci tiap perbaikan terdaftar di `tests/security/**` dan
+`tests/unit/**` (lihat `tests/run.php`).
 
-## Area 3 - negative-result (coverage) matrix
+> **Lihat juga run berikutnya:** re-scan 2026-09-22 di
+> [`../strix-2026-09-22/`](../strix-2026-09-22/) - memuat matriks penutupan lengkap
+> plus **temuan baru** yang muncul setelah perbaikan.
 
-Area 3 returned **no findings**, but the evidence of what was tested and *held* is first-class
-security evidence. Reproduced from that run's report:
+## Raw Artifacts
 
-| Attack class | Attempted | Outcome |
-| -------------- | ----------- | --------- |
-| Unrestricted file type (`.php`, `.phtml`, PHP-in-image, mismatched Content-Type) | server-side `finfo` MIME + extension allowlist | **Blocked** - rejected "Tipe file tidak diizinkan" |
-| Path traversal in filename (`../`, `..%2f`, `....//`, null byte, absolute path) | server-generated `<id>_<type>_<24-hex>.<ext>` name; client name never used | **Blocked** - all landed inside `storage/uploads/` |
-| Overwrite / collision | 12-byte random suffix | **Blocked** - same-named uploads produce distinct files |
-| SVG / polyglot XSS | SVG MIME not permitted; `nosniff` on serve | **Blocked** |
-| Download token tamper / replay / cross-entity | sealed NaCl/AES-GCM token, `sid = sha256(session_id)`, `hash_equals`, expiry | **Blocked** - 403 |
-| IDOR on download / raw filename / direct storage path | token required; `.htaccess` + router deny | **Blocked** - 403 |
-| IDOR / BOLA on violation edit/confirm/delete (cross-user) | sealed session-bound ID tokens + ownership-scoped SQL (`id_mhs`/`id_dosen`) | **Blocked** - 403 |
-| Role escalation (mahasiswa/dosen - admin actions) | server-side role + CSRF enforcement | **Blocked** - 403 |
-
-Two **non-security** defects were noted (not vulnerabilities): a hardcoded generic PDF link in the
-student violation view, and an admin hitting a lecturer-only page returns a graceful 500.
-
----
-
-## Raw artifacts
-
-Struktur mengikuti [kontrak struktur & dokumentasi](../README.md#struktur-wajib--sama-untuk-setiap-tanggal):
+Struktur folder mengikuti kontrak di [`../README.md`](../README.md):
 
 ```
 strix-2026-09-21/
@@ -123,31 +124,25 @@ strix-2026-09-21/
   COMBINED.sarif
   CARA-REPRODUKSI.md
   areaN-<slug>/
-      README.md                indeks area (temuan + pointer)
-      before/                  artefak mentah: findings.sarif, vulnerabilities/, csv/json, run.json, strix.log, .state/
-      after/                   bukti fix: README.md, reproduce.sh, reproduce-after.log, evidence-*.png
+    README.md                  indeks area (temuan + pointer)
+    before/                    artefak mentah: findings.sarif, vulnerabilities/, csv/json, run.json, strix.log, .state/
+    after/                     bukti fix: README.md, reproduce.sh, reproduce-after.log, evidence-*.png
 ```
 
-Each `findings.sarif` is a standard SARIF 2.1.0 file (`tool.driver.name = "Strix"`, version 1.4.1)
-and can be opened in any SARIF viewer. (Note: the Docker sandbox image used was
-`ghcr.io/usestrix/strix-sandbox:1.2.0`.)
+Setiap `findings.sarif` adalah berkas SARIF 2.1.0 standar (`tool.driver.name = "Strix"`)
+dan dapat dibuka di penampil SARIF mana pun.
 
-> **About `strix.log`:** project policy excludes `*.log` from git in general, but archived
-> pentest evidence is an explicit exception - `.gitignore` carries
-> `!docs/intern/strix-runs*/**/strix.log`, so the raw per-run `strix.log` traces **are**
-> committed here (inside each `areaN/before/`). Everything needed to verify each finding is
-> therefore present: `run.json` (status, targets, LLM usage), `findings.sarif`, the
-> `vulnerabilities/*.md` PoCs, `penetration_test_report.md`, and `strix.log`.
+> **Tentang `strix.log`:** kebijakan repo mengabaikan `*.log` secara umum, tetapi
+> bukti pentest yang diarsipkan adalah pengecualian eksplisit - `.gitignore`
+> memuat `!docs/intern/strix-runs*/**/strix.log`, sehingga jejak mentah `strix.log`
+> **memang** tersimpan di sini (di dalam tiap `areaN/before/`).
 
----
+## Limitations & Honesty Note
 
-## Methodology & limits
-
-- **Tool:** Strix AI pentest agent, white-box (`--mount` source + live target).
-- **Model:** `dailyDriver` (self-hosted gateway). Strix itself warns it is not a frontier model;
-  findings are therefore *low-noise and reproducible* rather than exhaustive.
-- **Guardrails:** one area per run, `STRIX_REASONING_EFFORT=low`, `--max-turns 120`, `sleep 30`
-  between runs, Docker sandbox (`ghcr.io/usestrix/strix-sandbox`).
-- **Honesty note:** a `completed` run with zero findings means the tested classes *held* under that
-  agent/model - it is **not** a proof of absence. Areas are re-runnable; re-test after any change to
-  the relevant code paths.
+- **Tool/model:** Strix sendiri memperingatkan bahwa `dailyDriver` bukan model
+  frontier; temuan karenanya bersifat *low-noise dan reproducible*, bukan ekshaustif.
+- Run `completed` dengan nol temuan berarti kelas serangan yang diuji *bertahan*
+  terhadap agen/model saat itu - **bukan** bukti ketiadaan kerentanan. Area dapat
+  diuji ulang; lakukan re-test setelah perubahan apa pun pada jalur kode terkait.
+- Semua pengujian **authorized**, hanya terhadap instance lokal milik sendiri.
+- Artefak dimasukkan **verbatim** (apa adanya), bukan rangkuman tangan.
