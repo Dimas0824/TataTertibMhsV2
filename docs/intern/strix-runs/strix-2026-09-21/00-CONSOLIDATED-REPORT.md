@@ -528,8 +528,8 @@ Severity reflects demonstrated exploitability and impact, scored with CVSS v3.1.
 ## Confirmed findings
 
 1. **Stored XSS on the public news detail page** (Medium, CVSS 5.4 - `AV:N/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N`). Two layers share the same defective pattern:
-   - **Store path** (`NewsController::sanitizeNewsContent`): `strip_tags($html, '<div><p>...<blockquote>')` preserves attributes on allowed tags, then `preg_replace('/[\s\/]on[a-z]+\s*=\s*(...)/i', ...)` removes event handlers **only when preceded by whitespace or `/`**.
-   - **Render path** (`views/public/berita-detail.php`): re-applies the same `strip_tags` + regex, then emits the result **raw** (`$formattedContent` is not re-escaped when the content contains HTML).
+ - **Store path** (`NewsController::sanitizeNewsContent`): `strip_tags($html, '<div><p>...<blockquote>')` preserves attributes on allowed tags, then `preg_replace('/[\s\/]on[a-z]+\s*=\s*(...)/i', ...)` removes event handlers **only when preceded by whitespace or `/`**.
+ - **Render path** (`views/public/berita-detail.php`): re-applies the same `strip_tags` + regex, then emits the result **raw** (`$formattedContent` is not re-escaped when the content contains HTML).
 
    Root cause: the handler-closing quote in `title="x"onmouseover="alert(1)"` is not whitespace or `/`, so the regex does not match, and the browser parses the tail as a second valid attribute. Payloads are stored raw and delivered raw. Verified variants: `onmouseover`, `onfocus` + `autofocus` (auto-fires), `onanimationstart`, `ontoggle`, `onerror`; single- and double-quote boundaries.
 

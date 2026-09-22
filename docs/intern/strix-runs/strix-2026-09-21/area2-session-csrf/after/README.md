@@ -54,7 +54,7 @@ bash reproduce.sh http://127.0.0.1:8123 > reproduce-after.log 2>&1
 ## Kenapa hasilnya sah
 
 - **Cookie Secure mengikuti sinyal proxy** (skenario 1) tapi **plain HTTP tidak dipaksa Secure** (2)
-  - celah CWE-614 tertutup tanpa merusak login http lokal.
+ - celah CWE-614 tertutup tanpa merusak login http lokal.
 - **Login kedua mencabut sesi pertama** (3); login normal tetap jalan; idle tetap (4); dan ada
   batas umur absolut 12 jam (5) - CWE-613 tertutup.
 - **Regression test otomatis** (`SessionLifecycleSuite`, 6/6) mengunci perilaku ini; suite penuh 182/182.

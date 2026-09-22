@@ -1,4 +1,4 @@
-# After — perbaikan temuan 2026-09-22 (Area 1: Login)
+# After - perbaikan temuan 2026-09-22 (Area 1: Login)
 
 `before/` berisi artefak mentah re-scan. `after/` berisi bukti perbaikan
 **temuan baru** yang muncul di re-scan 2026-09-22 untuk area ini.
@@ -9,7 +9,7 @@
 | -- | -------- | ----------- | ------ |
 | case-variant lockout | CRITICAL | **FALSE POSITIVE** | tidak perlu fix (lihat [`../../verification-analysis/`](../../verification-analysis/)) |
 
-Area 1 re-scan **tidak menghasilkan temuan valid** — satu-satunya laporan
+Area 1 re-scan **tidak menghasilkan temuan valid** - satu-satunya laporan
 (case-variant lockout) dibuktikan false positive: throttle dan lookup akun
 keduanya **case-insensitive** (collation `utf8mb4_unicode_ci` pada
 `SECURITY_AUDIT_LOG.actor_id`), sehingga varian huruf besar/kecil berbagi budget
@@ -24,5 +24,5 @@ throttle yang sama.
 
 Tidak ada `after/` berbasis re-scan untuk area ini karena **tidak ada temuan valid
 yang perlu ditutup**. Enam temuan run 2026-09-21 (termasuk kedua temuan login)
-sudah terbukti HILANG di `before/` re-scan ini — lihat
+sudah terbukti HILANG di `before/` re-scan ini - lihat
 [`../../../strix-2026-09-21/README.md`](../../../strix-2026-09-21/README.md).

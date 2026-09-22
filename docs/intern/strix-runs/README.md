@@ -1,7 +1,7 @@
-# Strix Pentest Runs — DiscipLink
+# Strix Pentest Runs - DiscipLink
 
 Riwayat pentest otomatis [Strix](https://github.com/usestrix/strix) terhadap **DiscipLink**,
-diorganisir **per tanggal run**. Tujuannya: setiap temuan bisa dilacak → diperbaiki →
+diorganisir **per tanggal run**. Tujuannya: setiap temuan bisa dilacak -> diperbaiki ->
 **diverifikasi ulang** oleh run berikutnya.
 
 > **Untuk agent / kontributor:** dokumen ini adalah **kontrak** struktur & cara
@@ -12,22 +12,22 @@ diorganisir **per tanggal run**. Tujuannya: setiap temuan bisa dilacak → diper
 | Tanggal | Jenis | Hasil |
 | ------- | ----- | ----- |
 | [**2026-09-21**](strix-2026-09-21/) | Run pertama (5 area, white-box) | 6 temuan: 1 CRITICAL, 1 HIGH, 3 MEDIUM, 1 LOW |
-| [**2026-09-22**](strix-2026-09-22/) | Re-scan verifikasi (instruksi identik) | **6 temuan 21-09 HILANG** → fix terbukti; 5 temuan baru (1 false positive + 4 valid, sudah difix) |
+| [**2026-09-22**](strix-2026-09-22/) | Re-scan verifikasi (instruksi identik) | **6 temuan 21-09 HILANG** -> fix terbukti; 5 temuan baru (1 false positive + 4 valid, sudah difix) |
 
 ## Alur
 
 ```
-2026-09-21  run pertama  ──►  6 temuan  ──►  fix (commit)  ──►  test regression
-                                                                     │
-2026-09-22  re-scan  ◄──────────────────────────────────────────────┘
-            │
-            ├─ 6 temuan lama HILANG  →  fix terbukti
-            └─ 5 temuan baru         →  1 false positive + 4 valid (sudah difix)
+2026-09-21  run pertama  --  6 temuan  --  fix (commit)  --  test regression
+                                                                     |
+2026-09-22  re-scan  ----------------------------------------------|
+            |
+            |- 6 temuan lama HILANG  ->  fix terbukti
+            |- 5 temuan baru         ->  1 false positive + 4 valid (sudah difix)
 ```
 
 ---
 
-## Struktur (WAJIB — sama untuk setiap tanggal)
+## Struktur (WAJIB - sama untuk setiap tanggal)
 
 Setiap run hidup di `strix-runs/strix-<YYYY-MM-DD>/` dengan bentuk **persis** berikut.
 `areaN` = 5 area tetap: `area1-login`, `area2-session-csrf`, `area3-upload-idor`,
@@ -35,26 +35,26 @@ Setiap run hidup di `strix-runs/strix-<YYYY-MM-DD>/` dengan bentuk **persis** be
 
 ```
 strix-runs/
-└── strix-<YYYY-MM-DD>/          # satu folder per tanggal run
-    ├── README.md                # WAJIB: ringkasan run ini (lihat "Isi README")
-    ├── instructions/            # WAJIB: 5 file instruksi area (areaN_<slug>.md)
-    ├── areaN-<slug>/            # WAJIB: 5 area
-    │   ├── README.md            # WAJIB: indeks area (temuan + pointer before/after)
-    │   ├── before/              # WAJIB: artefak mentah run (verbatim dari Strix)
-    │   │   ├── findings.sarif
-    │   │   ├── penetration_test_report.md
-    │   │   ├── vulnerabilities/  # vuln-*.md (PoC), bila ada temuan
-    │   │   ├── vulnerabilities.csv
-    │   │   ├── vulnerabilities.json
-    │   │   ├── run.json
-    │   │   ├── strix.log
-    │   │   └── .state/           # agents.db, agents.json, notes.json, todos.json
-    │   └── after/               # WAJIB: bukti perbaikan (lihat aturan "after")
-    │       ├── README.md         # sebelum→sesudah, commit, test, cara reproduce
-    │       ├── reproduce.sh      # skrip verifikasi (bila dapat diskripkan)
-    │       ├── reproduce-after.log
-    │       └── evidence-*.png    # screenshot bukti (bila ada)
-    └── verification-analysis/    # OPSIONAL: analisis khusus (mis. bukti false positive)
+  strix-<YYYY-MM-DD>/          # satu folder per tanggal run
+      README.md                # WAJIB: ringkasan run ini (lihat "Isi README")
+      instructions/            # WAJIB: 5 file instruksi area (areaN_<slug>.md)
+      areaN-<slug>/            # WAJIB: 5 area
+        README.md            # WAJIB: indeks area (temuan + pointer before/after)
+        before/              # WAJIB: artefak mentah run (verbatim dari Strix)
+          findings.sarif
+          penetration_test_report.md
+          vulnerabilities/  # vuln-*.md (PoC), bila ada temuan
+          vulnerabilities.csv
+          vulnerabilities.json
+          run.json
+          strix.log
+          .state/           # agents.db, agents.json, notes.json, todos.json
+        after/               # WAJIB: bukti perbaikan (lihat aturan "after")
+            README.md         # sebelum->sesudah, commit, test, cara reproduce
+            reproduce.sh      # skrip verifikasi (bila dapat diskripkan)
+            reproduce-after.log
+            evidence-*.png    # screenshot bukti (bila ada)
+      verification-analysis/    # OPSIONAL: analisis khusus (mis. bukti false positive)
 ```
 
 ### Kenapa `before/` + `after/` di **setiap** tanggal?
@@ -91,14 +91,14 @@ Aturan ini mengikat supaya dokumentasi **seragam & persisten** antar agent/tangg
 
 ### B. Isi README (tiga level)
 
-1. **`strix-runs/README.md`** (dokumen ini) — indeks semua tanggal + kontrak ini.
-2. **`strix-<tanggal>/README.md`** — WAJIB memuat, minimal:
-   - tujuan run (pertama / re-scan verifikasi),
-   - ringkasan/table hasil,
-   - **matriks penutupan**: temuan run **sebelumnya** yang HILANG (dengan link ke run ini),
-   - **daftar temuan BARU** run ini, masing-masing dengan klasifikasi
+1. **`strix-runs/README.md`** (dokumen ini) - indeks semua tanggal + kontrak ini.
+2. **`strix-<tanggal>/README.md`** - WAJIB memuat, minimal:
+ - tujuan run (pertama / re-scan verifikasi),
+ - ringkasan/table hasil,
+ - **matriks penutupan**: temuan run **sebelumnya** yang HILANG (dengan link ke run ini),
+ - **daftar temuan BARU** run ini, masing-masing dengan klasifikasi
      (`valid` / `false positive`) dan commit fix-nya, dengan link ke `areaN/`.
-3. **`areaN/README.md`** — indeks area: tabel temuan area ini (ID, severity, CWE,
+3. **`areaN/README.md`** - indeks area: tabel temuan area ini (ID, severity, CWE,
    ringkasan), pointer ke `before/` & `after/`, commit fix + regression test,
    dan status (HILANG / baru).
 
@@ -117,15 +117,15 @@ Aturan ini mengikat supaya dokumentasi **seragam & persisten** antar agent/tangg
 
 - Setiap temuan diberi label `valid` atau `false positive`, **dengan bukti**.
 - Klaim false positive wajib disertai **verifikasi setara PoC** (runtime/HTTP/DB),
-  bukan sekadar pembacaan kode — simpan bukti di `verification-analysis/`.
+  bukan sekadar pembacaan kode - simpan bukti di `verification-analysis/`.
 - Severity/CWE/CVSS diambil dari `vuln-*.md` Strix, bukan dikarang.
 
 ### E. Artefak & Git
 
-1. Artefak dimasukkan **verbatim** (apa adanya) — bukan rangkuman tangan.
+1. Artefak dimasukkan **verbatim** (apa adanya) - bukan rangkuman tangan.
 2. `strix.log` diizinkan masuk lewat pengecualian `.gitignore`
    (`!docs/intern/strix-runs*/**/strix.log`). Jangan menambah pengecualian lain
-   tanpa alasan — log tool umumnya tidak di-commit.
+   tanpa alasan - log tool umumnya tidak di-commit.
 3. **Dilarang** men-commit file transient: `*.db-shm`, `*.db-wal` (sidecar SQLite)
    dan scratch lokal lain. Bersihkan sebelum commit.
 4. Semua pengujian **authorized**, hanya terhadap instance lokal milik sendiri.
@@ -143,5 +143,5 @@ Aturan ini mengikat supaya dokumentasi **seragam & persisten** antar agent/tangg
 ## Catatan
 
 - Semua pengujian **authorized** terhadap instance lokal milik sendiri (`http://172.17.112.1:8001`).
-- Artefak dimasukkan **apa adanya** (verbatim) — bukan rangkuman tangan.
+- Artefak dimasukkan **apa adanya** (verbatim) - bukan rangkuman tangan.
 - Perbaikan tiap temuan punya **regression test** di `tests/security/**` dan `tests/unit/**`.

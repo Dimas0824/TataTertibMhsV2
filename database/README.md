@@ -38,8 +38,8 @@ Pilih salah satu:
 - Folder seed: `database/seeders`
 - Format nama file wajib: `YYYYMMDD_HHMMSS_name.sql`
 - File yang sudah dijalankan dicatat di:
-  - `schema_migrations`
-  - `schema_seeds`
+ - `schema_migrations`
+ - `schema_seeds`
 - Jika checksum file berubah setelah pernah dijalankan, command akan gagal (drift detection).
 
 ### Keamanan Password Seeder

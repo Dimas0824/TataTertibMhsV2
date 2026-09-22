@@ -10,11 +10,11 @@ Selamat datang. Dokumentasi ini mengikuti [Diataxis Framework](https://diataxis.
 
 **Mulai dari:**
 
-1. [tutorial/getting-started.md](./tutorial/getting-started.md) — Setup dari nol dan eksekusi alur dasar
+1. [tutorial/getting-started.md](./tutorial/getting-started.md) - Setup dari nol dan eksekusi alur dasar
 
 **Setelah paham dasar:**
 
-- [reference/api.md](./reference/api.md) — Indeks teknis API dan file
+- [reference/api.md](./reference/api.md) - Indeks teknis API dan file
 
 ---
 
@@ -22,7 +22,7 @@ Selamat datang. Dokumentasi ini mengikuti [Diataxis Framework](https://diataxis.
 
 **Mulai dari:**
 
-1. [howto/recipes.md](./howto/recipes.md) — Cari task yang mirip, ikuti resepnya
+1. [howto/recipes.md](./howto/recipes.md) - Cari task yang mirip, ikuti resepnya
 
 **Contoh task yang tersedia:**
 
@@ -38,11 +38,11 @@ Selamat datang. Dokumentasi ini mengikuti [Diataxis Framework](https://diataxis.
 
 **Baca:**
 
-- [explanation/architecture.md](./explanation/architecture.md) — Penjelasan mendalam:
-  - Kenapa PHP native tanpa framework
-  - Kenapa encrypted token ID untuk IDOR prevention
-  - Kenapa session-based auth
-  - Decision log lainnya
+- [explanation/architecture.md](./explanation/architecture.md) - Penjelasan mendalam:
+ - Kenapa PHP native tanpa framework
+ - Kenapa encrypted token ID untuk IDOR prevention
+ - Kenapa session-based auth
+ - Decision log lainnya
 
 ---
 
@@ -50,21 +50,21 @@ Selamat datang. Dokumentasi ini mengikuti [Diataxis Framework](https://diataxis.
 
 **Baca:**
 
-- [explanation/security.md](./explanation/security.md) — Filosofi keamanan, ancaman yang dicegah, dan mitigasi
+- [explanation/security.md](./explanation/security.md) - Filosofi keamanan, ancaman yang dicegah, dan mitigasi
 
 ---
 
 ### Saya ingin melihat hasil pengujian keamanan (audit/pentest)
 
-**Baca folder `intern/`** (laporan internal — bukti, bukan tutorial):
+**Baca folder `intern/`** (laporan internal - bukti, bukan tutorial):
 
-- [intern/README.md](./intern/README.md) — Index semua laporan internal
-- [intern/PENTEST-REPORT-2026-09-08.md](./intern/PENTEST-REPORT-2026-09-08.md) — Audit code-level (auth, injection, file handling, XSS, server config)
-- [intern/pentest-strix/](./intern/pentest-strix/README.md) — Pentest otomatis agen AI (quick + deep, authenticated 3 role)
-- [intern/SECURITY_AUDIT.md](./intern/SECURITY_AUDIT.md) — Audit baseline PHP security
-- [intern/UPLOAD-500-INVESTIGATION.md](./intern/UPLOAD-500-INVESTIGATION.md) — Investigasi bug fungsional upload (root cause + fix)
-- [intern/BUG_REPORT.md](./intern/BUG_REPORT.md) — Bug tracking (historis, semua sudah FIXED/VERIFIED)
-- [intern/TESTING-SUMMARY.md](./intern/TESTING-SUMMARY.md) — Ringkasan infrastruktur testing
+- [intern/README.md](./intern/README.md) - Index semua laporan internal
+- [intern/PENTEST-REPORT-2026-09-08.md](./intern/PENTEST-REPORT-2026-09-08.md) - Audit code-level (auth, injection, file handling, XSS, server config)
+- [intern/pentest-strix/](./intern/pentest-strix/README.md) - Pentest otomatis agen AI (quick + deep, authenticated 3 role)
+- [intern/SECURITY_AUDIT.md](./intern/SECURITY_AUDIT.md) - Audit baseline PHP security
+- [intern/UPLOAD-500-INVESTIGATION.md](./intern/UPLOAD-500-INVESTIGATION.md) - Investigasi bug fungsional upload (root cause + fix)
+- [intern/BUG_REPORT.md](./intern/BUG_REPORT.md) - Bug tracking (historis, semua sudah FIXED/VERIFIED)
+- [intern/TESTING-SUMMARY.md](./intern/TESTING-SUMMARY.md) - Ringkasan infrastruktur testing
 
 **Kebijakan keamanan & cara melaporkan kerentanan:** [`../SECURITY.md`](../SECURITY.md)
 
@@ -74,8 +74,8 @@ Selamat datang. Dokumentasi ini mengikuti [Diataxis Framework](https://diataxis.
 
 **Langsung ke:**
 
-- [reference/api.md](./reference/api.md) — Tabel controller, model, helper, route registry
-- [reference/database.md](./reference/database.md) — CLI commands, migrasi
+- [reference/api.md](./reference/api.md) - Tabel controller, model, helper, route registry
+- [reference/database.md](./reference/database.md) - CLI commands, migrasi
 
 ---
 
@@ -83,25 +83,25 @@ Selamat datang. Dokumentasi ini mengikuti [Diataxis Framework](https://diataxis.
 
 ```
 docs/
-├── README.md              ← Navigasi (anda di sini)
-├── tutorial/
-│   └── getting-started.md  ← Tutorial: setup & belajar
-├── howto/
-│   └── recipes.md          ← How-to: resep task
-├── reference/
-│   ├── api.md              ← Reference: API & file
-│   └── database.md         ← Reference: CLI & database
-├── explanation/
-│   ├── architecture.md     ← Explanation: keputusan arsitektur
-│   └── security.md         ← Explanation: keamanan
-└── intern/
-    ├── README.md                      ← Index laporan internal
-    ├── PENTEST-REPORT-2026-09-08.md   ← Audit code-level
-    ├── pentest-strix/                 ← Pentest otomatis (Strix)
-    ├── SECURITY_AUDIT.md              ← Audit baseline
-    ├── UPLOAD-500-INVESTIGATION.md    ← Investigasi bug upload
-    ├── BUG_REPORT.md                  ← Bug tracking (historis)
-    └── TESTING-SUMMARY.md             ← Ringkasan testing
+  README.md              <- Navigasi (anda di sini)
+  tutorial/
+    getting-started.md  <- Tutorial: setup & belajar
+  howto/
+    recipes.md          <- How-to: resep task
+  reference/
+    api.md              <- Reference: API & file
+    database.md         <- Reference: CLI & database
+  explanation/
+    architecture.md     <- Explanation: keputusan arsitektur
+    security.md         <- Explanation: keamanan
+  intern/
+      README.md                      <- Index laporan internal
+      PENTEST-REPORT-2026-09-08.md   <- Audit code-level
+      pentest-strix/                 <- Pentest otomatis (Strix)
+      SECURITY_AUDIT.md              <- Audit baseline
+      UPLOAD-500-INVESTIGATION.md    <- Investigasi bug upload
+      BUG_REPORT.md                  <- Bug tracking (historis)
+      TESTING-SUMMARY.md             <- Ringkasan testing
 ```
 
 ---

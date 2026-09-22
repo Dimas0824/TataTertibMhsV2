@@ -1,4 +1,4 @@
-﻿# DiscipLink V2
+# DiscipLink V2
 
 Sistem informasi tata tertib mahasiswa - mengelola aturan, pelanggaran, notifikasi, dan berita kedisiplinan dalam satu platform terpusat.
 

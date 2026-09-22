@@ -58,8 +58,8 @@ Hot reload membutuhkan Node.js (`npx`) karena menggunakan BrowserSync.
 
 ```
 database/
-├── migrations/    ← definisi schema
-└── seeders/      ← data contoh
+  migrations/    <- definisi schema
+  seeders/      <- data contoh
 ```
 
 ### Format Nama File

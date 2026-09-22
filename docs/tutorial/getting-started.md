@@ -103,9 +103,9 @@ Gunakan akun contoh:
 
 Coba alur ini:
 
-1. Login sebagai **Admin** — buat satu berita baru
-2. Login sebagai **Dosen** — buat satu pelaporan pelanggaran
-3. Login sebagai **Mahasiswa** — cek notifikasi dan upload dokumen
+1. Login sebagai **Admin** - buat satu berita baru
+2. Login sebagai **Dosen** - buat satu pelaporan pelanggaran
+3. Login sebagai **Mahasiswa** - cek notifikasi dan upload dokumen
 
 ---
 
@@ -115,22 +115,22 @@ Setiap request di DiscipLink melewati alur ini:
 
 ```
 Browser
-  └─► router.php          (central dispatcher)
-        ├─► Page Route    → langsung render views/xxx.php
-        └─► Action Route → request/handler-xxx.php
-                            ├─► Controller           (business logic)
-                            ├─► Model               (query DB via PDO)
-                            └─► Response            (redirect HTML atau JSON)
+  |- router.php          (central dispatcher)
+        |- Page Route    -> langsung render views/xxx.php
+        |- Action Route -> request/handler-xxx.php
+                            |- Controller           (business logic)
+                            |- Model               (query DB via PDO)
+                            |- Response            (redirect HTML atau JSON)
 ```
 
-**Contoh konkret — login:**
+**Contoh konkret - login:**
 
 1. Form POST ke `/action/login`
 2. `request/handler-login.php` menangkap
 3. `UserController::login()` cek kredensial via `User::getMahasiswaLogin()` / `getDosenLogin()` / `getAdminLogin()`
-4. Session diset → redirect ke `/pelanggaran`
+4. Session diset -> redirect ke `/pelanggaran`
 
-**Contoh konkret — upload surat:**
+**Contoh konkret - upload surat:**
 
 1. AJAX POST ke `/action/upload` dengan `FormData`
 2. `request/handler-upload.php` menangkap
@@ -152,21 +152,21 @@ $title = (string) ($config['title'] ?? 'DiscipLink - Tata Tertib Mahasiswa Polin
 $title = (string) ($config['title'] ?? 'Sistem Tata Tertibku');
 ```
 
-Refresh browser — title halaman berubah.
+Refresh browser - title halaman berubah.
 
 ---
 
 ## Struktur Folder Singkat
 
 ```
-controllers/     ← business logic per use-case
-models/         ← query database
-request/        ← HTTP action entrypoint
-views/          ← UI templates
-helpers/        ← routing, token, path, SEO
+controllers/     <- business logic per use-case
+models/         <- query database
+request/        <- HTTP action entrypoint
+views/          <- UI templates
+helpers/        <- routing, token, path, SEO
 database/
-  migrations/   ← definisi schema
-  seeders/      ← data contoh
+  migrations/   <- definisi schema
+  seeders/      <- data contoh
 ```
 
 Penjelasan detail ada di [reference/api.md](../reference/api.md).
@@ -175,9 +175,9 @@ Penjelasan detail ada di [reference/api.md](../reference/api.md).
 
 ## Dokumentasi Terkait
 
-- [reference/api.md](../reference/api.md) — Detail API dan file
-- [explanation/architecture.md](../explanation/architecture.md) — Penjelasan keputusan arsitektur
-- [explanation/security.md](../explanation/security.md) — Kebijakan keamanan
+- [reference/api.md](../reference/api.md) - Detail API dan file
+- [explanation/architecture.md](../explanation/architecture.md) - Penjelasan keputusan arsitektur
+- [explanation/security.md](../explanation/security.md) - Kebijakan keamanan
 
 ---
 

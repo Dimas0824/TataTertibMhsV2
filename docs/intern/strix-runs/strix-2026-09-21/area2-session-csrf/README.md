@@ -1,4 +1,4 @@
-# Area 2 — Session & CSRF (run 2026-09-21)
+# Area 2 - Session & CSRF (run 2026-09-21)
 
 Indeks area. Artefak mentah ada di `before/`, bukti perbaikan ada di `after/`.
 
@@ -16,5 +16,5 @@ Indeks area. Artefak mentah ada di `before/`, bukti perbaikan ada di `after/`.
 
 Regression: `tests/security/SessionLifecycleSuite.php`.
 
-> Status: **HILANG** di re-scan 2026-09-22 — lihat
+> Status: **HILANG** di re-scan 2026-09-22 - lihat
 > [`../../strix-2026-09-22/`](../../strix-2026-09-22/).

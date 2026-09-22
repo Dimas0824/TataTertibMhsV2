@@ -1,4 +1,4 @@
-# Cara Reproduksi — Strix Pentest DiscipLink
+# Cara Reproduksi - Strix Pentest DiscipLink
 
 Panduan menjalankan ulang (reproduce) pentest Strix pada DiscipLink, **per area**, dengan
 setelan yang terbukti tidak kena rate-limit crash (5/5 area sukses, 0× HTTP 503).
@@ -20,7 +20,7 @@ Diuji pada: 2026-09-21, Windows + WSL Ubuntu.
 | **`STRIX_IMAGE`** | `ghcr.io/usestrix/strix-sandbox:1.2.0` | Image sandbox yang tersedia |
 | **Scan mode** | `--scan-mode deep --scope-mode full` | White-box menyeluruh |
 | **`--max-turns`** | `120` | Batasi panjang tiap run |
-| **Scope** | **1 area per run** | Mencegah burst paralel → 503 |
+| **Scope** | **1 area per run** | Mencegah burst paralel -> 503 |
 | **Cooldown** | `sleep 30` antar run | Beri jeda gateway |
 | **Runner** | **tmux** | Proses tidak mati saat shell keluar |
 | **Flag interaktif** | **`-n`** | v1.4.1 tidak punya `--non-interactive` |
@@ -64,11 +64,11 @@ Alamat `172.17.112.1` = gateway default WSL (host). Cek ulang dengan `ip route |
 Setiap area punya satu file instruksi fokus. Contoh tersimpan di
 `docs/intern/strix-runs/` (lihat instruksi area di riwayat commit) atau buat baru mengikuti pola:
 
-- **AREA 1** — LOGIN: SQLi, auth bypass, enumeration, brute-force, session, CSRF, open redirect
-- **AREA 2** — SESSION & CSRF: fixation, cookie flags, lifecycle, CSRF coverage
-- **AREA 3** — UPLOAD/DOWNLOAD/IDOR: tipe file, traversal, token sealing, IDOR/BOLA, RBAC
-- **AREA 4** — PELANGGARAN: business logic, mass assignment, SQLi, stored XSS, authz
-- **AREA 5** — NEWS: stored XSS, sanitizer bypass, SQLi, CSRF, authz, output encoding
+- **AREA 1** - LOGIN: SQLi, auth bypass, enumeration, brute-force, session, CSRF, open redirect
+- **AREA 2** - SESSION & CSRF: fixation, cookie flags, lifecycle, CSRF coverage
+- **AREA 3** - UPLOAD/DOWNLOAD/IDOR: tipe file, traversal, token sealing, IDOR/BOLA, RBAC
+- **AREA 4** - PELANGGARAN: business logic, mass assignment, SQLi, stored XSS, authz
+- **AREA 5** - NEWS: stored XSS, sanitizer bypass, SQLi, CSRF, authz, output encoding
 
 Salin file instruksi ke WSL:
 
@@ -81,7 +81,7 @@ mkdir -p /home/dimas/disciplink-work/pt-areas
 
 ## 3. Script run per area
 
-Contoh `/home/dimas/disciplink-work/run_areaN.sh` (**wajib LF, bukan CRLF** — tulis dari sisi
+Contoh `/home/dimas/disciplink-work/run_areaN.sh` (**wajib LF, bukan CRLF** - tulis dari sisi
 Linux/heredoc, jangan lewat interpolasi PowerShell yang merusak `$PATH`):
 
 ```bash
@@ -112,7 +112,7 @@ exec strix --target http://172.17.112.1:8001 \
   --scan-mode deep --scope-mode full --max-turns 120 -n
 ```
 
-> Jangan simpan `LLM_API_KEY` di repo — beri nilai dari environment atau isi manual.
+> Jangan simpan `LLM_API_KEY` di repo - beri nilai dari environment atau isi manual.
 
 ---
 
@@ -171,7 +171,7 @@ Hasil tiap run ada di `strix_runs/<RUN_NAME>/`:
 
 | File | Isi |
 | --- | --- |
-| `findings.sarif` | SARIF 2.1.0 (`tool.driver.name = "Strix"`) — buka di SARIF viewer |
+| `findings.sarif` | SARIF 2.1.0 (`tool.driver.name = "Strix"`) - buka di SARIF viewer |
 | `vulnerabilities/vuln-*.md` | Detail per temuan + PoC request/response |
 | `vulnerabilities.csv` / `.json` | Indeks temuan |
 | `penetration_test_report.md` | Laporan naratif + negative-result matrix |
@@ -182,12 +182,12 @@ Hasil tiap run ada di `strix_runs/<RUN_NAME>/`:
 
 ```
 docs/intern/strix-runs/
-├── README.md                 <- matriks + ringkasan
-├── area1-login/
-├── area2-session-csrf/
-├── area3-upload-idor/
-├── area4-pelanggaran/
-└── area5-news-xss/
+  README.md                 <- matriks + ringkasan
+  area1-login/
+  area2-session-csrf/
+  area3-upload-idor/
+  area4-pelanggaran/
+  area5-news-xss/
 ```
 
 ---
@@ -212,5 +212,5 @@ docs/intern/strix-runs/
 - Model `dailyDriver` **bukan** model frontier (Strix sendiri memperingatkan ini). Hasil bersifat
   *low-noise & reproducible*, bukan menyeluruh.
 - Status `completed` dengan **0 temuan** berarti kelas serangan yang diuji **ditahan** oleh
-  aplikasi pada run itu — **bukan** bukti tidak ada kerentanan.
+  aplikasi pada run itu - **bukan** bukti tidak ada kerentanan.
 - Jalankan ulang setelah ada perubahan pada kode terkait (login, session, upload, pelanggaran, news).

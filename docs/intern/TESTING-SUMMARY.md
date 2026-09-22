@@ -1,7 +1,7 @@
 # Testing Infrastructure Setup - Summary
 
 > **Dokumen historis (2026-07-04).** Angka di bawah menggambarkan kondisi **saat infrastructure
-> pertama di-setup** — dan pada saat itu **login belum diperbaiki**, sehingga 14/21 E2E gagal.
+> pertama di-setup** - dan pada saat itu **login belum diperbaiki**, sehingga 14/21 E2E gagal.
 > **Kondisi terkini (2026-09):** login & semua bug terkait sudah FIXED/VERIFIED; E2E chromium
 > **21/21 hijau** (job CI blocking), ditambah suite regresi keamanan. Untuk status terkini lihat
 > [BUG_REPORT.md](./BUG_REPORT.md) (bagian "Kondisi Terkini") dan
@@ -33,15 +33,15 @@ Testing infrastructure telah berhasil di-setup untuk project DiscipLink V2 (PHP 
 php tests/run.php
 ```
 
-**Results (2026-07-04 — historis):**
+**Results (2026-07-04 - historis):**
 
 - 21/21 unit tests PASS
 -  All helper functions validated
 -  All model classes validated
-- ⏭️ Database tests skipped (requires DB setup)
+-  Database tests skipped (requires DB setup)
 
 > **Kemudian (2026-09):** suite diperluas dengan **regresi keamanan** (`tests/security/**`)
-> dan **unit/behavior** (model & controller) — total suite kini **160 test, semua PASS**.
+> dan **unit/behavior** (model & controller) - total suite kini **160 test, semua PASS**.
 > Mencakup unit + integration (DB) + security + HTTP handler coverage. Line coverage diukur
 > dengan Xdebug (`tests/cover.php`); fungsi inti >80%. Lihat [`../../tests/README.md`](../../tests/README.md).
 
@@ -67,11 +67,11 @@ npx playwright install chromium
 npx playwright test --project=chromium
 ```
 
-**Results (2026-07-04 — historis):**
+**Results (2026-07-04 - historis):**
 
 - 7/21 tests PASS
 - X 14/21 tests FAIL (login issues)
-- 📹 Screenshots & videos captured for failures
+-  Screenshots & videos captured for failures
 
 > **Kemudian (2026-09):** setelah login di-hardening, E2E chromium **21/21 hijau** dan job e2e di CI
 > dipromosikan menjadi **blocking**.
@@ -97,7 +97,7 @@ npx playwright test --project=chromium
 
 **Location:** `BUG_REPORT.md`
 
-**Bugs Documented (semuanya kini FIXED/VERIFIED — lihat `BUG_REPORT.md`):**
+**Bugs Documented (semuanya kini FIXED/VERIFIED - lihat `BUG_REPORT.md`):**
 
 | ID | Severity | Category | Status | Description |
 | ---- | ---------- | ---------- | -------- | ------------- |
@@ -179,13 +179,13 @@ test('test description', async ({ page }) => {
 > bagian "Kondisi Terkini"). Prioritas 3 (ekspansi coverage) sebagian sudah dikerjakan via suite
 > keamanan. Sisa ide: audit-trail test assertions, CSP nonce (Phase #2), dan throttle berbasis IP.
 
-### Priority 1: Fix Critical Bugs — SELESAI (2026-09)
+### Priority 1: Fix Critical Bugs - SELESAI (2026-09)
 
 1. **BUG-001** - Login functionality fixed (bcrypt + throttle + session regen)
 2. **BUG-002** - Role selection UI fixed
 3. **BUG-003** - Error message display fixed (generic, anti-enumeration)
 
-### Priority 2: Setup Test Database — SELESAI (2026-09)
+### Priority 2: Setup Test Database - SELESAI (2026-09)
 
 1. Database `disciplink_test` dibuat 
 2. Migration & seed dijalankan 
@@ -225,28 +225,28 @@ test('test description', async ({ page }) => {
 
 ```
 tests/
-├── run.php                    # Entry point for PHP tests
-├── TestRunner.php             # Custom test framework
-├── bootstrap.php              # Test bootstrap
-├── TestCase.php               # Base test case
-├── README.md                  # Testing documentation
-├── unit/
-│   ├── HelpersTest.php        # Helper function tests
-│   └── ModelsTest.php         # Model class tests
-├── integration/
-│   └── DatabaseTest.php       # Database tests
-├── security/                  # Red-team regression suites
-│   ├── SecurityClient.php     # `php -S` harness + curl client
-│   ├── TokenSuite.php         # Capability token tests
-│   ├── SourceScanSuite.php    # Static guardrails
-│   ├── HttpMatrixSuite.php    # Blackbox HTTP matrix
-│   └── UploadOwnershipSuite.php
-└── e2e/
-    ├── package.json           # Playwright deps
-    ├── playwright.config.js   # Playwright config
-    └── tests/
-        ├── public.spec.js     # Public page tests
-        └── dashboard.spec.js  # Dashboard tests
+  run.php                    # Entry point for PHP tests
+  TestRunner.php             # Custom test framework
+  bootstrap.php              # Test bootstrap
+  TestCase.php               # Base test case
+  README.md                  # Testing documentation
+  unit/
+    HelpersTest.php        # Helper function tests
+    ModelsTest.php         # Model class tests
+  integration/
+    DatabaseTest.php       # Database tests
+  security/                  # Red-team regression suites
+    SecurityClient.php     # `php -S` harness + curl client
+    TokenSuite.php         # Capability token tests
+    SourceScanSuite.php    # Static guardrails
+    HttpMatrixSuite.php    # Blackbox HTTP matrix
+    UploadOwnershipSuite.php
+  e2e/
+      package.json           # Playwright deps
+      playwright.config.js   # Playwright config
+      tests/
+          public.spec.js     # Public page tests
+          dashboard.spec.js  # Dashboard tests
 ```
 
 Bug tracking & ringkasan testing tinggal di `docs/intern/` (bukan lagi root repo).
@@ -270,18 +270,18 @@ Bug tracking & ringkasan testing tinggal di `docs/intern/` (bukan lagi root repo
 **Kondisi 2026-07-04 (historis):**
 
 - Catatan: Unit Tests: 21/21 passing (100%)
-- X E2E Tests: 7/21 passing (33%) — blocked by login bugs
+- X E2E Tests: 7/21 passing (33%) - blocked by login bugs
 -  Bug Documentation: 4 bugs documented with reproduction steps
 -  Test Infrastructure: Fully operational
 
 **Kondisi terkini (2026-09):**
 
 -  Unit + Integration: 21/21 (+ integration via `disciplink_test`)
--  **Security regression suite**: `tests/security/**` (39 test red-team) — target `failed 0`
+-  **Security regression suite**: `tests/security/**` (39 test red-team) - target `failed 0`
 -  **E2E Tests: 21/21 passing** (chromium, job CI blocking)
 -  CI: lint + migrate/seed + full suite (PHP 8.3 / MySQL 8)
 -  Semua bug (BUG-001..004) FIXED/VERIFIED
 
 ---
 
-*Generated: 2026-07-04 · Terakhir disinkronkan: 2026-09-14*
+*Generated: 2026-07-04 - Terakhir disinkronkan: 2026-09-14*

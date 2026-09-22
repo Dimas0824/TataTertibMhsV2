@@ -1,4 +1,4 @@
-# Area 3 — Upload / Download / IDOR (run 2026-09-21)
+# Area 3 - Upload / Download / IDOR (run 2026-09-21)
 
 Indeks area. Artefak mentah ada di `before/`, bukti perbaikan ada di `after/`.
 
@@ -9,9 +9,9 @@ Indeks area. Artefak mentah ada di `before/`, bukti perbaikan ada di `after/`.
 
 ## Temuan run ini
 
-**0 temuan** — semua kelas serangan yang diuji *ditahan* (upload terbatas,
+**0 temuan** - semua kelas serangan yang diuji *ditahan* (upload terbatas,
 token download tersegel, IDOR/BOLA, RBAC). Ringkasan negative-result ada di
 [`../README.md`](../README.md) dan `before/penetration_test_report.md`.
 
 > Catatan: re-scan 2026-09-22 menemukan **temuan baru** di area ini (role guard
-> halaman mahasiswa) — lihat [`../../strix-2026-09-22/area3-upload-idor/`](../../strix-2026-09-22/area3-upload-idor/).
+> halaman mahasiswa) - lihat [`../../strix-2026-09-22/area3-upload-idor/`](../../strix-2026-09-22/area3-upload-idor/).

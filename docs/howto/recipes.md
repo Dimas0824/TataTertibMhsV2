@@ -1,7 +1,7 @@
 # HOWTO: Resep Task Umum Developer
 
 Panduan problem-oriented untuk menyelesaikan tugas spesifik di DiscipLink V2.
-Tidak perlu membaca semua docs — cari task, ikuti langkah, selesai.
+Tidak perlu membaca semua docs - cari task, ikuti langkah, selesai.
 
 ---
 
@@ -97,7 +97,7 @@ try {
 }
 ```
 
-> Jangan panggil `session_start()` langsung — pakai `app_session_start_if_needed()`
+> Jangan panggil `session_start()` langsung - pakai `app_session_start_if_needed()`
 > agar cookie params (HttpOnly/SameSite) tetap terpasang. Guardrail statis menolak
 > `session_start()` mentah di luar `token_helper.php`.
 
@@ -327,6 +327,6 @@ error_log($stmt->queryString);
 
 ## Dokumentasi Terkait
 
-- [reference/api.md](../reference/api.md) — Detail API dan helper
-- [reference/database.md](../reference/database.md) — CLI artisan dan migrasi
-- [explanation/architecture.md](../explanation/architecture.md) — Penjelasan arsitektur
+- [reference/api.md](../reference/api.md) - Detail API dan helper
+- [reference/database.md](../reference/database.md) - CLI artisan dan migrasi
+- [explanation/architecture.md](../explanation/architecture.md) - Penjelasan arsitektur

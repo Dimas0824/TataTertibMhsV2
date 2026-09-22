@@ -22,13 +22,13 @@ Dokumen ini berisi daftar bug yang ditemukan melalui automated testing dan explo
 
 | Severity | Total | Open | Fixed/Verified |
 |----------|-------|------|----------------|
-| Critical | 1     | 0    | 1              |
-| High     | 2     | 0    | 2              |
-| Medium   | 1     | 0    | 1              |
-| Low      | 0     | 0    | 0              |
-| **Total**| **4** | **0**| **4**          |
+| Critical | 1 | 0 | 1 |
+| High | 2 | 0 | 2 |
+| Medium | 1 | 0 | 1 |
+| Low | 0 | 0 | 0 |
+| **Total**| **4** | **0**| **4** |
 
-*Ditemukan: 2026-07-04 · Diremediasi & diverifikasi: 2026-09 (hardening `fix/security-hardening`).*
+*Ditemukan: 2026-07-04 - Diremediasi & diverifikasi: 2026-09 (hardening `fix/security-hardening`).*
 *Terakhir diupdate: 2026-09-14.*
 
 ---
@@ -42,15 +42,15 @@ Dokumen ini berisi daftar bug yang ditemukan melalui automated testing dan explo
 - **Status**: FIXED / VERIFIED (2026-09)
 - **Ditemukan oleh**: E2E Test (Playwright)
 - **Tanggal**: 2026-07-04
-- **Resolved**: 2026-09 — akar masalah bukan "login rusak", melainkan (a) environment test tanpa DB dan
+- **Resolved**: 2026-09 - akar masalah bukan "login rusak", melainkan (a) environment test tanpa DB dan
   (b) seed password masih plaintext. Hardening menyelesaikan keduanya: `artisan db:seed` kini selalu
   bcrypt (cost 12), login hanya menerima hash bcrypt, plus throttle 5 gagal/15 menit + dummy-verify.
-  Diverifikasi live: login mahasiswa/dosen/admin → 302 ke dashboard role masing-masing.
+  Diverifikasi live: login mahasiswa/dosen/admin -> 302 ke dashboard role masing-masing.
 - **File Terkait**:
-  - `request/handler-login.php`
-  - `controllers/UserController.php`
-  - `models/User.php`
-  - `config.php`
+ - `request/handler-login.php`
+ - `controllers/UserController.php`
+ - `models/User.php`
+ - `config.php`
 
 **Deskripsi:**
 Login tidak berfungsi untuk semua role (mahasiswa, dosen, admin). Setelah submit form login, page tidak redirect ke dashboard yang sesuai. Kemungkinan besar karena database connection error atau session tidak ter-set dengan benar.
@@ -86,7 +86,7 @@ waiting for navigation to "**/pelanggaran**" until "load"
 - [x] Diperbaiki (2026-09)
 - Seed password di-hash bcrypt sebelum masuk DB (`artisan db:seed`); untuk `.sql` lama tersedia `database/cli/hash-plaintext-passwords.php`
 - Login menerima hanya hash bcrypt + throttle 5×/15 mnt (per sesi) + dummy-verify anti timing-leak
-- Diverifikasi: 3 role login sukses (302 → dashboard role)
+- Diverifikasi: 3 role login sukses (302 -> dashboard role)
 
 ---
 
@@ -97,7 +97,7 @@ waiting for navigation to "**/pelanggaran**" until "load"
 - **Status**: FIXED / VERIFIED (2026-09)
 - **Ditemukan oleh**: E2E Test (Playwright)
 - **Tanggal**: 2026-07-04
-- **Resolved**: 2026-09 — form login kini menyediakan cara memilih role (bukan lagi manual
+- **Resolved**: 2026-09 - form login kini menyediakan cara memilih role (bukan lagi manual
   mengubah hidden input via dev tools). Diverifikasi di E2E suite (21/21 chromium green) dan
   di security suite `HttpMatrixSuite` (login ketiga role via `user_type` yang benar).
 - **File Terkait**: `views/auth/login.php`
@@ -126,7 +126,7 @@ Hidden input dengan value `nim` (mahasiswa) sebagai default. Dosen dan admin tid
 **Fix:**
 
 - [x] Diperbaiki (2026-09)
-- Role selector tersedia di form login (mahasiswa/dosen/admin) — tidak lagi perlu mengubah hidden input manual
+- Role selector tersedia di form login (mahasiswa/dosen/admin) - tidak lagi perlu mengubah hidden input manual
 - Diverifikasi lewat E2E Playwright (21/21) + `tests/security/HttpMatrixSuite.php`
 
 ---
@@ -138,13 +138,13 @@ Hidden input dengan value `nim` (mahasiswa) sebagai default. Dosen dan admin tid
 - **Status**: FIXED / VERIFIED (2026-09)
 - **Ditemukan oleh**: E2E Test (Playwright)
 - **Tanggal**: 2026-07-04
-- **Resolved**: 2026-09 — kegagalan login sekarang menampilkan pesan generik
+- **Resolved**: 2026-09 - kegagalan login sekarang menampilkan pesan generik
   (`Invalid username or password`) yang seragam untuk "user tidak ada" dan "password salah"
   (mencegah user-enumeration). Diverifikasi di `HttpMatrixSuite`.
 - **File Terkait**:
-  - `request/handler-login.php`
-  - `views/auth/login.php`
-  - `helpers/flash_modal.php`
+ - `request/handler-login.php`
+ - `views/auth/login.php`
+ - `helpers/flash_modal.php`
 
 **Deskripsi:**
 Saat login dengan kredensial invalid, tidak ada error message yang ditampilkan di halaman login. User tidak tahu apakah login gagal karena username salah, password salah, atau error lain.
@@ -177,9 +177,9 @@ Page redirect kembali ke `/login` tanpa error message.
 - **Status**: FIXED / VERIFIED (2026-09)
 - **Ditemukan oleh**: Unit Test (PHP TestRunner)
 - **Tanggal**: 2026-07-04
-- **Resolved**: 2026-09 — DB test terpisah `disciplink_test` (15 tabel, seeded) dipakai untuk
+- **Resolved**: 2026-09 - DB test terpisah `disciplink_test` (15 tabel, seeded) dipakai untuk
   integration & security HTTP-matrix suite; `.env` produksi tidak disentuh (dipakai swap sementara
-  - restore terverifikasi hash). CI (`ci.yml`) menjalankan migrate/seed + full suite di PHP 8.3/MySQL 8.
+ - restore terverifikasi hash). CI (`ci.yml`) menjalankan migrate/seed + full suite di PHP 8.3/MySQL 8.
 - **File Terkait**: `tests/bootstrap.php`, `tests/integration/DatabaseTest.php`
 
 **Deskripsi:**
@@ -215,7 +215,7 @@ Integration tests di-skip, hanya unit tests yang berjalan.
 | ----------- | --------- | ------- | --------- |
 | Unit Tests (Helpers) | 2026-07-04 | 12/12 PASS | Semua helper functions bekerja |
 | Unit Tests (Models) | 2026-07-04 | 9/9 PASS | Semua model classes valid |
-| Integration Tests (DB) | 2026-07-04 | ⏭️ SKIPPED | Database belum tersedia |
+| Integration Tests (DB) | 2026-07-04 | SKIPPED | Database belum tersedia |
 | E2E Tests (Playwright) | 2026-07-04 | X 7/21 PASS | 14 tests gagal, mostly login issues |
 
 ### Kondisi Terkini (2026-09)
@@ -228,11 +228,11 @@ Integration tests di-skip, hanya unit tests yang berjalan.
 | E2E Tests (Playwright, chromium) | 21/21 PASS | Job e2e di CI dipromosikan jadi **blocking** (`c011b5e`) |
 
 **Catatan lokal (Windows):** saat menjalankan `php tests/run.php` di mesin Windows, sebagian test
-HTTP-matrix bisa gagal dengan `curl: (3) URL rejected` — ini artefak escaping argumen `curl.exe`
+HTTP-matrix bisa gagal dengan `curl: (3) URL rejected` - ini artefak escaping argumen `curl.exe`
 di mesin lokal, **bukan** regresi aplikasi (CI Linux hijau). Jalur bersih: jalankan via CI atau
 pastikan `curl` di PATH sesuai platform.
 
-### E2E Test Results Detail (2026-07-04 — historis)
+### E2E Test Results Detail (2026-07-04 - historis)
 
 **Passing Tests (7):**
 
@@ -249,16 +249,16 @@ pastikan `curl` di PATH sesuai platform.
 - X All authentication tests (mahasiswa/dosen/admin login)
 - X All dashboard tests (require successful login)
 
-**Root Cause (saat itu):** BUG-001 (Login tidak berfungsi) dan BUG-002 (Hidden input user_type) — keduanya kini **FIXED/VERIFIED**.
+**Root Cause (saat itu):** BUG-001 (Login tidak berfungsi) dan BUG-002 (Hidden input user_type) - keduanya kini **FIXED/VERIFIED**.
 
 ---
 
 ## Known Issues (Non-Bug)
 
-- ~~Database test skipped karena koneksi DB belum dikonfigurasi~~ → **beres**: `disciplink_test` + CI.
+- ~~Database test skipped karena koneksi DB belum dikonfigurasi~~ -> **beres**: `disciplink_test` + CI.
 - Integration tests memerlukan database `disciplink_test` yang terpisah dari production (tersedia).
 - Playwright tests memerlukan server berjalan; di CI port dikelola `e2e.yml` (default lokal kini `8000`).
-- **2026-09-14:** `/action/upload` sempat HTTP 500 (bug fungsional, bukan security) → sudah diperbaiki;
+- **2026-09-14:** `/action/upload` sempat HTTP 500 (bug fungsional, bukan security) -> sudah diperbaiki;
   detail di [`UPLOAD-500-INVESTIGATION.md`](./UPLOAD-500-INVESTIGATION.md). Bukan bagian dari 4 bug era 2026-07 di atas.
 
 ---

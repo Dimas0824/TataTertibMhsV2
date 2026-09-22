@@ -1,7 +1,7 @@
 # Reference: API & File Index
 
 Dokumen ini adalah referensi teknis untuk developer yang sudah familiar dengan DiscipLink V2.
-Bukan tutorial — langsung ke fakta.
+Bukan tutorial - langsung ke fakta.
 
 ---
 
@@ -22,19 +22,19 @@ Bukan tutorial — langsung ke fakta.
 
 ```
 router.php (dispatch berdasarkan PATH_INFO)
-  ├─► PAGE ROUTE → views/{kategori}/{file}.php (langsung render)
-  └─► ACTION ROUTE → request/handler-{nama}.php
-                        ├─► app_require_login() / app_require_role()
-                        ├─► Controller::method()
-                        ├─► Model::query()
-                        └─► respondJson() / app_redirect()
+  |- PAGE ROUTE -> views/{kategori}/{file}.php (langsung render)
+  |- ACTION ROUTE -> request/handler-{nama}.php
+                        |- app_require_login() / app_require_role()
+                        |- Controller::method()
+                        |- Model::query()
+                        |- respondJson() / app_redirect()
 ```
 
 ---
 
 ## Routing Registry
 
-Lokasi: `helpers/route_helper.php` → `app_route_registry()`
+Lokasi: `helpers/route_helper.php` -> `app_route_registry()`
 
 ### Format Registri
 
@@ -61,10 +61,10 @@ Akses role dialakukan di dalam handler/view (`app_require_role()`), bukan di reg
 ### Helper URL & Token
 
 ```php
-app_page_url('page.slug')                        // → string URL halaman
-app_action_url('action.slug')                    // → string URL action
-app_id_token('detail_pelanggaran', (int) $id)    // → encrypted token string
-app_id_resolve((string) $token, 'detail_pelanggaran') // → int|null
+app_page_url('page.slug')                        // -> string URL halaman
+app_action_url('action.slug')                    // -> string URL action
+app_id_token('detail_pelanggaran', (int) $id)    // -> encrypted token string
+app_id_resolve((string) $token, 'detail_pelanggaran') // -> int|null
 ```
 
 ---
@@ -83,8 +83,8 @@ app_id_resolve((string) $token, 'detail_pelanggaran') // → int|null
 ```php
 UserController::login($username, $password, $userType)
 // Coba role sesuai userType (alias: nim/nidn/nip), fallback ke urutan
-// mahasiswa → dosen → admin. Sukses → set session, regenerate id,
-// redirect per role. Gagal → return false.
+// mahasiswa -> dosen -> admin. Sukses -> set session, regenerate id,
+// redirect per role. Gagal -> return false.
 
 UserController::logout()
 // Hancurkan session, hapus cookie, redirect ke index
@@ -128,9 +128,9 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
 ### CSRF Helpers
 
 ```php
-app_csrf_token()   // string — get or generate token
-app_csrf_field()   // string HTML — hidden input field
-app_verify_csrf()  // void — verify POST/JSON token, exit(419) if invalid
+app_csrf_token()   // string - get or generate token
+app_csrf_field()   // string HTML - hidden input field
+app_verify_csrf()  // void - verify POST/JSON token, exit(419) if invalid
 ```
 
 ### Token ID Helpers
@@ -139,11 +139,11 @@ app_verify_csrf()  // void — verify POST/JSON token, exit(419) if invalid
 // Enkripsi ID untuk mencegah IDOR (AEAD: sodium secretbox / AES-256-GCM)
 // Token terikat sesi (sid hash) + expiry.
 app_id_token('detail_pelanggaran', 42)
-// → "s1.xxxx" (algo-prefixed, base64url)
+// -> "s1.xxxx" (algo-prefixed, base64url)
 
 // Dekripsi kembali ke integer
 app_id_resolve("s1.xxxx", 'detail_pelanggaran')
-// → 42 atau null
+// -> 42 atau null
 ```
 
 ---
@@ -166,10 +166,10 @@ app_id_resolve("s1.xxxx", 'detail_pelanggaran')
 ## Session Structure
 
 ```php
-$_SESSION['username']      // string — identifier user
-$_SESSION['user_type']     // string — 'mahasiswa'|'dosen'|'admin'
-$_SESSION['user_data']     // array  — data user sesuai role
-$_SESSION['csrf_token']    // string — CSRF request token
+$_SESSION['username']      // string - identifier user
+$_SESSION['user_type']     // string - 'mahasiswa'|'dosen'|'admin'
+$_SESSION['user_data']     // array - data user sesuai role
+$_SESSION['csrf_token']    // string - CSRF request token
 ```
 
 Session cookie flags: `HttpOnly`, `SameSite=Lax`, `Secure` (HTTPS).
@@ -200,7 +200,7 @@ app_redirect('views/page/tujuan.php');
 
 ```php
 set_app_flash_modal('success', 'Data berhasil disimpan.');
-// → tersimpan di session, ditampilkan di modal saat page berikutnya render
+// -> tersimpan di session, ditampilkan di modal saat page berikutnya render
 ```
 
 ---
@@ -209,12 +209,12 @@ set_app_flash_modal('success', 'Data berhasil disimpan.');
 
 ```
 storage/
-├── keys/
-│   └── app_token.key          ← generated on first run, gitignored
-└── uploads/
-    ├── [student NIM]_[type]_[random].pdf
-    └── news/
-        └── [random].jpg|png
+  keys/
+    app_token.key          <- generated on first run, gitignored
+  uploads/
+      [student NIM]_[type]_[random].pdf
+      news/
+          [random].jpg|png
 ```
 
 ---
@@ -250,10 +250,10 @@ storage/
 |---|---|---|---|
 | `APP_ENV` | Yes | `local` | `local` atau `production` |
 | `APP_BASE_PATH` | No | `auto` | URL prefix path |
-| `DB_DSN` | Yes | — | PDO DSN string |
-| `DB_USER` | Yes | — | Database username |
-| `DB_PASS` | Yes | — | Database password |
-| `APP_CANONICAL_URL` | No | — | Canonical base URL |
+| `DB_DSN` | Yes | - | PDO DSN string |
+| `DB_USER` | Yes | - | Database username |
+| `DB_PASS` | Yes | - | Database password |
+| `APP_CANONICAL_URL` | No | - | Canonical base URL |
 
 ---
 
@@ -274,7 +274,7 @@ storage/
 
 ## Minified Assets
 
-JavaScript files yang punya pasangan `.min.js` adalah versi production (uglify). Jangan edit file `.min.js` secara langsung — edit sumber `.js`, lalu minify.
+JavaScript files yang punya pasangan `.min.js` adalah versi production (uglify). Jangan edit file `.min.js` secara langsung - edit sumber `.js`, lalu minify.
 
 | Source | Minified |
 |---|---|

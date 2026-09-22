@@ -1,4 +1,4 @@
-# Security Audit — TataTertibMhsV2
+# Security Audit - TataTertibMhsV2
 
 > **Snapshot historis (audit 2026-07-07).** Dokumen ini mencatat temuan **saat kondisi sebelum
 > hardening**. **Seluruh temuan di bawah sudah diperbaiki** pada gelombang hardening 2026-09
@@ -37,7 +37,7 @@ Checklist yang dipakai:
 
 ## Temuan Detail
 
-### [critical] `request/handler-upload.php:39-128` — upload tidak cek role dan ownership detail pelanggaran
+### [critical] `request/handler-upload.php:39-128` - upload tidak cek role dan ownership detail pelanggaran
 
 Endpoint upload hanya cek method POST dan `id_detail`, lalu update `DETAIL_PELANGGARAN` berdasarkan id tersebut.
 
@@ -80,11 +80,11 @@ WHERE dp.id_detail = :idDetail
   )
 ```
 
-Source: PHP Manual Security → User Submitted Data, Filesystem Security, Database Security.
+Source: PHP Manual Security -> User Submitted Data, Filesystem Security, Database Security.
 
 ---
 
-### [high] `request/handler-news.php:14-130` — endpoint admin news tidak cek session admin
+### [high] `request/handler-news.php:14-130` - endpoint admin news tidak cek session admin
 
 Endpoint create/update/delete news langsung memproses POST tanpa memastikan user login sebagai admin.
 
@@ -116,11 +116,11 @@ if (!isset($_SESSION['username']) || ($_SESSION['user_type'] ?? '') !== 'admin')
 }
 ```
 
-Source: PHP Manual Security → User Submitted Data, General considerations.
+Source: PHP Manual Security -> User Submitted Data, General considerations.
 
 ---
 
-### [high] `request/handler-tatib.php:14-49` — endpoint admin tata tertib tidak cek session admin
+### [high] `request/handler-tatib.php:14-49` - endpoint admin tata tertib tidak cek session admin
 
 Endpoint store/update/delete tata tertib tidak melakukan authorization server-side.
 
@@ -145,11 +145,11 @@ if (!isset($_SESSION['username']) || ($_SESSION['user_type'] ?? '') !== 'admin')
 }
 ```
 
-Source: PHP Manual Security → User Submitted Data, General considerations.
+Source: PHP Manual Security -> User Submitted Data, General considerations.
 
 ---
 
-### [high] Global POST actions — belum ada CSRF protection
+### [high] Global POST actions - belum ada CSRF protection
 
 Tidak ditemukan mekanisme CSRF token untuk form POST penting. Search terhadap `csrf`, `nonce`, dan token form tidak menunjukkan CSRF khusus; token yang ada adalah encrypted route/id token, bukan anti-CSRF request token.
 
@@ -191,11 +191,11 @@ if (!hash_equals($_SESSION['csrf_token'] ?? '', (string) ($_POST['csrf_token'] ?
 }
 ```
 
-Source: PHP Manual Security → User Submitted Data, Session Security.
+Source: PHP Manual Security -> User Submitted Data, Session Security.
 
 ---
 
-### [medium] `controllers/UserController.php:55-63` — session ID tidak diregenerasi setelah login
+### [medium] `controllers/UserController.php:55-63` - session ID tidak diregenerasi setelah login
 
 Bukti:
 
@@ -223,11 +223,11 @@ session_regenerate_id(true);
 
 Letakkan setelah `session_start()` dan sebelum set data login.
 
-Source: PHP Manual Security → Session Security.
+Source: PHP Manual Security -> Session Security.
 
 ---
 
-### [medium] `controllers/NewsController.php:129-132` dan `request/handler-news.php:87-90` — upload gambar percaya client MIME
+### [medium] `controllers/NewsController.php:129-132` dan `request/handler-news.php:87-90` - upload gambar percaya client MIME
 
 Bukti:
 
@@ -249,11 +249,11 @@ Fix minimal:
 - Generate filename random, bukan mempertahankan nama asli.
 - Simpan di folder non-executable atau pastikan webserver tidak execute upload.
 
-Source: PHP Manual Security → File uploads, Filesystem Security.
+Source: PHP Manual Security -> File uploads, Filesystem Security.
 
 ---
 
-### [medium] Git hygiene — `tests/e2e/node_modules`, Playwright report, dan test results tracked
+### [medium] Git hygiene - `tests/e2e/node_modules`, Playwright report, dan test results tracked
 
 Bukti command:
 
@@ -298,7 +298,7 @@ git rm -r --cached tests/e2e/node_modules tests/e2e/test-results tests/playwrigh
 
 Lalu commit perubahan. Jangan push otomatis.
 
-Source: PHP Manual Security → Keeping Current, General considerations.
+Source: PHP Manual Security -> Keeping Current, General considerations.
 
 ---
 
@@ -306,10 +306,10 @@ Source: PHP Manual Security → Keeping Current, General considerations.
 
 Contoh:
 
-- `controllers/UserController.php:70` → `echo "Error: " . $e->getMessage();`
-- `models/News.php:44` dan `models/News.php:61` → echo pesan PDO exception.
-- `request/handler-news.php:127` → flash `Error: ` + exception message.
-- `request/handler-pelanggaran.php:258` → flash exception message.
+- `controllers/UserController.php:70` -> `echo "Error: " . $e->getMessage();`
+- `models/News.php:44` dan `models/News.php:61` -> echo pesan PDO exception.
+- `request/handler-news.php:127` -> flash `Error: ` + exception message.
+- `request/handler-pelanggaran.php:258` -> flash exception message.
 
 Dampak:
 
@@ -320,7 +320,7 @@ Fix minimal:
 - `error_log($e->getMessage())` untuk log.
 - User-facing message generic: `Terjadi kesalahan. Silakan coba lagi.`
 
-Source: PHP Manual Security → Error Reporting.
+Source: PHP Manual Security -> Error Reporting.
 
 ---
 
@@ -360,7 +360,7 @@ Fix minimal:
 
 - Cari `DETAIL_PELANGGARAN` berdasarkan filename lalu cek ownership/role sebelum `readfile()`.
 
-Source: PHP Manual Security → Filesystem Security, User Submitted Data.
+Source: PHP Manual Security -> Filesystem Security, User Submitted Data.
 
 ## Verifikasi yang sudah dijalankan
 

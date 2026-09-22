@@ -1,4 +1,4 @@
-# Area 4 — Pelanggaran / Violation workflow (run 2026-09-21)
+# Area 4 - Pelanggaran / Violation workflow (run 2026-09-21)
 
 Indeks area. Artefak mentah ada di `before/`, bukti perbaikan ada di `after/`.
 
@@ -16,5 +16,5 @@ Indeks area. Artefak mentah ada di `before/`, bukti perbaikan ada di `after/`.
 Regression: `tests/unit/Area4SanctionSuite.php`.
 
 > Status: **HILANG** di re-scan 2026-09-22. Re-scan menemukan **temuan baru**
-> (hapus pelanggaran finalized) — lihat
+> (hapus pelanggaran finalized) - lihat
 > [`../../strix-2026-09-22/area4-pelanggaran/`](../../strix-2026-09-22/area4-pelanggaran/).

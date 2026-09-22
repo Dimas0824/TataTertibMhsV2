@@ -1,9 +1,9 @@
 # Contributing ke DiscipLink V2
 
 Terima kasih sudah tertarik berkontribusi. Proyek ini adalah portofolio sekaligus sarana
-belajar — semua bentuk kontribusi (bug report, perbaikan, ide, dokumentasi) sangat dihargai.
+belajar - semua bentuk kontribusi (bug report, perbaikan, ide, dokumentasi) sangat dihargai.
 
-> *Thanks for contributing. This is a portfolio/learning project — bug reports, fixes, ideas, and
+> *Thanks for contributing. This is a portfolio/learning project - bug reports, fixes, ideas, and
 > documentation improvements are all welcome.*
 
 ## Cara Berkontribusi
@@ -44,7 +44,7 @@ Sama seperti bug, tapi tambahkan label **`security`** dan detail:
 
 - Ikuti gaya kode yang sudah ada (PHP native, PDO prepared statements, output-encoding).
 - **Jangan commit** rahasia: `.env`, `storage/keys/*`, file upload runtime. Lihat `.gitignore`.
-- Hormati deny-list server (`router.php` / `.htaccess`) — jangan tambah file sensitif di docroot.
+- Hormati deny-list server (`router.php` / `.htaccess`) - jangan tambah file sensitif di docroot.
 - Satu perubahan yang jelas lebih mudah di-review daripada banyak sekaligus.
 
 ## Etika Pengujian

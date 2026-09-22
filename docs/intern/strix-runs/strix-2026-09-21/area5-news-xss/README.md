@@ -1,4 +1,4 @@
-# Area 5 — News module / XSS (run 2026-09-21)
+# Area 5 - News module / XSS (run 2026-09-21)
 
 Indeks area. Artefak mentah ada di `before/`, bukti perbaikan ada di `after/`.
 
@@ -16,5 +16,5 @@ Indeks area. Artefak mentah ada di `before/`, bukti perbaikan ada di `after/`.
 Regression: `tests/unit/Area5XssSuite.php`.
 
 > Status: **HILANG** di re-scan 2026-09-22. Re-scan menemukan **temuan baru**
-> (XSS via JSON-LD) — lihat
+> (XSS via JSON-LD) - lihat
 > [`../../strix-2026-09-22/area5-news-xss/`](../../strix-2026-09-22/area5-news-xss/).

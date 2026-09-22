@@ -62,7 +62,7 @@ $stmt->bindValue(':user', $username, PDO::PARAM_STR);
 $stmt = $pdo->query("SELECT * FROM users WHERE username = '$username'");
 ```
 
-Kami tidak menggunakan ORM atau query builder — setiap query ditulis manual. Ini berarti setiap query harus di-review secara manual untuk memastikan keamanan.
+Kami tidak menggunakan ORM atau query builder - setiap query ditulis manual. Ini berarti setiap query harus di-review secara manual untuk memastikan keamanan.
 
 ### Cross-Site Request Forgery (CSRF)
 
@@ -109,11 +109,11 @@ GET /action/pelanggaran?detail=43  (record orang lain!)
 ```php
 // View: kirim encrypted token
 app_id_token('detail_pelanggaran', 42)
-// → "eyJhbGciOiJ..."
+// -> "eyJhbGciOiJ..."
 
 // Handler: dekripsi dan verify
 $id = app_id_resolve($_POST['id_detail'], 'detail_pelanggaran');
-// → 42 atau null jika invalid
+// -> 42 atau null jika invalid
 ```
 
 Token tidak bisa di-forge tanpa secret key di server.
@@ -129,13 +129,13 @@ Token tidak bisa di-forge tanpa secret key di server.
 
 | Serangan | Perlindungan |
 | ---------- | -------------- |
-| Cookie theft via XSS | `HttpOnly` flag — JavaScript tidak bisa baca cookie |
-| CSRF via cross-site | `SameSite=Lax` — cookie tidak dikirim dari domain lain |
+| Cookie theft via XSS | `HttpOnly` flag - JavaScript tidak bisa baca cookie |
+| CSRF via cross-site | `SameSite=Lax` - cookie tidak dikirim dari domain lain |
 | Session fixation | `session_regenerate_id(true)` setelah login sukses |
-| Eavesdropping | `Secure` flag — cookie hanya dikirim via HTTPS |
+| Eavesdropping | `Secure` flag - cookie hanya dikirim via HTTPS |
 
 ```php
-// Setelah login sukses — regenerate session ID
+// Setelah login sukses - regenerate session ID
 session_regenerate_id(true);
 $_SESSION['username'] = $username;
 ```
@@ -146,11 +146,11 @@ $_SESSION['username'] = $username;
 
 **Perlindungan berlapis:**
 
-1. **Server-side MIME detection** — bukan percaya `$_FILES['type']` yang bisa di-spoof client
-2. **Extension allowlist** — hanya `.pdf`, `.jpg`, `.png`
-3. **Random filename** — filename asli tidak dipakai
-4. **Storage outside web root** — file tidak bisa diakses langsung via URL
-5. **Download via handler** — file hanya served setelah authorization check
+1. **Server-side MIME detection** - bukan percaya `$_FILES['type']` yang bisa di-spoof client
+2. **Extension allowlist** - hanya `.pdf`, `.jpg`, `.png`
+3. **Random filename** - filename asli tidak dipakai
+4. **Storage outside web root** - file tidak bisa diakses langsung via URL
+5. **Download via handler** - file hanya served setelah authorization check
 
 ```php
 // MIME detection via server
@@ -191,21 +191,21 @@ error_log($e->getMessage()); // "PDOException: SQLSTATE[42S02]..."
 
 ## Batasan yang Tersisa
 
-### Download File Authorization — diselesaikan 2026-09
+### Download File Authorization - diselesaikan 2026-09
 
-Parameter `?file=` dulunya plain filename (siapa pun yang tahu nama file bisa unduh). Sekarang nama file adalah **capability token terenkripsi dan terikat sesi** (`app_file_token`, AEAD + hash `session_id` + kadaluarsa). Replay lintas sesi secara kriptografis mustahil; nama mentah ditolak di level router dengan 403. Regression test: `tests/security/HttpMatrixSuite.php` (upload→download→cross-session replay).
+Parameter `?file=` dulunya plain filename (siapa pun yang tahu nama file bisa unduh). Sekarang nama file adalah **capability token terenkripsi dan terikat sesi** (`app_file_token`, AEAD + hash `session_id` + kadaluarsa). Replay lintas sesi secara kriptografis mustahil; nama mentah ditolak di level router dengan 403. Regression test: `tests/security/HttpMatrixSuite.php` (upload->download->cross-session replay).
 
-### Rate limiting login — diselesaikan 2026-09
+### Rate limiting login - diselesaikan 2026-09
 
 Login punya **lockout 5 percobaan gagal / 15 menit** plus dummy-verify agar timing "user tidak ada" identik dengan "password salah".
 
-Sejak perbaikan pentest 2026-09-21, keputusan lockout **tidak lagi bergantung pada sesi**: `helpers/login_throttle_helper.php` (`app_login_throttle_status()`) menghitung kegagalan `login_fail` dalam window 15 menit dari `SECURITY_AUDIT_LOG`, berbasis **akun (5) dan IP klien (15)**. Membuang cookie sesi tidak lagi mereset budget. IP diambil dari `REMOTE_ADDR` saja (header `X-Forwarded-For` tidak dipercaya karena bisa dipalsukan klien). Store gagal → *fail-soft* (tidak mengunci siapa pun).
+Sejak perbaikan pentest 2026-09-21, keputusan lockout **tidak lagi bergantung pada sesi**: `helpers/login_throttle_helper.php` (`app_login_throttle_status()`) menghitung kegagalan `login_fail` dalam window 15 menit dari `SECURITY_AUDIT_LOG`, berbasis **akun (5) dan IP klien (15)**. Membuang cookie sesi tidak lagi mereset budget. IP diambil dari `REMOTE_ADDR` saja (header `X-Forwarded-For` tidak dipercaya karena bisa dipalsukan klien). Store gagal -> *fail-soft* (tidak mengunci siapa pun).
 
-Kredensial juga divalidasi sebelum verifier: byte NUL ditolak (bcrypt terpotong di NUL → CWE-230) dan password dibatasi 72 byte. Regression test: `tests/security/LoginBruteForceSuite.php`.
+Kredensial juga divalidasi sebelum verifier: byte NUL ditolak (bcrypt terpotong di NUL -> CWE-230) dan password dibatasi 72 byte. Regression test: `tests/security/LoginBruteForceSuite.php`.
 
 ### CSP memakai `'unsafe-inline'`
 
-Header CSP aktif (frame-ancestors 'none', object-src 'none', form-action 'self', dll), namun inline script view masih dibutuhkan → `'unsafe-inline'` sementara. Jalur upgrade: nonce per-request lalu hapus unsafe-inline.
+Header CSP aktif (frame-ancestors 'none', object-src 'none', form-action 'self', dll), namun inline script view masih dibutuhkan -> `'unsafe-inline'` sementara. Jalur upgrade: nonce per-request lalu hapus unsafe-inline.
 
 ### Multiple Tab Session
 
@@ -238,5 +238,5 @@ Ini acceptable untuk use case kampus dengan user single-browser.
 
 ## Dokumentasi Terkait
 
-- [architecture.md](./architecture.md) — Keputusan arsitektur yang mendasari keamanan
-- [howto/recipes.md](../howto/recipes.md) — Checklist keamanan saat menambah fitur baru
+- [architecture.md](./architecture.md) - Keputusan arsitektur yang mendasari keamanan
+- [howto/recipes.md](../howto/recipes.md) - Checklist keamanan saat menambah fitur baru

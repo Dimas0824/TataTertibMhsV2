@@ -1,6 +1,6 @@
 # Arsitektur & Keputusan Desain
 
-Dokumen ini menjelaskan mengapa DiscipLink V2 dirancang seperti ini — keputusan arsitektur, trade-off, dan filosofi di balik pilihan teknis. Bukan tutorial atau referensi; ini untuk memahami "kenapa" di balik sistem.
+Dokumen ini menjelaskan mengapa DiscipLink V2 dirancang seperti ini - keputusan arsitektur, trade-off, dan filosofi di balik pilihan teknis. Bukan tutorial atau referensi; ini untuk memahami "kenapa" di balik sistem.
 
 ---
 
@@ -14,16 +14,16 @@ Project ini berevolusi dari codebase PHP legacy yang sudah ada. Menggunakan fram
 
 Kami memilih PHP native dengan pattern MVC terstruktur karena:
 
-- **Minimal dependencies** — hanya butuh PHP 8.3+ dan MySQL. Tidak ada Composer autoload, tidak ada framework overhead.
-- **Full control** — setiap baris kode bisa ditrace tanpa membaca dokumentasi framework.
-- **Lightweight deployment** — bisa jalan di shared hosting minimal.
-- **Learning curve rendah** — developer baru cukup tahu PHP standar, tidak perlu belajar idioms framework.
+- **Minimal dependencies** - hanya butuh PHP 8.3+ dan MySQL. Tidak ada Composer autoload, tidak ada framework overhead.
+- **Full control** - setiap baris kode bisa ditrace tanpa membaca dokumentasi framework.
+- **Lightweight deployment** - bisa jalan di shared hosting minimal.
+- **Learning curve rendah** - developer baru cukup tahu PHP standar, tidak perlu belajar idioms framework.
 
 ### Trade-off yang Diterima
 
-- **Boilerplate lebih banyak** — autentikasi, routing, dan validasi ditulis manual.
-- **Tidak ada built-in protection** — CSRF, SQL injection prevention harus implemented sendiri.
-- **Maintenance lebih manual** — tidak ada framework upgrade path, tapi juga tidak ada breaking changes dari framework.
+- **Boilerplate lebih banyak** - autentikasi, routing, dan validasi ditulis manual.
+- **Tidak ada built-in protection** - CSRF, SQL injection prevention harus implemented sendiri.
+- **Maintenance lebih manual** - tidak ada framework upgrade path, tapi juga tidak ada breaking changes dari framework.
 
 ---
 
@@ -33,28 +33,28 @@ Kami memilih PHP native dengan pattern MVC terstruktur karena:
 
 ```
 Browser Request
-      │
-      ▼
+      |
+      
 router.php (Single Entry Point)
-      │
-      ├─► Page Route ──► views/{kategori}/{file}.php
-      │
-      └─► Action Route ──► request/handler-{nama}.php
-                               │
-                               ├─► Auth Guard
-                               ├─► CSRF Verify
-                               ├─► Controller::method()
-                               ├─► Model::query()
-                               └─► respondJson() / app_redirect()
+      |
+      |- Page Route -- views/{kategori}/{file}.php
+      |
+      |- Action Route -- request/handler-{nama}.php
+                               |
+                               |- Auth Guard
+                               |- CSRF Verify
+                               |- Controller::method()
+                               |- Model::query()
+                               |- respondJson() / app_redirect()
 ```
 
 ### Kenapa Single Entry Point?
 
-Semua request masuk lewat `index.php` → `router.php` agar:
+Semua request masuk lewat `index.php` -> `router.php` agar:
 
-1. **Konsistensi security** — auth dan security headers diterapkan di satu tempat.
-2. **URL abstraction** — route mapping terpusat di `route_helper.php`.
-3. **Easier middleware** — auth guard, CSRF verify, dan error handling konsisten.
+1. **Konsistensi security** - auth dan security headers diterapkan di satu tempat.
+2. **URL abstraction** - route mapping terpusat di `route_helper.php`.
+3. **Easier middleware** - auth guard, CSRF verify, dan error handling konsisten.
 
 ### Route Registry: Kenapa Array-Based?
 
@@ -100,7 +100,7 @@ Setiap ID yang dikirim ke browser dienkripsi:
 
 ```php
 app_id_token('detail_pelanggaran', 42)
-// → "eyJ..." (base64url encoded + HMAC signature)
+// -> "eyJ..." (base64url encoded + HMAC signature)
 ```
 
 Token berisi:
@@ -126,7 +126,7 @@ Token berisi:
 
 ### Kenapa Bukan JWT?
 
-Project ini target audience adalah user di kampus — aplikasi diakses dari browser, bukan API mobile. JWT menawarkan stateless, tapi:
+Project ini target audience adalah user di kampus - aplikasi diakses dari browser, bukan API mobile. JWT menawarkan stateless, tapi:
 
 - JWT yang di-stored di localStorage rentan XSS.
 - JWT yang di-stored di HttpOnly cookie memiliki trade-off serupa dengan session.
@@ -135,10 +135,10 @@ Project ini target audience adalah user di kampus — aplikasi diakses dari brow
 ### Session Structure
 
 ```php
-$_SESSION['username']      // string — identifier user
-$_SESSION['user_type']     // string — 'mahasiswa'|'dosen'|'admin'
-$_SESSION['user_data']     // array  — data user sesuai role
-$_SESSION['csrf_token']    // string — CSRF request token
+$_SESSION['username']      // string - identifier user
+$_SESSION['user_type']     // string - 'mahasiswa'|'dosen'|'admin'
+$_SESSION['user_data']     // array - data user sesuai role
+$_SESSION['csrf_token']    // string - CSRF request token
 ```
 
 Data user di-`user_data` di-fetch per-request dari database, tidak di-cache lama di session.
@@ -160,9 +160,9 @@ Data user di-`user_data` di-fetch per-request dari database, tidak di-cache lama
 
 Kami mengimplement CSRF protection secara manual, bukan pakai library, karena:
 
-1. **Transparansi penuh** — developer harus memahami setiap protection.
-2. **Minimal footprint** — tidak ada dependency untuk security critical code.
-3. **Control penuh** — bisa customize behavior tanpa reverse-engineering library.
+1. **Transparansi penuh** - developer harus memahami setiap protection.
+2. **Minimal footprint** - tidak ada dependency untuk security critical code.
+3. **Control penuh** - bisa customize behavior tanpa reverse-engineering library.
 
 ### Token Lifecycle
 
@@ -172,11 +172,11 @@ Kami mengimplement CSRF protection secara manual, bukan pakai library, karena:
 
 2. Form Render: Include hidden field
    <?= app_csrf_field() ?>
-   → <input type="hidden" name="csrf_token" value="abc123...">
+   -> <input type="hidden" name="csrf_token" value="abc123...">
 
 3. POST Request: Verify token
    app_verify_csrf()
-   → if (!hash_equals($_SESSION['csrf_token'], $input)) exit(419)
+   -> if (!hash_equals($_SESSION['csrf_token'], $input)) exit(419)
 
 4. Success Response: Token tetap sama (one token per session)
 ```
@@ -197,7 +197,7 @@ $detectedMime = finfo_file($finfo, $file['tmp_name']);
 finfo_close($finfo);
 ```
 
-Client MIME (`$_FILES['type']`) TIDAK dipercaya — bisa di-spoof.
+Client MIME (`$_FILES['type']`) TIDAK dipercaya - bisa di-spoof.
 
 **Layer 2: Extension Allowlist**
 
@@ -214,7 +214,7 @@ Ekstension dicek setelah MIME detection.
 $filename = bin2hex(random_bytes(12)) . '.' . $extension;
 ```
 
-Filename asli tidak dipakai — mencegah path traversal dan filename collision.
+Filename asli tidak dipakai - mencegah path traversal dan filename collision.
 
 ### Storage Outside Web Root
 
@@ -264,7 +264,7 @@ PHP native tanpa framework = tidak ada middleware pipeline. Kami pilih check di 
 Trade-off: setiap handler harus copy-paste authorization check. Ini accepted karena:
 
 - Authorization logic sederhana (3 role + optional ownership).
-- Easy to audit — semua logic ada di satu file.
+- Easy to audit - semua logic ada di satu file.
 
 ---
 
@@ -288,7 +288,7 @@ Trade-off: setiap handler harus copy-paste authorization check. Ini accepted kar
 // BENAR
 set_app_flash_modal('error', 'Terjadi kesalahan. Silakan coba lagi.');
 
-// SALAH — bocorkan detail internal
+// SALAH - bocorkan detail internal
 set_app_flash_modal('error', 'Error: ' . $e->getMessage());
 ```
 
@@ -328,7 +328,7 @@ $stmt->bindValue(':val', $value, PDO::PARAM_STR);
 $stmt = $pdo->query("SELECT * FROM table WHERE col = '$value'");
 ```
 
-Ini bukan cuma soal SQL injection — ini adalah Kultur: semua query harus traceable dan reviewable.
+Ini bukan cuma soal SQL injection - ini adalah Kultur: semua query harus traceable dan reviewable.
 
 ---
 
@@ -362,21 +362,21 @@ Pilihan PHP native + vanilla JS adalah sweet spot: cukup powerful untuk requirem
 
 ### Yang Mungkin Berubah
 
-1. **API Layer** — Jika ada mobile app atau integrasi pihak ketiga, REST/GraphQL API layer bisa ditambahkan.
-2. **Caching** — Untuk query yang frequent, Redis bisa ditambahkan sebagai cache layer.
-3. **Real-time notification** — WebSocket atau Server-Sent Events jika polling tidak cukup.
+1. **API Layer** - Jika ada mobile app atau integrasi pihak ketiga, REST/GraphQL API layer bisa ditambahkan.
+2. **Caching** - Untuk query yang frequent, Redis bisa ditambahkan sebagai cache layer.
+3. **Real-time notification** - WebSocket atau Server-Sent Events jika polling tidak cukup.
 
 ### Yang Kemungkinan Tidak Berubah
 
-1. **PHP native** — Tidak ada plan migrasi ke framework.
-2. **Vanilla JS** — SPA migration tidak di-scheduled.
-3. **MySQL** — Tidak ada plan migrasi ke PostgreSQL atau NoSQL.
+1. **PHP native** - Tidak ada plan migrasi ke framework.
+2. **Vanilla JS** - SPA migration tidak di-scheduled.
+3. **MySQL** - Tidak ada plan migrasi ke PostgreSQL atau NoSQL.
 
 ---
 
 ## Dokumentasi Terkait
 
-- [reference/api.md](../reference/api.md) — Detail teknis API dan file
-- [howto/recipes.md](../howto/recipes.md) — Recipe untuk task spesifik
-- [tutorial/getting-started.md](../tutorial/getting-started.md) — Panduan setup untuk newcomer
-- [explanation/security.md](./security.md) — Kebijakan keamanan
+- [reference/api.md](../reference/api.md) - Detail teknis API dan file
+- [howto/recipes.md](../howto/recipes.md) - Recipe untuk task spesifik
+- [tutorial/getting-started.md](../tutorial/getting-started.md) - Panduan setup untuk newcomer
+- [explanation/security.md](./security.md) - Kebijakan keamanan

@@ -1,4 +1,4 @@
-﻿# DiscipLink - Strix Automated Penetration Test (Run 2026-09-21)
+# DiscipLink - Strix Automated Penetration Test (Run 2026-09-21)
 
 > **Status: SELESAI (CLOSED).** Seluruh **6 temuan** di bawah sudah **diperbaiki**
 > dan **terbukti hilang** saat diuji ulang oleh re-scan 2026-09-22 dengan
@@ -116,16 +116,16 @@ Struktur mengikuti [kontrak struktur & dokumentasi](../README.md#struktur-wajib-
 
 ```
 strix-2026-09-21/
-├── README.md                    dokumen ini
-├── instructions/                instruksi area yang dijalankan (areaN_<slug>.md)
-├── _tools/                      skrip internal (build consolidated report)
-├── 00-CONSOLIDATED-REPORT.md
-├── COMBINED.sarif
-├── CARA-REPRODUKSI.md
-└── areaN-<slug>/
-    ├── README.md                indeks area (temuan + pointer)
-    ├── before/                  artefak mentah: findings.sarif, vulnerabilities/, csv/json, run.json, strix.log, .state/
-    └── after/                   bukti fix: README.md, reproduce.sh, reproduce-after.log, evidence-*.png
+  README.md                    dokumen ini
+  instructions/                instruksi area yang dijalankan (areaN_<slug>.md)
+  _tools/                      skrip internal (build consolidated report)
+  00-CONSOLIDATED-REPORT.md
+  COMBINED.sarif
+  CARA-REPRODUKSI.md
+  areaN-<slug>/
+      README.md                indeks area (temuan + pointer)
+      before/                  artefak mentah: findings.sarif, vulnerabilities/, csv/json, run.json, strix.log, .state/
+      after/                   bukti fix: README.md, reproduce.sh, reproduce-after.log, evidence-*.png
 ```
 
 Each `findings.sarif` is a standard SARIF 2.1.0 file (`tool.driver.name = "Strix"`, version 1.4.1)
