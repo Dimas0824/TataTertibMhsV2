@@ -10,7 +10,7 @@
 > *definition of done* setiap run pentest - lihat checklist di standar.
 
 | ID | CWE | Area | Severity | Ditemukan | Diperbaiki | Commit Fix | Status Saat Ini | Detail |
-|---|---|---|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | A2-vuln-0001 (2026-09-22) | CWE-384 | Session/CSRF | MEDIUM | 2026-09-22 | 2026-09-22 | `a56baca` | Confirmed-fixed | [vuln](strix-runs/strix-2026-09-22/area2-session-csrf/) |
 | A3-vuln-0001 (2026-09-22) | CWE-284 | Upload/IDOR | MEDIUM | 2026-09-22 | 2026-09-22 | `d4aec0e` | Confirmed-fixed | [vuln](strix-runs/strix-2026-09-22/area3-upload-idor/) |
 | A4-vuln-0001 (2026-09-22) | CWE-863 | Pelanggaran | HIGH | 2026-09-22 | 2026-09-22 | `579a4c6` | Confirmed-fixed | [vuln](strix-runs/strix-2026-09-22/area4-pelanggaran/) |
